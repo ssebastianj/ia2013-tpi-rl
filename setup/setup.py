@@ -8,7 +8,7 @@ import os
 
 def main():
     # Compile UI files
-    print '\n---------------------- Compile IU Files ---------------------'
+    print '\n---------------------- Compile UI Files ---------------------'
     compile_ui_path = os.path.join(os.pardir, 'compile_ui.py')
     comp_ui_args = [sys.executable, compile_ui_path]
     subprocess.call(comp_ui_args)
