@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
-import src.info as info
+import info
 
 app_version = info.__version__
 app_version_sep = app_version.split('.')
