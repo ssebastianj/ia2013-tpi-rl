@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2013-03-28T15:27:41
+# Project created by QtCreator 2013-03-28T16:02:52
 #
 #-------------------------------------------------
 
@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = IA-2013-TPI-RL-GUI
+TARGET = IA2013TPIRLGUI
 TEMPLATE = app
 
 
