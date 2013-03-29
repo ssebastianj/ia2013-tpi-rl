@@ -1,7 +1,7 @@
 Inteligencia Artificial 2013
 ============================
 
-probandoo2
+probandoo3
 
 Implementación de Técnicas de Aprendizaje por Refuerzo
 ------------------------------------------------------
