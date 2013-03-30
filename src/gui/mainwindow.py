@@ -6,10 +6,13 @@ from __future__ import absolute_import
 from PyQt4 import QtCore, QtGui
 from gui.qt.mainwindow import Ui_MainWindow
 
+from core.estado.estado import Estado, TipoEstado
+from core.gridworld.gridworld import GridWorld
+
 try:
-    _fromUtf8 = QtCore.QString.fromUtf8
+    _tr = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    _tr = lambda s: s
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -27,8 +30,21 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Configura y establece estado de los widgets en el cuadro de diálogo.
         """
+        # Aspectos de la ventana principal
         self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
 
+        # Conexión de señales
+        self._set_window_signals()
+
+        # Cargar dimensiones posibles del GridWorld
+        gw_dimensiones = ["6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
+
+        self.WMainWindow.cbGWDimension.clear()
+        for dimension in gw_dimensiones:
+            self.WMainWindow.cbGWDimension.addItem(_tr(dimension))
+            self.WMainWindow.menuDimension.addAction(QtGui.QAction(_tr(dimension), self))
+
+        # TODO: Refactorear sección
         ancho_cuadrado = 40
         cant_cuadrados = 10
         ancho_gridworld = ancho_cuadrado * cant_cuadrados
@@ -49,3 +65,51 @@ class MainWindow(QtGui.QMainWindow):
                 elemento = QtGui.QTableWidgetItem("({0},{1})".format(fila, columna))
                 elemento.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.WMainWindow.GridWorld.setItem(fila, columna, elemento)
+        # ------------------------------------------------------------------
+
+    def _set_window_signals(self):
+        self.WMainWindow.actionAppSalir.triggered.connect(self.exit)
+
+    def _inicializar_estados(self):
+        # Identificadores de estado reservados
+        # Ide = 0 (Estado Inicial)
+        # Ide = 1 (Estado Intermedio)
+        # Ide = 2 (Estado Final)
+        # Ide = 3 (Agente)
+
+        tipos_estados = []
+        # Estado Inicial
+        tipos_estados.append(TipoEstado(0, None, "Inicial", "I", None))
+        # Estado Final
+        tipos_estados.append(TipoEstado(2, None, "Final", "F", None))
+        # Estado Agente
+        tipos_estados.append(TipoEstado(3, None, "Agente", "A", None))
+        # Estados Intermedios
+        tipos_estados.append(TipoEstado(1, 100, "Excelente", "E", None))
+        tipos_estados.append(TipoEstado(1, 50, "Bueno", "B", None))
+        tipos_estados.append(TipoEstado(1, 10, "Malo", "M", None))
+        tipos_estados.append(TipoEstado(1, 0, "Neutro", None, None))
+        tipos_estados.append(TipoEstado(1, -100, "Pared", "P", None))
+
+        # TODO: Inicializar todos los estados como Neutros
+
+    def show_about_dialog(self):
+        u"""
+        Muestra el cuadro de diálogo Acerca de...
+        """
+        self.DAboutDialog = AboutDialog(self)
+        self.DAboutDialog.show()
+
+    def closeEvent(self, event):
+        """
+        Reimplementa el evento 'closeEvent' de la clase padre.
+
+        @param event: Evento.
+        """
+        pass
+
+    def exit(self):
+        u"""
+        Finaliza la ejecución de la aplicación.
+        """
+        self.close()

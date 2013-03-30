@@ -7,280 +7,272 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>765</width>
-    <height>571</height>
+    <width>653</width>
+    <height>365</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>304</x>
-      <y>8</y>
-      <width>337</width>
-      <height>113</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Grid World</string>
-    </property>
-    <widget class="QWidget" name="">
-     <property name="geometry">
-      <rect>
-       <x>16</x>
-       <y>24</y>
-       <width>122</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QGridLayout" name="gridLayout_4">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
       <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Dimensión:</string>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="buddy">
-         <cstring>comboBox</cstring>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="GridWorld">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::ClickFocus</enum>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="autoScroll">
+         <bool>false</bool>
+        </property>
+        <property name="tabKeyNavigation">
+         <bool>false</bool>
+        </property>
+        <property name="showDropIndicator" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="dragDropOverwriteMode">
+         <bool>false</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::NoSelection</enum>
+        </property>
+        <property name="cornerButtonEnabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <property name="text">
-          <string>6 x 6</string>
-         </property>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="title">
+           <string>Grid World</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Dimensión:</string>
+               </property>
+               <property name="buddy">
+                <cstring>cbGWDimension</cstring>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="cbGWDimension"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
         </item>
         <item>
-         <property name="text">
-          <string>7 x 7</string>
-         </property>
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="title">
+           <string>Q-Learning</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="4" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <item>
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Epsilon (ɛ):</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="sbQLEpsilon"/>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Alfa (ɑ):</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="sbQLAlpha"/>
+             </item>
+            </layout>
+           </item>
+           <item row="3" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Gamma (Ɣ):</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="sbQLGamma"/>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Técnica de aprendizaje:</string>
+               </property>
+               <property name="buddy">
+                <cstring>cbQLTecnicas</cstring>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="cbQLTecnicas"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
         </item>
         <item>
-         <property name="text">
-          <string>8 x 8</string>
-         </property>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Operaciones</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="pushButton">
+             <property name="text">
+              <string>Generar valores aleatorios</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </item>
         <item>
-         <property name="text">
-          <string>9 x 9</string>
-         </property>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
-        <item>
-         <property name="text">
-          <string>10 x 10</string>
-         </property>
-        </item>
-       </widget>
+       </layout>
       </item>
      </layout>
-    </widget>
-   </widget>
-   <widget class="QTableWidget" name="GridWorld">
-    <property name="geometry">
-     <rect>
-      <x>16</x>
-      <y>8</y>
-      <width>256</width>
-      <height>192</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::ClickFocus</enum>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="autoScroll">
-     <bool>false</bool>
-    </property>
-    <property name="tabKeyNavigation">
-     <bool>false</bool>
-    </property>
-    <property name="showDropIndicator" stdset="0">
-     <bool>false</bool>
-    </property>
-    <property name="dragDropOverwriteMode">
-     <bool>false</bool>
-    </property>
-    <property name="selectionMode">
-     <enum>QAbstractItemView::NoSelection</enum>
-    </property>
-    <property name="cornerButtonEnabled">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>304</x>
-      <y>400</y>
-      <width>369</width>
-      <height>97</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Operaciones</string>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_3">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>144</y>
-      <width>369</width>
-      <height>257</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Q-Learning</string>
-    </property>
-    <widget class="QWidget" name="">
-     <property name="geometry">
-      <rect>
-       <x>16</x>
-       <y>16</y>
-       <width>191</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Técnica de aprendizaje:</string>
-        </property>
-        <property name="buddy">
-         <cstring>comboBox_2</cstring>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="comboBox_2"/>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="">
-     <property name="geometry">
-      <rect>
-       <x>16</x>
-       <y>56</y>
-       <width>97</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Alfa (ɑ):</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="">
-     <property name="geometry">
-      <rect>
-       <x>16</x>
-       <y>80</y>
-       <width>114</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <item>
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Gamma (Ɣ):</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="">
-     <property name="geometry">
-      <rect>
-       <x>24</x>
-       <y>104</y>
-       <width>110</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <item>
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Epsilon (ɛ):</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
-      </item>
-     </layout>
-    </widget>
-   </widget>
+    </item>
+    <item row="1" column="0">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>765</width>
+     <width>653</width>
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_Archivo">
+   <widget class="QMenu" name="menuArchivo">
     <property name="title">
      <string>&amp;Archivo</string>
     </property>
     <addaction name="actionAppSalir"/>
    </widget>
-   <widget class="QMenu" name="menuEdici_n">
+   <widget class="QMenu" name="menuEdicion">
     <property name="title">
      <string>&amp;Edición</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuAy_uda">
+   <widget class="QMenu" name="menuAyuda">
     <property name="title">
      <string>Ay&amp;uda</string>
     </property>
     <addaction name="actionAcercaDe"/>
    </widget>
-   <widget class="QMenu" name="menu_Tablero">
+   <widget class="QMenu" name="menuGridWorld">
     <property name="title">
      <string>&amp;Grid World</string>
     </property>
+    <widget class="QMenu" name="menuDimension">
+     <property name="title">
+      <string>Dimensión</string>
+     </property>
+    </widget>
+    <addaction name="menuDimension"/>
    </widget>
-   <widget class="QMenu" name="menu_Operaciones">
+   <widget class="QMenu" name="menuOperaciones">
     <property name="title">
      <string>&amp;Operaciones</string>
     </property>
+    <addaction name="actionGenerarValoresAleatorios"/>
    </widget>
-   <addaction name="menu_Archivo"/>
-   <addaction name="menuEdici_n"/>
-   <addaction name="menu_Tablero"/>
-   <addaction name="menu_Operaciones"/>
-   <addaction name="menuAy_uda"/>
+   <addaction name="menuArchivo"/>
+   <addaction name="menuEdicion"/>
+   <addaction name="menuGridWorld"/>
+   <addaction name="menuOperaciones"/>
+   <addaction name="menuAyuda"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionAppSalir">
@@ -291,6 +283,11 @@
   <action name="actionAcercaDe">
    <property name="text">
     <string>Acerca de...</string>
+   </property>
+  </action>
+  <action name="actionGenerarValoresAleatorios">
+   <property name="text">
+    <string>Generar valores aleatorios</string>
    </property>
   </action>
  </widget>
