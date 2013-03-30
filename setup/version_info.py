@@ -7,8 +7,8 @@ import info
 app_version = info.__version__
 app_version_sep = app_version.split('.')
 
-if len(app_version_sep) < 4:
-    app_version_sep.append('0')
+for i in range(0, 4 - len(app_version_sep)):
+        app_version_sep.append('0')
 
 prod_vers_final = '({0})'.format(', '.join(app_version_sep))
 

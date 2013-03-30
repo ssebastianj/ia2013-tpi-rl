@@ -30,7 +30,8 @@ def main():
             "C:\\PyInstaller\\pyinstaller.py",
             "--noconfirm",
             "--log-level=DEBUG",
-            "--onefile",
+           # "--onefile",
+           # "--noupx",
             "--onedir",
             "--out=" + spec_path,
             "--name=ia",
@@ -41,7 +42,7 @@ def main():
 
     subprocess.call(args)
 
-    print '\n---------------------- Building Finished ----------------------'
+    print '\n---------------------- Build Finished ----------------------'
 
 if __name__ == '__main__':
     main()
