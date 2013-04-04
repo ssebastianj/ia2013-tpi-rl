@@ -4,10 +4,11 @@
 from __future__ import absolute_import
 
 from PyQt4 import QtCore, QtGui
-from gui.qt.mainwindow import Ui_MainWindow
+from src.gui.qt.mainwindow import Ui_MainWindow
 
-from core.estado.estado import Estado, TipoEstado
-from core.gridworld.gridworld import GridWorld
+
+from src.core.estado.estado import Estado, TipoEstado
+from src.core.gridworld.gridworld import GridWorld
 
 try:
     _tr = QtCore.QString.fromUtf8
@@ -35,9 +36,18 @@ class MainWindow(QtGui.QMainWindow):
 
         # Conexión de señales
         self._set_window_signals()
+        
+        #Cargar técnicas posibles
+        tecnicas = ["ε-Greedy", "Softmax"]
+        self.WMainWindow.cbQLTecnicas.clear()
+        for tecnica in tecnicas:
+            self.WMainWindow.cbQLTecnicas.addItem(_tr(tecnica))
+            self.WMainWindow.cbQLTecnicas.addAction(QtGui.QAction(_tr(tecnica), self))
+
 
         # Cargar dimensiones posibles del GridWorld
         gw_dimensiones = ["6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
+        
 
         self.WMainWindow.cbGWDimension.clear()
         for dimension in gw_dimensiones:
@@ -45,6 +55,11 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.menuDimension.addAction(QtGui.QAction(_tr(dimension), self))
 
         # TODO: Refactorear sección
+        
+        
+    
+    
+            
         ancho_cuadrado = 40
         cant_cuadrados = 10
         ancho_gridworld = ancho_cuadrado * cant_cuadrados
@@ -60,8 +75,8 @@ class MainWindow(QtGui.QMainWindow):
         alto_contenedor = ancho_gridworld + self.WMainWindow.GridWorld.horizontalHeader().height() + 1
         self.WMainWindow.GridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
 
-        for fila in range(0, 10):
-            for columna in range(0, 10):
+        for fila in range(0, cant_cuadrados):
+            for columna in range(0, cant_cuadrados):
                 elemento = QtGui.QTableWidgetItem("({0},{1})".format(fila, columna))
                 elemento.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.WMainWindow.GridWorld.setItem(fila, columna, elemento)
