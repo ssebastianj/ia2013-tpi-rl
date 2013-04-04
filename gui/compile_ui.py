@@ -20,7 +20,7 @@ def main():
         print 'Compilando archivos de interfaz gráfica...'
         uic.compileUiDir(uiDir, recurse=True, map=map_dir)
     except Exception as e:
-        print 'ERROR: ' + e
+        print 'ERROR: ' + str(e)
     finally:
         print 'Compilación finalizada.'
 
