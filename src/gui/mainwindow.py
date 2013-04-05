@@ -1,139 +1,213 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
+# Form implementation generated from reading ui file 'mainwindow.ui'
+#
+# Created: Thu Apr 04 23:05:32 2013
+#      by: PyQt4 UI code generator 4.10
+#
+# WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
-from src.gui.qt.mainwindow import Ui_MainWindow
-
-
-from src.core.estado.estado import Estado, TipoEstado
-from src.core.gridworld.gridworld import GridWorld
 
 try:
-    _tr = QtCore.QString.fromUtf8
+    _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _tr = lambda s: s
+    def _fromUtf8(s):
+        return s
 
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
-class MainWindow(QtGui.QMainWindow):
-    u"""
-    Clase heredada de QMainWindow encargada de mostrar la ventana principal de
-    la aplicación.
-    """
-    def __init__(self):
-        super(MainWindow, self).__init__()
-        self.WMainWindow = Ui_MainWindow()
-        self.WMainWindow.setupUi(self)
-        self._initialize_window()
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName(_fromUtf8("MainWindow"))
+        MainWindow.resize(620, 408)
+        self.centralWidget = QtGui.QWidget(MainWindow)
+        self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
+        self.horizontalLayout_7 = QtGui.QHBoxLayout(self.centralWidget)
+        self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
+        spacerItem = QtGui.QSpacerItem(20, 346, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.horizontalLayout_7.addItem(spacerItem)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_7.addItem(spacerItem1)
+        self.GridWorld = QtGui.QTableWidget(self.centralWidget)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.GridWorld.sizePolicy().hasHeightForWidth())
+        self.GridWorld.setSizePolicy(sizePolicy)
+        self.GridWorld.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.GridWorld.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.GridWorld.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.GridWorld.setAutoScroll(False)
+        self.GridWorld.setTabKeyNavigation(False)
+        self.GridWorld.setProperty("showDropIndicator", False)
+        self.GridWorld.setDragDropOverwriteMode(False)
+        self.GridWorld.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
+        self.GridWorld.setCornerButtonEnabled(False)
+        self.GridWorld.setObjectName(_fromUtf8("GridWorld"))
+        self.GridWorld.setColumnCount(0)
+        self.GridWorld.setRowCount(0)
+        self.horizontalLayout_7.addWidget(self.GridWorld)
+        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_7.addItem(spacerItem2)
+        self.verticalLayout_3 = QtGui.QVBoxLayout()
+        self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
+        self.groupBox = QtGui.QGroupBox(self.centralWidget)
+        self.groupBox.setObjectName(_fromUtf8("groupBox"))
+        self.gridLayout = QtGui.QGridLayout(self.groupBox)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.label = QtGui.QLabel(self.groupBox)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.horizontalLayout.addWidget(self.label)
+        self.cbGWDimension = QtGui.QComboBox(self.groupBox)
+        self.cbGWDimension.setObjectName(_fromUtf8("cbGWDimension"))
+        self.horizontalLayout.addWidget(self.cbGWDimension)
+        self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+        self.verticalLayout_3.addWidget(self.groupBox)
+        self.groupBox_3 = QtGui.QGroupBox(self.centralWidget)
+        self.groupBox_3.setObjectName(_fromUtf8("groupBox_3"))
+        self.verticalLayout = QtGui.QVBoxLayout(self.groupBox_3)
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.horizontalLayout_2 = QtGui.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
+        self.label_4 = QtGui.QLabel(self.groupBox_3)
+        self.label_4.setObjectName(_fromUtf8("label_4"))
+        self.horizontalLayout_2.addWidget(self.label_4)
+        self.sbQLGamma = QtGui.QDoubleSpinBox(self.groupBox_3)
+        self.sbQLGamma.setObjectName(_fromUtf8("sbQLGamma"))
+        self.horizontalLayout_2.addWidget(self.sbQLGamma)
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout_3 = QtGui.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
+        self.label_2 = QtGui.QLabel(self.groupBox_3)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.horizontalLayout_3.addWidget(self.label_2)
+        self.cbQLTecnicas = QtGui.QComboBox(self.groupBox_3)
+        self.cbQLTecnicas.setObjectName(_fromUtf8("cbQLTecnicas"))
+        self.horizontalLayout_3.addWidget(self.cbQLTecnicas)
+        self.verticalLayout.addLayout(self.horizontalLayout_3)
+        self.horizontalLayout_4 = QtGui.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(_fromUtf8("horizontalLayout_4"))
+        self.label_3 = QtGui.QLabel(self.groupBox_3)
+        self.label_3.setObjectName(_fromUtf8("label_3"))
+        self.horizontalLayout_4.addWidget(self.label_3)
+        self.sbQLAlpha = QtGui.QDoubleSpinBox(self.groupBox_3)
+        self.sbQLAlpha.setObjectName(_fromUtf8("sbQLAlpha"))
+        self.horizontalLayout_4.addWidget(self.sbQLAlpha)
+        self.verticalLayout.addLayout(self.horizontalLayout_4)
+        self.horizontalLayout_5 = QtGui.QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(_fromUtf8("horizontalLayout_5"))
+        self.label_5 = QtGui.QLabel(self.groupBox_3)
+        self.label_5.setObjectName(_fromUtf8("label_5"))
+        self.horizontalLayout_5.addWidget(self.label_5)
+        self.sbQLEpsilon = QtGui.QDoubleSpinBox(self.groupBox_3)
+        self.sbQLEpsilon.setObjectName(_fromUtf8("sbQLEpsilon"))
+        self.horizontalLayout_5.addWidget(self.sbQLEpsilon)
+        self.verticalLayout.addLayout(self.horizontalLayout_5)
+        self.horizontalLayout_6 = QtGui.QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
+        self.label_6 = QtGui.QLabel(self.groupBox_3)
+        self.label_6.setObjectName(_fromUtf8("label_6"))
+        self.horizontalLayout_6.addWidget(self.label_6)
+        self.sbQLTau = QtGui.QDoubleSpinBox(self.groupBox_3)
+        self.sbQLTau.setObjectName(_fromUtf8("sbQLTau"))
+        self.horizontalLayout_6.addWidget(self.sbQLTau)
+        self.verticalLayout.addLayout(self.horizontalLayout_6)
+        self.verticalLayout_3.addWidget(self.groupBox_3)
+        self.verticalLayout_2 = QtGui.QVBoxLayout()
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.groupBox_2 = QtGui.QGroupBox(self.centralWidget)
+        self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
+        self.gridLayout_3 = QtGui.QGridLayout(self.groupBox_2)
+        self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
+        spacerItem3 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_3.addItem(spacerItem3, 5, 0, 1, 1)
+        self.entrenar = QtGui.QPushButton(self.groupBox_2)
+        self.entrenar.setObjectName(_fromUtf8("entrenar"))
+        self.gridLayout_3.addWidget(self.entrenar, 2, 0, 1, 1)
+        self.comenzar = QtGui.QPushButton(self.groupBox_2)
+        self.comenzar.setObjectName(_fromUtf8("comenzar"))
+        self.gridLayout_3.addWidget(self.comenzar, 3, 0, 1, 1)
+        self.genValAleatorios = QtGui.QPushButton(self.groupBox_2)
+        self.genValAleatorios.setObjectName(_fromUtf8("genValAleatorios"))
+        self.gridLayout_3.addWidget(self.genValAleatorios, 0, 0, 1, 1)
+        self.pushButton_4 = QtGui.QPushButton(self.groupBox_2)
+        self.pushButton_4.setObjectName(_fromUtf8("pushButton_4"))
+        self.gridLayout_3.addWidget(self.pushButton_4, 4, 0, 1, 1)
+        self.verticalLayout_2.addWidget(self.groupBox_2)
+        self.verticalLayout_3.addLayout(self.verticalLayout_2)
+        self.horizontalLayout_7.addLayout(self.verticalLayout_3)
+        MainWindow.setCentralWidget(self.centralWidget)
+        self.menuBar = QtGui.QMenuBar(MainWindow)
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 620, 21))
+        self.menuBar.setObjectName(_fromUtf8("menuBar"))
+        self.menuArchivo = QtGui.QMenu(self.menuBar)
+        self.menuArchivo.setObjectName(_fromUtf8("menuArchivo"))
+        self.menuEdicion = QtGui.QMenu(self.menuBar)
+        self.menuEdicion.setObjectName(_fromUtf8("menuEdicion"))
+        self.menuAyuda = QtGui.QMenu(self.menuBar)
+        self.menuAyuda.setObjectName(_fromUtf8("menuAyuda"))
+        self.menuGridWorld = QtGui.QMenu(self.menuBar)
+        self.menuGridWorld.setObjectName(_fromUtf8("menuGridWorld"))
+        self.menuDimension = QtGui.QMenu(self.menuGridWorld)
+        self.menuDimension.setObjectName(_fromUtf8("menuDimension"))
+        self.menuOperaciones = QtGui.QMenu(self.menuBar)
+        self.menuOperaciones.setObjectName(_fromUtf8("menuOperaciones"))
+        MainWindow.setMenuBar(self.menuBar)
+        self.statusBar = QtGui.QStatusBar(MainWindow)
+        self.statusBar.setObjectName(_fromUtf8("statusBar"))
+        MainWindow.setStatusBar(self.statusBar)
+        self.actionAppSalir = QtGui.QAction(MainWindow)
+        self.actionAppSalir.setObjectName(_fromUtf8("actionAppSalir"))
+        self.actionAcercaDe = QtGui.QAction(MainWindow)
+        self.actionAcercaDe.setObjectName(_fromUtf8("actionAcercaDe"))
+        self.actionGenerarValoresAleatorios = QtGui.QAction(MainWindow)
+        self.actionGenerarValoresAleatorios.setObjectName(_fromUtf8("actionGenerarValoresAleatorios"))
+        self.menuArchivo.addAction(self.actionAppSalir)
+        self.menuAyuda.addAction(self.actionAcercaDe)
+        self.menuGridWorld.addAction(self.menuDimension.menuAction())
+        self.menuOperaciones.addAction(self.actionGenerarValoresAleatorios)
+        self.menuBar.addAction(self.menuArchivo.menuAction())
+        self.menuBar.addAction(self.menuEdicion.menuAction())
+        self.menuBar.addAction(self.menuGridWorld.menuAction())
+        self.menuBar.addAction(self.menuOperaciones.menuAction())
+        self.menuBar.addAction(self.menuAyuda.menuAction())
+        self.label.setBuddy(self.cbGWDimension)
+        self.label_2.setBuddy(self.cbQLTecnicas)
 
-    def _initialize_window(self):
-        u"""
-        Configura y establece estado de los widgets en el cuadro de diálogo.
-        """
-        # Aspectos de la ventana principal
-        self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        # Conexión de señales
-        self._set_window_signals()
-        
-        #Cargar técnicas posibles
-        tecnicas = ["ε-Greedy", "Softmax"]
-        self.WMainWindow.cbQLTecnicas.clear()
-        for tecnica in tecnicas:
-            self.WMainWindow.cbQLTecnicas.addItem(_tr(tecnica))
-            self.WMainWindow.cbQLTecnicas.addAction(QtGui.QAction(_tr(tecnica), self))
+    def retranslateUi(self, MainWindow):
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
+        self.groupBox.setTitle(_translate("MainWindow", "Grid World", None))
+        self.label.setText(_translate("MainWindow", "Dimensión:", None))
+        self.groupBox_3.setTitle(_translate("MainWindow", "Q-Learning", None))
+        self.label_4.setText(_translate("MainWindow", "Gamma (Ɣ):", None))
+        self.label_2.setText(_translate("MainWindow", "Técnica de aprendizaje:", None))
+        self.label_3.setText(_translate("MainWindow", "Alfa (ɑ):", None))
+        self.label_5.setText(_translate("MainWindow", "Epsilon (ɛ):", None))
+        self.label_6.setText(_translate("MainWindow", "Tau (τ):", None))
+        self.groupBox_2.setTitle(_translate("MainWindow", "Operaciones", None))
+        self.entrenar.setText(_translate("MainWindow", "Entrenar", None))
+        self.comenzar.setText(_translate("MainWindow", "Comenzar", None))
+        self.genValAleatorios.setText(_translate("MainWindow", "Generar valores aleatorios", None))
+        self.pushButton_4.setText(_translate("MainWindow", "Terminar", None))
+        self.menuArchivo.setTitle(_translate("MainWindow", "&Archivo", None))
+        self.menuEdicion.setTitle(_translate("MainWindow", "&Edición", None))
+        self.menuAyuda.setTitle(_translate("MainWindow", "Ay&uda", None))
+        self.menuGridWorld.setTitle(_translate("MainWindow", "&Grid World", None))
+        self.menuDimension.setTitle(_translate("MainWindow", "Dimensión", None))
+        self.menuOperaciones.setTitle(_translate("MainWindow", "&Operaciones", None))
+        self.actionAppSalir.setText(_translate("MainWindow", "Salir", None))
+        self.actionAcercaDe.setText(_translate("MainWindow", "Acerca de...", None))
+        self.actionGenerarValoresAleatorios.setText(_translate("MainWindow", "Generar valores aleatorios", None))
 
-
-        # Cargar dimensiones posibles del GridWorld
-        gw_dimensiones = ["6", "7", "8", "9", "10"]
-        
-
-        self.WMainWindow.cbGWDimension.clear()
-        for dimension in gw_dimensiones:
-            self.WMainWindow.cbGWDimension.addItem(_tr(dimension))
-            self.WMainWindow.menuDimension.addAction(QtGui.QAction(_tr(dimension), self))
-
-
-        # TODO: Refactorear sección 
-        
-        u"""Establece la dimensión por defecto del GridWorld en 6x6"""
-        self.SetDimension()   
-            
-        u"""Cambia la dimensión del GridWorld según la opción activa en el ComboBox cbDWDimension"""
-        QtCore.QObject.connect(self.WMainWindow.cbGWDimension, QtCore.SIGNAL("currentIndexChanged(QString)"),self.SetDimension)
-
-
-
-    def SetDimension(self):
-            u""" Configura el GridWorld"""
-            
-            cant_cuadrados =int(self.WMainWindow.cbGWDimension.currentText())   
-            ancho_cuadrado = 40
-            
-            ancho_gridworld = ancho_cuadrado * cant_cuadrados
-    
-            self.WMainWindow.GridWorld.setRowCount(cant_cuadrados)
-            self.WMainWindow.GridWorld.setColumnCount(cant_cuadrados)
-            self.WMainWindow.GridWorld.horizontalHeader().setDefaultSectionSize(ancho_cuadrado)
-            self.WMainWindow.GridWorld.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-            self.WMainWindow.GridWorld.verticalHeader().setDefaultSectionSize(ancho_cuadrado)
-            self.WMainWindow.GridWorld.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-            self.WMainWindow.GridWorld.setCursor(QtCore.Qt.PointingHandCursor)
-            ancho_contenedor = ancho_gridworld + self.WMainWindow.GridWorld.verticalHeader().width() + 1
-            alto_contenedor = ancho_gridworld + self.WMainWindow.GridWorld.horizontalHeader().height() + 1
-            self.WMainWindow.GridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
-    
-            for fila in range(0, cant_cuadrados):
-                for columna in range(0, cant_cuadrados):
-                    elemento = QtGui.QTableWidgetItem("({0},{1})".format(fila, columna))
-                    elemento.setFlags(QtCore.Qt.ItemIsEnabled)
-                    self.WMainWindow.GridWorld.setItem(fila, columna, elemento)
-        # ------------------------------------------------------------------
-
-    def _set_window_signals(self):
-        self.WMainWindow.actionAppSalir.triggered.connect(self.exit)
-
-    def _inicializar_estados(self):
-        # Identificadores de estado reservados
-        # Ide = 0 (Estado Inicial)
-        # Ide = 1 (Estado Intermedio)
-        # Ide = 2 (Estado Final)
-        # Ide = 3 (Agente)
-
-        tipos_estados = []
-        # Estado Inicial
-        tipos_estados.append(TipoEstado(0, None, "Inicial", "I", None))
-        # Estado Final
-        tipos_estados.append(TipoEstado(2, None, "Final", "F", None))
-        # Estado Agente
-        tipos_estados.append(TipoEstado(3, None, "Agente", "A", None))
-        # Estados Intermedios
-        tipos_estados.append(TipoEstado(1, 100, "Excelente", "E", None))
-        tipos_estados.append(TipoEstado(1, 50, "Bueno", "B", None))
-        tipos_estados.append(TipoEstado(1, 10, "Malo", "M", None))
-        tipos_estados.append(TipoEstado(1, 0, "Neutro", None, None))
-        tipos_estados.append(TipoEstado(1, -100, "Pared", "P", None))
-
-        # TODO: Inicializar todos los estados como Neutros
-
-    def show_about_dialog(self):
-        u"""
-        Muestra el cuadro de diálogo Acerca de...
-        """
-        self.DAboutDialog = AboutDialog(self)
-        self.DAboutDialog.show()
-
-    def closeEvent(self, event):
-        """
-        Reimplementa el evento 'closeEvent' de la clase padre.
-
-        @param event: Evento.
-        """
-        pass
-
-    def exit(self):
-        u"""
-        Finaliza la ejecución de la aplicación.
-        """
-        self.close()
