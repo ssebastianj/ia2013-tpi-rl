@@ -5,8 +5,8 @@ from __future__ import absolute_import
 
 from tools.enum import enum
 
-TipoEstadoIntermedio = enum(EXCELENTE=4, BUENO=5, MALO=6, PARED=7)
-TipoEstadoId = enum(INICIAL=0, INTERMEDIO=1, FINAL=2, AGENTE=3)
+TipoEstadoIntermedio = enum(EXCELENTE=5, BUENO=4, MALO=3, PARED=6)
+TipoEstadoId = enum(NEUTRO=0, INICIAL=1, FINAL=2, AGENTE=7)
 
 
 class TipoEstado(object):
@@ -65,7 +65,7 @@ class TipoEstado(object):
 
 class Estado(object):
     """Clase Estado"""
-    def __init__(self, fila, columna, tipo):
+    def __init__(self, fila=None, columna=None, tipo=None):
         """
         @param fila: Fila que ocupa en el GridWorld
         @param columna: Columna que ocupa en el GridWorld
@@ -75,7 +75,7 @@ class Estado(object):
         self._fila = fila
         self._columna = columna
         self._tipo = tipo
-
+           
     def get_fila(self):
         return self._fila
 
