@@ -96,7 +96,10 @@ class Estado(object):
         return self._tipo
 
     def set_tipo(self, valor):
-        self._tipo = valor
+        if isinstance(valor, TipoEstado):
+            self._tipo = valor
+        else:
+            raise ValueError
 
     fila = property(get_fila, set_fila, None, "Propiedad Fila del estado")
     columna = property(get_columna, set_columna, None, "Propiedad Columna del estado")
