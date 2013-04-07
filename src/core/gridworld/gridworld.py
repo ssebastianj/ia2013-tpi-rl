@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
+
+from core.estado.estado import Estado, TipoEstado, TIPOESTADO
+
 
 class GridWorld(object):
     """Clase GridWorld"""
-    def __init__(self, ancho, alto, estados=None):
+    def __init__(self, ancho, alto):
         """
         @param ancho: Ancho
         @param alto: Alto
@@ -13,7 +17,46 @@ class GridWorld(object):
         super(GridWorld, self).__init__()
         self._ancho = ancho
         self._alto = alto
-        self._estados = estados
+        self._tipos_estados = None
+        self._estados = None
+        self._inicializar_estados()
+
+    def _inicializar_tipos_estados(self):
+        """
+        Inicializa los distintos tipos de estados
+        """
+        # Identificadores de estado reservados
+        # Ide = 0 (Estado Intermedio)
+        # Ide = 1 (Estado Inicial)
+        # Ide = 2 (Estado Final)
+        # Ide = 3 (Agente)
+
+        self._tipos_estados = []
+        # Estado Inicial
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.INICIAL, None, "Inicial", "I", None))
+        # Estado Final
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.FINAL, None, "Final", "F", None))
+        # Estado Agente
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.AGENTE, None, "Agente", "A", None))
+        # Estados Intermedios
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, 100, "Excelente", "E", None))
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, 50, "Bueno", "B", None))
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, 10, "Malo", "M", None))
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, 0, "Neutro", "", None))
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, -100, "Pared", "P", None))
+
+    def _inicializar_estados(self):
+        """
+        Armar la matriz de estados con un tipo de estado predeterminado
+        """
+        default_tipo = TipoEstado(TIPOESTADO.INTERMEDIO, 0, "Neutro", "N", None)
+
+        self._estados = []
+        for i in range(1, self._alto + 1):
+            fila = []
+            for j in range(1, self._ancho + 1):
+                fila.append(Estado(i, j, default_tipo))
+            self._estados.append(fila)
 
     def get_ancho(self):
         return self._ancho

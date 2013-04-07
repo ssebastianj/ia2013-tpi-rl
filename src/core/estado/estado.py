@@ -6,16 +6,16 @@ from __future__ import absolute_import
 from tools.enum import enum
 
 # Identificadores de estado reservados
-# Ide = 0 (Estado Neutro)
+# Ide = 0 (Estado Intermedio)
 # Ide = 1 (Estado Inicial)
 # Ide = 2 (Estado Final)
 # Ide = 3 (Agente)
-TIPOESTADO = enum(NEUTRO=0, INICIAL=1, FINAL=2, AGENTE=3)
+TIPOESTADO = enum(INTERMEDIO=0, INICIAL=1, FINAL=2, AGENTE=3)
 
 
 class TipoEstado(object):
     """Clase TipoEstado"""
-    def __init__(self, ide, recompensa, nombre, letra, icono=None):
+    def __init__(self, ide, recompensa, nombre, letra="", icono=None):
         """
         @param ide: Identificador del estado
         @param recompensa: Recompensa devuelta

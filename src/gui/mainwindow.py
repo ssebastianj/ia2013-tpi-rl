@@ -6,7 +6,7 @@ from __future__ import absolute_import
 from PyQt4 import QtCore, QtGui
 from gui.qt.mainwindow import Ui_MainWindow
 
-from core.estado.estado import Estado, TipoEstado
+from core.estado.estado import Estado, TipoEstado, TIPOESTADO
 from core.gridworld.gridworld import GridWorld
 
 try:
@@ -25,7 +25,6 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow = Ui_MainWindow()
         self.WMainWindow.setupUi(self)
         self._initialize_window()
-        self._inicializar_estados()
 
     def _initialize_window(self):
         u"""
@@ -62,24 +61,20 @@ class MainWindow(QtGui.QMainWindow):
         Devuelve una tupla conteniendo el ancho y alto del GridWorld
         @param dim_str: Cadena en forma {Ancho} x {Alto} representando la dimensión
         """
-        dimension = dim_str.lower()
+        dimension = str(dim_str)
+        dimension = dimension.lower()
         dimension = dimension.split("x")
         return (int(dimension[0]), int(dimension[1]))
 
     def set_gw_dimension(self, dimension):
             u"""Configura el tblGridWorld a la dimensión seleccionada e Inicializa los estados en Neutros"""
-
-            self._inicializar_estados()
-
             ancho_gw, alto_gw = self.convert_dimension(dimension)
-            gridworld = GridWorld(ancho_gw, alto_gw, estados)
-
+            gridworld = GridWorld(ancho_gw, alto_gw)
             ancho_cuadrado = 40
+            ancho_gridworld = ancho_cuadrado * ancho_gw
 
-            ancho_gridworld = ancho_cuadrado * cant_cuadrados
-
-            self.WMainWindow.tblGridWorld.setRowCount(cant_cuadrados)
-            self.WMainWindow.tblGridWorld.setColumnCount(cant_cuadrados)
+            self.WMainWindow.tblGridWorld.setRowCount(alto_gw)
+            self.WMainWindow.tblGridWorld.setColumnCount(ancho_gw)
             self.WMainWindow.tblGridWorld.horizontalHeader().setDefaultSectionSize(ancho_cuadrado)
             self.WMainWindow.tblGridWorld.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
             self.WMainWindow.tblGridWorld.verticalHeader().setDefaultSectionSize(ancho_cuadrado)
@@ -89,12 +84,12 @@ class MainWindow(QtGui.QMainWindow):
             alto_contenedor = ancho_gridworld + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
             self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
 
-            for fila in range(0, cant_cuadrados):
-                for columna in range(0, cant_cuadrados):
-                    elemento = QtGui.QTableWidgetItem("({0},{1})".format(fila, columna))
-                    elemento.setFlags(QtCore.Qt.ItemIsEnabled)
-                    self.WMainWindow.tblGridWorld.setItem(fila, columna, elemento)
-
+            for fila in range(0, gridworld.alto):
+                for columna in range(0, gridworld.ancho):
+                    letra_estado = gridworld.estados[fila][columna].tipo.letra
+                    item = QtGui.QTableWidgetItem(str(letra_estado))
+                    item.setFlags(QtCore.Qt.ItemIsEnabled)
+                    self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
 
     def _set_window_signals(self):
         self.WMainWindow.actionAppSalir.triggered.connect(self.exit)
@@ -113,40 +108,6 @@ class MainWindow(QtGui.QMainWindow):
 
         # Muestra sólo los parámetros utilizados en la técnica seleccionada en el ComboBox
         self.WMainWindow.cbQLTecnicas.currentIndexChanged[str].connect(self.parametros_segun_tecnica)
-
-    def _inicializar_estados(self):
-        # Identificadores de estado reservados
-        # Ide = 0 (Estado Inicial)
-        # Ide = 1 (Estado Intermedio)
-        # Ide = 2 (Estado Final)
-        # Ide = 3 (Agente)
-
-        tipos_estados = []
-        # Estado Inicial
-        tipos_estados.append(TipoEstado(1, None, "Inicial", "I", None))
-        # Estado Final
-        tipos_estados.append(TipoEstado(2, None, "Final", "F", None))
-        # Estado Agente
-        tipos_estados.append(TipoEstado(7, None, "Agente", "A", None))
-        # Estados Intermedios
-        tipos_estados.append(TipoEstado(5, 100, "Excelente", "E", None))
-        tipos_estados.append(TipoEstado(4, 50, "Bueno", "B", None))
-        tipos_estados.append(TipoEstado(3, 10, "Malo", "M", None))
-        tipos_estados.append(TipoEstado(0, 0, "Neutro", None, None))
-        tipos_estados.append(TipoEstado(6, -100, "Pared", "P", None))
-
-        string_estados = self.WMainWindow.cbGWDimension.currentText()
-        cant_estados = int(string_estados.split("x")[1])
-        for fila in range(0, cant_estados):
-            for columna in range(0, cant_estados):
-                    estado = Estado()
-                    estado.set_fila(fila)
-                    estado.set_columna(columna)
-                    estado.set_tipo(0)
-
-
-        # TODO: Inicializar todos los estados como Neutros
-
 
     def parametros_segun_tecnica(self, tecnica):
 
