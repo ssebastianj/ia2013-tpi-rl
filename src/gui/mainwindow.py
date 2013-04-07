@@ -54,19 +54,26 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.cbGWDimension.addItem(_tr(dimension))
             self.WMainWindow.menuDimension.addAction(QtGui.QAction(_tr(dimension), self))
 
-
-        # TODO: Refactorear sección
-
         # Establece la dimensión por defecto del tblGridWorld en 6x6
-        self.set_dimension("6 x 6")
+        self.set_gw_dimension("6 x 6")
 
+    def convert_dimension(self, dim_str):
+        """
+        Devuelve una tupla conteniendo el ancho y alto del GridWorld
+        @param dim_str: Cadena en forma {Ancho} x {Alto} representando la dimensión
+        """
+        dimension = dim_str.lower()
+        dimension = dimension.split("x")
+        return (int(dimension[0]), int(dimension[1]))
 
-    def set_dimension(self, dimension):
+    def set_gw_dimension(self, dimension):
             u"""Configura el tblGridWorld a la dimensión seleccionada e Inicializa los estados en Neutros"""
 
             self._inicializar_estados()
 
-            cant_cuadrados = int(dimension.split("x")[1])
+            ancho_gw, alto_gw = self.convert_dimension(dimension)
+            gridworld = GridWorld(ancho_gw, alto_gw, estados)
+
             ancho_cuadrado = 40
 
             ancho_gridworld = ancho_cuadrado * cant_cuadrados
@@ -87,17 +94,13 @@ class MainWindow(QtGui.QMainWindow):
                     elemento = QtGui.QTableWidgetItem("({0},{1})".format(fila, columna))
                     elemento.setFlags(QtCore.Qt.ItemIsEnabled)
                     self.WMainWindow.tblGridWorld.setItem(fila, columna, elemento)
-        # ------------------------------------------------------------------
-
-
-
 
 
     def _set_window_signals(self):
         self.WMainWindow.actionAppSalir.triggered.connect(self.exit)
 
         # Cambia la Dimensión del GridWorld al seleccionar la dimensión en el ComboBox
-        self.WMainWindow.cbGWDimension.currentIndexChanged[str].connect(self.set_dimension)
+        self.WMainWindow.cbGWDimension.currentIndexChanged[str].connect(self.set_gw_dimension)
 
         # Cambia el Tipo de Estado al clickear un casillero del tblGridWorld
         self.WMainWindow.tblGridWorld.cellClicked[int, int].connect(self.set_estados)
@@ -110,8 +113,6 @@ class MainWindow(QtGui.QMainWindow):
 
         # Muestra sólo los parámetros utilizados en la técnica seleccionada en el ComboBox
         self.WMainWindow.cbQLTecnicas.currentIndexChanged[str].connect(self.parametros_segun_tecnica)
-
-
 
     def _inicializar_estados(self):
         # Identificadores de estado reservados

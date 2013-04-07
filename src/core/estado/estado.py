@@ -5,13 +5,17 @@ from __future__ import absolute_import
 
 from tools.enum import enum
 
-TipoEstadoIntermedio = enum(EXCELENTE=5, BUENO=4, MALO=3, PARED=6)
-TipoEstadoId = enum(NEUTRO=0, INICIAL=1, FINAL=2, AGENTE=7)
+# Identificadores de estado reservados
+# Ide = 0 (Estado Neutro)
+# Ide = 1 (Estado Inicial)
+# Ide = 2 (Estado Final)
+# Ide = 3 (Agente)
+TIPOESTADO = enum(NEUTRO=0, INICIAL=1, FINAL=2, AGENTE=3)
 
 
 class TipoEstado(object):
     """Clase TipoEstado"""
-    def __init__(self, ide, recompensa, nombre, letra=None, icono=None):
+    def __init__(self, ide, recompensa, nombre, letra, icono=None):
         """
         @param ide: Identificador del estado
         @param recompensa: Recompensa devuelta
@@ -65,7 +69,7 @@ class TipoEstado(object):
 
 class Estado(object):
     """Clase Estado"""
-    def __init__(self, fila=None, columna=None, tipo=None):
+    def __init__(self, fila, columna, tipo):
         """
         @param fila: Fila que ocupa en el GridWorld
         @param columna: Columna que ocupa en el GridWorld
@@ -75,7 +79,7 @@ class Estado(object):
         self._fila = fila
         self._columna = columna
         self._tipo = tipo
-           
+
     def get_fila(self):
         return self._fila
 
