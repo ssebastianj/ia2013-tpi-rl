@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Thu Apr 04 17:28:45 2013
+# Created: Thu Apr 04 23:05:32 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -128,12 +128,21 @@ class Ui_MainWindow(object):
         self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
         self.gridLayout_3 = QtGui.QGridLayout(self.groupBox_2)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
-        self.pushButton = QtGui.QPushButton(self.groupBox_2)
-        self.pushButton.setObjectName(_fromUtf8("pushButton"))
-        self.gridLayout_3.addWidget(self.pushButton, 0, 0, 1, 1)
-        self.verticalLayout_2.addWidget(self.groupBox_2)
         spacerItem3 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_2.addItem(spacerItem3)
+        self.gridLayout_3.addItem(spacerItem3, 5, 0, 1, 1)
+        self.entrenar = QtGui.QPushButton(self.groupBox_2)
+        self.entrenar.setObjectName(_fromUtf8("entrenar"))
+        self.gridLayout_3.addWidget(self.entrenar, 2, 0, 1, 1)
+        self.comenzar = QtGui.QPushButton(self.groupBox_2)
+        self.comenzar.setObjectName(_fromUtf8("comenzar"))
+        self.gridLayout_3.addWidget(self.comenzar, 3, 0, 1, 1)
+        self.genValAleatorios = QtGui.QPushButton(self.groupBox_2)
+        self.genValAleatorios.setObjectName(_fromUtf8("genValAleatorios"))
+        self.gridLayout_3.addWidget(self.genValAleatorios, 0, 0, 1, 1)
+        self.pushButton_4 = QtGui.QPushButton(self.groupBox_2)
+        self.pushButton_4.setObjectName(_fromUtf8("pushButton_4"))
+        self.gridLayout_3.addWidget(self.pushButton_4, 4, 0, 1, 1)
+        self.verticalLayout_2.addWidget(self.groupBox_2)
         self.verticalLayout_3.addLayout(self.verticalLayout_2)
         self.horizontalLayout_7.addLayout(self.verticalLayout_3)
         MainWindow.setCentralWidget(self.centralWidget)
@@ -188,7 +197,10 @@ class Ui_MainWindow(object):
         self.label_5.setText(_translate("MainWindow", "Epsilon (ɛ):", None))
         self.label_6.setText(_translate("MainWindow", "Tau (τ):", None))
         self.groupBox_2.setTitle(_translate("MainWindow", "Operaciones", None))
-        self.pushButton.setText(_translate("MainWindow", "Generar valores aleatorios", None))
+        self.entrenar.setText(_translate("MainWindow", "Entrenar", None))
+        self.comenzar.setText(_translate("MainWindow", "Comenzar", None))
+        self.genValAleatorios.setText(_translate("MainWindow", "Generar valores aleatorios", None))
+        self.pushButton_4.setText(_translate("MainWindow", "Terminar", None))
         self.menuArchivo.setTitle(_translate("MainWindow", "&Archivo", None))
         self.menuEdicion.setTitle(_translate("MainWindow", "&Edición", None))
         self.menuAyuda.setTitle(_translate("MainWindow", "Ay&uda", None))

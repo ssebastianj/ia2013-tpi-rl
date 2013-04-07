@@ -6,7 +6,6 @@ from __future__ import absolute_import
 from PyQt4 import QtCore, QtGui
 from src.gui.qt.mainwindow import Ui_MainWindow
 
-
 from src.core.estado.estado import Estado, TipoEstado
 from src.core.gridworld.gridworld import GridWorld
 
@@ -26,6 +25,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow = Ui_MainWindow()
         self.WMainWindow.setupUi(self)
         self._initialize_window()
+        self._inicializar_estados()
 
     def _initialize_window(self):
         u"""
@@ -58,15 +58,19 @@ class MainWindow(QtGui.QMainWindow):
         # TODO: Refactorear sección 
         
         u"""Establece la dimensión por defecto del GridWorld en 6x6"""
-        self.SetDimension()   
+        self.set_dimension()   
             
-        u"""Cambia la dimensión del GridWorld según la opción activa en el ComboBox cbDWDimension"""
-        QtCore.QObject.connect(self.WMainWindow.cbGWDimension, QtCore.SIGNAL("currentIndexChanged(QString)"),self.SetDimension)
+        u"""Cambia la dimensión del GridWorld según la opción activa en el ComboBox cbGWDimension"""
+        QtCore.QObject.connect(self.WMainWindow.cbGWDimension, QtCore.SIGNAL("currentIndexChanged(QString)"),self.set_dimension)
 
 
+         
+        
 
-    def SetDimension(self):
-            u""" Configura el GridWorld"""
+    def set_dimension(self):
+            u"""Configura el GridWorld a la dimensión seleccionada e Inicializa los estados en Neutros"""
+            
+            self._inicializar_estados()
             
             cant_cuadrados =int(self.WMainWindow.cbGWDimension.currentText())   
             ancho_cuadrado = 40
@@ -103,20 +107,90 @@ class MainWindow(QtGui.QMainWindow):
 
         tipos_estados = []
         # Estado Inicial
-        tipos_estados.append(TipoEstado(0, None, "Inicial", "I", None))
+        tipos_estados.append(TipoEstado(1, None, "Inicial", "I", None))
         # Estado Final
         tipos_estados.append(TipoEstado(2, None, "Final", "F", None))
         # Estado Agente
-        tipos_estados.append(TipoEstado(3, None, "Agente", "A", None))
+        tipos_estados.append(TipoEstado(7, None, "Agente", "A", None))
         # Estados Intermedios
-        tipos_estados.append(TipoEstado(1, 100, "Excelente", "E", None))
-        tipos_estados.append(TipoEstado(1, 50, "Bueno", "B", None))
-        tipos_estados.append(TipoEstado(1, 10, "Malo", "M", None))
-        tipos_estados.append(TipoEstado(1, 0, "Neutro", None, None))
-        tipos_estados.append(TipoEstado(1, -100, "Pared", "P", None))
-
+        tipos_estados.append(TipoEstado(5, 100, "Excelente", "E", None))
+        tipos_estados.append(TipoEstado(4, 50, "Bueno", "B", None))
+        tipos_estados.append(TipoEstado(3, 10, "Malo", "M", None))
+        tipos_estados.append(TipoEstado(0, 0, "Neutro", None, None))
+        tipos_estados.append(TipoEstado(6, -100, "Pared", "P", None))
+        
+      
+        cant_estados = int(self.WMainWindow.cbGWDimension.currentText())   
+        for fila in range(0, cant_estados):
+            for columna in range(0, cant_estados):
+                    estado = Estado()
+                    estado.set_fila(fila)
+                    estado.set_columna(columna)
+                    estado.set_tipo(0)
+                    
+        
         # TODO: Inicializar todos los estados como Neutros
-
+        
+        
+        u"""Cambia de estado al clickear un casillero del GridWorld"""
+        
+        QtCore.QObject.connect(self.WMainWindow.GridWorld, QtCore.SIGNAL("cellClicked(int,int)"), self.set_estados)
+   
+      
+      
+    def set_estados(self,fila,columna):
+        
+        estado = Estado(fila,columna,0)
+        
+        u"""si Estado == 0 es Estado Neutro[blanco] y no hay ningun Estado Inicial |FALTA COMPROBAR ESTO|, cambiar a Estado Inicial[Rojo]"""
+        if estado.get_tipo() == 0 : 
+            self.WMainWindow.GridWorld.item(fila,columna).setBackgroundColor(QtGui.QColor(120,20,0))
+            estado.set_tipo(1)
+            
+            u"""Si Estado == 0 es Estado Neutro,Hay Estado Inicial y no hay ningun Estado Final |FALTA COMPROBAR ESTO|, cambiar a Estado Final [Azul]"""
+        elif estado.get_tipo() == 0 :
+            self.WMainWindow.GridWorld.item(fila,columna).setBackgroundColor(QtGui.QColor(0,60,120))
+            estado.set_tipo(2) 
+            
+            u"""Si Estado == 0 es Estado Neutro, Hay Estado Inicial y Estado Final, cambiar a Estado Malo[Marron] """
+        elif estado.get_tipo() == 0 :
+            self.WMainWindow.GridWorld.item(fila,columna).setBackgroundColor(QtGui.QColor(0,60,120))
+            estado.set_tipo(3)  
+            
+            u"""si Estado ==1 es Estado Inicial[Rojo] y no hay ningun Estado Final |FALTA COMPROBAR ESTO|, cambiar a Estado Final[Azul]"""    
+        elif estado.get_tipo() == 1 :   
+            self.WMainWindow.GridWorld.item(fila,columna).setBackgroundColor(QtGui.QColor(0,60,120))
+            estado.set_tipo(2)   
+        
+            u"""si Estado == 2 es Estado Final[Azul], cambiar a Estado Malo[Marron]"""   
+        elif estado.get_tipo() == 2 :  
+            self.WMainWindow.GridWorld.item(fila,columna).setBackgroundColor(QtGui.QColor(59,44,120))
+            estado.set_tipo(3)
+            
+            u"""si Estado == 3 es Estado Malo[Marron], cambiar a Estado Bueno[Violeta]"""    
+        elif estado.get_tipo() == 3 :
+            self.WMainWindow.GridWorld.item(fila,columna).setBackgroundColor(QtGui.QColor(128,100,125))
+            estado.set_tipo(4)
+        
+            u"""si Estado == 4 es Estado Bueno[Violeta], cambiar a Estado Excelente[Verde]"""    
+        elif estado.get_tipo() == 4 :
+            self.WMainWindow.GridWorld.item(fila,columna).setBackgroundColor(QtGui.QColor(154,176,155))
+            estado.set_tipo(5)
+            
+            u"""si Estado == 3 es Estado Excelente[Verde], cambiar a Estado Pared[Negro]"""    
+        elif estado.get_tipo() == 5 :
+            self.WMainWindow.GridWorld.item(fila,columna).setBackgroundColor(QtGui.QColor(0,0,0))
+            estado.set_tipo(6)
+            
+            u"""si Estado == 6 es Estado Pared[Negro], cambiar a Estado Neutro[Blanco]"""    
+        elif estado.get_tipo() == 6 :
+            self.WMainWindow.GridWorld.item(fila,columna).setBackgroundColor(QtGui.QColor(255,255,255))
+            estado.set_tipo(0)
+                   
+                   
+                   
+     
+     
     def show_about_dialog(self):
         u"""
         Muestra el cuadro de diálogo Acerca de...
