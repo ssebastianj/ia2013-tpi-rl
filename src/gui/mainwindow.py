@@ -70,21 +70,23 @@ class MainWindow(QtGui.QMainWindow):
             u"""
             Configura el tblGridWorld a la dimensión seleccionada e Inicializa los estados en Neutros
             """
+            # Obtener ancho y alto del GridWorld
             ancho_gw, alto_gw = self.convert_dimension(dimension)
+            # Crear un nuevo GridWorld dados el ancho y el alto del mismo
             gridworld = GridWorld(ancho_gw, alto_gw)
-            ancho_cuadrado = 40
-            ancho_gridworld = ancho_cuadrado * ancho_gw
+            ancho_estado_px = 40
+            ancho_gw_px = ancho_estado_px * ancho_gw
 
             # Establecer propiedades visuales de la tabla
             self.WMainWindow.tblGridWorld.setRowCount(alto_gw)
             self.WMainWindow.tblGridWorld.setColumnCount(ancho_gw)
-            self.WMainWindow.tblGridWorld.horizontalHeader().setDefaultSectionSize(ancho_cuadrado)
+            self.WMainWindow.tblGridWorld.horizontalHeader().setDefaultSectionSize(ancho_estado_px)
             self.WMainWindow.tblGridWorld.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-            self.WMainWindow.tblGridWorld.verticalHeader().setDefaultSectionSize(ancho_cuadrado)
+            self.WMainWindow.tblGridWorld.verticalHeader().setDefaultSectionSize(ancho_estado_px)
             self.WMainWindow.tblGridWorld.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
             self.WMainWindow.tblGridWorld.setCursor(QtCore.Qt.PointingHandCursor)
-            ancho_contenedor = ancho_gridworld + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
-            alto_contenedor = ancho_gridworld + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
+            ancho_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
+            alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
             self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
 
             # Rellenar tabla con items
