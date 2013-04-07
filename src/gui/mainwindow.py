@@ -37,20 +37,18 @@ class MainWindow(QtGui.QMainWindow):
         self._set_window_signals()
 
         # Cargar técnicas posibles
-        tecnicas = ["Greedy", "ε-Greedy", "Softmax"]
+        tecnicas = {0: "Greedy", 1: "ε-Greedy", 2: "Softmax"}
         self.WMainWindow.cbQLTecnicas.clear()
-        for tecnica in tecnicas:
-            self.WMainWindow.cbQLTecnicas.addItem(_tr(tecnica))
-            self.WMainWindow.cbQLTecnicas.addAction(QtGui.QAction(_tr(tecnica), self))
-
+        for key, value in tecnicas.items():
+            self.WMainWindow.cbQLTecnicas.addItem(_tr(value), key)
+            self.WMainWindow.cbQLTecnicas.addAction(QtGui.QAction(_tr(value), self))
 
         # Cargar dimensiones posibles del tblGridWorld
         gw_dimensiones = ["6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
 
-
         self.WMainWindow.cbGWDimension.clear()
         for dimension in gw_dimensiones:
-            self.WMainWindow.cbGWDimension.addItem(_tr(dimension))
+            self.WMainWindow.cbGWDimension.addItem(_tr(dimension), dimension)
             self.WMainWindow.menuDimension.addAction(QtGui.QAction(_tr(dimension), self))
 
         # Establece la dimensión por defecto del tblGridWorld en 6x6
@@ -104,48 +102,49 @@ class MainWindow(QtGui.QMainWindow):
         Establece las señales correspondientes a los controles
         """
         self.WMainWindow.actionAppSalir.triggered.connect(self.exit)
-
         # Cambia la Dimensión del GridWorld al seleccionar la dimensión en el ComboBox
         self.WMainWindow.cbGWDimension.currentIndexChanged[str].connect(self.set_gw_dimension)
-
         # Cambia el Tipo de Estado al clickear un casillero del tblGridWorld
         self.WMainWindow.tblGridWorld.cellClicked[int, int].connect(self.set_estados)
-
         # Empieza el Entrenamiento al clickear el btnEntrenar
         self.WMainWindow.btnEntrenar.clicked.connect(self.entrenar)
-
         # Interrumpe el Entrenamiento al clickear el btnTerminarTraining
-        self.WMainWindow.btnTerminarTraining.clicked.connect(self.terminar)
-
+        self.WMainWindow.btnTerminarProceso.clicked.connect(self.terminar_proceso)
         # Muestra sólo los parámetros utilizados en la técnica seleccionada en el ComboBox
-        self.WMainWindow.cbQLTecnicas.currentIndexChanged[str].connect(self.parametros_segun_tecnica)
+        self.WMainWindow.cbQLTecnicas.currentIndexChanged.connect(self.parametros_segun_tecnica)
 
     def parametros_segun_tecnica(self, tecnica):
+        u"""
+        Muestra u oculta los parámetros en función de la técnica seleccionada
+        @param tecnica:
+        """
+        # Obtener valor asociado al item seleccionado
+        key = self.WMainWindow.cbQLTecnicas.itemData(tecnica).toInt()[0]
 
-        if tecnica == "Softmax" :
-                self.WMainWindow.sbQLEpsilon.close()
-                self.WMainWindow.lbEpsilon.close()
-                self.WMainWindow.sbQTau.show()
-                self.WMainWindow.lbTau.show()
-        elif tecnica == "Greedy" or tecnica == "ε-Greedy":
-                self.WMainWindow.sbQTau.close()
-                self.WMainWindow.lbTau.close()
-                self.WMainWindow.sbQLEpsilon.show()
-                self.WMainWindow.lbEpsilon.show()
-
-
+        # Seleccionado Greedy o E-Greedy
+        if key == 0 or key == 1:
+            self.WMainWindow.lblTau.hide()
+            self.WMainWindow.sbQLTau.hide()
+            self.WMainWindow.lblEpsilon.show()
+            self.WMainWindow.sbQLEpsilon.show()
+        elif key == 2:
+            # Softmax
+            self.WMainWindow.lblEpsilon.hide()
+            self.WMainWindow.sbQLEpsilon.hide()
+            self.WMainWindow.lblTau.show()
+            self.WMainWindow.sbQLTau.show()
 
     def entrenar(self):
-        u"""Probando si anda la señal clicked()"""
-        self.WMainWindow.label_2.setText("Estoy entrenando")
+        u"""
+        Probando si anda la señal clicked()
+        """
+        pass
 
-
-    def terminar (self):
-        u"""Probando si anda la señal clicked()"""
-        self.WMainWindow.label_2.setText("Termina")
-
-
-
+    def terminar_proceso(self):
+        u"""
+        Probando si anda la señal clicked()
+        """
+        pass
 
     def set_estados(self, fila, columna):
 
