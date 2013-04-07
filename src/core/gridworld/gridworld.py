@@ -19,6 +19,7 @@ class GridWorld(object):
         self._alto = alto
         self._tipos_estados = None
         self._estados = None
+        self._inicializar_tipos_estados()
         self._inicializar_estados()
 
     def _inicializar_tipos_estados(self):
@@ -45,11 +46,12 @@ class GridWorld(object):
         self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, 0, "Neutro", "", None))
         self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, -100, "Pared", "P", None))
 
-    def _inicializar_estados(self):
+    def _inicializar_estados(self, default=None):
         """
         Armar la matriz de estados con un tipo de estado predeterminado
         """
-        default_tipo = TipoEstado(TIPOESTADO.INTERMEDIO, 0, "Neutro", "N", None)
+        if default is None:
+            default_tipo = TipoEstado(TIPOESTADO.INTERMEDIO, 0, "Neutro", "N", None)
 
         self._estados = []
         for i in range(1, self._alto + 1):
@@ -95,4 +97,3 @@ class GridWorld(object):
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")
     estados = property(get_estados, set_estados, None, "Estados del GridWorld")
     tipos_estados = property(get_tipos_estados, set_tipos_estados, None, "Tipos de estados del GridWorld")
-    estado = property(get_estado, set_estado, None, "Establecer u obtener Estado específico")
