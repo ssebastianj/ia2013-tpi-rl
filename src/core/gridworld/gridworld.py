@@ -23,29 +23,28 @@ class GridWorld(object):
         self._inicializar_estados()
 
     def _inicializar_tipos_estados(self):
-        """
+        u"""
         Inicializa los distintos tipos de estados
         """
-        self._tipos_estados = []
+        self._tipos_estados = {}
         # Estado Inicial
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.INICIAL, None, "Inicial", "I", None))
+        self._tipos_estados[TIPOESTADO.INICIAL] = TipoEstado(TIPOESTADO.INICIAL, None, "Inicial", "I")
         # Estado Final
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.FINAL, None, "Final", "F", None))
+        self._tipos_estados[TIPOESTADO.FINAL] = TipoEstado(TIPOESTADO.FINAL, None, "Final", "F")
         # Estado Agente
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.AGENTE, None, "Agente", "A", None))
+        self._tipos_estados[TIPOESTADO.AGENTE] = TipoEstado(TIPOESTADO.AGENTE, None, "Agente", "A")
         # Estados Intermedios
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.EXCELENTE, 100, "Excelente", "E", None))
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.BUENO, 50, "Bueno", "B", None))
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.MALO, 10, "Malo", "M", None))
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.NEUTRO, 0, "Neutro", "", None))
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.PARED, -100, "Pared", "P", None))
+        self._tipos_estados[TIPOESTADO.EXCELENTE] = TipoEstado(TIPOESTADO.EXCELENTE, 100, "Excelente", "E")
+        self._tipos_estados[TIPOESTADO.BUENO] = TipoEstado(TIPOESTADO.BUENO, 50, "Bueno", "B")
+        self._tipos_estados[TIPOESTADO.MALO] = TipoEstado(TIPOESTADO.MALO, 10, "Malo", "M")
+        self._tipos_estados[TIPOESTADO.NEUTRO] = TipoEstado(TIPOESTADO.NEUTRO, 0, "Neutro", "N")
+        self._tipos_estados[TIPOESTADO.PARED] = TipoEstado(TIPOESTADO.PARED, -100, "Pared", "P")
 
-    def _inicializar_estados(self, default=None):
-        """
+    def _inicializar_estados(self, default=TIPOESTADO.NEUTRO):
+        u"""
         Armar la matriz de estados con un tipo de estado predeterminado
         """
-        if default is None:
-            default_tipo = TipoEstado(TIPOESTADO.NEUTRO, 0, "Neutro", "", None)
+        default_tipo = self._tipos_estados[default]
 
         self._estados = []
         for i in range(1, self._alto + 1):
@@ -78,7 +77,7 @@ class GridWorld(object):
     def get_estados(self):
         return self._estados
 
-    def set_estados(self, valor):
+    def switch_tipo_estado(self, valor):
         self._estados = valor
 
     def get_tipos_estados(self):
@@ -89,5 +88,5 @@ class GridWorld(object):
 
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")
-    estados = property(get_estados, set_estados, None, "Estados del GridWorld")
+    estados = property(get_estados, switch_tipo_estado, None, "Estados del GridWorld")
     tipos_estados = property(get_tipos_estados, set_tipos_estados, None, "Tipos de estados del GridWorld")

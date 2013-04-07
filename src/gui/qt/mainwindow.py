@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Sun Apr 07 17:58:27 2013
+# Created: Sun Apr 07 19:22:51 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -195,7 +195,10 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuOperaciones.menuAction())
         self.menuBar.addAction(self.menuAyuda.menuAction())
         self.label.setBuddy(self.cbGWDimension)
+        self.lblGamma.setBuddy(self.sbQLGamma)
         self.lblTecnica.setBuddy(self.cbQLTecnicas)
+        self.lblEpsilon.setBuddy(self.sbQLEpsilon)
+        self.lblTau.setBuddy(self.sbQLTau)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
