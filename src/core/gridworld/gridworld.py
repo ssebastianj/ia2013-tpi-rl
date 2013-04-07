@@ -26,12 +26,6 @@ class GridWorld(object):
         """
         Inicializa los distintos tipos de estados
         """
-        # Identificadores de estado reservados
-        # Ide = 0 (Estado Intermedio)
-        # Ide = 1 (Estado Inicial)
-        # Ide = 2 (Estado Final)
-        # Ide = 3 (Agente)
-
         self._tipos_estados = []
         # Estado Inicial
         self._tipos_estados.append(TipoEstado(TIPOESTADO.INICIAL, None, "Inicial", "I", None))
@@ -40,18 +34,18 @@ class GridWorld(object):
         # Estado Agente
         self._tipos_estados.append(TipoEstado(TIPOESTADO.AGENTE, None, "Agente", "A", None))
         # Estados Intermedios
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, 100, "Excelente", "E", None))
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, 50, "Bueno", "B", None))
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, 10, "Malo", "M", None))
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, 0, "Neutro", "", None))
-        self._tipos_estados.append(TipoEstado(TIPOESTADO.INTERMEDIO, -100, "Pared", "P", None))
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.EXCELENTE, 100, "Excelente", "E", None))
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.BUENO, 50, "Bueno", "B", None))
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.MALO, 10, "Malo", "M", None))
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.NEUTRO, 0, "Neutro", "", None))
+        self._tipos_estados.append(TipoEstado(TIPOESTADO.PARED, -100, "Pared", "P", None))
 
     def _inicializar_estados(self, default=None):
         """
         Armar la matriz de estados con un tipo de estado predeterminado
         """
         if default is None:
-            default_tipo = TipoEstado(TIPOESTADO.INTERMEDIO, 0, "Neutro", "N", None)
+            default_tipo = TipoEstado(TIPOESTADO.NEUTRO, 0, "Neutro", "", None)
 
         self._estados = []
         for i in range(1, self._alto + 1):

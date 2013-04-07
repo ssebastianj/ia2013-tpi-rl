@@ -6,11 +6,21 @@ from __future__ import absolute_import
 from tools.enum import enum
 
 # Identificadores de estado reservados
-# Ide = 0 (Estado Intermedio)
-# Ide = 1 (Estado Inicial)
-# Ide = 2 (Estado Final)
-# Ide = 3 (Agente)
-TIPOESTADO = enum(INTERMEDIO=0, INICIAL=1, FINAL=2, AGENTE=3)
+# Ide = 0 (Estado Inicial)
+# Ide = 1 (Estado Final)
+# Ide = 2 (Estado Agente)
+# Ide = 3 (Neutro)
+# Ide = 4 (Excelente)
+# Ide = 5 (Bueno)
+# Ide = 6 (Pared)
+TIPOESTADO = enum(INICIAL=0,
+                  FINAL=1,
+                  AGENTE=2,
+                  NEUTRO=3,
+                  EXCELENTE=4,
+                  BUENO=5,
+                  MALO=6,
+                  PARED=7)
 
 
 class TipoEstado(object):
