@@ -95,3 +95,4 @@ class GridWorld(object):
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")
     estados = property(get_estados, set_estados, None, "Estados del GridWorld")
     tipos_estados = property(get_tipos_estados, set_tipos_estados, None, "Tipos de estados del GridWorld")
+    estado = property(get_estado, set_estado, None, "Establecer u obtener Estado específico")
