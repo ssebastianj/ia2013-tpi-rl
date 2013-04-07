@@ -38,14 +38,16 @@ class MainWindow(QtGui.QMainWindow):
         self._set_window_signals()
 
         # Cargar técnicas posibles
-        tecnicas = ["ε-Greedy", "Softmax"]
+        tecnicas = ["Greedy", "ε-Greedy", "Softmax"]
         self.WMainWindow.cbQLTecnicas.clear()
         for tecnica in tecnicas:
             self.WMainWindow.cbQLTecnicas.addItem(_tr(tecnica))
-            self.WMainWindow.menuTecnicas.addAction(QtGui.QAction(_tr(tecnica), self))
+            self.WMainWindow.cbQLTecnicas.addAction(QtGui.QAction(_tr(tecnica), self))
+
 
         # Cargar dimensiones posibles del tblGridWorld
-        gw_dimensiones = ["6", "7", "8", "9", "10"]
+        gw_dimensiones = ["6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
+
 
         self.WMainWindow.cbGWDimension.clear()
         for dimension in gw_dimensiones:
@@ -55,22 +57,16 @@ class MainWindow(QtGui.QMainWindow):
 
         # TODO: Refactorear sección
 
-        u"""Establece la dimensión por defecto del tblGridWorld en 6x6"""
-        self.set_dimension()
-
-        u"""Cambia la dimensión del tblGridWorld según la opción activa en el ComboBox cbGWDimension"""
-        QtCore.QObject.connect(self.WMainWindow.cbGWDimension, QtCore.SIGNAL("currentIndexChanged(QString)"), self.set_dimension)
+        # Establece la dimensión por defecto del tblGridWorld en 6x6
+        self.set_dimension("6 x 6")
 
 
-
-
-
-    def set_dimension(self):
+    def set_dimension(self, dimension):
             u"""Configura el tblGridWorld a la dimensión seleccionada e Inicializa los estados en Neutros"""
 
             self._inicializar_estados()
 
-            cant_cuadrados = int(self.WMainWindow.cbGWDimension.currentText())
+            cant_cuadrados = int(dimension.split("x")[1])
             ancho_cuadrado = 40
 
             ancho_gridworld = ancho_cuadrado * cant_cuadrados
@@ -93,8 +89,29 @@ class MainWindow(QtGui.QMainWindow):
                     self.WMainWindow.tblGridWorld.setItem(fila, columna, elemento)
         # ------------------------------------------------------------------
 
+
+
+
+
     def _set_window_signals(self):
         self.WMainWindow.actionAppSalir.triggered.connect(self.exit)
+
+        # Cambia la Dimensión del GridWorld al seleccionar la dimensión en el ComboBox
+        self.WMainWindow.cbGWDimension.currentIndexChanged[str].connect(self.set_dimension)
+
+        # Cambia el Tipo de Estado al clickear un casillero del tblGridWorld
+        self.WMainWindow.tblGridWorld.cellClicked[int, int].connect(self.set_estados)
+
+        # Empieza el Entrenamiento al clickear el btnEntrenar
+        self.WMainWindow.btnEntrenar.clicked.connect(self.entrenar)
+
+        # Interrumpe el Entrenamiento al clickear el btnTerminarTraining
+        self.WMainWindow.btnTerminarTraining.clicked.connect(self.terminar)
+
+        # Muestra sólo los parámetros utilizados en la técnica seleccionada en el ComboBox
+        self.WMainWindow.cbQLTecnicas.currentIndexChanged[str].connect(self.parametros_segun_tecnica)
+
+
 
     def _inicializar_estados(self):
         # Identificadores de estado reservados
@@ -117,8 +134,8 @@ class MainWindow(QtGui.QMainWindow):
         tipos_estados.append(TipoEstado(0, 0, "Neutro", None, None))
         tipos_estados.append(TipoEstado(6, -100, "Pared", "P", None))
 
-
-        cant_estados = int(self.WMainWindow.cbGWDimension.currentText())
+        string_estados = self.WMainWindow.cbGWDimension.currentText()
+        cant_estados = int(string_estados.split("x")[1])
         for fila in range(0, cant_estados):
             for columna in range(0, cant_estados):
                     estado = Estado()
@@ -130,15 +147,36 @@ class MainWindow(QtGui.QMainWindow):
         # TODO: Inicializar todos los estados como Neutros
 
 
-        u"""Cambia de estado al clickear un casillero del tblGridWorld"""
+    def parametros_segun_tecnica(self, tecnica):
 
-        QtCore.QObject.connect(self.WMainWindow.tblGridWorld, QtCore.SIGNAL("cellClicked(int,int)"), self.set_estados)
+        if tecnica == "Softmax" :
+                self.WMainWindow.sbQLEpsilon.close()
+                self.WMainWindow.lbEpsilon.close()
+                self.WMainWindow.sbQTau.show()
+                self.WMainWindow.lbTau.show()
+        elif tecnica == "Greedy" or tecnica == "ε-Greedy":
+                self.WMainWindow.sbQTau.close()
+                self.WMainWindow.lbTau.close()
+                self.WMainWindow.sbQLEpsilon.show()
+                self.WMainWindow.lbEpsilon.show()
+
+
+
+    def entrenar(self):
+        u"""Probando si anda la señal clicked()"""
+        self.WMainWindow.label_2.setText("Estoy entrenando")
+
+
+    def terminar (self):
+        u"""Probando si anda la señal clicked()"""
+        self.WMainWindow.label_2.setText("Termina")
+
 
 
 
     def set_estados(self, fila, columna):
 
-        estado = Estado(fila, columna, 0)
+        estado = Estado(fila, columna, 1)
 
         u"""si Estado == 0 es Estado Neutro[blanco] y no hay ningun Estado Inicial |FALTA COMPROBAR ESTO|, cambiar a Estado Inicial[Rojo]"""
         if estado.get_tipo() == 0 :
@@ -152,13 +190,18 @@ class MainWindow(QtGui.QMainWindow):
 
             u"""Si Estado == 0 es Estado Neutro, Hay Estado Inicial y Estado Final, cambiar a Estado Malo[Marron] """
         elif estado.get_tipo() == 0 :
-            self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(0, 60, 120))
+            self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(59, 44, 120))
             estado.set_tipo(3)
 
             u"""si Estado ==1 es Estado Inicial[Rojo] y no hay ningun Estado Final |FALTA COMPROBAR ESTO|, cambiar a Estado Final[Azul]"""
         elif estado.get_tipo() == 1 :
             self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(0, 60, 120))
             estado.set_tipo(2)
+
+            u"""si Estado ==1 es Estado Inicial[Rojo] y  ya Hay Estado Final, cambiar a Estado Malo[Marron]"""
+        elif estado.get_tipo() == 1 :
+            self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(59, 44, 120))
+            estado.set_tipo(3)
 
             u"""si Estado == 2 es Estado Final[Azul], cambiar a Estado Malo[Marron]"""
         elif estado.get_tipo() == 2 :
