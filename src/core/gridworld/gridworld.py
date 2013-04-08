@@ -56,9 +56,9 @@ class GridWorld(object):
     def get_estado(self, i, j):
         return self._estados[i][j]
 
-    def set_estado(self, estado):
+    def set_estado(self, i, j, estado):
         if isinstance(estado, Estado):
-            self._estados[estado.tipo.fila][estado.tipo.columna] = estado
+            self._estados[i][j] = estado
         else:
             raise ValueError
 
@@ -77,7 +77,7 @@ class GridWorld(object):
     def get_estados(self):
         return self._estados
 
-    def switch_tipo_estado(self, valor):
+    def set_estados(self, valor):
         self._estados = valor
 
     def get_tipos_estados(self):
@@ -88,5 +88,5 @@ class GridWorld(object):
 
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")
-    estados = property(get_estados, switch_tipo_estado, None, "Estados del GridWorld")
+    estados = property(get_estados, set_estados, None, "Estados del GridWorld")
     tipos_estados = property(get_tipos_estados, set_tipos_estados, None, "Tipos de estados del GridWorld")

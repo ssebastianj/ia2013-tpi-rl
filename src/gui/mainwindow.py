@@ -6,8 +6,10 @@ from __future__ import absolute_import
 from PyQt4 import QtCore, QtGui
 from gui.qt.mainwindow import Ui_MainWindow
 
-from core.estado.estado import TIPOESTADO
+from core.estado.estado import TIPOESTADO, TipoEstado
 from core.gridworld.gridworld import GridWorld
+from core.tecnicas.egreedy import *
+from core.tecnicas.softmax import *
 from tools.circular import Circular  # http://www.juanjoconti.com.ar/2007/02/28/lista-circular-en-python/
 
 try:
@@ -88,6 +90,7 @@ class MainWindow(QtGui.QMainWindow):
             ancho_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
             alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
             self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
+            self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
 
             # Rellenar tabla con items
             for fila in range(0, self.gridworld.alto):
@@ -114,6 +117,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnTerminarProceso.clicked.connect(self.terminar_proceso)
         # Muestra sólo los parámetros utilizados en la técnica seleccionada en el ComboBox
         self.WMainWindow.cbQLTecnicas.currentIndexChanged.connect(self.parametros_segun_tecnica)
+        self.WMainWindow.tblGridWorld.customContextMenuRequested.connect(self.show_item_menu)
 
     def parametros_segun_tecnica(self, tecnica):
         u"""
@@ -144,6 +148,33 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbQLEpsilon.hide()
             self.WMainWindow.lblTau.show()
             self.WMainWindow.sbQLTau.show()
+
+    def show_item_menu(self, posicion):
+        u"""
+        Muestra un menú contextual al hacer clic derecho sobre un item de la tabla
+        @param posicion: Posición relativa del item clickeado
+        """
+        tipos_estados = self.gridworld.tipos_estados
+
+        # Crear menu contextual para los items de la tabla
+        menu_item = QtGui.QMenu()
+        for tipo in tipos_estados.values():
+            action = QtGui.QAction(tipo.nombre, self.WMainWindow.tblGridWorld)
+            # Asociar al texto del menu el tipo de estado correspondiente
+            action.setData(tipo.ide)
+            menu_item.addAction(action)
+
+        # Mostrar el menú y obtener el item de menu clickeado
+        action = menu_item.exec_(self.WMainWindow.tblGridWorld.mapToGlobal(posicion))
+        # Obtener el tipo de estado asociado al texto clickeado
+        tipo_num = action.data().toInt()[0]
+        # Averiguar en cual item de la tabla se hizo clic
+        item = self.WMainWindow.tblGridWorld.itemAt(posicion)
+        # Actualizar texto del item de la tabla en función del tipo de estado
+        item.setText(tipos_estados[tipo_num].letra)
+        estado = self.gridworld.get_estado(item.row(), item.column())
+        # Establecer tipo de estado seleccionado al estado en la matriz
+        estado.tipo = tipos_estados[tipo_num]
 
     def entrenar(self):
         u"""

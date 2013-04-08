@@ -71,7 +71,7 @@ class TipoEstado(object):
         self._icono = icono
 
     ide = property(get_ide, set_ide, None, "Propiedad ID del Tipo de Estado")
-    nombre = property(get_icono, set_icono, None, "Propiedad Nombre del Tipo de Estado")
+    nombre = property(get_nombre, set_nombre, None, "Propiedad Nombre del Tipo de Estado")
     recompensa = property(get_recompensa, set_recompensa, None, "Propiedad Recompensa del Tipo de Estado")
     letra = property(get_letra, set_letra, None, "Propiedad Letra del Tipo de Estado")
     icono = property(get_icono, set_icono, None, "Propiedad Icono del Tipo de Estado")
