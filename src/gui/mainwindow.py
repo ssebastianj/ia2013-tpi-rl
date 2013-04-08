@@ -61,8 +61,9 @@ class MainWindow(QtGui.QMainWindow):
         self._set_window_signals()
 
     def convert_dimension(self, dim_str):
-        """
-        Devuelve una tupla conteniendo el ancho y alto del GridWorld
+        u"""
+        Devuelve una tupla conteniendo el ancho y alto del GridWorld.
+
         :param dim_str: Cadena en forma {Ancho} x {Alto} representando la dimensión
         """
         dimension = str(dim_str)
@@ -72,7 +73,9 @@ class MainWindow(QtGui.QMainWindow):
 
     def set_gw_dimension(self, dimension):
             u"""
-            Configura el tblGridWorld a la dimensión seleccionada e Inicializa los estados en Neutros
+            Configura el tblGridWorld a la dimensión seleccionada e Inicializa los estados en Neutros.
+
+            :param dimension: Dimensión
             """
             # Obtener ancho y alto del GridWorld
             ancho_gw, alto_gw = self.convert_dimension(dimension)
@@ -123,8 +126,9 @@ class MainWindow(QtGui.QMainWindow):
 
     def parametros_segun_tecnica(self, tecnica):
         u"""
-        Muestra u oculta los parámetros en función de la técnica seleccionada
-        :param tecnica: Tecnica seleccionada
+        Muestra u oculta los parámetros en función de la técnica seleccionada.
+
+        :param tecnica: Técnica seleccionada
         """
         # Obtener valor asociado al item seleccionado
         key = self.WMainWindow.cbQLTecnicas.itemData(tecnica).toInt()[0]
@@ -154,6 +158,7 @@ class MainWindow(QtGui.QMainWindow):
     def show_item_menu(self, posicion):
         u"""
         Muestra un menú contextual al hacer clic derecho sobre un item de la tabla
+
         :param posicion: Posición relativa del item clickeado
         """
         tipos_estados = self.gridworld.tipos_estados

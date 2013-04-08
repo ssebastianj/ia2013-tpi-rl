@@ -5,7 +5,6 @@ from __future__ import absolute_import
 import subprocess
 import sys
 import os
-from sphinx.application import Sphinx
 
 def main():
     # Build documentation
@@ -13,6 +12,11 @@ def main():
     doc_builder = "make"
     doc_build_path = os.path.abspath(os.path.join('..', 'docs'))
     full_path = os.path.join(doc_build_path, doc_builder)
+    # Clean
+    args = [full_path, "clean"]
+    process = subprocess.Popen(args, cwd=doc_build_path, shell=True)
+    process.communicate()
+    # Build
     args = [full_path, "html"]
     process = subprocess.Popen(args, cwd=doc_build_path, shell=True)
     process.communicate()
@@ -49,7 +53,6 @@ def main():
             "--version-file=" + vi_txt_path,
             "--icon=" + icon_path,
             main_path]
-
     subprocess.call(args)
 
     print '\n---------------------- Build Finished ----------------------'

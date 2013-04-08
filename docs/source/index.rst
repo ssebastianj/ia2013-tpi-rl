@@ -8,19 +8,25 @@ Inteligencia Artificial 2013: Aprendizaje por Refuerzo
 
 Contents:
 
+.. toctree::
+   :maxdepth: 2
+   
 .. automodule:: core.gridworld.gridworld
 .. autoclass:: GridWorld
-    :members:
-    :private-members:
+   :members:
+   :private-members:
+   :special-members:
 
 .. automodule:: core.estado.estado
 .. autoclass:: Estado
-    :members:
-    :private-members:
+   :members:
+   :private-members:
+   :special-members:
         
 .. autoclass:: TipoEstado
-    :members:
-    :private-members:
+   :members:
+   :private-members:
+   :special-members:
 
 .. automodule:: core.tecnicas.egreedy
 
@@ -30,15 +36,16 @@ Contents:
 
 .. automodule:: gui.mainwindow
 .. autoclass:: MainWindow
-    :members:
-    :private-members:
+   :members:
+   :private-members:
 
 .. automodule:: tools.enum
 
 .. automodule:: tools.circular
 .. autoclass:: Circular
-    :members:
-    :private-members:
+   :members:
+   :private-members:
+   :special-members:
 
 Indices and tables
 ==================
