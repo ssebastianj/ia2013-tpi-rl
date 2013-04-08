@@ -6,6 +6,9 @@
 
 
 class Circular(list):
+    """
+    Lista circular doblemente enlazada
+    """
     def __init__(self, *a, **kw):
         super(Circular, self).__init__(*a, **kw)
         self.position = 0
@@ -22,8 +25,6 @@ class Circular(list):
 
 
 if __name__ == '__main__':
-    '''Clase testeada con unittest'''
-
     import unittest
 
     class Prueba(unittest.TestCase):

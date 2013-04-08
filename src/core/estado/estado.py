@@ -27,11 +27,11 @@ class TipoEstado(object):
     """Clase TipoEstado"""
     def __init__(self, ide, recompensa, nombre, letra="", icono=None):
         """
-        @param ide: Identificador del estado
-        @param recompensa: Recompensa devuelta
-        @param nombre: Texto indicando el tipo de estado
-        @param letra: Letra a mostrar en el GridWorld
-        @param icono: Icono a mostrar en el GridWorld
+        :param ide: Identificador del estado
+        :param recompensa: Recompensa devuelta
+        :param nombre: Texto indicando el tipo de estado
+        :param letra: Letra a mostrar en el GridWorld
+        :param icono: Icono a mostrar en el GridWorld
         """
         super(TipoEstado, self).__init__()
         self._ide = ide
@@ -81,9 +81,9 @@ class Estado(object):
     """Clase Estado"""
     def __init__(self, fila, columna, tipo):
         """
-        @param fila: Fila que ocupa en el GridWorld
-        @param columna: Columna que ocupa en el GridWorld
-        @param tipo: Objeto indicando el tipo de estado
+        :param fila: Fila que ocupa en el GridWorld
+        :param columna: Columna que ocupa en el GridWorld
+        :param tipo: Objeto indicando el tipo de estado
         """
         super(Estado, self).__init__()
         self._fila = fila

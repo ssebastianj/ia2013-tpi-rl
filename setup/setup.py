@@ -7,6 +7,12 @@ import sys
 import os
 
 def main():
+    # Build documentation
+    print '\n---------------------- Build Documentation ---------------------'
+    doc_build_path = os.path.abspath(os.path.join('..', 'docs', 'make.bat'))
+    args = [doc_build_path, "html"]
+    subprocess.call(args)
+
     # Compile UI files
     print '\n---------------------- Compile UI Files ---------------------'
     compile_ui_path = os.path.join('..', 'gui', 'compile_ui.py')

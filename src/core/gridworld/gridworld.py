@@ -10,9 +10,9 @@ class GridWorld(object):
     """Clase GridWorld"""
     def __init__(self, ancho, alto):
         """
-        @param ancho: Ancho
-        @param alto: Alto
-        @param estados: Conjunto de estados
+        :param ancho: Ancho
+        :param alto: Alto
+        :param estados: Conjunto de estados
         """
         super(GridWorld, self).__init__()
         self._ancho = ancho

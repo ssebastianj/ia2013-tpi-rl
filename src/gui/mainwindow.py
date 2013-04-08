@@ -63,7 +63,7 @@ class MainWindow(QtGui.QMainWindow):
     def convert_dimension(self, dim_str):
         """
         Devuelve una tupla conteniendo el ancho y alto del GridWorld
-        @param dim_str: Cadena en forma {Ancho} x {Alto} representando la dimensión
+        :param dim_str: Cadena en forma {Ancho} x {Alto} representando la dimensión
         """
         dimension = str(dim_str)
         dimension = dimension.lower()
@@ -124,7 +124,7 @@ class MainWindow(QtGui.QMainWindow):
     def parametros_segun_tecnica(self, tecnica):
         u"""
         Muestra u oculta los parámetros en función de la técnica seleccionada
-        @param tecnica: Tecnica seleccionada
+        :param tecnica: Tecnica seleccionada
         """
         # Obtener valor asociado al item seleccionado
         key = self.WMainWindow.cbQLTecnicas.itemData(tecnica).toInt()[0]
@@ -154,12 +154,12 @@ class MainWindow(QtGui.QMainWindow):
     def show_item_menu(self, posicion):
         u"""
         Muestra un menú contextual al hacer clic derecho sobre un item de la tabla
-        @param posicion: Posición relativa del item clickeado
+        :param posicion: Posición relativa del item clickeado
         """
         tipos_estados = self.gridworld.tipos_estados
 
         # Crear menu contextual para los items de la tabla
-        menu_item = QtGui.QMenu()
+        menu_item = QtGui.QMenu("Tipo de estado")
         for tipo in tipos_estados.values():
             action = QtGui.QAction(tipo.nombre, self.WMainWindow.tblGridWorld)
             # Asociar al texto del menu el tipo de estado correspondiente
@@ -256,7 +256,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         Reimplementa el evento 'closeEvent' de la clase padre.
 
-        @param event: Evento.
+        :param event: Evento.
         """
         pass
 
