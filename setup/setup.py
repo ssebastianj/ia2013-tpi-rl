@@ -5,13 +5,17 @@ from __future__ import absolute_import
 import subprocess
 import sys
 import os
+from sphinx.application import Sphinx
 
 def main():
     # Build documentation
     print '\n---------------------- Build Documentation ---------------------'
-    doc_build_path = os.path.abspath(os.path.join('..', 'docs', 'make.bat'))
-    args = [doc_build_path, "html"]
-    subprocess.call(args)
+    doc_builder = "make"
+    doc_build_path = os.path.abspath(os.path.join('..', 'docs'))
+    full_path = os.path.join(doc_build_path, doc_builder)
+    args = [full_path, "html"]
+    process = subprocess.Popen(args, cwd=doc_build_path, shell=True)
+    process.communicate()
 
     # Compile UI files
     print '\n---------------------- Compile UI Files ---------------------'
