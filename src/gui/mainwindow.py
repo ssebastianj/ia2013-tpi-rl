@@ -43,6 +43,8 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.cbQLTecnicas.addItem(_tr(value), key)
             self.WMainWindow.cbQLTecnicas.addAction(QtGui.QAction(_tr(value), self))
         self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
+        self.WMainWindow.lblTau.hide()
+        self.WMainWindow.sbQLTau.hide()
 
         # Cargar dimensiones posibles del tblGridWorld
         gw_dimensiones = ["6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
