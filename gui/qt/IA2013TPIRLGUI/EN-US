@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0">
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="mainwindow.ui" line="15"/>
+        <source>MainWindow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="37"/>
+        <location filename="mainwindow.ui" line="307"/>
+        <source>Grid World</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="45"/>
+        <source>Dimensión:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="63"/>
+        <source>Q-Learning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="71"/>
+        <source>Gamma (Ɣ):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="95"/>
+        <source>Técnica de aprendizaje:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="112"/>
+        <source>Epsilon (ɛ):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="136"/>
+        <source>Tau (τ):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="163"/>
+        <source>Operaciones</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="169"/>
+        <location filename="mainwindow.ui" line="348"/>
+        <source>Entrenar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="176"/>
+        <location filename="mainwindow.ui" line="353"/>
+        <source>Comenzar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="183"/>
+        <location filename="mainwindow.ui" line="343"/>
+        <source>Generar valores aleatorios...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="190"/>
+        <location filename="mainwindow.ui" line="358"/>
+        <source>Terminar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="277"/>
+        <source>&amp;Archivo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="283"/>
+        <source>&amp;Edición</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="288"/>
+        <source>Ay&amp;uda</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="294"/>
+        <source>&amp;Operaciones</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="303"/>
+        <source>&amp;Configuración</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="311"/>
+        <source>Dimensión</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="318"/>
+        <source>Técnicas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="333"/>
+        <source>Salir</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="338"/>
+        <source>Acerca de...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="363"/>
+        <source>Softmax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="368"/>
+        <source>E-Greedy</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+</TS>

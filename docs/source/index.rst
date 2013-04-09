@@ -38,6 +38,11 @@ Contents:
 .. autoclass:: MainWindow
    :members:
    :private-members:
+   
+.. automodule:: gui.genrndvalsdialog
+.. autoclass:: GenRndValsDialog
+   :members:
+   :private-members:
 
 .. automodule:: tools.enum
 

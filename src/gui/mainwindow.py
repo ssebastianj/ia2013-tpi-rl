@@ -4,8 +4,8 @@
 from __future__ import absolute_import
 
 from PyQt4 import QtCore, QtGui
+from gui.genrndvalsdialog import GenRndValsDialog
 from gui.qt.mainwindow import Ui_MainWindow
-
 from core.estado.estado import TIPOESTADO, TipoEstado
 from core.gridworld.gridworld import GridWorld
 from core.tecnicas.egreedy import *
@@ -125,6 +125,7 @@ class MainWindow(QtGui.QMainWindow):
         # Muestra sólo los parámetros utilizados en la técnica seleccionada en el ComboBox
         self.WMainWindow.cbQLTecnicas.currentIndexChanged.connect(self.parametros_segun_tecnica)
         self.WMainWindow.tblGridWorld.customContextMenuRequested.connect(self.show_item_menu)
+        self.WMainWindow.btnGenValAleatorios.clicked.connect(self.show_gen_rnd_vals_dialog)
 
     def parametros_segun_tecnica(self, tecnica):
         u"""
@@ -202,6 +203,10 @@ class MainWindow(QtGui.QMainWindow):
     def switch_tipo_estado(self, fila, columna):
         tipos_estados = self.gridworld.tipos_estados.keys()
         # TODO: Cambiar tipo de estado al ir haciendo clic sobre el estado
+
+    def show_gen_rnd_vals_dialog(self):
+        self.GenRndValsDialog = GenRndValsDialog(self)
+        self.GenRndValsDialog.show()
 
     def show_about_dialog(self):
         u"""
