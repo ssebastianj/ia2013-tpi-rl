@@ -106,6 +106,7 @@ class MainWindow(QtGui.QMainWindow):
                     item = QtGui.QTableWidgetItem(str(letra_estado))
                     item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
                     item.setFlags(QtCore.Qt.ItemIsEnabled)
+                    item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
                     self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
 
     def _set_window_signals(self):
