@@ -25,12 +25,13 @@ TIPOESTADO = enum(INICIAL=0,
 
 class TipoEstado(object):
     """Clase TipoEstado"""
-    def __init__(self, ide, recompensa, nombre, letra="", icono=None):
+    def __init__(self, ide, recompensa, nombre, letra="", color="#FFFFFF", icono=None):
         """
         :param ide: Identificador del estado
         :param recompensa: Recompensa devuelta
         :param nombre: Texto indicando el tipo de estado
         :param letra: Letra a mostrar en el GridWorld
+        :param color: Color a mostrar en el GridWorld
         :param icono: Icono a mostrar en el GridWorld
         """
         super(TipoEstado, self).__init__()
@@ -39,6 +40,7 @@ class TipoEstado(object):
         self._recompensa = recompensa
         self._icono = icono
         self._letra = letra
+        self._color = color
 
     def get_ide(self):
         return self._ide
@@ -70,11 +72,18 @@ class TipoEstado(object):
     def set_icono(self, icono):
         self._icono = icono
 
+    def get_color(self):
+        return self._color
+
+    def set_color(self, color):
+        self._color = color
+
     ide = property(get_ide, set_ide, None, "Propiedad ID del Tipo de Estado")
     nombre = property(get_nombre, set_nombre, None, "Propiedad Nombre del Tipo de Estado")
     recompensa = property(get_recompensa, set_recompensa, None, "Propiedad Recompensa del Tipo de Estado")
     letra = property(get_letra, set_letra, None, "Propiedad Letra del Tipo de Estado")
     icono = property(get_icono, set_icono, None, "Propiedad Icono del Tipo de Estado")
+    color = property(get_color, set_color, None, "Color del Estado")
 
 
 class Estado(object):

@@ -55,7 +55,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.menuDimension.addAction(QtGui.QAction(_tr(dimension), self))
 
         # Establece la dimensión por defecto del tblGridWorld en 6x6
-        self.set_gw_dimension("6 x 6")
+        self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
 
         # Conexión de señales
         self._set_window_signals()
@@ -104,6 +104,7 @@ class MainWindow(QtGui.QMainWindow):
                     letra_estado = estado.tipo.letra
                     # Cada item muestra la letra asignada al estado
                     item = QtGui.QTableWidgetItem(str(letra_estado))
+                    item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
                     item.setFlags(QtCore.Qt.ItemIsEnabled)
                     self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
 
@@ -179,6 +180,7 @@ class MainWindow(QtGui.QMainWindow):
         item = self.WMainWindow.tblGridWorld.itemAt(posicion)
         # Actualizar texto del item de la tabla en función del tipo de estado
         item.setText(tipos_estados[tipo_num].letra)
+        item.setBackgroundColor(QtGui.QColor(tipos_estados[tipo_num].color))
         estado = self.gridworld.get_estado(item.row(), item.column())
         # Establecer tipo de estado seleccionado al estado en la matriz
         estado.tipo = tipos_estados[tipo_num]
