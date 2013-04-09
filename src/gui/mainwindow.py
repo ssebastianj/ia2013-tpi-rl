@@ -180,6 +180,7 @@ class MainWindow(QtGui.QMainWindow):
         item = self.WMainWindow.tblGridWorld.itemAt(posicion)
         # Actualizar texto del item de la tabla en función del tipo de estado
         item.setText(tipos_estados[tipo_num].letra)
+        # Establecer color de fondo de acuerdo al tipo de estado
         item.setBackgroundColor(QtGui.QColor(tipos_estados[tipo_num].color))
         estado = self.gridworld.get_estado(item.row(), item.column())
         # Establecer tipo de estado seleccionado al estado en la matriz
@@ -199,63 +200,13 @@ class MainWindow(QtGui.QMainWindow):
 
     def switch_tipo_estado(self, fila, columna):
         tipos_estados = self.gridworld.tipos_estados.keys()
-
-#===============================================================================
-#         u"""si Estado == 0 es Estado Neutro[blanco] y no hay ningun Estado Inicial |FALTA COMPROBAR ESTO|, cambiar a Estado Inicial[Rojo]"""
-#         if estado.get_tipo() == 0 :
-#             self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(120, 20, 0))
-#             estado.set_tipo(1)
-#
-#             u"""Si Estado == 0 es Estado Neutro,Hay Estado Inicial y no hay ningun Estado Final |FALTA COMPROBAR ESTO|, cambiar a Estado Final [Azul]"""
-#         elif estado.get_tipo() == 0 :
-#             self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(0, 60, 120))
-#             estado.set_tipo(2)
-#
-#             u"""Si Estado == 0 es Estado Neutro, Hay Estado Inicial y Estado Final, cambiar a Estado Malo[Marron] """
-#         elif estado.get_tipo() == 0 :
-#             self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(59, 44, 120))
-#             estado.set_tipo(3)
-#
-#             u"""si Estado ==1 es Estado Inicial[Rojo] y no hay ningun Estado Final |FALTA COMPROBAR ESTO|, cambiar a Estado Final[Azul]"""
-#         elif estado.get_tipo() == 1 :
-#             self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(0, 60, 120))
-#             estado.set_tipo(2)
-#
-#             u"""si Estado ==1 es Estado Inicial[Rojo] y  ya Hay Estado Final, cambiar a Estado Malo[Marron]"""
-#         elif estado.get_tipo() == 1 :
-#             self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(59, 44, 120))
-#             estado.set_tipo(3)
-#
-#             u"""si Estado == 2 es Estado Final[Azul], cambiar a Estado Malo[Marron]"""
-#         elif estado.get_tipo() == 2 :
-#             self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(59, 44, 120))
-#             estado.set_tipo(3)
-#
-#             u"""si Estado == 3 es Estado Malo[Marron], cambiar a Estado Bueno[Violeta]"""
-#         elif estado.get_tipo() == 3 :
-#             self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(128, 100, 125))
-#             estado.set_tipo(4)
-#
-#             u"""si Estado == 4 es Estado Bueno[Violeta], cambiar a Estado Excelente[Verde]"""
-#         elif estado.get_tipo() == 4 :
-#             self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(154, 176, 155))
-#             estado.set_tipo(5)
-#
-#             u"""si Estado == 3 es Estado Excelente[Verde], cambiar a Estado Pared[Negro]"""
-#         elif estado.get_tipo() == 5 :
-#             self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(0, 0, 0))
-#             estado.set_tipo(6)
-#
-#             u"""si Estado == 6 es Estado Pared[Negro], cambiar a Estado Neutro[Blanco]"""
-#         elif estado.get_tipo() == 6 :
-#             self.WMainWindow.tblGridWorld.item(fila, columna).setBackgroundColor(QtGui.QColor(255, 255, 255))
-#             estado.set_tipo(0)
-#===============================================================================
+        # TODO: Cambiar tipo de estado al ir haciendo clic sobre el estado
 
     def show_about_dialog(self):
         u"""
         Muestra el cuadro de diálogo Acerca de...
         """
+        # TODO: Implementar AboutDialog
         self.DAboutDialog = AboutDialog(self)
         self.DAboutDialog.show()
 
