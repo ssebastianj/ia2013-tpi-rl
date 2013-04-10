@@ -8,7 +8,7 @@ import os
 
 def main():
     # Build documentation
-    print '\n---------------------- Build Documentation ---------------------'
+    print u'\n---------------------- Generar Documentación ---------------------'
     doc_builder = "make"
     doc_build_path = os.path.abspath(os.path.join('..', 'docs'))
     full_path = os.path.join(doc_build_path, doc_builder)
@@ -22,13 +22,13 @@ def main():
     process.communicate()
 
     # Compile UI files
-    print '\n---------------------- Compile UI Files ---------------------'
+    print u'\n---------------------- Compilar archivos de interfaz gráfica ---------------------'
     compile_ui_path = os.path.join('..', 'gui', 'compile_ui.py')
     comp_ui_args = [sys.executable, compile_ui_path]
     subprocess.call(comp_ui_args)
 
     # Generate Version Info
-    print '\n------------------- Generate Version Info -------------------'
+    print u'\n------------------- Generar información de versión -------------------'
     vi_gen_path = os.path.abspath(os.path.join(os.curdir, 'version_info.py'))
     vi_gen_args = [sys.executable, vi_gen_path]
     subprocess.call(vi_gen_args)
@@ -39,7 +39,7 @@ def main():
     icon_path = os.path.abspath(os.path.join(os.path.pardir, 'src', 'img', 'app.ico'))
 
     # Build EXE
-    print '\n--------------------- Build Executable ---------------------'
+    print '\n--------------------- Generar archivo ejecutable ---------------------'
     args = [sys.executable,
             "C:\\PyInstaller\\pyinstaller.py",
             "--noconfirm",
@@ -55,7 +55,7 @@ def main():
             main_path]
     subprocess.call(args)
 
-    print '\n---------------------- Build Finished ----------------------'
+    print '\n---------------------- Generación de componentes finalizada ----------------------'
 
 if __name__ == '__main__':
     main()

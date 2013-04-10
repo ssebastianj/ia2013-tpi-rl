@@ -2,9 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
-import info
 
-app_version = info.__version__
+import sys, os
+
+# Agregar paquete info a PYTHONPATH
+sys.path.insert(0, os.path.abspath(os.path.join('..', 'src')))
+from info import app_info
+
+app_version = app_info.__version__
 app_version_sep = app_version.split('.')
 
 for i in range(0, 4 - len(app_version_sep)):
@@ -19,13 +24,13 @@ fileType = '0x1'
 subType = '0x0'
 date = '(0, 0)'
 string_table = '2C0A04B0'
-company_name = info.__org_name__
-file_description = info.__app_name__
+company_name = app_info.__org_name__
+file_description = app_info.__app_name__
 file_version = app_version
-int_name = info.__app_name__
-legal_copyright = info.__copyright__
+int_name = app_info.__app_name__
+legal_copyright = app_info.__copyright__
 original_filename = 'ia.exe'
-product_name = info.__app_name__
+product_name = app_info.__app_name__
 product_version = app_version
 translation = '[11274, 1200]'
 
@@ -78,4 +83,4 @@ version_info_str = """VSVersionInfo(
 
 with open('version_info.txt', 'w') as vi:
     vi.write(version_info_str)
-    print 'Version Info has been generated.'
+    print u'Información de versión generada.'

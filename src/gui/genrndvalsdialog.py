@@ -18,7 +18,7 @@ class GenRndValsDialog(QtGui.QDialog):
     Clase de diálogo 'Conectar a puerto' heredada de QDialog.
     """
     def __init__(self, parent=None):
-        """
+        u"""
         Constructor de la clase GenRndValsDialog.
 
         :param parent: Widget padre.
@@ -40,8 +40,8 @@ class GenRndValsDialog(QtGui.QDialog):
         u"""
         Redefinición del método 'acept' de la clase padre.
 
-        :param *args: *args
-        :param **kwargs: **kwargs
+        :param \*args: \*args
+        :param \**kwargs: \**kwargs
         """
         self.gen_dimension_random = self.GenRndValsDialog.chkDimensionAleatoria.isChecked()
         self.gen_tecnicas_random = self.GenRndValsDialog.chkTecnicaAleatoria.isChecked()
