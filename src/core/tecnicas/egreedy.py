@@ -1,11 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
+
+from core.tecnicas.tecnica import QLTecnica
+
 
 # TODO: Implementar técnica E-Greedy
-class EGreedy(object):
+class EGreedy(QLTecnica):
     u"""Técnica EGreedy"""
     def __init__(self, epsilon):
+        u"""
+        Inicializador
+
+        :param epsilon: Parámetro Epsilon de la técnica.
+        """
         super(EGreedy, self).__init__()
         self._epsilon = epsilon
 

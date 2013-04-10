@@ -1,11 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
+
+from core.tecnicas.tecnica import QLTecnica
+
 
 # TODO: Implementar técnica
-class Softmax(object):
+class Softmax(QLTecnica):
     u"""Técnica Softmax"""
     def __init__(self, tau):
+        u"""
+        Inicializador
+
+        :param tau: Parámetro Tau de la técnica.
+        """
         super(Softmax, self).__init__()
         self._tau = tau
 

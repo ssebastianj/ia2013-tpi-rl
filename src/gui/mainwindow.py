@@ -264,16 +264,17 @@ class MainWindow(QtGui.QMainWindow):
         pass
 
     def mostrar_dialogo_gen_rnd_vals(self):
-        self.GenRndValsDialog = GenRndValsDialog(self)
-        self.GenRndValsDialog.show()
+        self.GenRndValsD = GenRndValsDialog(self)
+        if self.GenRndValsD.exec_():
+            pass
 
     def mostrar_dialogo_acerca(self):
         u"""
         Muestra el cuadro de diálogo Acerca de...
         """
         # TODO: Implementar AboutDialog
-        self.DAboutDialog = AboutDialog(self)
-        self.DAboutDialog.show()
+        self.AboutD = AboutDialog(self)
+        self.AboutD.show()
 
     def closeEvent(self, event):
         """
