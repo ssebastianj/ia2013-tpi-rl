@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 from PyQt4 import QtCore, QtGui
 from info import app_info
-from gui.qt.genrndvalsdialog import Ui_GenRndValsDialog
+from gui.qtgen.genrndvalsdialog import Ui_GenRndValsDialog
 
 try:
     _tr = QtCore.QString.fromUtf8

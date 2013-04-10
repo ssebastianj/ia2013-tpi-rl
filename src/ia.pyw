@@ -11,7 +11,9 @@ from info import app_info
 
 
 def main():
-    u""" Punto de entrada de la aplicación. """
+    u"""
+    Punto de entrada de la aplicación.
+    """
     app = QApplication(sys.argv)
     QCoreApplication.setApplicationName(app_info.__app_name__)
     QCoreApplication.setApplicationVersion(app_info.__version__)

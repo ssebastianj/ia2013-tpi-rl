@@ -8,7 +8,7 @@ import Queue
 from PyQt4 import QtCore, QtGui
 
 from gui.genrndvalsdialog import GenRndValsDialog
-from gui.qt.mainwindow import Ui_MainWindow
+from gui.qtgen.mainwindow import Ui_MainWindow
 
 from core.estado.estado import TIPOESTADO, TipoEstado
 from core.gridworld.gridworld import GridWorld
@@ -254,7 +254,6 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer.stop()
         # Intentar nuevamente finalizar todos los threads activos
         self._reintentar_detener_hilos()
-        pass
 
     def _reintentar_detener_hilos(self):
         u"""
