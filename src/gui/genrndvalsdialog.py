@@ -3,8 +3,8 @@
 
 from __future__ import absolute_import
 
-import sys, os, info
 from PyQt4 import QtCore, QtGui
+from info import app_info
 from gui.qt.genrndvalsdialog import Ui_GenRndValsDialog
 
 try:
@@ -30,8 +30,8 @@ class GenRndValsDialog(QtGui.QDialog):
                             QtCore.Qt.WindowSystemMenuHint |
                             QtCore.Qt.WindowTitleHint)
         self._initialize_dialog()
-        self.ORG_NAME = info.__org_name__
-        self.APP_NAME = info.__app_name__
+        self.ORG_NAME = app_info.__org_name__
+        self.APP_NAME = app_info.__app_name__
 
     def _initialize_dialog(self):
         self.setWindowIcon(QtGui.QIcon('img/96x96.png'))

@@ -3,15 +3,12 @@ Pygments
 Sphinx
 distribute
 docutils
-mechanize
 nose
 numpy
 pep8
-py2exe
 pybrain
 pylint
 pywin32
 scipy
 simpleai
-sympy
 unittest2

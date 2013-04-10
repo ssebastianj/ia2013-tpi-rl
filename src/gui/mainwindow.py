@@ -19,7 +19,6 @@ from core.tecnicas.softmax import Softmax
 from tools.livedatafeed import LiveDataFeed
 from tools.queue import get_all_from_queue, get_item_from_queue
 from tools.circular import Circular  # http://www.juanjoconti.com.ar/2007/02/28/lista-circular-en-python/
-from jsonwidget.jsonorder import self
 
 
 try:
@@ -156,7 +155,7 @@ class MainWindow(QtGui.QMainWindow):
         # Muestra sólo los parámetros utilizados en la técnica seleccionada en el ComboBox
         self.WMainWindow.cbQLTecnicas.currentIndexChanged.connect(self.parametros_segun_tecnica)
         self.WMainWindow.tblGridWorld.customContextMenuRequested.connect(self.show_item_menu)
-        self.WMainWindow.btnGenValAleatorios.clicked.connect(self.show_gen_rnd_vals_dialog)
+        self.WMainWindow.btnGenValAleatorios.clicked.connect(self.mostrar_dialogo_gen_rnd_vals)
 
     def parametros_segun_tecnica(self, tecnica):
         u"""
@@ -239,25 +238,25 @@ class MainWindow(QtGui.QMainWindow):
         """
         Ejecuta diversas acciones a cada disparo del Timer principal.
         """
-        self._check_queues()
+        self._comprobar_colas()
 
-    def _check_queues(self):
+    def _comprobar_colas(self):
         pass
 
-    def on_process_start(self, process):
+    def on_comienzo_proceso(self, proceso):
         # Crear Timer asociado a la ventana principal
         self.wnd_timer = QtCore.QTimer()
         # Conectar disparo de timer con método
         self.wnd_timer.timeout.connect(self.on_window_timer)
 
-    def on_process_stop(self, process):
+    def on_fin_proceso(self, proceso):
         # Detener Timer asociado a la ventana principal
         self.wnd_timer.stop()
         # Intentar nuevamente finalizar todos los threads activos
-        self._recall_threads_stopping()
+        self._reintentar_detener_hilos()
         pass
 
-    def _recall_threads_stopping(self):
+    def _reintentar_detener_hilos(self):
         u"""
         Solicita la finalización de todos los threads utilizados en la
         aplicación. Este método debe ser llamado al desconectarse o al salir
@@ -265,11 +264,11 @@ class MainWindow(QtGui.QMainWindow):
         """
         pass
 
-    def show_gen_rnd_vals_dialog(self):
+    def mostrar_dialogo_gen_rnd_vals(self):
         self.GenRndValsDialog = GenRndValsDialog(self)
         self.GenRndValsDialog.show()
 
-    def show_about_dialog(self):
+    def mostrar_dialogo_acerca(self):
         u"""
         Muestra el cuadro de diálogo Acerca de...
         """
