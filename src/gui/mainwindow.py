@@ -3,15 +3,23 @@
 
 from __future__ import absolute_import
 
+import Queue
+
 from PyQt4 import QtCore, QtGui
+
 from gui.genrndvalsdialog import GenRndValsDialog
 from gui.qt.mainwindow import Ui_MainWindow
+
 from core.estado.estado import TIPOESTADO, TipoEstado
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
 from core.tecnicas.egreedy import EGreedy
 from core.tecnicas.softmax import Softmax
+
+from tools.livedatafeed import LiveDataFeed
+from tools.queue import get_all_from_queue, get_item_from_queue
 from tools.circular import Circular  # http://www.juanjoconti.com.ar/2007/02/28/lista-circular-en-python/
+from jsonwidget.jsonorder import self
 
 
 try:
@@ -29,6 +37,8 @@ class MainWindow(QtGui.QMainWindow):
         super(MainWindow, self).__init__()
         self.WMainWindow = Ui_MainWindow()
         self.WMainWindow.setupUi(self)
+
+        self._init_vars()
         self._initialize_window()
 
     def _initialize_window(self):
@@ -61,6 +71,25 @@ class MainWindow(QtGui.QMainWindow):
 
         # Conexión de señales
         self._set_window_signals()
+
+    def _init_vars(self):
+        u"""
+        Inicializa las variables 'globales'.
+        """
+        self.monitor_active = False
+        self.com_handler = None
+        self.data_in_q = None
+        self.error_q = None
+        self.data_out_q = None
+        self.pins_in_d = None
+        self.data_in_feed = LiveDataFeed()
+        self.pins_feed = LiveDataFeed()
+        self.timer = None
+        self.frame_handler = None
+        self.working_on_port = False
+        self.uc_factor_setted = None
+        self.sim_activ = False
+        self.inst_factor_setted = None
 
     def convert_dimension(self, dim_str):
         u"""
@@ -205,6 +234,36 @@ class MainWindow(QtGui.QMainWindow):
     def switch_tipo_estado(self, fila, columna):
         tipos_estados = self.gridworld.tipos_estados.keys()
         # TODO: Cambiar tipo de estado al ir haciendo clic sobre el estado
+
+    def _on_window_timer(self):
+        """
+        Ejecuta diversas acciones a cada disparo del Timer principal.
+        """
+        self._check_queues()
+
+    def _check_queues(self):
+        pass
+
+    def on_process_start(self, process):
+        # Crear Timer asociado a la ventana principal
+        self.wnd_timer = QtCore.QTimer()
+        # Conectar disparo de timer con método
+        self.wnd_timer.timeout.connect(self.on_window_timer)
+
+    def on_process_stop(self, process):
+        # Detener Timer asociado a la ventana principal
+        self.wnd_timer.stop()
+        # Intentar nuevamente finalizar todos los threads activos
+        self._recall_threads_stopping()
+        pass
+
+    def _recall_threads_stopping(self):
+        u"""
+        Solicita la finalización de todos los threads utilizados en la
+        aplicación. Este método debe ser llamado al desconectarse o al salir
+        de la aplicación.
+        """
+        pass
 
     def show_gen_rnd_vals_dialog(self):
         self.GenRndValsDialog = GenRndValsDialog(self)
