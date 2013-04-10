@@ -28,6 +28,12 @@ Contents:
    :private-members:
    :special-members:
 
+.. automodule:: core.tecnicas.tecnica
+.. autoclass:: QLTecnica
+   :members:
+   :private-members:
+   :special-members:     
+
 .. automodule:: core.tecnicas.egreedy
 .. autoclass: EGreedy
    :members:
