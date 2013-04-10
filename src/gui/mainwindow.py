@@ -8,9 +8,11 @@ from gui.genrndvalsdialog import GenRndValsDialog
 from gui.qt.mainwindow import Ui_MainWindow
 from core.estado.estado import TIPOESTADO, TipoEstado
 from core.gridworld.gridworld import GridWorld
-from core.tecnicas.egreedy import *
-from core.tecnicas.softmax import *
+from core.qlearning.qlearning import QLearning
+from core.tecnicas.egreedy import EGreedy
+from core.tecnicas.softmax import Softmax
 from tools.circular import Circular  # http://www.juanjoconti.com.ar/2007/02/28/lista-circular-en-python/
+
 
 try:
     _tr = QtCore.QString.fromUtf8

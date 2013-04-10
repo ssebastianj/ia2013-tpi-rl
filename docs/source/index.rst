@@ -29,10 +29,22 @@ Contents:
    :special-members:
 
 .. automodule:: core.tecnicas.egreedy
+.. autoclass: EGreedy
+   :members:
+   :private-members:
+   :special-members:   
 
 .. automodule:: core.tecnicas.softmax
+.. autoclass:: Softmax
+   :members:
+   :private-members:
+   :special-members:
 
 .. automodule:: core.qlearning.qlearning
+.. autoclass:: QLearning
+   :members:
+   :private-members:
+   :special-members:
 
 .. automodule:: gui.mainwindow
 .. autoclass:: MainWindow
@@ -51,7 +63,7 @@ Contents:
    :members:
    :private-members:
    :special-members:
-
+   
 Indices and tables
 ==================
 
