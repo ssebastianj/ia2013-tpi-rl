@@ -11,7 +11,7 @@ def main():
     # Directorio desde donde se leerán los archivos .ui generados por QtDesigner
     uiDir = os.path.abspath(os.path.join(os.curdir, 'qt', 'IA2013TPIRLGUI'))
     # Directorio donde serán almacenados los archivos generados por pyuic
-    uiPyDir = os.path.abspath(os.path.join('..', 'src', 'gui', 'qt'))
+    uiPyDir = os.path.abspath(os.path.join('..', 'src', 'gui', 'qtgen'))
 
     def map_dir(py_dir, py_file):
         return (uiPyDir, py_file)

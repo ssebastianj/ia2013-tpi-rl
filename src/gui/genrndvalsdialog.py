@@ -35,3 +35,18 @@ class GenRndValsDialog(QtGui.QDialog):
 
     def _initialize_dialog(self):
         self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
+
+    def accept(self, *args, **kwargs):
+        u"""
+        Redefinición del método 'acept' de la clase padre.
+
+        :param *args: *args
+        :param **kwargs: **kwargs
+        """
+        self.gen_dimension_random = self.GenRndValsDialog.chkDimensionAleatoria.isChecked()
+        self.gen_tecnicas_random = self.GenRndValsDialog.chkTecnicaAleatoria.isChecked()
+        self.gen_estados_random = self.GenRndValsDialog.optGenerarEstados.isChecked()
+        self.gen_vals_param_random = self.GenRndValsDialog.optGenerarValoresParam.isChecked()
+        self.gen_todo_random = self.GenRndValsDialog.optGenerarTodo.isChecked()
+
+        super(GenRndValsDialog, self).accept()

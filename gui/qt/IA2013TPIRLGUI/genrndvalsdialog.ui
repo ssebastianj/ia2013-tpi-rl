@@ -6,6 +6,14 @@
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>323</width>
+    <height>203</height>
+   </rect>
+  </property>
   <property name="minimumSize">
    <size>
     <width>323</width>
@@ -33,7 +41,7 @@
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout">
           <item row="1" column="1" colspan="2">
-           <widget class="QCheckBox" name="checkBox">
+           <widget class="QCheckBox" name="chkDimensionAleatoria">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>20</horstretch>
@@ -62,7 +70,7 @@
            </spacer>
           </item>
           <item row="0" column="0" colspan="2">
-           <widget class="QRadioButton" name="radioButton">
+           <widget class="QRadioButton" name="optGenerarEstados">
             <property name="text">
              <string>Estados aleatorios de diferente tipo</string>
             </property>
@@ -73,7 +81,7 @@
         <item row="1" column="0">
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="1" column="1">
-           <widget class="QCheckBox" name="checkBox_2">
+           <widget class="QCheckBox" name="chkTecnicaAleatoria">
             <property name="text">
              <string>Técnica aleatoria</string>
             </property>
@@ -96,7 +104,7 @@
            </spacer>
           </item>
           <item row="0" column="0" colspan="2">
-           <widget class="QRadioButton" name="radioButton_2">
+           <widget class="QRadioButton" name="optGenerarValoresParam">
             <property name="text">
              <string>Valores de los parámetros</string>
             </property>
@@ -105,7 +113,7 @@
          </layout>
         </item>
         <item row="2" column="0">
-         <widget class="QRadioButton" name="radioButton_3">
+         <widget class="QRadioButton" name="optGenerarTodo">
           <property name="text">
            <string>Ambos</string>
           </property>
@@ -114,14 +122,7 @@
        </layout>
       </item>
      </layout>
-     <zorder>radioButton</zorder>
-     <zorder>radioButton_2</zorder>
-     <zorder>checkBox</zorder>
-     <zorder>radioButton</zorder>
-     <zorder>checkBox</zorder>
-     <zorder>checkBox_2</zorder>
      <zorder></zorder>
-     <zorder>radioButton_3</zorder>
     </widget>
    </item>
    <item row="1" column="0">
@@ -167,11 +168,11 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>radioButton</tabstop>
-  <tabstop>checkBox</tabstop>
-  <tabstop>radioButton_2</tabstop>
-  <tabstop>checkBox_2</tabstop>
-  <tabstop>radioButton_3</tabstop>
+  <tabstop>optGenerarEstados</tabstop>
+  <tabstop>chkDimensionAleatoria</tabstop>
+  <tabstop>optGenerarValoresParam</tabstop>
+  <tabstop>chkTecnicaAleatoria</tabstop>
+  <tabstop>optGenerarTodo</tabstop>
   <tabstop>btnGenRndVals</tabstop>
   <tabstop>btnCancelGenRndVals</tabstop>
  </tabstops>
