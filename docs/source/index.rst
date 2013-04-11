@@ -64,8 +64,8 @@ Contents:
 
 .. automodule:: tools.enum
 
-.. automodule:: tools.circular
-.. autoclass:: Circular
+.. automodule:: tools.listacircular
+.. autoclass:: ListaCircular
    :members:
    :private-members:
    :special-members:
