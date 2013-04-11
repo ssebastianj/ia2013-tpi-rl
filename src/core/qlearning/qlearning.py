@@ -21,6 +21,13 @@ class QLearning(object):
         super(QLearning, self).__init__()
         self._gamma = gamma
         self._tecnica = tecnica
+        self._matriz_q = None
+
+    def get_matriz_q(self):
+        return self._matriz_q
+
+    def set_matriz_q(self, valor):
+        self._matriz_q = valor
 
     def get_gamma(self):
         return self._gamma
@@ -37,5 +44,25 @@ class QLearning(object):
         else:
             raise ValueError
 
+    def get_valor_estado(self, i, j):
+        u"""
+        Devuelve el valor numérico del estado.
+
+        :param i: Fila del estado
+        :param j: Columna del estado
+        """
+        return self._matriz_q[i][j]
+
+    def set_valor_estado(self, i, j, valor):
+        u"""
+        Establece el valor numérico del estado.
+
+        :param i: Fila del estado
+        :param j: Columna del estado
+        :param valor: Valor númerico
+        """
+        self._matriz_q[i][j] = valor
+
     gamma = property(get_gamma, set_gamma, None, u"Parámetro Gamma de QLearning.")
     tecnica = property(get_tecnica, set_tecnica, None, u"Parámetro Técnica de QLearning.")
+    matriz_q = property(get_matriz_q, set_matriz_q, None, "Matriz Q")

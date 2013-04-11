@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\genrndvalsdialog.ui'
 #
-# Created: Wed Apr 10 11:25:08 2013
+# Created: Thu Apr 11 00:50:20 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!

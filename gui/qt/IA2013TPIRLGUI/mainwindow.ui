@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>505</width>
-    <height>418</height>
+    <width>545</width>
+    <height>466</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,19 +16,6 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="2">
-     <spacer name="horizontalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
     <item row="0" column="3">
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -163,33 +150,109 @@
            <string>Operaciones</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="2" column="0">
-            <widget class="QPushButton" name="btnEntrenar">
-             <property name="text">
-              <string>Entrenar</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QPushButton" name="btnComenzarPlay">
-             <property name="text">
-              <string>Comenzar</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
+           <item row="6" column="1">
             <widget class="QPushButton" name="btnGenValAleatorios">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>25</height>
+              </size>
+             </property>
              <property name="text">
               <string>Generar valores aleatorios...</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="0">
+           <item row="2" column="1">
+            <widget class="QPushButton" name="btnEntrenar">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Entrenar</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QPushButton" name="btnComenzarProceso">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Comenzar</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
             <widget class="QPushButton" name="btnTerminarProceso">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>25</height>
+              </size>
+             </property>
              <property name="text">
               <string>Terminar</string>
              </property>
             </widget>
+           </item>
+           <item row="3" column="0">
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>35</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="5" column="1">
+            <widget class="Line" name="line">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <widget class="QPushButton" name="btnInicializar">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Inicializar</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <spacer name="horizontalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>35</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -213,6 +276,19 @@
     </item>
     <item row="0" column="0">
      <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="2">
+     <spacer name="horizontalSpacer_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -268,7 +344,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>505</width>
+     <width>545</width>
      <height>21</height>
     </rect>
    </property>
@@ -370,6 +446,18 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>cbGWDimension</tabstop>
+  <tabstop>sbQLGamma</tabstop>
+  <tabstop>cbQLTecnicas</tabstop>
+  <tabstop>sbQLEpsilon</tabstop>
+  <tabstop>sbQLTau</tabstop>
+  <tabstop>btnEntrenar</tabstop>
+  <tabstop>btnComenzarProceso</tabstop>
+  <tabstop>btnTerminarProceso</tabstop>
+  <tabstop>btnGenValAleatorios</tabstop>
+  <tabstop>btnInicializar</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
  <designerdata>

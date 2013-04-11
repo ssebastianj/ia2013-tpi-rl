@@ -156,6 +156,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.cbQLTecnicas.currentIndexChanged.connect(self.parametros_segun_tecnica)
         self.WMainWindow.tblGridWorld.customContextMenuRequested.connect(self.show_item_menu)
         self.WMainWindow.btnGenValAleatorios.clicked.connect(self.mostrar_dialogo_gen_rnd_vals)
+        self.WMainWindow.btnInicializar.clicked.connect(self.inicializar_todo)
 
     def parametros_segun_tecnica(self, tecnica):
         u"""
@@ -199,7 +200,11 @@ class MainWindow(QtGui.QMainWindow):
         # Crear menu contextual para los items de la tabla
         menu_item = QtGui.QMenu("Tipo de estado")
         for tipo in tipos_estados.values():
-            action = QtGui.QAction(tipo.nombre, self.WMainWindow.tblGridWorld)
+            # Verificar si el tipo de estado posee un ícono
+            if tipo.icono is None:
+                action = QtGui.QAction(tipo.nombre, self.WMainWindow.tblGridWorld)
+            else:
+                action = QtGui.QAction(QtGui.QIcon(tipo.icono), tipo.nombre, self.WMainWindow.tblGridWorld)
             # Asociar al texto del menu el tipo de estado correspondiente
             action.setData(tipo.ide)
             menu_item.addAction(action)
@@ -267,6 +272,14 @@ class MainWindow(QtGui.QMainWindow):
         self.GenRndValsD = GenRndValsDialog(self)
         if self.GenRndValsD.exec_():
             pass
+
+    def inicializar_todo(self):
+        self._init_vars()
+        self.WMainWindow.cbGWDimension.setCurrentIndex(0)
+        self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
+        self.WMainWindow.sbQLEpsilon.setValue(0.00)
+        self.WMainWindow.sbQLGamma.setValue(0.00)
+        self.WMainWindow.sbQLTau.setValue(0.00)
 
     def mostrar_dialogo_acerca(self):
         u"""
