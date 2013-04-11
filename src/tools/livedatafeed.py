@@ -32,8 +32,8 @@ class LiveDataFeed(object):
     def add_data(self, data):
         """
         Agregar datos al Feed.
-        
-        @param data: Datos a agregar.
+
+        :param data: Datos a agregar.
         """
         self.cur_data = data
         self.has_new_data = True

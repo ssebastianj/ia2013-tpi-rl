@@ -54,11 +54,11 @@ class GridWorld(object):
             self._estados.append(fila)
 
     def get_estado(self, i, j):
-        return self._estados[i][j]
+        return self._estados[i - 1][j - 1]
 
     def set_estado(self, i, j, estado):
         if isinstance(estado, Estado):
-            self._estados[i][j] = estado
+            self._estados[i - 1][j - 1] = estado
         else:
             raise ValueError
 
@@ -85,6 +85,18 @@ class GridWorld(object):
 
     def set_tipos_estados(self, valor):
         self._tipos_estados = valor
+
+    def get_vecinos_estado(self, i, j):
+        # Comprobar si está en un borde
+        if (i == 1) or (i == self.alto) or (j == 1) or (j == self.ancho):
+            # Comprobar si está en una esquina
+            if (i == j) or (i == 1 and j == self.ancho) or (i == self.alto and j == 1):
+                pass
+            else:
+                pass
+        else:
+            # El estado no es borde ni esquina
+            pass
 
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")

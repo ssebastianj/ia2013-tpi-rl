@@ -102,42 +102,43 @@ class MainWindow(QtGui.QMainWindow):
         return (int(dimension[0]), int(dimension[1]))
 
     def set_gw_dimension(self, dimension):
-            u"""
-            Configura el tblGridWorld a la dimensión seleccionada e Inicializa los estados en Neutros.
+        u"""
+        Configura el tblGridWorld a la dimensión seleccionada e Inicializa los estados en Neutros.
 
-            :param dimension: Dimensión
-            """
-            # Obtener ancho y alto del GridWorld
-            ancho_gw, alto_gw = self.convert_dimension(dimension)
-            # Crear un nuevo GridWorld dados el ancho y el alto del mismo
-            self.gridworld = GridWorld(ancho_gw, alto_gw)
-            ancho_estado_px = 40
-            ancho_gw_px = ancho_estado_px * ancho_gw
+        :param dimension: Dimensión
+        """
+        # Obtener ancho y alto del GridWorld
+        ancho_gw, alto_gw = self.convert_dimension(dimension)
+        # Crear un nuevo GridWorld dados el ancho y el alto del mismo
+        self.gridworld = GridWorld(ancho_gw, alto_gw)
+        ancho_estado_px = 40
+        ancho_gw_px = ancho_estado_px * ancho_gw
 
-            # Establecer propiedades visuales de la tabla
-            self.WMainWindow.tblGridWorld.setRowCount(alto_gw)
-            self.WMainWindow.tblGridWorld.setColumnCount(ancho_gw)
-            self.WMainWindow.tblGridWorld.horizontalHeader().setDefaultSectionSize(ancho_estado_px)
-            self.WMainWindow.tblGridWorld.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-            self.WMainWindow.tblGridWorld.verticalHeader().setDefaultSectionSize(ancho_estado_px)
-            self.WMainWindow.tblGridWorld.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-            self.WMainWindow.tblGridWorld.setCursor(QtCore.Qt.PointingHandCursor)
-            ancho_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
-            alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
-            self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
-            self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # Establecer propiedades visuales de la tabla
+        self.WMainWindow.tblGridWorld.setRowCount(alto_gw)
+        self.WMainWindow.tblGridWorld.setColumnCount(ancho_gw)
+        self.WMainWindow.tblGridWorld.horizontalHeader().setDefaultSectionSize(ancho_estado_px)
+        self.WMainWindow.tblGridWorld.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
+        self.WMainWindow.tblGridWorld.verticalHeader().setDefaultSectionSize(ancho_estado_px)
+        self.WMainWindow.tblGridWorld.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
+        self.WMainWindow.tblGridWorld.setCursor(QtCore.Qt.PointingHandCursor)
+        ancho_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
+        alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
+        self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
+        self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.WMainWindow.tblGridWorld.setSortingEnabled(False)
 
-            # Rellenar tabla con items
-            for fila in range(0, self.gridworld.alto):
-                for columna in range(0, self.gridworld.ancho):
-                    estado = self.gridworld.get_estado(fila, columna)
-                    letra_estado = estado.tipo.letra
-                    # Cada item muestra la letra asignada al estado
-                    item = QtGui.QTableWidgetItem(str(letra_estado))
-                    item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
-                    item.setFlags(QtCore.Qt.ItemIsEnabled)
-                    item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
-                    self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
+        # Rellenar tabla con items
+        for fila in range(0, self.gridworld.alto):
+            for columna in range(0, self.gridworld.ancho):
+                estado = self.gridworld.get_estado(fila + 1, columna + 1)
+                letra_estado = estado.tipo.letra
+                # Cada item muestra la letra asignada al estado
+                item = QtGui.QTableWidgetItem(str(letra_estado))
+                item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
+                item.setFlags(QtCore.Qt.ItemIsEnabled)
+                item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
+                self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
 
     def _set_window_signals(self):
         u"""
@@ -221,7 +222,7 @@ class MainWindow(QtGui.QMainWindow):
             item.setText(tipos_estados[tipo_num].letra)
             # Establecer color de fondo de acuerdo al tipo de estado
             item.setBackgroundColor(QtGui.QColor(tipos_estados[tipo_num].color))
-            estado = self.gridworld.get_estado(item.row(), item.column())
+            estado = self.gridworld.get_estado(item.row() + 1, item.column() + 1)
             # Establecer tipo de estado seleccionado al estado en la matriz
             estado.tipo = tipos_estados[tipo_num]
 
@@ -304,3 +305,4 @@ class MainWindow(QtGui.QMainWindow):
         Finaliza la ejecución de la aplicación.
         """
         self.close()
+
