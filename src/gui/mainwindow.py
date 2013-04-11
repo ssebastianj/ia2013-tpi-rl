@@ -140,6 +140,11 @@ class MainWindow(QtGui.QMainWindow):
                 item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
                 self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
 
+        tecn = EGreedy(0.8)
+        ql = QLearning(self.gridworld, 0.5, tecn)
+
+        print ql.matriz_q
+
     def _set_window_signals(self):
         u"""
         Establece las señales correspondientes a los controles

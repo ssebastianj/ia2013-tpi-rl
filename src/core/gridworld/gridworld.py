@@ -18,7 +18,7 @@ class GridWorld(object):
         self._ancho = ancho
         self._alto = alto
         self._tipos_estados = None
-        self._estados = None
+        self._matriz_q = None
         self._inicializar_tipos_estados()
         self._inicializar_estados()
 
@@ -42,21 +42,21 @@ class GridWorld(object):
 
     def _inicializar_estados(self, default=TIPOESTADO.NEUTRO):
         u"""
-        Armar la matriz de estados con un tipo de estado predeterminado
+        Crea la matriz R de estados con un tipo de estado predeterminado.
         """
         default_tipo = self._tipos_estados[default]
 
-        self._estados = {}
-        for x in range(1, self._alto + 1):
-            for y in range(1, self._ancho + 1):
-                self._estados[(x, y)] = Estado(x, y, default_tipo)
+        self._matriz_q = {}
+        for i in range(1, self._alto + 1):
+            for j in range(1, self._ancho + 1):
+                self._matriz_q[(i, j)] = Estado(i, j, default_tipo)
 
-    def get_estado(self, i, j):
-        return self._estados[(i, j)]
+    def get_estado(self, x, y):
+        return self._matriz_q[(x, y)]
 
-    def set_estado(self, i, j, estado):
+    def set_estado(self, x, y, estado):
         if isinstance(estado, Estado):
-            self._estados[(i, j)] = estado
+            self._matriz_q[(x, y)] = estado
         else:
             raise ValueError
 
@@ -73,10 +73,10 @@ class GridWorld(object):
         self._alto = valor
 
     def get_estados(self):
-        return self._estados
+        return self._matriz_q
 
     def set_estados(self, valor):
-        self._estados = valor
+        self._matriz_q = valor
 
     def get_tipos_estados(self):
         return self._tipos_estados
@@ -84,19 +84,18 @@ class GridWorld(object):
     def set_tipos_estados(self, valor):
         self._tipos_estados = valor
 
-    def get_vecinos_estado(self, x_coord, y_coord):
+    def get_vecinos_estado(self, x, y):
         u"""
-        Devuelve las coordenadas de los estados vecinos en función de
-        las coordenadas de un estado dado.
+        Devuelve los estados adyacentes en función de un estado dado.
         Fuente: http://stackoverflow.com/questions/2373306/pythonic-and-efficient-way-of-finding-adjacent-cells-in-grid
 
-        :param x_coord: Fila de la celda
-        :param y_coord: Columna de la celda
+        :param x: Fila de la celda
+        :param y: Columna de la celda
         """
-        vecinos = []
-        for x, y in [(x_coord + i, y_coord + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0]:
-            if (x, y) in self._estados.keys():
-                vecinos.append((x, y))
+        vecinos = {}
+        for fila, columna in [(x + i, y + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0]:
+            if (fila, columna) in self._matriz_q.keys():
+                vecinos[(fila, columna)] = self.get_estado(fila, columna)
         return vecinos
 
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
