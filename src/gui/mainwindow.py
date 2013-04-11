@@ -10,7 +10,7 @@ from PyQt4 import QtCore, QtGui
 from gui.genrndvalsdialog import GenRndValsDialog
 from gui.qtgen.mainwindow import Ui_MainWindow
 
-from core.estado.estado import TIPOESTADO, TipoEstado
+from core.estado.estado import TIPOESTADO
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
 from core.tecnicas.egreedy import EGreedy
@@ -18,7 +18,7 @@ from core.tecnicas.softmax import Softmax
 
 from tools.livedatafeed import LiveDataFeed
 from tools.queue import get_all_from_queue, get_item_from_queue
-from tools.circular import Circular  # http://www.juanjoconti.com.ar/2007/02/28/lista-circular-en-python/
+from tools.listacircular import ListaCircular  # http://www.juanjoconti.com.ar/2007/02/28/lista-circular-en-python/
 
 
 try:
@@ -40,37 +40,6 @@ class MainWindow(QtGui.QMainWindow):
         self._init_vars()
         self._initialize_window()
 
-    def _initialize_window(self):
-        u"""
-        Configura y establece estado de los widgets en el cuadro de diálogo.
-        """
-        # Aspectos de la ventana principal
-        self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
-
-        # Cargar técnicas posibles
-        tecnicas = {0: "Greedy", 1: "ε-Greedy", 2: "Softmax"}
-        self.WMainWindow.cbQLTecnicas.clear()
-        for key, value in tecnicas.items():
-            self.WMainWindow.cbQLTecnicas.addItem(_tr(value), key)
-            self.WMainWindow.cbQLTecnicas.addAction(QtGui.QAction(_tr(value), self))
-        self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
-        self.WMainWindow.lblTau.hide()
-        self.WMainWindow.sbQLTau.hide()
-
-        # Cargar dimensiones posibles del tblGridWorld
-        gw_dimensiones = ["6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
-
-        self.WMainWindow.cbGWDimension.clear()
-        for dimension in gw_dimensiones:
-            self.WMainWindow.cbGWDimension.addItem(_tr(dimension), dimension)
-            self.WMainWindow.menuDimension.addAction(QtGui.QAction(_tr(dimension), self))
-
-        # Establece la dimensión por defecto del tblGridWorld en 6x6
-        self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
-
-        # Conexión de señales
-        self._set_window_signals()
-
     def _init_vars(self):
         u"""
         Inicializa las variables 'globales'.
@@ -89,6 +58,37 @@ class MainWindow(QtGui.QMainWindow):
         self.uc_factor_setted = None
         self.sim_activ = False
         self.inst_factor_setted = None
+        self.tecnicas = {0: "Greedy", 1: "ε-Greedy", 2: "Softmax"}
+        self.gw_dimensiones = ["6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
+        self.menu_contextual_estado = {"ocultar_tipos": [TIPOESTADO.AGENTE]}
+
+    def _initialize_window(self):
+        u"""
+        Configura y establece estado de los widgets en el cuadro de diálogo.
+        """
+        # Aspectos de la ventana principal
+        self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
+
+        # Cargar técnicas posibles
+        self.WMainWindow.cbQLTecnicas.clear()
+        for key, value in self.tecnicas.items():
+            self.WMainWindow.cbQLTecnicas.addItem(_tr(value), key)
+            self.WMainWindow.cbQLTecnicas.addAction(QtGui.QAction(_tr(value), self))
+        self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
+        self.WMainWindow.lblTau.hide()
+        self.WMainWindow.sbQLTau.hide()
+
+        # Cargar dimensiones posibles del tblGridWorld
+        self.WMainWindow.cbGWDimension.clear()
+        for dimension in self.gw_dimensiones:
+            self.WMainWindow.cbGWDimension.addItem(_tr(dimension), dimension)
+            self.WMainWindow.menuDimension.addAction(QtGui.QAction(_tr(dimension), self))
+
+        # Establece la dimensión por defecto del tblGridWorld en 6x6
+        self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
+
+        # Conexión de señales
+        self._set_window_signals()
 
     def convert_dimension(self, dim_str):
         u"""
@@ -200,28 +200,30 @@ class MainWindow(QtGui.QMainWindow):
         # Crear menu contextual para los items de la tabla
         menu_item = QtGui.QMenu("Tipo de estado")
         for tipo in tipos_estados.values():
-            # Verificar si el tipo de estado posee un ícono
-            if tipo.icono is None:
-                action = QtGui.QAction(tipo.nombre, self.WMainWindow.tblGridWorld)
-            else:
-                action = QtGui.QAction(QtGui.QIcon(tipo.icono), tipo.nombre, self.WMainWindow.tblGridWorld)
-            # Asociar al texto del menu el tipo de estado correspondiente
-            action.setData(tipo.ide)
-            menu_item.addAction(action)
+            if tipo.ide not in self.menu_contextual_estado["ocultar_tipos"]:
+                # Verificar si el tipo de estado posee un ícono
+                if tipo.icono is None:
+                    action = QtGui.QAction(tipo.nombre, self.WMainWindow.tblGridWorld)
+                else:
+                    action = QtGui.QAction(QtGui.QIcon(tipo.icono), tipo.nombre, self.WMainWindow.tblGridWorld)
+                # Asociar al texto del menu el tipo de estado correspondiente
+                action.setData(tipo.ide)
+                menu_item.addAction(action)
 
         # Mostrar el menú y obtener el item de menu clickeado
         action = menu_item.exec_(self.WMainWindow.tblGridWorld.mapToGlobal(posicion))
-        # Obtener el tipo de estado asociado al texto clickeado
-        tipo_num = action.data().toInt()[0]
-        # Averiguar en cual item de la tabla se hizo clic
-        item = self.WMainWindow.tblGridWorld.itemAt(posicion)
-        # Actualizar texto del item de la tabla en función del tipo de estado
-        item.setText(tipos_estados[tipo_num].letra)
-        # Establecer color de fondo de acuerdo al tipo de estado
-        item.setBackgroundColor(QtGui.QColor(tipos_estados[tipo_num].color))
-        estado = self.gridworld.get_estado(item.row(), item.column())
-        # Establecer tipo de estado seleccionado al estado en la matriz
-        estado.tipo = tipos_estados[tipo_num]
+        if action is not None:
+            # Obtener el tipo de estado asociado al texto clickeado
+            tipo_num = action.data().toInt()[0]
+            # Averiguar en cual item de la tabla se hizo clic
+            item = self.WMainWindow.tblGridWorld.itemAt(posicion)
+            # Actualizar texto del item de la tabla en función del tipo de estado
+            item.setText(tipos_estados[tipo_num].letra)
+            # Establecer color de fondo de acuerdo al tipo de estado
+            item.setBackgroundColor(QtGui.QColor(tipos_estados[tipo_num].color))
+            estado = self.gridworld.get_estado(item.row(), item.column())
+            # Establecer tipo de estado seleccionado al estado en la matriz
+            estado.tipo = tipos_estados[tipo_num]
 
     def entrenar(self):
         u"""

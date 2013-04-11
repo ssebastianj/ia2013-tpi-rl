@@ -5,12 +5,12 @@
 # http://www.juanjoconti.com.ar/2007/02/28/lista-circular-en-python/
 
 
-class Circular(list):
+class ListaCircular(list):
     """
     Lista circular doblemente enlazada
     """
     def __init__(self, *a, **kw):
-        super(Circular, self).__init__(*a, **kw)
+        super(ListaCircular, self).__init__(*a, **kw)
         self.position = 0
 
     def current(self):
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     class Prueba(unittest.TestCase):
         def setUp(self):
-            self.l = Circular([1, 2, 3, 15, "www", 'u'])
+            self.l = ListaCircular([1, 2, 3, 15, "www", 'u'])
 
         def testArrancaDeCero(self):
             self.assertEqual(self.l.current(), 1)
@@ -49,9 +49,9 @@ if __name__ == '__main__':
             self.assertEqual(self.l.prev(-6), 'u')
 
         def testNoItems(self):
-            self.assertRaises(Exception, Circular([]).next)
+            self.assertRaises(Exception, ListaCircular([]).next)
 
         def testInstanciarSinParametros(self):
-            self.assertEquals(Circular(), Circular([]))
+            self.assertEquals(ListaCircular(), ListaCircular([]))
 
     unittest.main()
