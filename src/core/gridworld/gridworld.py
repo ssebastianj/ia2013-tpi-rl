@@ -46,19 +46,17 @@ class GridWorld(object):
         """
         default_tipo = self._tipos_estados[default]
 
-        self._estados = []
-        for i in range(1, self._alto + 1):
-            fila = []
-            for j in range(1, self._ancho + 1):
-                fila.append(Estado(i, j, default_tipo))
-            self._estados.append(fila)
+        self._estados = {}
+        for x in range(1, self._alto + 1):
+            for y in range(1, self._ancho + 1):
+                self._estados[(x, y)] = Estado(x, y, default_tipo)
 
     def get_estado(self, i, j):
-        return self._estados[i - 1][j - 1]
+        return self._estados[(i, j)]
 
     def set_estado(self, i, j, estado):
         if isinstance(estado, Estado):
-            self._estados[i - 1][j - 1] = estado
+            self._estados[(i, j)] = estado
         else:
             raise ValueError
 
@@ -86,17 +84,20 @@ class GridWorld(object):
     def set_tipos_estados(self, valor):
         self._tipos_estados = valor
 
-    def get_vecinos_estado(self, i, j):
-        # Comprobar si está en un borde
-        if (i == 1) or (i == self.alto) or (j == 1) or (j == self.ancho):
-            # Comprobar si está en una esquina
-            if (i == j) or (i == 1 and j == self.ancho) or (i == self.alto and j == 1):
-                pass
-            else:
-                pass
-        else:
-            # El estado no es borde ni esquina
-            pass
+    def get_vecinos_estado(self, x_coord, y_coord):
+        u"""
+        Devuelve las coordenadas de los estados vecinos en función de
+        las coordenadas de un estado dado.
+        Fuente: http://stackoverflow.com/questions/2373306/pythonic-and-efficient-way-of-finding-adjacent-cells-in-grid
+
+        :param x_coord: Fila de la celda
+        :param y_coord: Columna de la celda
+        """
+        vecinos = []
+        for x, y in [(x_coord + i, y_coord + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0]:
+            if (x, y) in self._estados.keys():
+                vecinos.append((x, y))
+        return vecinos
 
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")
