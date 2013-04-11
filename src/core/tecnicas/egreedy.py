@@ -25,3 +25,13 @@ class EGreedy(QLTecnica):
         self._epsilon = valor
 
     epsilon = property(get_epsilon, set_epsilon, None, u"Parámetro Epsilon de la técnica")
+
+
+class Greedy(EGreedy):
+    u"""Técnica Greedy"""
+    def __init__(self):
+        u"""
+        Inicializador
+        """
+        super(Greedy, self).__init__(0.00)
+        self._epsilon = 0.00

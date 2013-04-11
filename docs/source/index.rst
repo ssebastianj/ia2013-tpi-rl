@@ -38,10 +38,21 @@ Contents:
 .. autoclass: EGreedy
    :members:
    :private-members:
-   :special-members:   
+   :special-members:
+   
+.. autoclass: Greedy
+   :members:
+   :private-members:
+   :special-members: 
 
 .. automodule:: core.tecnicas.softmax
 .. autoclass:: Softmax
+   :members:
+   :private-members:
+   :special-members:
+
+.. automodule:: core.tecnicas.rand
+.. autoclass:: TRandom
    :members:
    :private-members:
    :special-members:
