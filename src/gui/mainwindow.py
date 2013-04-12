@@ -143,7 +143,7 @@ class MainWindow(QtGui.QMainWindow):
         tecn = EGreedy(0.8)
         ql = QLearning(self.gridworld, 0.5, tecn)
 
-        print ql.matriz_q
+        print ql.tecnica.__class__.__name__
 
     def _set_window_signals(self):
         u"""

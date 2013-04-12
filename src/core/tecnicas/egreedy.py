@@ -6,7 +6,6 @@ from __future__ import absolute_import
 from core.tecnicas.tecnica import QLTecnica
 
 
-# TODO: Implementar técnica E-Greedy
 class EGreedy(QLTecnica):
     u"""Técnica EGreedy"""
     def __init__(self, epsilon):

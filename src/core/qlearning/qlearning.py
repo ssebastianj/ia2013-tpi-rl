@@ -57,14 +57,11 @@ class QLearning(object):
         else:
             raise ValueError(u"El parámetro debe ser del tipo GridWorld")
 
-    def get_valor_estado(self, x, y):
-        u"""
-        Devuelve el valor numérico del estado.
+    def get_estado(self, x, y):
+        return self._matriz_q[(x, y)]
 
-        :param x: Fila del estado
-        :param y: Columna del estado
-        """
-        return self._matriz_q[x][y]
+    def set_estado(self, x, y, estado):
+        self._matriz_q[(x, y)] = estado
 
     def set_valor_estado(self, x, y, valor):
         u"""

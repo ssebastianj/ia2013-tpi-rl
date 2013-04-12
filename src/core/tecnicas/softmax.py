@@ -6,7 +6,6 @@ from __future__ import absolute_import
 from core.tecnicas.tecnica import QLTecnica
 
 
-# TODO: Implementar técnica
 class Softmax(QLTecnica):
     u"""Técnica Softmax"""
     def __init__(self, tau):
