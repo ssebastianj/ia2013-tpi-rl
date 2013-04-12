@@ -18,7 +18,8 @@ class GridWorld(object):
         self._ancho = ancho
         self._alto = alto
         self._tipos_estados = None
-        self._matriz_q = None
+        self._matriz_r = None
+        self._coordenadas = None
         self._inicializar_tipos_estados()
         self._inicializar_estados()
 
@@ -46,17 +47,21 @@ class GridWorld(object):
         """
         default_tipo = self._tipos_estados[default]
 
-        self._matriz_q = {}
+        self._matriz_r = []
+        self._coordenadas = []
         for i in range(1, self._alto + 1):
+            fila = []
             for j in range(1, self._ancho + 1):
-                self._matriz_q[(i, j)] = Estado(i, j, default_tipo)
+                fila.append(Estado(i, j, default_tipo))
+                self._coordenadas.append((i, j))
+            self._matriz_r.append(fila)
 
     def get_estado(self, x, y):
-        return self._matriz_q[(x, y)]
+        return self._matriz_r[x - 1][y - 1]
 
     def set_estado(self, x, y, estado):
         if isinstance(estado, Estado):
-            self._matriz_q[(x, y)] = estado
+            self._matriz_r[x - 1][y - 1] = estado
         else:
             raise ValueError
 
@@ -72,11 +77,11 @@ class GridWorld(object):
     def set_alto(self, valor):
         self._alto = valor
 
-    def get_estados(self):
-        return self._matriz_q
+    def get_matriz_r(self):
+        return self._matriz_r
 
-    def set_estados(self, valor):
-        self._matriz_q = valor
+    def set_matriz_r(self, valor):
+        self._matriz_r = valor
 
     def get_tipos_estados(self):
         return self._tipos_estados
@@ -92,13 +97,13 @@ class GridWorld(object):
         :param x: Fila de la celda
         :param y: Columna de la celda
         """
-        vecinos = {}
+        vecinos = []
         for fila, columna in [(x + i, y + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0]:
-            if (fila, columna) in self._matriz_q.keys():
-                vecinos[(fila, columna)] = self.get_estado(fila, columna)
+            if (fila, columna) in self._coordenadas:
+                vecinos.append(self.get_estado(fila, columna))
         return vecinos
 
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")
-    estados = property(get_estados, set_estados, None, "Estados del GridWorld")
+    matriz_r = property(get_matriz_r, set_matriz_r, None, "Estados del GridWorld")
     tipos_estados = property(get_tipos_estados, set_tipos_estados, None, "Tipos de estados del GridWorld")

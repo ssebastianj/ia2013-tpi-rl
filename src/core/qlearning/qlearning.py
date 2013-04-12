@@ -25,14 +25,12 @@ class QLearning(object):
         self._gridworld = gridworld
         self._gamma = gamma
         self._tecnica = tecnica
+        self._coordenadas = None
         self._matriz_q = None
         self._inicializar_matriz_q(init_value)
 
     def get_matriz_q(self):
         return self._matriz_q
-
-    def set_matriz_q(self, valor):
-        self._matriz_q = valor
 
     def get_gamma(self):
         return self._gamma
@@ -59,10 +57,10 @@ class QLearning(object):
             raise ValueError(u"El parámetro debe ser del tipo GridWorld")
 
     def get_estado(self, x, y):
-        return self._matriz_q[(x, y)]
+        return self._matriz_q[x - 1][y - 1]
 
     def set_estado(self, x, y, estado):
-        self._matriz_q[(x, y)] = estado
+        self._matriz_q[x - 1][y - 1] = estado
 
     def set_valor_estado(self, x, y, valor):
         u"""
@@ -72,7 +70,10 @@ class QLearning(object):
         :param y: Columna del estado
         :param valor: Valor númerico
         """
-        self._matriz_q[x][y] = valor
+        self._matriz_q[x - 1][y - 1] = valor
+
+    def get_coordenadas(self):
+        return self._coordenadas
 
     def _inicializar_matriz_q(self, default=0):
         u"""
@@ -80,20 +81,14 @@ class QLearning(object):
 
         :param default: Valor con que se inicializa cada estado de la matriz.
         """
-        # Primero crear la matriz con tuplas como índices indicando la posición de cada estado
-        self._matriz_q = {}
+        self._matriz_q = []
+        self._coordenadas = []
         for i in range(1, self._gridworld.alto + 1):
+            fila = []
             for j in range(1, self._gridworld.ancho + 1):
-                self._matriz_q[(i, j)] = None
-
-        # Agregar a cada índice los estados adyacentes e inicializar con un valor por defecto
-        for i in range(1, self._gridworld.alto + 1):
-            for j in range(1, self._gridworld.ancho + 1):
-                vecinos = self.get_vecinos_estado(i, j)
-                vecinos_dict = {}
-                for (x, y) in vecinos:
-                    vecinos_dict[(x, y)] = default
-                self._matriz_q[(i, j)] = vecinos_dict
+                fila.append(default)
+                self._coordenadas.append((i, j))
+            self._matriz_q.append(fila)
 
     def get_vecinos_estado(self, x, y):
         u"""
@@ -103,10 +98,10 @@ class QLearning(object):
         :param x: Fila de la celda
         :param y: Columna de la celda
         """
-        vecinos = {}
+        vecinos = []
         for fila, columna in [(x + i, y + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0]:
-            if (fila, columna) in self._matriz_q.keys():
-                vecinos[(fila, columna)] = self.get_estado(fila, columna)
+            if (fila, columna) in self._coordenadas:
+                vecinos.append(self.get_estado(fila, columna))
         return vecinos
 
     def elegir_accion(self, x, y):
@@ -114,5 +109,6 @@ class QLearning(object):
 
     gamma = property(get_gamma, set_gamma, None, u"Propiedad Gamma de QLearning")
     tecnica = property(get_tecnica, set_tecnica, None, u"Propiedad Técnica de QLearning")
-    matriz_q = property(get_matriz_q, set_matriz_q, None, "Propiedad Matriz Q")
+    matriz_q = property(get_matriz_q, None, None, "Propiedad Matriz Q")
     gridworld = property(get_gridworld, set_gridworld, None, "Propiedad GridWorld")
+    coordenadas = property(get_coordenadas, None, None, "Propiedad Coordenadas")
