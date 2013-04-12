@@ -11,13 +11,14 @@ from core.tecnicas.softmax import Softmax
 
 class QLearning(object):
     u"""Algoritmo QLearning"""
-    def __init__(self, gridworld, gamma, tecnica, init_value=0):
+    def __init__(self, gridworld, gamma, tecnica, plays, init_value=0):
         """
         Inicializador
 
         :param gridworld: GridWorld sobre el cual se aplicará el algoritmo.
         :param gamma: Parámetro Gamma de QLearning.
         :param tecnica: Técnica a utilizar.
+        :param plays: Cantidad de Plays (Juegos) a realizar.
         :param init_value: Valor con que se inicializa cada estado de la matriz.
         """
         super(QLearning, self).__init__()
@@ -79,10 +80,20 @@ class QLearning(object):
 
         :param default: Valor con que se inicializa cada estado de la matriz.
         """
+        # Primero crear la matriz con tuplas como índices indicando la posición de cada estado
         self._matriz_q = {}
         for i in range(1, self._gridworld.alto + 1):
             for j in range(1, self._gridworld.ancho + 1):
-                self._matriz_q[(i, j)] = default
+                self._matriz_q[(i, j)] = None
+
+        # Agregar a cada índice los estados adyacentes e inicializar con un valor por defecto
+        for i in range(1, self._gridworld.alto + 1):
+            for j in range(1, self._gridworld.ancho + 1):
+                vecinos = self.get_vecinos_estado(i, j)
+                vecinos_dict = {}
+                for (x, y) in vecinos:
+                    vecinos_dict[(x, y)] = default
+                self._matriz_q[(i, j)] = vecinos_dict
 
     def get_vecinos_estado(self, x, y):
         u"""
@@ -97,6 +108,9 @@ class QLearning(object):
             if (fila, columna) in self._matriz_q.keys():
                 vecinos[(fila, columna)] = self.get_estado(fila, columna)
         return vecinos
+
+    def elegir_accion(self, x, y):
+        pass
 
     gamma = property(get_gamma, set_gamma, None, u"Propiedad Gamma de QLearning")
     tecnica = property(get_tecnica, set_tecnica, None, u"Propiedad Técnica de QLearning")
