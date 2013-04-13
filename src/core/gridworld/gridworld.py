@@ -18,8 +18,10 @@ class GridWorld(object):
         self._ancho = ancho
         self._alto = alto
         self._tipos_estados = None
+        self._estados = None
         self._matriz_r = None
         self._coordenadas = None
+        self._excluir_tipos_vecinos = []
         self._inicializar_tipos_estados()
         self._inicializar_estados()
 
@@ -47,21 +49,34 @@ class GridWorld(object):
         """
         default_tipo = self._tipos_estados[default]
 
-        self._matriz_r = []
+        self._estados = []
         self._coordenadas = []
         for i in range(1, self._alto + 1):
             fila = []
             for j in range(1, self._ancho + 1):
                 fila.append(Estado(i, j, default_tipo))
                 self._coordenadas.append((i, j))
+            self._estados.append(fila)
+
+        self._inicializar_matriz_r()
+
+    def _inicializar_matriz_r(self):
+        self._matriz_r = []
+        for i in range(1, self._alto + 1):
+            fila = []
+            for j in range(1, self._ancho + 1):
+                vecinos = self.get_vecinos_estado(i, j)
+                fila.append([vecino.tipo.recompensa for vecino in vecinos
+                             if vecino.tipo.ide not in self._excluir_tipos_vecinos
+                             ])
             self._matriz_r.append(fila)
 
     def get_estado(self, x, y):
-        return self._matriz_r[x - 1][y - 1]
+        return self._estados[x - 1][y - 1]
 
     def set_estado(self, x, y, estado):
         if isinstance(estado, Estado):
-            self._matriz_r[x - 1][y - 1] = estado
+            self._estados[x - 1][y - 1] = estado
         else:
             raise ValueError
 
@@ -80,14 +95,23 @@ class GridWorld(object):
     def get_matriz_r(self):
         return self._matriz_r
 
-    def set_matriz_r(self, valor):
-        self._matriz_r = valor
+    def get_estados(self):
+        return self._estados
+
+    def set_estados(self, valor):
+        self._estados = valor
 
     def get_tipos_estados(self):
         return self._tipos_estados
 
     def set_tipos_estados(self, valor):
         self._tipos_estados = valor
+
+    def get_tipos_vecinos_excluidos(self):
+        return self._excluir_tipos_vecinos
+
+    def set_tipos_vecinos_excluidos(self, valor):
+        self._excluir_tipos_vecinos = valor
 
     def get_vecinos_estado(self, x, y):
         u"""
@@ -103,7 +127,24 @@ class GridWorld(object):
                 vecinos.append(self.get_estado(fila, columna))
         return vecinos
 
+    def matriz_estados_to_string(self):
+        u"""
+        Devuelve un string representando los estados en una estructura tabular (matriz)
+        """
+        matriz = ""
+        for fila in self._estados:
+            matriz += "| "
+            for estado in fila:
+                matriz += estado.tipo.letra + " | "
+            matriz += "\n"
+        return matriz
+
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")
-    matriz_r = property(get_matriz_r, set_matriz_r, None, "Estados del GridWorld")
-    tipos_estados = property(get_tipos_estados, set_tipos_estados, None, "Tipos de estados del GridWorld")
+    matriz_r = property(get_matriz_r, None, None, "Matriz R del GridWorld")
+    estados = property(get_estados, set_estados, None, "Estados del GridWorld")
+    tipos_estados = property(get_tipos_estados, set_tipos_estados, None,
+                             "Tipos de estados del GridWorld")
+    tipos_vecinos_excluidos = property(get_tipos_vecinos_excluidos,
+                                       set_tipos_vecinos_excluidos, None,
+                                       "Tipos de vecinos excluidos al calcular los vecinos adyacentes")

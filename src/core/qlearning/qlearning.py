@@ -11,14 +11,14 @@ from core.tecnicas.softmax import Softmax
 
 class QLearning(object):
     u"""Algoritmo QLearning"""
-    def __init__(self, gridworld, gamma, tecnica, plays, init_value=0):
+    def __init__(self, gridworld, gamma, tecnica, episodes, init_value=0):
         """
         Inicializador
 
         :param gridworld: GridWorld sobre el cual se aplicará el algoritmo.
         :param gamma: Parámetro Gamma de QLearning.
         :param tecnica: Técnica a utilizar.
-        :param plays: Cantidad de Plays (Juegos) a realizar.
+        :param episodes: Cantidad de veces que se puede alcanzar el estado final.
         :param init_value: Valor con que se inicializa cada estado de la matriz.
         """
         super(QLearning, self).__init__()

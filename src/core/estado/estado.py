@@ -98,6 +98,7 @@ class Estado(object):
         self._fila = fila
         self._columna = columna
         self._tipo = tipo
+        self._vecinos = None
 
     def get_fila(self):
         return self._fila
@@ -120,6 +121,10 @@ class Estado(object):
         else:
             raise ValueError
 
+    def get_vecinos(self):
+        return self._vecinos
+
     fila = property(get_fila, set_fila, None, "Propiedad Fila del estado")
     columna = property(get_columna, set_columna, None, "Propiedad Columna del estado")
     tipo = property(get_tipo, set_tipo, None, "Propiedad Tipo del estado")
+    vecinos = property(get_vecinos, None, None, "Propiedad Vecinos del estado")

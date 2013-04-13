@@ -140,11 +140,6 @@ class MainWindow(QtGui.QMainWindow):
                 item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
                 self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
 
-        tec = EGreedy(0.8)
-        ql = QLearning(self.gridworld, 0.5, tec, 1000)
-        print ql.matriz_q
-        print ql.coordenadas
-
     def _set_window_signals(self):
         u"""
         Establece las señales correspondientes a los controles
@@ -230,6 +225,9 @@ class MainWindow(QtGui.QMainWindow):
             estado = self.gridworld.get_estado(item.row() + 1, item.column() + 1)
             # Establecer tipo de estado seleccionado al estado en la matriz
             estado.tipo = tipos_estados[tipo_num]
+
+            print self.gridworld.matriz_estados_to_string()
+            print self.gridworld.matriz_r
 
     def entrenar(self):
         u"""
