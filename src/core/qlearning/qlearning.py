@@ -3,10 +3,13 @@
 
 from __future__ import absolute_import
 
+import random
 from core.gridworld.gridworld import GridWorld
 from core.tecnicas.tecnica import QLTecnica
 from core.tecnicas.egreedy import EGreedy
 from core.tecnicas.softmax import Softmax
+from core.estado.estado import TIPOESTADO
+
 
 
 class QLearning(object):
@@ -27,7 +30,45 @@ class QLearning(object):
         self._tecnica = tecnica
         self._coordenadas = None
         self._matriz_q = None
+        self._episodes = episodes
         self._inicializar_matriz_q(init_value)
+
+    def _generar_estado_aleatorio(self):
+        x = random.randint(1, self._gridworld.ancho)
+        y = random.randint(1, self._gridworld.alto)
+        return (x, y)
+
+    def entrenar(self):
+        matriz_r = self._gridworld.get_matriz_r()
+        self._inicializar_matriz_q()
+
+        for i in range(1, self._episodes + 1):
+            print "Numero de episodio: {0}".format(i)
+            (x, y) = self._generar_estado_aleatorio()
+            estado_actual = self._gridworld.get_estado(x, y)
+
+            contador = 0
+            while not estado_actual.tipo.ide == TIPOESTADO.FINAL:
+                vecinos = matriz_r[estado_actual.fila - 1][estado_actual.columna - 1]
+                estado_elegido = self._tecnica.obtener_accion(self._matriz_q, vecinos)
+                recompensa_estado = estado_elegido.tipo.recompensa
+                vecinos_est_elegido = self._gridworld.matriz_r[estado_elegido.fila - 1][estado_elegido.columna - 1]
+
+                recompensa_vecinos = []
+                for i in vecinos_est_elegido:
+                    recompensa_vecinos.append(i.tipo.recompensa)
+                recompensa_max = max(recompensa_vecinos)
+                if recompensa_estado is not None:
+                    nuevo_q = recompensa_estado + (self._gamma * recompensa_max)
+                self._matriz_q[estado_elegido.fila - 1][estado_elegido.columna - 1] = nuevo_q
+                estado_actual = estado_elegido
+
+                contador += 1
+                print "Iteraciones {0}".format(contador)
+
+
+                print self._matriz_q
+
 
     def get_matriz_q(self):
         return self._matriz_q
@@ -61,6 +102,13 @@ class QLearning(object):
 
     def set_estado(self, x, y, estado):
         self._matriz_q[x - 1][y - 1] = estado
+
+    def get_episodes(self):
+        return self._episodes
+
+
+    def set_episodes(self, value):
+        self._episodes = value
 
     def set_valor_estado(self, x, y, valor):
         u"""
@@ -112,3 +160,4 @@ class QLearning(object):
     matriz_q = property(get_matriz_q, None, None, "Propiedad Matriz Q")
     gridworld = property(get_gridworld, set_gridworld, None, "Propiedad GridWorld")
     coordenadas = property(get_coordenadas, None, None, "Propiedad Coordenadas")
+    episodes = property(get_episodes, set_episodes, None, "episodes's docstring")

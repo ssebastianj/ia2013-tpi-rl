@@ -36,7 +36,7 @@ class GridWorld(object):
         # Estado Inicial
         self._tipos_estados[TIPOESTADO.INICIAL] = TipoEstado(TIPOESTADO.INICIAL, None, "Inicial", "I", "#FF0011")
         # Estado Final
-        self._tipos_estados[TIPOESTADO.FINAL] = TipoEstado(TIPOESTADO.FINAL, None, "Final", "F", "#2F4055")
+        self._tipos_estados[TIPOESTADO.FINAL] = TipoEstado(TIPOESTADO.FINAL, 150, "Final", "F", "#2F4055")
         # Estado Agente
         self._tipos_estados[TIPOESTADO.AGENTE] = TipoEstado(TIPOESTADO.AGENTE, None, "Agente", "A", "#FF2288")
         # Estados Intermedios
@@ -80,11 +80,12 @@ class GridWorld(object):
                 # Obtener los estados vecinos del estado actual (i, j)
                 vecinos = self.get_vecinos_estado(i, j)
                 # Agregar vecinos al estado excluyendo los prohibidos
-                fila.append([vecino.tipo.recompensa for vecino in vecinos
+                fila.append([vecino for vecino in vecinos
                              if vecino.tipo.ide not in self._excluir_tipos_vecinos
                              ])
             matriz_r.append(fila)
         return matriz_r
+
 
     def get_estado(self, x, y):
         u"""

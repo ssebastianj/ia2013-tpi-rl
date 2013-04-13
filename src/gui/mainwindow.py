@@ -140,6 +140,10 @@ class MainWindow(QtGui.QMainWindow):
                 item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
                 self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
 
+        print self.gridworld.matriz_r
+        tecnica = EGreedy(0.8)
+        self.ql = QLearning(self.gridworld, 0.4, tecnica, 12)
+
     def _set_window_signals(self):
         u"""
         Establece las señales correspondientes a los controles
@@ -230,7 +234,7 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Probando si anda la señal clicked()
         """
-        pass
+        self.ql.entrenar()
 
     def terminar_proceso(self):
         u"""
