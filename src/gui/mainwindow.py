@@ -226,9 +226,6 @@ class MainWindow(QtGui.QMainWindow):
             # Establecer tipo de estado seleccionado al estado en la matriz
             estado.tipo = tipos_estados[tipo_num]
 
-            print self.gridworld.matriz_estados_to_string()
-            print self.gridworld.matriz_r
-
     def entrenar(self):
         u"""
         Probando si anda la señal clicked()

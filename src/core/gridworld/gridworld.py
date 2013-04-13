@@ -8,11 +8,15 @@ from core.estado.estado import Estado, TipoEstado, TIPOESTADO
 
 class GridWorld(object):
     """Clase GridWorld"""
-    def __init__(self, ancho, alto):
-        """
+    def __init__(self, ancho, alto, estados=None, tipos_estados=None, excluir_tipos_vecinos=None):
+        u"""
         :param ancho: Ancho
         :param alto: Alto
-        :param estados: Conjunto de estados
+        :param estados: Matriz MxN conteniendo los estados (lista de lista)
+        :param tipos_estados: Lista conteniendo los tipos de estados disponibles
+        :param excluir_tipos_vecinos: Lista conteniendo los identificadores de
+                                      tipos de estado a excluir al momento de
+                                      obtener los vecinos de un estado dado.
         """
         super(GridWorld, self).__init__()
         self._ancho = ancho
@@ -21,7 +25,7 @@ class GridWorld(object):
         self._estados = None
         self._matriz_r = None
         self._coordenadas = None
-        self._excluir_tipos_vecinos = []
+        self._excluir_tipos_vecinos = None
         self._inicializar_tipos_estados()
         self._inicializar_estados()
 
@@ -47,10 +51,12 @@ class GridWorld(object):
         u"""
         Crea la matriz R de estados con un tipo de estado predeterminado.
         """
+        # Tipo de estado con el que se inicializará cada estado
         default_tipo = self._tipos_estados[default]
 
         self._estados = []
         self._coordenadas = []
+        # Crear una lista de listas
         for i in range(1, self._alto + 1):
             fila = []
             for j in range(1, self._ancho + 1):
@@ -58,23 +64,44 @@ class GridWorld(object):
                 self._coordenadas.append((i, j))
             self._estados.append(fila)
 
+        # Ahora es necesario crear la matriz R a partir de la matriz de estados
         self._inicializar_matriz_r()
 
     def _inicializar_matriz_r(self):
+        # Verificar si hay tipos de vecinos a excluir de la matriz R
+        if self._excluir_tipos_vecinos is None:
+            self._excluir_tipos_vecinos = []
+
         self._matriz_r = []
+        # Crear una lista de listas
         for i in range(1, self._alto + 1):
             fila = []
             for j in range(1, self._ancho + 1):
+                # Obtener los estados vecinos del estado actual (i, j)
                 vecinos = self.get_vecinos_estado(i, j)
+                # Agregar vecinos al estado excluyendo los prohibidos
                 fila.append([vecino.tipo.recompensa for vecino in vecinos
                              if vecino.tipo.ide not in self._excluir_tipos_vecinos
                              ])
             self._matriz_r.append(fila)
 
     def get_estado(self, x, y):
+        u"""
+        Devuelve un estado dadas sus coordenadas.
+
+        :param x: Fila del estado
+        :param y: Columna del estado
+        """
         return self._estados[x - 1][y - 1]
 
     def set_estado(self, x, y, estado):
+        u"""
+        Asigna un estado en una posición X,Y dada.
+
+        :param x: Fila de destino
+        :param y: Columna de destino
+        :param estado: Estado a asignar
+        """
         if isinstance(estado, Estado):
             self._estados[x - 1][y - 1] = estado
         else:
@@ -112,14 +139,17 @@ class GridWorld(object):
 
     def set_tipos_vecinos_excluidos(self, valor):
         self._excluir_tipos_vecinos = valor
+        # Al cambiar los tipos de vecinos exluidos se debe armar nuevamente
+        # la matriz R
+        self._inicializar_matriz_r()
 
     def get_vecinos_estado(self, x, y):
         u"""
         Devuelve los estados adyacentes en función de un estado dado.
         Fuente: http://stackoverflow.com/questions/2373306/pythonic-and-efficient-way-of-finding-adjacent-cells-in-grid
 
-        :param x: Fila de la celda
-        :param y: Columna de la celda
+        :param x: Fila del estado
+        :param y: Columna del estado
         """
         vecinos = []
         for fila, columna in [(x + i, y + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0]:
@@ -139,6 +169,7 @@ class GridWorld(object):
             matriz += "\n"
         return matriz
 
+    # Propiedades (atributos) de la clase
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")
     matriz_r = property(get_matriz_r, None, None, "Matriz R del GridWorld")
