@@ -23,7 +23,6 @@ class GridWorld(object):
         self._alto = alto
         self._tipos_estados = None
         self._estados = None
-        self._matriz_r = None
         self._coordenadas = None
         self._excluir_tipos_vecinos = None
         self._inicializar_tipos_estados()
@@ -49,7 +48,7 @@ class GridWorld(object):
 
     def _inicializar_estados(self, default=TIPOESTADO.NEUTRO):
         u"""
-        Crea la matriz R de estados con un tipo de estado predeterminado.
+        Crea la matriz de estados con un tipo de estado predeterminado.
         """
         # Tipo de estado con el que se inicializará cada estado
         default_tipo = self._tipos_estados[default]
@@ -64,15 +63,16 @@ class GridWorld(object):
                 self._coordenadas.append((i, j))
             self._estados.append(fila)
 
-        # Ahora es necesario crear la matriz R a partir de la matriz de estados
-        self._inicializar_matriz_r()
-
-    def _inicializar_matriz_r(self):
+    def get_matriz_r(self):
+        u"""
+        Crea y devuelve la matriz R de recompensa en en función de la ubicación de los estados
+        y sus vecinos. Representa las transiciones posibles.
+        """
         # Verificar si hay tipos de vecinos a excluir de la matriz R
         if self._excluir_tipos_vecinos is None:
             self._excluir_tipos_vecinos = []
 
-        self._matriz_r = []
+        matriz_r = []
         # Crear una lista de listas
         for i in range(1, self._alto + 1):
             fila = []
@@ -83,7 +83,8 @@ class GridWorld(object):
                 fila.append([vecino.tipo.recompensa for vecino in vecinos
                              if vecino.tipo.ide not in self._excluir_tipos_vecinos
                              ])
-            self._matriz_r.append(fila)
+            matriz_r.append(fila)
+        return matriz_r
 
     def get_estado(self, x, y):
         u"""
@@ -119,9 +120,6 @@ class GridWorld(object):
     def set_alto(self, valor):
         self._alto = valor
 
-    def get_matriz_r(self):
-        return self._matriz_r
-
     def get_estados(self):
         return self._estados
 
@@ -139,9 +137,6 @@ class GridWorld(object):
 
     def set_tipos_vecinos_excluidos(self, valor):
         self._excluir_tipos_vecinos = valor
-        # Al cambiar los tipos de vecinos exluidos se debe armar nuevamente
-        # la matriz R
-        self._inicializar_matriz_r()
 
     def get_vecinos_estado(self, x, y):
         u"""
