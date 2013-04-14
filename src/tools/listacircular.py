@@ -6,8 +6,10 @@
 
 
 class ListaCircular(list):
-    """
+    u"""
     Lista circular doblemente enlazada
+
+    Fuente: http://www.juanjoconti.com.ar/2007/02/28/lista-circular-en-python/
     """
     def __init__(self, *a, **kw):
         super(ListaCircular, self).__init__(*a, **kw)

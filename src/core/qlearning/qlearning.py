@@ -6,17 +6,14 @@ from __future__ import absolute_import
 import random
 from core.gridworld.gridworld import GridWorld
 from core.tecnicas.tecnica import QLTecnica
-from core.tecnicas.egreedy import EGreedy
-from core.tecnicas.softmax import Softmax
 from core.estado.estado import TIPOESTADO
-
 
 
 class QLearning(object):
     u"""Algoritmo QLearning"""
     def __init__(self, gridworld, gamma, tecnica, episodes, init_value=0):
         """
-        Inicializador
+        Inicializador.
 
         :param gridworld: GridWorld sobre el cual se aplicará el algoritmo.
         :param gamma: Parámetro Gamma de QLearning.
@@ -34,17 +31,33 @@ class QLearning(object):
         self._inicializar_matriz_q(init_value)
 
     def _generar_estado_aleatorio(self):
+        u"""
+        Devuelve una tupla conteniendo las coordenadas X e Y aleatorias.
+        """
         x = random.randint(1, self._gridworld.ancho)
         y = random.randint(1, self._gridworld.alto)
         return (x, y)
 
     def entrenar(self):
+        u"""
+        Ejecuta el algoritmo Q-Learning para completar la matriz Q.
+        """
+        # Obtener matriz R de recompensa
         matriz_r = self._gridworld.get_matriz_r()
         self._inicializar_matriz_q()
 
+        # Ejecutar una cantidad dada de Episodios
         for i in range(1, self._episodes + 1):
             print "Numero de episodio: {0}".format(i)
+            # Obtener coordenadas aleatorias y obtener Estado asociado
             (x, y) = self._generar_estado_aleatorio()
+
+            # Comprobar si el estado aleatorio coincide con el estado final
+            aux_estado = self._gridworld.get_estado(x, y)
+            while aux_estado.tipo.ide == TIPOESTADO.FINAL:
+                (x, y) = self._generar_estado_aleatorio()
+                aux_estado = self._gridworld.get_estado(x, y)
+
             estado_actual = self._gridworld.get_estado(x, y)
 
             contador = 0
@@ -86,7 +99,7 @@ class QLearning(object):
         if isinstance(valor, QLTecnica):
             self._tecnica = valor
         else:
-            raise ValueError(u"El parámetro debe ser del tipo QLTécnica")
+            raise TypeError(u"El parámetro debe ser del tipo QLTécnica")
 
     def get_gridworld(self):
         return self._gridworld
@@ -95,7 +108,7 @@ class QLearning(object):
         if isinstance(valor, GridWorld):
             self._gridworld = valor
         else:
-            raise ValueError(u"El parámetro debe ser del tipo GridWorld")
+            raise TypeError(u"El parámetro debe ser del tipo GridWorld")
 
     def get_estado(self, x, y):
         return self._matriz_q[x - 1][y - 1]
@@ -105,7 +118,6 @@ class QLearning(object):
 
     def get_episodes(self):
         return self._episodes
-
 
     def set_episodes(self, value):
         self._episodes = value

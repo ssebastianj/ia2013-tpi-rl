@@ -119,7 +119,7 @@ class Estado(object):
         if isinstance(valor, TipoEstado):
             self._tipo = valor
         else:
-            raise ValueError
+            raise TypeError
 
     def get_vecinos(self):
         return self._vecinos

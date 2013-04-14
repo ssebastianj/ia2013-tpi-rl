@@ -13,12 +13,12 @@ from gui.qtgen.mainwindow import Ui_MainWindow
 from core.estado.estado import TIPOESTADO
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
-from core.tecnicas.egreedy import EGreedy
+from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
 from tools.livedatafeed import LiveDataFeed
 from tools.queue import get_all_from_queue, get_item_from_queue
-from tools.listacircular import ListaCircular  # http://www.juanjoconti.com.ar/2007/02/28/lista-circular-en-python/
+from tools.listacircular import ListaCircular
 
 
 try:
@@ -59,7 +59,8 @@ class MainWindow(QtGui.QMainWindow):
         self.sim_activ = False
         self.inst_factor_setted = None
         self.tecnicas = {0: "Greedy", 1: "ε-Greedy", 2: "Softmax"}
-        self.gw_dimensiones = ["6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
+        self.gw_dimensiones = ["2 x 2", "3 x 3", "4 x 4", "5 x 5", "6 x 6",
+                               "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.menu_contextual_estado = {"ocultar_tipos": [TIPOESTADO.AGENTE]}
 
     def _initialize_window(self):
@@ -75,6 +76,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.cbQLTecnicas.addItem(_tr(value), key)
             self.WMainWindow.cbQLTecnicas.addAction(QtGui.QAction(_tr(value), self))
         self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
+        self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
         self.WMainWindow.lblTau.hide()
         self.WMainWindow.sbQLTau.hide()
 
@@ -86,6 +88,9 @@ class MainWindow(QtGui.QMainWindow):
 
         # Establece la dimensión por defecto del tblGridWorld en 6x6
         self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
+
+        # Establecer por defecto 10 episodios
+        self.WMainWindow.sbCantidadEpisodios.setValue(10)
 
         # Conexión de señales
         self._set_window_signals()
@@ -140,10 +145,6 @@ class MainWindow(QtGui.QMainWindow):
                 item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
                 self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
 
-        print self.gridworld.matriz_r
-        tecnica = EGreedy(0.8)
-        self.ql = QLearning(self.gridworld, 0.4, tecnica, 12)
-
     def _set_window_signals(self):
         u"""
         Establece las señales correspondientes a los controles
@@ -178,6 +179,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbQLTau.hide()
             self.WMainWindow.lblEpsilon.show()
             self.WMainWindow.sbQLEpsilon.show()
+            self.WMainWindow.sbQLEpsilon.setMinimum(0.00)
             self.WMainWindow.sbQLEpsilon.setValue(0.00)
             self.WMainWindow.sbQLEpsilon.setEnabled(False)
         elif key == 1:
@@ -186,6 +188,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbQLTau.hide()
             self.WMainWindow.lblEpsilon.show()
             self.WMainWindow.sbQLEpsilon.show()
+            self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
             self.WMainWindow.sbQLEpsilon.setEnabled(True)
         elif key == 2:
             # Softmax
@@ -231,10 +234,34 @@ class MainWindow(QtGui.QMainWindow):
             estado.tipo = tipos_estados[tipo_num]
 
     def entrenar(self):
-        u"""
-        Probando si anda la señal clicked()
-        """
-        self.ql.entrenar()
+        # Obtener la información asociada al ítem actual del combobox
+        item_data = self.WMainWindow.cbQLTecnicas.itemData(self.WMainWindow.cbQLTecnicas.currentIndex())
+        # Obtener el índice propio de la técnica a utilizar
+        id_tecnica = item_data.toInt()[0]
+        tecnica = self.tecnicas[id_tecnica]
+
+        if id_tecnica == 0:
+            # Greedy
+            tecnica = Greedy()
+        elif id_tecnica == 1:
+            # E-Greedy
+            epsilon = self.WMainWindow.sbQLEpsilon.value()
+            tecnica = EGreedy(epsilon)
+        elif id_tecnica == 2:
+            # Softmax
+            tau = self.WMainWindow.sbQLTau.value()
+            tecnica = Softmax(tau)
+        else:
+            tecnica = None
+
+        gamma = self.WMainWindow.sbQLGamma.value()
+        cant_episodios = int(self.WMainWindow.sbCantidadEpisodios.text())
+        valor_inicial = 0
+
+        # Crear nueva instancia de Q-Learning
+        self.qlearning = QLearning(self.gridworld, gamma, tecnica, cant_episodios, valor_inicial)
+        # Que empiece la magia
+        self.qlearning.entrenar()
 
     def terminar_proceso(self):
         u"""
@@ -284,7 +311,9 @@ class MainWindow(QtGui.QMainWindow):
         self._init_vars()
         self.WMainWindow.cbGWDimension.setCurrentIndex(0)
         self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
-        self.WMainWindow.sbQLEpsilon.setValue(0.00)
+        self.WMainWindow.sbCantidadEpisodios.setValue(10)
+        self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
+        self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
         self.WMainWindow.sbQLGamma.setValue(0.00)
         self.WMainWindow.sbQLTau.setValue(0.00)
 
@@ -309,4 +338,3 @@ class MainWindow(QtGui.QMainWindow):
         Finaliza la ejecución de la aplicación.
         """
         self.close()
-

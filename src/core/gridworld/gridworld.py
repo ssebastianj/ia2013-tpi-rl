@@ -86,7 +86,6 @@ class GridWorld(object):
             matriz_r.append(fila)
         return matriz_r
 
-
     def get_estado(self, x, y):
         u"""
         Devuelve un estado dadas sus coordenadas.
@@ -107,7 +106,7 @@ class GridWorld(object):
         if isinstance(estado, Estado):
             self._estados[x - 1][y - 1] = estado
         else:
-            raise ValueError
+            raise TypeError
 
     def get_ancho(self):
         return self._ancho
@@ -148,7 +147,9 @@ class GridWorld(object):
         :param y: Columna del estado
         """
         vecinos = []
-        for fila, columna in [(x + i, y + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0]:
+        for fila, columna in [(x + i, y + j)
+                              for i in (-1, 0, 1) for j in (-1, 0, 1)
+                              if i != 0 or j != 0]:
             if (fila, columna) in self._coordenadas:
                 vecinos.append(self.get_estado(fila, columna))
         return vecinos

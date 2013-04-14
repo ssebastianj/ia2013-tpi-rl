@@ -7,7 +7,7 @@ import random
 from core.tecnicas.tecnica import QLTecnica
 
 
-class TRandom(QLTecnica):
+class Aleatorio(QLTecnica):
     u"""Técnica EGreedy"""
     def __init__(self, comienzo_rango=0, fin_rango=1):
         u"""
@@ -16,7 +16,7 @@ class TRandom(QLTecnica):
         :param comienzo_rango: Valor inicial del rango de generación.
         :param fin_rango: Valor final del rango de generación.
         """
-        super(TRandom, self).__init__()
+        super(Aleatorio, self).__init__()
         if comienzo_rango < fin_rango:
             self._comienzo_rango = comienzo_rango
             self._fin_rango = fin_rango

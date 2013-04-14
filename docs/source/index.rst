@@ -51,8 +51,8 @@ Contents:
    :private-members:
    :special-members:
 
-.. automodule:: core.tecnicas.rand
-.. autoclass:: TRandom
+.. automodule:: core.tecnicas.aleatorio
+.. autoclass:: Aleatorio
    :members:
    :private-members:
    :special-members:
