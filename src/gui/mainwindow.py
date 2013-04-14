@@ -58,7 +58,10 @@ class MainWindow(QtGui.QMainWindow):
         self.uc_factor_setted = None
         self.sim_activ = False
         self.inst_factor_setted = None
-        self.tecnicas = {0: "Greedy", 1: "ε-Greedy", 2: "Softmax"}
+        self.tecnicas = {0: "Greedy",
+                         1: "ε-Greedy",
+                         2: "Softmax",
+                         3: "Aleatorio"}
         self.gw_dimensiones = ["2 x 2", "3 x 3", "4 x 4", "5 x 5", "6 x 6",
                                "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.menu_contextual_estado = {"ocultar_tipos": [TIPOESTADO.AGENTE]}
@@ -91,6 +94,12 @@ class MainWindow(QtGui.QMainWindow):
 
         # Establecer por defecto 10 episodios
         self.WMainWindow.sbCantidadEpisodios.setValue(10)
+
+        # Establecer por defecto un Epsilon = 0.5
+        self.WMainWindow.sbQLEpsilon.setValue(0.5)
+
+        # Establecer por defecto un Gamma = 0.5
+        self.WMainWindow.sbQLGamma.setValue(0.5)
 
         # Conexión de señales
         self._set_window_signals()

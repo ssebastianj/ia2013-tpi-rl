@@ -1,6 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="en_US" sourcelanguage="es_AR">
+<context>
+    <name>GenRndValsDialog</name>
+    <message>
+        <location filename="genrndvalsdialog.ui" line="30"/>
+        <source>Generar valores aleatorios</source>
+        <translation>Generate random values</translation>
+    </message>
+    <message>
+        <location filename="genrndvalsdialog.ui" line="36"/>
+        <source>Generar...</source>
+        <translation>Generate...</translation>
+    </message>
+    <message utf8="true">
+        <location filename="genrndvalsdialog.ui" line="52"/>
+        <source>Dimensión aleatoria</source>
+        <translation>Random dimension</translation>
+    </message>
+    <message>
+        <location filename="genrndvalsdialog.ui" line="75"/>
+        <source>Estados aleatorios de diferente tipo</source>
+        <translation>Varied types random states  </translation>
+    </message>
+    <message utf8="true">
+        <location filename="genrndvalsdialog.ui" line="86"/>
+        <source>Técnica aleatoria</source>
+        <translation>Random technique</translation>
+    </message>
+    <message utf8="true">
+        <location filename="genrndvalsdialog.ui" line="109"/>
+        <source>Valores de los parámetros</source>
+        <translation>Parameters values</translation>
+    </message>
+    <message>
+        <location filename="genrndvalsdialog.ui" line="118"/>
+        <source>Ambos</source>
+        <translation>Both</translation>
+    </message>
+    <message>
+        <location filename="genrndvalsdialog.ui" line="152"/>
+        <source>&amp;Generar</source>
+        <translation>&amp;Generate</translation>
+    </message>
+    <message>
+        <location filename="genrndvalsdialog.ui" line="162"/>
+        <source>Cancelar</source>
+        <translation>Cancel</translation>
+    </message>
+</context>
 <context>
     <name>MainWindow</name>
     <message>
@@ -9,122 +57,192 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="37"/>
-        <location filename="mainwindow.ui" line="307"/>
+        <location filename="mainwindow.ui" line="125"/>
+        <location filename="mainwindow.ui" line="250"/>
         <source>Grid World</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="mainwindow.ui" line="45"/>
+        <location filename="mainwindow.ui" line="258"/>
         <source>Dimensión:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="63"/>
+        <location filename="mainwindow.ui" line="276"/>
         <source>Q-Learning</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="mainwindow.ui" line="71"/>
+        <location filename="mainwindow.ui" line="419"/>
         <source>Gamma (Ɣ):</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="mainwindow.ui" line="95"/>
+        <location filename="mainwindow.ui" line="531"/>
         <source>Técnica de aprendizaje:</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="mainwindow.ui" line="112"/>
+        <location filename="mainwindow.ui" line="509"/>
         <source>Epsilon (ɛ):</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="mainwindow.ui" line="136"/>
+        <location filename="mainwindow.ui" line="484"/>
         <source>Tau (τ):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="163"/>
+        <location filename="mainwindow.ui" line="167"/>
         <source>Operaciones</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="169"/>
-        <location filename="mainwindow.ui" line="348"/>
+        <location filename="mainwindow.ui" line="173"/>
+        <location filename="mainwindow.ui" line="625"/>
         <source>Entrenar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="176"/>
-        <location filename="mainwindow.ui" line="353"/>
+        <location filename="mainwindow.ui" line="187"/>
+        <location filename="mainwindow.ui" line="630"/>
         <source>Comenzar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="183"/>
-        <location filename="mainwindow.ui" line="343"/>
+        <location filename="mainwindow.ui" line="180"/>
+        <location filename="mainwindow.ui" line="620"/>
         <source>Generar valores aleatorios...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="190"/>
-        <location filename="mainwindow.ui" line="358"/>
+        <location filename="mainwindow.ui" line="194"/>
+        <location filename="mainwindow.ui" line="635"/>
         <source>Terminar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="277"/>
+        <location filename="mainwindow.ui" line="95"/>
         <source>&amp;Archivo</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="mainwindow.ui" line="283"/>
+        <location filename="mainwindow.ui" line="101"/>
         <source>&amp;Edición</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="288"/>
+        <location filename="mainwindow.ui" line="106"/>
         <source>Ay&amp;uda</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="294"/>
+        <location filename="mainwindow.ui" line="112"/>
         <source>&amp;Operaciones</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="mainwindow.ui" line="303"/>
+        <location filename="mainwindow.ui" line="121"/>
         <source>&amp;Configuración</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="mainwindow.ui" line="311"/>
+        <location filename="mainwindow.ui" line="129"/>
         <source>Dimensión</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="mainwindow.ui" line="318"/>
+        <location filename="mainwindow.ui" line="136"/>
         <source>Técnicas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="333"/>
+        <location filename="mainwindow.ui" line="157"/>
+        <source>Herramientas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="224"/>
+        <source>Inicializar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="287"/>
+        <source>Cada:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="316"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Intervalo de iteraciones entre las cuales el parámetro será decrementado.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="319"/>
+        <source> iteraciones</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="335"/>
+        <source>Decremento:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="356"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Paso&lt;/span&gt; o valor de decremento. En cada intervalo el parámetro será decrementado en un &lt;span style=&quot; font-style:italic;&quot;&gt;paso.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="383"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Decrementar el parámetro que se esté utilizando.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="386"/>
+        <source>Decrementar parámetro</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="435"/>
+        <source>Cantidad de episodios:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="442"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Cantidad de Episodios&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Número de Episodios (Plays) a realizar durante la fase de aprendizaje (entrenamiento). Un episodio es un recorrido desde un estado dado hasta el estado &lt;span style=&quot; font-style:italic;&quot;&gt;final.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="455"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Factor de descuento&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Cuanto más cerca de 1 se encuentre este valor mayor será el &lt;span style=&quot; font-style:italic;&quot;&gt;peso&lt;/span&gt; asignado a los refuerzos futuros.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="541"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Epsilon (&lt;/span&gt;&lt;span style=&quot; font-size:9pt; font-weight:600; font-style:italic;&quot;&gt;ɛ&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Parámetro que establece la probabilidad de seleccionar una &lt;span style=&quot; font-style:italic;&quot;&gt;acción&lt;/span&gt; aleatoria por sobre la política óptima. Rango de valores: 0 ≤ &lt;span style=&quot; font-size:9pt;&quot;&gt;ɛ&lt;/span&gt; &amp;lt; 1.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainwindow.ui" line="554"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Tau (&lt;/span&gt;&lt;span style=&quot; font-size:9pt; font-weight:600; font-style:italic;&quot;&gt;τ&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Parámetro que establece la &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura&lt;/span&gt;. Una &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura alta&lt;/span&gt; causa que todas las acciones sean (casi) equiprobables. Una &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura baja&lt;/span&gt; causa una mayor diferencia en la probabilidad de selección para las acciones que difieran en las estimaciones de sus valores.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="610"/>
         <source>Salir</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="338"/>
+        <location filename="mainwindow.ui" line="615"/>
         <source>Acerca de...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="363"/>
+        <location filename="mainwindow.ui" line="640"/>
         <source>Softmax</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="368"/>
+        <location filename="mainwindow.ui" line="645"/>
         <source>E-Greedy</source>
         <translation type="unfinished"></translation>
     </message>

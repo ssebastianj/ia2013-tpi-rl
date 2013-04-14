@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+import logging
 import random
 from core.gridworld.gridworld import GridWorld
 from core.tecnicas.tecnica import QLTecnica
@@ -46,13 +47,16 @@ class QLearning(object):
         matriz_r = self._gridworld.get_matriz_r()
         self._inicializar_matriz_q()
 
+        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
+
         # Ejecutar una cantidad dada de Episodios
         for i in range(1, self._episodes + 1):
-            print "Numero de episodio: {0}".format(i)
+            print "Numero de episodio: {0}".format(i)  # FIXME: Eliminar print de debug
             # Obtener coordenadas aleatorias y obtener Estado asociado
             (x, y) = self._generar_estado_aleatorio()
 
-            # Comprobar si el estado aleatorio coincide con el estado final
+            # Generar estados aleatorios hasta que las coordenadas no
+            # coincidan con las del estado final
             aux_estado = self._gridworld.get_estado(x, y)
             while aux_estado.tipo.ide == TIPOESTADO.FINAL:
                 (x, y) = self._generar_estado_aleatorio()
@@ -60,6 +64,11 @@ class QLearning(object):
 
             estado_actual = self._gridworld.get_estado(x, y)
 
+            # Forzar restauración del valor de parámetro de la técnica
+            # utilizada antes de comenzar un nuevo Episodio
+            self._tecnica.restaurar_val_parametro()
+
+            # Realizar 1 Episodio mientras no estemos en el Estado Final
             contador = 0
             while not estado_actual.tipo.ide == TIPOESTADO.FINAL:
                 vecinos = matriz_r[estado_actual.fila - 1][estado_actual.columna - 1]
@@ -77,8 +86,15 @@ class QLearning(object):
                 estado_actual = estado_elegido
 
                 contador += 1
-                print "Iteraciones {0}".format(contador)
-                print self._matriz_q
+
+                # Comprobar si es necesario decrementar el valor del parámetro
+                if self._tecnica.intervalo_decremento == contador:
+                    # Decrementar valor del parámetro en 1 paso
+                    self._tecnica.decrementar_parametro()
+                print "Valor parámetro: {0}".format(self._tecnica.valor_param_parcial)  # FIXME: Eliminar print de debug
+
+                print "Iteraciones {0}".format(contador)  # FIXME: Eliminar print de debug
+                logging.debug(self._matriz_q)
 
     def get_matriz_q(self):
         return self._matriz_q
