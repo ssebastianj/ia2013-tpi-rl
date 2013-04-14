@@ -23,4 +23,7 @@ class Softmax(QLTecnica):
     def set_tau(self, valor):
         self._tau = valor
 
+    def obtener_accion(self, matriz_q, vecinos):
+        pass
+
     tau = property(get_tau, set_tau, None, u"Parámetro Tau de la técnica")

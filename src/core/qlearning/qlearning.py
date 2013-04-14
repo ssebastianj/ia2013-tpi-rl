@@ -78,10 +78,7 @@ class QLearning(object):
 
                 contador += 1
                 print "Iteraciones {0}".format(contador)
-
-
                 print self._matriz_q
-
 
     def get_matriz_q(self):
         return self._matriz_q
