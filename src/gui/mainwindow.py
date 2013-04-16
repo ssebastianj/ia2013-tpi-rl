@@ -4,18 +4,18 @@
 from __future__ import absolute_import
 
 import logging
-import multiprocessing
 import Queue
+import threading
 
 from PyQt4 import QtCore, QtGui
 
 from gui.genrndvalsdialog import GenRndValsDialog
 from gui.qtgen.mainwindow import Ui_MainWindow
 
+from core.qlearning.workers import QLearningEntrenarWorker
 from core.estado.estado import TIPOESTADO
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
-from core.qlearning.threads import QLearningEntrenarThread
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
@@ -58,7 +58,7 @@ class MainWindow(QtGui.QMainWindow):
         self.pins_in_d = None
         self.data_in_feed = LiveDataFeed()
         self.pins_feed = LiveDataFeed()
-        self.timer = None
+        self.wnd_timer = None
         self.frame_handler = None
         self.working_on_port = False
         self.uc_factor_setted = None
@@ -98,8 +98,8 @@ class MainWindow(QtGui.QMainWindow):
         # Establece la dimensión por defecto del tblGridWorld en 6x6
         self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
 
-        # Establecer por defecto 10 episodios
-        self.WMainWindow.sbCantidadEpisodios.setValue(10)
+        # Establecer por defecto 1 episodio
+        self.WMainWindow.sbCantidadEpisodios.setValue(1)
 
         # Establecer por defecto un Epsilon = 0.5
         self.WMainWindow.sbQLEpsilon.setValue(0.5)
@@ -271,25 +271,42 @@ class MainWindow(QtGui.QMainWindow):
             tecnica = None
 
         gamma = self.WMainWindow.sbQLGamma.value()
-        cant_episodios = int(self.WMainWindow.sbCantidadEpisodios.text())
+        cant_episodios = int(self.WMainWindow.sbCantidadEpisodios.value())
         valor_inicial = 0
 
         # Crear nueva instancia de Q-Learning
-        self.qlearning = QLearning(self.gridworld, gamma, tecnica, cant_episodios, valor_inicial)
+        self.qlearning = QLearning(self.gridworld,
+                                   gamma,
+                                   tecnica,
+                                   cant_episodios,
+                                   valor_inicial)
 
+        # QLearningEntrenarWorker Management
         # Que empiece la magia
-        entrenar_output_queue = Queue.Queue()
-        entrenar_input_queue = Queue.Queue()
-        entrenar_input_queue.put(self.qlearning)
-        self.ql_thread = QLearningEntrenarThread(entrenar_input_queue, entrenar_output_queue)
-        self.ql_thread.start()
+        # FIXME: Ejecución concurrente Entrenamiento
+        output_queue = Queue.Queue()
+        try:
+            self.qlearning_entrenar_worker = self.qlearning.entrenar(output_queue)
+            self.wnd_timer = QtCore.QTimer()
+            self.wnd_timer.timeout.connect(self._on_window_timer)
+            self.wnd_timer.start(100)
+        except threading.ThreadError as te:
+            logging.debug(te)
+            pass
+        logging.debug(self.qlearning_entrenar_worker)
+
+        while self.qlearning_entrenar_worker.is_alive():
+            logging.debug(output_queue.get())
 
     def terminar_proceso(self):
         u"""
         Probando si anda la señal clicked()
         """
-        print "Detener"
-        self.ql_thread.join(0.01)
+        logging.debug("Detener {0}: ".format(self.qlearning_entrenar_worker))
+        self.qlearning_entrenar_worker.join(0.05)
+        logging.debug(self.qlearning_entrenar_worker)
+        if self.wnd_timer is not None:
+            self.wnd_timer.stop()
 
     def switch_tipo_estado(self, fila, columna):
         tipos_estados = self.gridworld.tipos_estados.keys()
@@ -299,6 +316,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         Ejecuta diversas acciones a cada disparo del Timer principal.
         """
+        logging.debug("Timeout")
         self._comprobar_colas()
 
     def _comprobar_colas(self):
@@ -324,13 +342,7 @@ class MainWindow(QtGui.QMainWindow):
 
         Fuente: http://pymotw.com/2/threading/
         """
-        main_thread = threading.current_thread()
-        for t in threading.enumerate():
-            if t is main_thread:
-                continue
-            elif t.isAlive():
-                logging.debug('joining %s', t.getName())
-                t.join(0.01)
+        pass
 
     def mostrar_dialogo_gen_rnd_vals(self):
         self.GenRndValsD = GenRndValsDialog(self)

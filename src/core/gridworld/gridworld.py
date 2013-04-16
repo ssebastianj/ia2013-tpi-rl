@@ -24,7 +24,6 @@ class GridWorld(object):
         # FIXME: Logging
         logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
 
-        self._lock = threading.Lock()
         self._ancho = ancho
         self._alto = alto
         self._tipos_estados = None
@@ -53,26 +52,9 @@ class GridWorld(object):
         self._tipos_estados[TIPOESTADO.PARED] = TipoEstado(TIPOESTADO.PARED, -100, "Pared", "P", "#000000")
 
     def _inicializar_estados(self, default=TIPOESTADO.NEUTRO):
-        try:
-            init_states_worker = threading.Thread(group=None,
-                                                  target=self._inicializar_estados_worker,
-                                                  name="GWInicializarEstadosWorker",
-                                                  args=(default,),
-                                                  kwargs=None,
-                                                  verbose=None)
-            init_states_worker.start()
-            init_states_worker.join()
-        finally:
-            if init_states_worker.is_alive():
-                init_states_worker.join(0.5)
-
-    def _inicializar_estados_worker(self, default=TIPOESTADO.NEUTRO):
         u"""
         Crea la matriz de estados con un tipo de estado predeterminado.
         """
-        self._lock.acquire()  # Adquirir Lock
-        logging.debug("Lock Acquire")
-
         # Tipo de estado con el que se inicializará cada estado
         default_tipo = self._tipos_estados[default]
 
@@ -85,10 +67,6 @@ class GridWorld(object):
                 fila.append(Estado(i, j, default_tipo))
                 self._coordenadas.append((i, j))
             self._estados.append(fila)
-
-        logging.debug(self._estados)  # FIXME: Logging
-        self._lock.release()  # Liberar Lock
-        logging.debug("Lock Release")
 
     def get_matriz_r(self):
         u"""
@@ -112,7 +90,7 @@ class GridWorld(object):
                              ])
             matriz_r.append(fila)
 
-        # logging.debug(matriz_r)
+        logging.debug(matriz_r)
         return matriz_r
 
     def get_estado(self, x, y):
