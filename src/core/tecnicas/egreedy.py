@@ -35,13 +35,13 @@ class EGreedy(QLTecnica):
         valor = random.uniform(0, 1)
         if ((valor >= 0) and (valor <= (1 - self.epsilon_parcial))):
             # EXPLOTAR
-            print "EXPLOTAR"  # FIXME: Eliminar print de debug
+            # print "EXPLOTAR"  # FIXME: Eliminar print de debug
             maximo = 0
             estados_qmax = []
             for i in vecinos:
-                print "X:{0} Y:{1}".format(i.fila, i.columna)  # FIXME: Eliminar print de debug
+                # print "X:{0} Y:{1}".format(i.fila, i.columna)  # FIXME: Eliminar print de debug
                 q_valor = matriz_q[i.fila - 1][i.columna - 1]
-                print "Q Valor: {0}".format(q_valor)  # FIXME: Eliminar print de debug
+                # print "Q Valor: {0}".format(q_valor)  # FIXME: Eliminar print de debug
                 if q_valor > maximo:
                     maximo = q_valor
                     estados_qmax = [i]
@@ -52,13 +52,13 @@ class EGreedy(QLTecnica):
             # de forma aleatoria
             if len(estados_qmax) == 1:
                 estado_qmax = estados_qmax[0]
-                print "Existe un sólo estado vecino máximo"  # FIXME: Eliminar print de debug
+                # print "Existe un sólo estado vecino máximo"  # FIXME: Eliminar print de debug
             else:
                 estado_qmax = self.elegir_estado_aleatorio(estados_qmax)
-                print "Existen varios estados con igual recompensa"  # FIXME: Eliminar print de debug
+                # print "Existen varios estados con igual recompensa"  # FIXME: Eliminar print de debug
         else:
             # EXPLORAR
-            print "EXPLORAR"  # FIXME: Eliminar print de debug
+            # print "EXPLORAR"  # FIXME: Eliminar print de debug
             # Elegir un estado vecino de forma aleatoria
             estado_qmax = self.elegir_estado_aleatorio(vecinos)
         return estado_qmax

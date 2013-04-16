@@ -3,6 +3,8 @@
 
 from __future__ import absolute_import
 
+import logging
+import multiprocessing
 import Queue
 
 from PyQt4 import QtCore, QtGui
@@ -13,6 +15,7 @@ from gui.qtgen.mainwindow import Ui_MainWindow
 from core.estado.estado import TIPOESTADO
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
+from core.qlearning.threads import QLearningEntrenarThread
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
@@ -34,6 +37,9 @@ class MainWindow(QtGui.QMainWindow):
     """
     def __init__(self):
         super(MainWindow, self).__init__()
+        # FIXME: Logging
+        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
+
         self.WMainWindow = Ui_MainWindow()
         self.WMainWindow.setupUi(self)
 
@@ -125,6 +131,7 @@ class MainWindow(QtGui.QMainWindow):
         ancho_gw, alto_gw = self.convert_dimension(dimension)
         # Crear un nuevo GridWorld dados el ancho y el alto del mismo
         self.gridworld = GridWorld(ancho_gw, alto_gw)
+
         ancho_estado_px = 40
         ancho_gw_px = ancho_estado_px * ancho_gw
 
@@ -269,14 +276,20 @@ class MainWindow(QtGui.QMainWindow):
 
         # Crear nueva instancia de Q-Learning
         self.qlearning = QLearning(self.gridworld, gamma, tecnica, cant_episodios, valor_inicial)
+
         # Que empiece la magia
-        self.qlearning.entrenar()
+        entrenar_output_queue = Queue.Queue()
+        entrenar_input_queue = Queue.Queue()
+        entrenar_input_queue.put(self.qlearning)
+        self.ql_thread = QLearningEntrenarThread(entrenar_input_queue, entrenar_output_queue)
+        self.ql_thread.start()
 
     def terminar_proceso(self):
         u"""
         Probando si anda la señal clicked()
         """
-        pass
+        print "Detener"
+        self.ql_thread.join(0.01)
 
     def switch_tipo_estado(self, fila, columna):
         tipos_estados = self.gridworld.tipos_estados.keys()
@@ -308,8 +321,16 @@ class MainWindow(QtGui.QMainWindow):
         Solicita la finalización de todos los threads utilizados en la
         aplicación. Este método debe ser llamado al desconectarse o al salir
         de la aplicación.
+
+        Fuente: http://pymotw.com/2/threading/
         """
-        pass
+        main_thread = threading.current_thread()
+        for t in threading.enumerate():
+            if t is main_thread:
+                continue
+            elif t.isAlive():
+                logging.debug('joining %s', t.getName())
+                t.join(0.01)
 
     def mostrar_dialogo_gen_rnd_vals(self):
         self.GenRndValsD = GenRndValsDialog(self)
@@ -340,7 +361,7 @@ class MainWindow(QtGui.QMainWindow):
 
         :param event: Evento.
         """
-        pass
+        self._reintentar_detener_hilos()
 
     def exit(self):
         u"""

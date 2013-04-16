@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import logging
 import random
+import threading
 from core.gridworld.gridworld import GridWorld
 from core.tecnicas.tecnica import QLTecnica
 from core.estado.estado import TIPOESTADO
@@ -23,6 +24,10 @@ class QLearning(object):
         :param init_value: Valor con que se inicializa cada estado de la matriz.
         """
         super(QLearning, self).__init__()
+        # FIXME: Logging
+        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
+
+        self._lock = threading.Lock()
         self._gridworld = gridworld
         self._gamma = gamma
         self._tecnica = tecnica
@@ -39,7 +44,7 @@ class QLearning(object):
         y = random.randint(1, self._gridworld.alto)
         return (x, y)
 
-    def entrenar(self):
+    def entrenar(self, output_queue):
         u"""
         Ejecuta el algoritmo Q-Learning para completar la matriz Q.
         """
@@ -47,11 +52,9 @@ class QLearning(object):
         matriz_r = self._gridworld.get_matriz_r()
         self._inicializar_matriz_q()
 
-        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
-
         # Ejecutar una cantidad dada de Episodios
         for i in range(1, self._episodes + 1):
-            print "Numero de episodio: {0}".format(i)  # FIXME: Eliminar print de debug
+            logging.debug("Numero de episodio: {0}".format(i))  # FIXME: Logging
             # Obtener coordenadas aleatorias y obtener Estado asociado
             (x, y) = self._generar_estado_aleatorio()
 
@@ -91,10 +94,11 @@ class QLearning(object):
                 if self._tecnica.intervalo_decremento == contador:
                     # Decrementar valor del parámetro en 1 paso
                     self._tecnica.decrementar_parametro()
-                print "Valor parámetro: {0}".format(self._tecnica.valor_param_parcial)  # FIXME: Eliminar print de debug
 
-                print "Iteraciones {0}".format(contador)  # FIXME: Eliminar print de debug
-                logging.debug(self._matriz_q)
+                logging.debug("Valor parámetro: {0}".format(self._tecnica.valor_param_parcial))  # FIXME: Logging
+                logging.debug("Iteraciones {0}".format(contador))  # FIXME: Logging
+                logging.debug("Matriz Q: {0}".format(self._matriz_q))
+                output_queue.put((x, y, contador))
 
     def get_matriz_q(self):
         return self._matriz_q
@@ -149,11 +153,23 @@ class QLearning(object):
         return self._coordenadas
 
     def _inicializar_matriz_q(self, default=0):
+        init_matriz_q_thread = threading.Thread(group=None,
+                                                target=self._inicializar_matriz_q_worker,
+                                                name="QLInicializarMatrizQThread",
+                                                args=(default,),
+                                                kwargs=None,
+                                                verbose=None)
+        init_matriz_q_thread.start()
+        init_matriz_q_thread.join()
+
+    def _inicializar_matriz_q_worker(self, default=0):
         u"""
         Crea la matriz Q con un valor inicial.
 
         :param default: Valor con que se inicializa cada estado de la matriz.
         """
+        self._lock.acquire()  # Adquirir Lock
+
         self._matriz_q = []
         self._coordenadas = []
         for i in range(1, self._gridworld.alto + 1):
@@ -162,6 +178,9 @@ class QLearning(object):
                 fila.append(default)
                 self._coordenadas.append((i, j))
             self._matriz_q.append(fila)
+
+        # logging.debug(self._matriz_q)  # FIXME: Logging
+        self._lock.release()  # Liberar Lock
 
     def get_vecinos_estado(self, x, y):
         u"""
