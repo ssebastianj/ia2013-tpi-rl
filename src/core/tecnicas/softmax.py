@@ -3,91 +3,78 @@
 
 from __future__ import absolute_import
 
-from core.tecnicas.tecnica import QLTecnica
+import logging
+import math
 import random
-from test.test_iterlen import len
+from core.tecnicas.tecnica import QLTecnica
 
 
 class Softmax(QLTecnica):
     u"""Técnica Softmax"""
     def __init__(self, tau, paso_decremento=0, intervalo_decremento=0):
         u"""
-        Inicializador
+        Inicializador Softmax.
 
         :param tau: Parámetro Tau de la técnica.
         """
         super(Softmax, self).__init__(paso_decremento, intervalo_decremento)
         self._val_param_general = tau
-
-
-
+        self._name = "Softmax"
 
     def obtener_accion(self, matriz_q, vecinos):
-
-        valor = random.uniform(0, 1)
+        rnd_valor = random.uniform(0, 1)
 
         probabilidades_vecinos = self.obtener_probabilidades(matriz_q, vecinos)
 
-        for i in range (0, len(vecinos)):
-            if valor <= probabilidades_vecinos[i]:
+        for i in range(0, len(vecinos)):
+            if rnd_valor <= probabilidades_vecinos[i]:
                 estado = vecinos[i]
 
-        print "Este es el estado Elegido: {0}".format(estado)
+        logging.debug("Estado Elegido: {0}".format(estado))
         return estado
 
-
-
     def obtener_probabilidades(self, matriz_q, vecinos):
-
         probabilidades_vecinos = []
-        e = 2.71828
 
         # Calcula las probabilidades de cada vecino
         for i in vecinos:
             q_valor_vecino = matriz_q[i.fila - 1][i.columna - 1]
-            probabilidad_vecino = e ** (q_valor_vecino / self.tau_general)
+            probabilidad_vecino = math.e ** (q_valor_vecino / self._val_param_parcial)
             probabilidades_vecinos.append(probabilidad_vecino)
 
-            print "Esta es la probabilidad del vecino: {0}".format(probabilidad_vecino)
-
-
+            logging.debug("Probabilidad del vecino: {0}".format(probabilidad_vecino))
 
         # N = constante de Normalización
-        N = sum(probabilidades_vecinos)
-        print "Este es el valor de N : {0}".format(N)
-
-
+        # Convertirlo a un número flotante para solucionar problema al dividir
+        n = float(sum(probabilidades_vecinos))
+        logging.debug("Valor de constante de normalización N: {0}".format(n))
 
         probabilidades_vecinos_normalizadas = []
-
         # Calcula las probabilidades de cada vecino normalizadas
-        for i in range (0, len(vecinos)):
-            probabilidad_vecino_normalizada = probabilidades_vecinos[i] / N
+        for i in range(0, len(vecinos)):
+            probabilidad_vecino_normalizada = probabilidades_vecinos[i] / n
             probabilidades_vecinos_normalizadas.append(probabilidad_vecino_normalizada)
 
-
-        print "Sumatoria de las probabilidades Normalizadas: {0}".format(sum(probabilidades_vecinos_normalizadas))
-        """ Si este calculo está bien deberia dar 1"""
-
+        # Si éste cálculo está bien deberia dar 1
+        logging.debug("Sumatoria de las probabilidades Normalizadas: {0}"
+                      .format(sum(probabilidades_vecinos_normalizadas)))
 
         # Realiza la Sumatoria Ponderada de las probabilidades de los vecinos
         probabilidades_vecinos_ponderadas = []
-
-
         for i in range(0, len(vecinos)):
             probabilidad_vecino_ponderada = 0
             for j in range(0, i + 1):
                 probabilidad_vecino_ponderada += probabilidades_vecinos_normalizadas[j]
 
-            print "Esta es la probabilidad Ponderada del vecino: {0}".format(probabilidad_vecino_ponderada)
+            logging.debug("Probabilidad ponderada del vecino: {0}"
+                          .format(probabilidad_vecino_ponderada))
             probabilidades_vecinos_ponderadas.append(probabilidad_vecino_ponderada)
 
-        print "Esta es la probabilidad ponderada del ultimo vecino: {0}".format(probabilidades_vecinos_ponderadas[len(vecinos) - 1])
-        """Si este calculo esta bien deberia dar 1"""
+        # Si éste cálculo esta bien deberia dar 1
+        logging.debug("Probabilidad ponderada del último vecino: {0}"
+                      .format(probabilidades_vecinos_ponderadas[len(vecinos) - 1]))
 
         return probabilidades_vecinos_ponderadas
-
-
 
     def decrementar_parametro(self):
         pass

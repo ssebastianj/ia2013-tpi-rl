@@ -10,6 +10,7 @@ class QLTecnica(object):
         self._intervalo_decremento = intervalo_decremento
         self._val_param_general = None
         self._val_param_parcial = self._val_param_general
+        self._name = "QLTecnica"
 
     def obtener_accion(self, matriz_q, vecinos):
         u"""
@@ -48,6 +49,12 @@ class QLTecnica(object):
     def restaurar_val_parametro(self):
         self._val_param_parcial = self._val_param_general
 
+    def get_name(self):
+        return self._name
+
+    def set_name(self, nombre):
+        self._name = nombre
+
     paso_decremento = property(get_paso_decremento,
                                set_paso_decremento,
                                None,
@@ -72,3 +79,5 @@ class QLTecnica(object):
                                    None,
                                    u"Número indicando el valor del \
                                    parámetro parcial")
+
+    nombre = property(get_name, set_name, None, "Nombre de la técnica")

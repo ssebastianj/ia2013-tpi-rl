@@ -115,7 +115,7 @@ class QLearningEntrenarWorker(threading.Thread):
                     # Decrementar valor del parámetro en 1 paso
                     ql_ref.tecnica.decrementar_parametro()
 
-                logging.debug("Valor parámetro: {0}".format(ql_ref._tecnica.valor_param_parcial))  # FIXME: Logging
+                logging.debug("Valor parámetro: {0}".format(ql_ref._tecnica._val_param_parcial))  # FIXME: Logging
                 logging.debug("Iteraciones {0}".format(cant_iteraciones))  # FIXME: Logging
                 logging.debug("Matriz Q: {0}".format(ql_ref._matriz_q))
                 self._out_queue.put(((x, y), epnum, cant_iteraciones, 0, 0))

@@ -17,6 +17,7 @@ class EGreedy(QLTecnica):
         """
         super(EGreedy, self).__init__(paso_decremento, intervalo_decremento)
         self._val_param_general = epsilon
+        self._name = "EGreedy"
 
     def get_epsilon_general(self):
         return self._val_param_general
@@ -101,3 +102,4 @@ class Greedy(EGreedy):
         """
         super(Greedy, self).__init__(0)
         self._epsilon = 0
+        self._name = "Greedy"
