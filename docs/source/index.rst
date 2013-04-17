@@ -62,6 +62,12 @@ Contents:
    :members:
    :private-members:
    :special-members:
+   
+.. automodule:: core.qlearning.workers
+.. autoclass:: QLearningEntrenarWorker
+   :members:
+   :private-members:
+   :special-members:
 
 .. automodule:: gui.mainwindow
 .. autoclass:: MainWindow
