@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import logging
 import threading
+import time
 from core.estado.estado import TIPOESTADO
 
 
@@ -36,8 +37,9 @@ class QLearningEntrenarWorker(threading.Thread):
         ql_ref.inicializar_matriz_q()
 
         # Ejecutar una cantidad dada de Episodios
-        for i in range(1, ql_ref._episodes + 1):
-            logging.debug("Numero de episodio: {0}".format(i))  # FIXME: Logging
+        for epnum in range(1, ql_ref._episodes + 1):
+            ep_start_time = time.clock()
+            logging.debug("Numero de episodio: {0}".format(epnum))  # FIXME: Logging
             # Obtener coordenadas aleatorias y obtener Estado asociado
             (x, y) = ql_ref._generar_estado_aleatorio()
 
@@ -57,6 +59,7 @@ class QLearningEntrenarWorker(threading.Thread):
             # Realizar 1 Episodio mientras no estemos en el Estado Final
             cant_iteraciones = 0
             while (not self._stoprequest.is_set()) and (not estado_actual.tipo.ide == TIPOESTADO.FINAL):
+                iter_start_time = time.clock()
 
                 vecinos = matriz_r[estado_actual.fila - 1][estado_actual.columna - 1]
                 estado_elegido = ql_ref.tecnica.obtener_accion(ql_ref._matriz_q, vecinos)
@@ -83,11 +86,24 @@ class QLearningEntrenarWorker(threading.Thread):
                 logging.debug("Valor parámetro: {0}".format(ql_ref._tecnica.valor_param_parcial))  # FIXME: Logging
                 logging.debug("Iteraciones {0}".format(cant_iteraciones))  # FIXME: Logging
                 logging.debug("Matriz Q: {0}".format(ql_ref._matriz_q))
-                self._out_queue.put(((x, y), i, cant_iteraciones))
+                self._out_queue.put(((x, y), epnum, cant_iteraciones, 0, 0))
+
+            iter_end_time = time.clock()
+            ep_end_time = time.clock()
+            ep_exec_time = ep_end_time - ep_start_time
+            iter_exec_time = iter_end_time - iter_start_time
+
+            self._out_queue.put(((x, y),
+                                epnum,
+                                cant_iteraciones,
+                                ep_exec_time,
+                                iter_exec_time))
 
             if self._stoprequest.is_set():
+                self._out_queue.put(False)
                 break
 
+        self._out_queue.put(False)
         self._on_end()
 
     def join(self, timeout=None):

@@ -283,10 +283,8 @@ class MainWindow(QtGui.QMainWindow):
             logging.debug("Error {0}: ".format(worker_error))
             self.qlearning_entrenar_worker = None
 
-        if self.ql_entrenar_out_q is not None:
-            self.wnd_timer = QtCore.QTimer()
-            self.wnd_timer.timeout.connect(self._on_window_timer)
-            self.wnd_timer.start(100)
+        if self.qlearning_entrenar_worker is not None:
+            self.on_comienzo_proceso()
 
     def terminar_proceso(self):
         u"""
@@ -296,7 +294,7 @@ class MainWindow(QtGui.QMainWindow):
         self.qlearning_entrenar_worker.join(0.05)
         logging.debug(self.qlearning_entrenar_worker)
         if self.wnd_timer is not None:
-            self.wnd_timer.stop()
+            self.on_fin_proceso()
 
         self.worker_msg_out_q = None
 
@@ -313,17 +311,17 @@ class MainWindow(QtGui.QMainWindow):
         self.actualizar_window()
         self.comprobar_actividad_threads()
 
-    def on_comienzo_proceso(self, proceso):
+    def on_comienzo_proceso(self):
+        logging.debug("Comienzo del proceso")
         # Crear Timer asociado a la ventana principal
         self.wnd_timer = QtCore.QTimer()
         # Conectar disparo de timer con método
-        self.wnd_timer.timeout.connect(self.on_window_timer)
+        self.wnd_timer.timeout.connect(self._on_window_timer)
+        self.wnd_timer.start(100)
 
-    def on_fin_proceso(self, proceso):
+    def on_fin_proceso(self):
         # Detener Timer asociado a la ventana principal
         self.wnd_timer.stop()
-        # Intentar nuevamente finalizar todos los threads activos
-        self._reintentar_detener_hilos()
 
     def _reintentar_detener_hilos(self):
         u"""
@@ -335,7 +333,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         main_thread = threading.current_thread()
         for t in threading.enumerate():
-            if t is not main_thread:
+            if t is not main_thread and t.is_alive():
                 t.join(0.01)
 
     def mostrar_dialogo_gen_rnd_vals(self):
@@ -405,5 +403,5 @@ class MainWindow(QtGui.QMainWindow):
                 cant_active_threads += 1
 
         if cant_active_threads == 0:
-            logging.debug("No hay threads activos. Detener Window Timer")
-            self.wnd_timer.stop()
+            logging.debug("No hay threads activos. Detener Window Timer.")
+            self.on_fin_proceso()
