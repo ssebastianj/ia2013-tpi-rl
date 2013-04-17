@@ -12,7 +12,6 @@ from PyQt4 import QtCore, QtGui
 from gui.genrndvalsdialog import GenRndValsDialog
 from gui.qtgen.mainwindow import Ui_MainWindow
 
-from core.qlearning.workers import QLearningEntrenarWorker
 from core.estado.estado import TIPOESTADO
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
@@ -50,20 +49,8 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Inicializa las variables 'globales'.
         """
-        self.monitor_active = False
-        self.com_handler = None
-        self.data_in_q = None
-        self.error_q = None
-        self.data_out_q = None
-        self.pins_in_d = None
-        self.data_in_feed = LiveDataFeed()
-        self.pins_feed = LiveDataFeed()
+        self.ql_datos_in_feed = LiveDataFeed()
         self.wnd_timer = None
-        self.frame_handler = None
-        self.working_on_port = False
-        self.uc_factor_setted = None
-        self.sim_activ = False
-        self.inst_factor_setted = None
         self.tecnicas = {0: "Greedy",
                          1: "ε-Greedy",
                          2: "Softmax",
@@ -284,19 +271,22 @@ class MainWindow(QtGui.QMainWindow):
         # QLearningEntrenarWorker Management
         # Que empiece la magia
         # FIXME: Ejecución concurrente Entrenamiento
-        output_queue = Queue.Queue()
-        try:
-            self.qlearning_entrenar_worker = self.qlearning.entrenar(output_queue)
+        self.ql_entrenar_out_q = Queue.Queue()
+        self.ql_entrenar_error_q = Queue.Queue()
+        self.qlearning_entrenar_worker = self.qlearning.entrenar(self.ql_entrenar_out_q,
+                                                                 self.ql_entrenar_error_q)
+
+        logging.debug(self.qlearning_entrenar_worker)
+
+        worker_error = get_item_from_queue(self.ql_entrenar_error_q)
+        if worker_error is not None:
+            logging.debug("Error {0}: ".format(worker_error))
+            self.qlearning_entrenar_worker = None
+
+        if self.ql_entrenar_out_q is not None:
             self.wnd_timer = QtCore.QTimer()
             self.wnd_timer.timeout.connect(self._on_window_timer)
             self.wnd_timer.start(100)
-        except threading.ThreadError as te:
-            logging.debug(te)
-            pass
-        logging.debug(self.qlearning_entrenar_worker)
-
-        while self.qlearning_entrenar_worker.is_alive():
-            logging.debug(output_queue.get())
 
     def terminar_proceso(self):
         u"""
@@ -308,6 +298,8 @@ class MainWindow(QtGui.QMainWindow):
         if self.wnd_timer is not None:
             self.wnd_timer.stop()
 
+        self.worker_msg_out_q = None
+
     def switch_tipo_estado(self, fila, columna):
         tipos_estados = self.gridworld.tipos_estados.keys()
         # TODO: Cambiar tipo de estado al ir haciendo clic sobre el estado
@@ -317,10 +309,9 @@ class MainWindow(QtGui.QMainWindow):
         Ejecuta diversas acciones a cada disparo del Timer principal.
         """
         logging.debug("Timeout")
-        self._comprobar_colas()
-
-    def _comprobar_colas(self):
-        pass
+        self.comprobar_colas()
+        self.actualizar_window()
+        self.comprobar_actividad_threads()
 
     def on_comienzo_proceso(self, proceso):
         # Crear Timer asociado a la ventana principal
@@ -342,7 +333,10 @@ class MainWindow(QtGui.QMainWindow):
 
         Fuente: http://pymotw.com/2/threading/
         """
-        pass
+        main_thread = threading.current_thread()
+        for t in threading.enumerate():
+            if t is not main_thread:
+                t.join(0.01)
 
     def mostrar_dialogo_gen_rnd_vals(self):
         self.GenRndValsD = GenRndValsDialog(self)
@@ -380,3 +374,36 @@ class MainWindow(QtGui.QMainWindow):
         Finaliza la ejecución de la aplicación.
         """
         self.close()
+
+    def leer_ql_input(self, cola):
+        ql_datos_in = list(get_all_from_queue(cola))
+        logging.debug("Leer QL Input: {0}".format(ql_datos_in))
+        if len(ql_datos_in) > 0:
+            self.ql_datos_in_feed.add_data(ql_datos_in)
+            logging.debug("Datos IN: {0}".format(ql_datos_in))
+
+    def actualizar_window(self):
+        logging.debug("Actualizar ventana")
+        if self.ql_datos_in_feed.has_new_data:
+            data = self.ql_datos_in_feed.read_data()
+            logging.debug("Actualizar ventana con: {0}".format(data))
+
+    def comprobar_colas(self):
+        logging.debug("Comprobar colas")
+        if self.ql_entrenar_out_q is not None:
+            logging.debug("Comprobar cola QLearning: {0}".format(self.ql_entrenar_out_q))
+            self.leer_ql_input(self.ql_entrenar_out_q)
+
+    def comprobar_actividad_threads(self):
+        logging.debug("Comprobar actividad threads")
+        main_thread = threading.current_thread()
+        active_threads = threading.enumerate()
+
+        cant_active_threads = 0
+        for t in active_threads:
+            if t is not main_thread:
+                cant_active_threads += 1
+
+        if cant_active_threads == 0:
+            logging.debug("No hay threads activos. Detener Window Timer")
+            self.wnd_timer.stop()

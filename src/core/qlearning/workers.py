@@ -9,10 +9,11 @@ from core.estado.estado import TIPOESTADO
 
 
 class QLearningEntrenarWorker(threading.Thread):
-    def __init__(self, inp_queue, out_queue):
+    def __init__(self, inp_queue, out_queue, error_q):
         super(QLearningEntrenarWorker, self).__init__()
         self._inp_queue = inp_queue
         self._out_queue = out_queue
+        self._error_queue = error_q
         self._stoprequest = threading.Event()
         self.name = "QLearningEntrenarWorker"
         # FIXME: Logging

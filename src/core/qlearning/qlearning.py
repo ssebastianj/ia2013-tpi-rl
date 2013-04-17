@@ -44,14 +44,15 @@ class QLearning(object):
         y = random.randint(1, self._gridworld.alto)
         return (x, y)
 
-    def entrenar(self, out_queue):
+    def entrenar(self, out_queue, error_q):
         inp_queue = Queue.Queue()
         inp_queue.put(self)
         qlearning_entrenar_worker = None
 
         try:
             qlearning_entrenar_worker = QLearningEntrenarWorker(inp_queue,
-                                                                out_queue
+                                                                out_queue,
+                                                                error_q
                                                                 )
             qlearning_entrenar_worker.start()
         except threading.ThreadError as te:
