@@ -10,7 +10,17 @@ from core.estado.estado import TIPOESTADO
 
 
 class QLearningEntrenarWorker(threading.Thread):
+    u"""
+    Worker encargado de realizar el aprendizaje de Q-Learning.
+    """
     def __init__(self, inp_queue, out_queue, error_q):
+        """
+        Inicializador del worker.
+
+        :param inp_queue: Cola de entrada.
+        :param out_queue: Cola de salida.
+        :param error_q: Cola de errores (salida)
+        """
         super(QLearningEntrenarWorker, self).__init__()
         self._inp_queue = inp_queue
         self._out_queue = out_queue
@@ -21,9 +31,15 @@ class QLearningEntrenarWorker(threading.Thread):
         logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
 
     def _do_on_start(self):
+        u"""
+        Ejecuta tareas al comenzar el thread.
+        """
         logging.debug("En ejecución.")
 
     def _on_end(self):
+        u"""
+        Ejecuta tareas al finalizar el thread.
+        """
         logging.debug("Terminando.")
 
     def run(self):
@@ -129,6 +145,11 @@ class QLearningEntrenarWorker(threading.Thread):
         self._on_end()
 
     def join(self, timeout=None):
+        u"""
+        Sobrecarga del método 'join'.
+
+        :param timeout: Tiempo en milisegundos de espera.
+        """
         logging.debug("Join")
         self._stoprequest.set()
         super(QLearningEntrenarWorker, self).join(timeout)

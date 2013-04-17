@@ -237,6 +237,10 @@ class MainWindow(QtGui.QMainWindow):
             estado.tipo = tipos_estados[tipo_num]
 
     def entrenar(self):
+        u"""
+        Ejecuta la magia de Q-Learning. Se encarga de realizar el aprendizaje
+        mediante el mismo en otro hilo/proceso.
+        """
         # Obtener la información asociada al ítem actual del combobox
         item_data = self.WMainWindow.cbQLTecnicas.itemData(self.WMainWindow.cbQLTecnicas.currentIndex())
         # Obtener el índice propio de la técnica a utilizar
@@ -288,7 +292,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def terminar_proceso(self):
         u"""
-        Probando si anda la señal clicked()
+        Ejecutar tareas al finalizar un thread.
         """
         logging.debug("Detener {0}: ".format(self.qlearning_entrenar_worker))
         self.qlearning_entrenar_worker.join(0.05)
@@ -299,11 +303,18 @@ class MainWindow(QtGui.QMainWindow):
         self.worker_msg_out_q = None
 
     def switch_tipo_estado(self, fila, columna):
-        tipos_estados = self.gridworld.tipos_estados.keys()
+        """
+        Rota a través de los distintos tipos de estados y los cambia acorde en
+        la UI.
+
+        :param fila: Fila del ítem.
+        :param columna: Columna del ítem.
+        """
         # TODO: Cambiar tipo de estado al ir haciendo clic sobre el estado
+        tipos_estados = self.gridworld.tipos_estados.keys()
 
     def _on_window_timer(self):
-        """
+        u"""
         Ejecuta diversas acciones a cada disparo del Timer principal.
         """
         logging.debug("Timeout")
@@ -312,6 +323,9 @@ class MainWindow(QtGui.QMainWindow):
         self.comprobar_actividad_threads()
 
     def on_comienzo_proceso(self):
+        u"""
+        Ejecutar tareas al ejecutar un thread.
+        """
         logging.debug("Comienzo del proceso")
         # Crear Timer asociado a la ventana principal
         self.wnd_timer = QtCore.QTimer()
@@ -337,11 +351,18 @@ class MainWindow(QtGui.QMainWindow):
                 t.join(0.01)
 
     def mostrar_dialogo_gen_rnd_vals(self):
+        u"""
+        Instancia y muestra el diálogo para generar valores aleatorios.
+        """
         self.GenRndValsD = GenRndValsDialog(self)
         if self.GenRndValsD.exec_():
             pass
 
     def inicializar_todo(self):
+        u"""
+        Reestablece los valores por defecto de varios controles de la UI
+        e inicializa variables internas del programa.
+        """
         self._init_vars()
         self.WMainWindow.cbGWDimension.setCurrentIndex(0)
         self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
@@ -374,6 +395,11 @@ class MainWindow(QtGui.QMainWindow):
         self.close()
 
     def leer_ql_input(self, cola):
+        u"""
+        Lee los datos del worker desde la cola de salida del mismo.
+
+        :param cola: Cola de salida del worker.
+        """
         ql_datos_in = list(get_all_from_queue(cola))
         logging.debug("Leer QL Input: {0}".format(ql_datos_in))
         if len(ql_datos_in) > 0:
@@ -381,18 +407,29 @@ class MainWindow(QtGui.QMainWindow):
             logging.debug("Datos IN: {0}".format(ql_datos_in))
 
     def actualizar_window(self):
+        u"""
+        Actualiza la información mostrada en la ventana de acuerdo a los
+        datos de entrada,
+        """
         logging.debug("Actualizar ventana")
         if self.ql_datos_in_feed.has_new_data:
             data = self.ql_datos_in_feed.read_data()
             logging.debug("Actualizar ventana con: {0}".format(data))
 
     def comprobar_colas(self):
+        u"""
+        Comprueba si hay datos en las colas de entrada y salida y actúa acorde.
+        """
         logging.debug("Comprobar colas")
         if self.ql_entrenar_out_q is not None:
             logging.debug("Comprobar cola QLearning: {0}".format(self.ql_entrenar_out_q))
             self.leer_ql_input(self.ql_entrenar_out_q)
 
     def comprobar_actividad_threads(self):
+        u"""
+        Comprueba si hay threads activos (sin incluir el MainThread). Si no
+        existen threads activos se detiene el Timer de la ventana.
+        """
         logging.debug("Comprobar actividad threads")
         main_thread = threading.current_thread()
         active_threads = threading.enumerate()

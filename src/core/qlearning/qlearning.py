@@ -17,7 +17,7 @@ class QLearning(object):
     u"""Algoritmo QLearning"""
     def __init__(self, gridworld, gamma, tecnica, episodes, init_value=0):
         """
-        Inicializador.
+        Inicializador de QLearning.
 
         :param gridworld: GridWorld sobre el cual se aplicará el algoritmo.
         :param gamma: Parámetro Gamma de QLearning.
@@ -45,6 +45,13 @@ class QLearning(object):
         return (x, y)
 
     def entrenar(self, out_queue, error_q):
+        u"""
+        Ejecuta el algoritmo de aprendizaje en otro hilo/proceso. Devuelve una
+        referencia al hilo/proceso ejecutado.
+
+        :param out_queue: Cola de salida.
+        :param error_q: Cola de errores (salida)
+        """
         inp_queue = Queue.Queue()
         inp_queue.put(self)
         qlearning_entrenar_worker = None
@@ -91,9 +98,23 @@ class QLearning(object):
             raise TypeError(u"El parámetro debe ser del tipo GridWorld")
 
     def get_estado(self, x, y):
+        """
+        Devuelve la referencia al estado determinado por las coordenadas X e Y.
+
+        :param x: Coordenada X del estado (fila)
+        :param y: Coordenada Y del estado (columna)
+        """
         return self._matriz_q[x - 1][y - 1]
 
     def set_estado(self, x, y, estado):
+        """
+        Almacena un estado dado en una posición determinada por las coordenadas
+        X e Y.
+
+        :param x: Coordenada X de destino (fila)
+        :param y: Coordenada Y de destino (columna)
+        :param estado: Estado a almacenar en la matriz.
+        """
         self._matriz_q[x - 1][y - 1] = estado
 
     def get_episodes(self):
@@ -146,12 +167,9 @@ class QLearning(object):
                 vecinos.append(self.get_estado(fila, columna))
         return vecinos
 
-    def elegir_accion(self, x, y):
-        pass
-
     gamma = property(get_gamma, set_gamma, None, u"Propiedad Gamma de QLearning")
     tecnica = property(get_tecnica, set_tecnica, None, u"Propiedad Técnica de QLearning")
     matriz_q = property(get_matriz_q, None, None, "Propiedad Matriz Q")
     gridworld = property(get_gridworld, set_gridworld, None, "Propiedad GridWorld")
     coordenadas = property(get_coordenadas, None, None, "Propiedad Coordenadas")
-    episodes = property(get_episodes, set_episodes, None, "episodes's docstring")
+    episodes = property(get_episodes, set_episodes, None, "Propiedad Episodios")
