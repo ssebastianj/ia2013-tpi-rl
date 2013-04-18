@@ -102,6 +102,7 @@ class QLearningEntrenarWorker(threading.Thread):
 
                 # Fórmula principal de Q-Learning
                 if recompensa_estado is not None:
+                    logging.debug("Gamma: {0}".format(ql_ref._gamma))
                     nuevo_q = recompensa_estado + (ql_ref._gamma * recompensa_max)
                 # Actualizar valor de Q en matriz Q
                 ql_ref.matriz_q[estado_elegido.fila - 1][estado_elegido.columna - 1] = nuevo_q

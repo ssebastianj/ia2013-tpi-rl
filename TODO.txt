@@ -1,0 +1,22 @@
+Prioridad Alta
+--------------
+* Permitir un único Estado Inicial y un único Estado Final.
+* Bloquear tablero y controles de entrada de parámetros al momento de Entrenar y Ejecutar.
+* Asignar al Estado Final la máxima recompensa en función de la máxima recompensa de 
+  los estados intermedios.
+* Implementar técnica "Aleatorio".
+* Mostrar estado actual durante la fase de Entrenamiento (Aprendizaje).
+* Mostrar en UI datos de ejecución de QLearningEntrenarWorker.
+* Agregar generación de datos aleatorios (estados y parámetros).
+
+Prioridad Media
+---------------
+* Agregar un Log para ver comportamiento interno de la aplicación.
+* Agregar diálogo Acerca De.
+* Agregar diálogo para cambiar las recompensas de cada estado.
+
+
+Prioridad Baja
+--------------
+* Realizar procesamiento de QLearning en otro proceso.
+* Migrar de listas nativas de Python a listas de Numpy.
