@@ -8,6 +8,8 @@ Prioridad Alta
 * Mostrar estado actual durante la fase de Entrenamiento (Aprendizaje).
 * Mostrar en UI datos de ejecución de QLearningEntrenarWorker.
 * Agregar generación de datos aleatorios (estados y parámetros).
+* Hacer más pruebas de la técnica Softmax.
+* Implementar y probar el decremento de parámetros cada ciertas iteraciones.
 
 Prioridad Media
 ---------------
