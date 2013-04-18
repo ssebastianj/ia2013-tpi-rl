@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Sun Apr 14 17:20:35 2013
+# Created: Thu Apr 18 13:53:36 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -141,12 +141,12 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.label_3, 1, 1, 1, 1)
         spacerItem4 = QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem4, 1, 0, 1, 1)
-        self.sbCantIteraciones = QtGui.QSpinBox(self.groupBox_3)
-        self.sbCantIteraciones.setEnabled(False)
-        self.sbCantIteraciones.setMinimum(1)
-        self.sbCantIteraciones.setMaximum(1000000000)
-        self.sbCantIteraciones.setObjectName(_fromUtf8("sbCantIteraciones"))
-        self.gridLayout_2.addWidget(self.sbCantIteraciones, 1, 2, 1, 1)
+        self.sbCantIteracionesDec = QtGui.QSpinBox(self.groupBox_3)
+        self.sbCantIteracionesDec.setEnabled(False)
+        self.sbCantIteracionesDec.setMinimum(1)
+        self.sbCantIteracionesDec.setMaximum(1000000000)
+        self.sbCantIteracionesDec.setObjectName(_fromUtf8("sbCantIteracionesDec"))
+        self.gridLayout_2.addWidget(self.sbCantIteracionesDec, 1, 2, 1, 1)
         self.label_5 = QtGui.QLabel(self.groupBox_3)
         self.label_5.setEnabled(False)
         self.label_5.setObjectName(_fromUtf8("label_5"))
@@ -281,7 +281,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuOperaciones.menuAction())
         self.menuBar.addAction(self.menuAyuda.menuAction())
         self.label.setBuddy(self.cbGWDimension)
-        self.label_3.setBuddy(self.sbCantIteraciones)
+        self.label_3.setBuddy(self.sbCantIteracionesDec)
         self.label_5.setBuddy(self.sbDecrementoVal)
         self.lblGamma.setBuddy(self.sbQLGamma)
         self.lblTau.setBuddy(self.sbQLTau)
@@ -291,7 +291,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.label_3.setEnabled)
         QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.label_5.setEnabled)
-        QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbCantIteraciones.setEnabled)
+        QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbCantIteracionesDec.setEnabled)
         QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbDecrementoVal.setEnabled)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.cbGWDimension, self.sbQLGamma)
@@ -300,8 +300,8 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.cbQLTecnicas, self.sbQLEpsilon)
         MainWindow.setTabOrder(self.sbQLEpsilon, self.sbQLTau)
         MainWindow.setTabOrder(self.sbQLTau, self.chkDecrementarParam)
-        MainWindow.setTabOrder(self.chkDecrementarParam, self.sbCantIteraciones)
-        MainWindow.setTabOrder(self.sbCantIteraciones, self.sbDecrementoVal)
+        MainWindow.setTabOrder(self.chkDecrementarParam, self.sbCantIteracionesDec)
+        MainWindow.setTabOrder(self.sbCantIteracionesDec, self.sbDecrementoVal)
         MainWindow.setTabOrder(self.sbDecrementoVal, self.btnEntrenar)
         MainWindow.setTabOrder(self.btnEntrenar, self.btnComenzarProceso)
         MainWindow.setTabOrder(self.btnComenzarProceso, self.btnTerminarProceso)
@@ -329,8 +329,8 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Dimensión:", None))
         self.groupBox_3.setTitle(_translate("MainWindow", "Q-Learning", None))
         self.label_3.setText(_translate("MainWindow", "Cada:", None))
-        self.sbCantIteraciones.setToolTip(_translate("MainWindow", "<html><head/><body><p>Intervalo de iteraciones entre las cuales el parámetro será decrementado.</p></body></html>", None))
-        self.sbCantIteraciones.setSuffix(_translate("MainWindow", " iteraciones", None))
+        self.sbCantIteracionesDec.setToolTip(_translate("MainWindow", "<html><head/><body><p>Intervalo de iteraciones entre las cuales el parámetro será decrementado.</p></body></html>", None))
+        self.sbCantIteracionesDec.setSuffix(_translate("MainWindow", " iteraciones", None))
         self.label_5.setText(_translate("MainWindow", "Decremento:", None))
         self.sbDecrementoVal.setToolTip(_translate("MainWindow", "<html><head/><body><p><span style=\" font-style:italic;\">Paso</span> o valor de decremento. En cada intervalo el parámetro será decrementado en un <span style=\" font-style:italic;\">paso.</span></p></body></html>", None))
         self.chkDecrementarParam.setToolTip(_translate("MainWindow", "<html><head/><body><p>Decrementar el parámetro que se esté utilizando.</p></body></html>", None))

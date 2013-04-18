@@ -17,6 +17,7 @@ from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
+from core.tecnicas.aleatorio import Aleatorio
 
 from tools.livedatafeed import LiveDataFeed
 from tools.queue import get_all_from_queue, get_item_from_queue
@@ -73,6 +74,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.cbQLTecnicas.addAction(QtGui.QAction(_tr(value), self))
         self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
         self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
+        self.WMainWindow.sbQLTau.setMinimum(0.01)
         self.WMainWindow.lblTau.hide()
         self.WMainWindow.sbQLTau.hide()
 
@@ -185,6 +187,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbQLEpsilon.setMinimum(0.00)
             self.WMainWindow.sbQLEpsilon.setValue(0.00)
             self.WMainWindow.sbQLEpsilon.setEnabled(False)
+            self.WMainWindow.chkDecrementarParam.setEnabled(False)
         elif key == 1:
             # E-Greedy
             self.WMainWindow.lblTau.hide()
@@ -193,12 +196,24 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbQLEpsilon.show()
             self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
             self.WMainWindow.sbQLEpsilon.setEnabled(True)
+            self.WMainWindow.chkDecrementarParam.setEnabled(True)
         elif key == 2:
             # Softmax
             self.WMainWindow.lblEpsilon.hide()
             self.WMainWindow.sbQLEpsilon.hide()
             self.WMainWindow.lblTau.show()
             self.WMainWindow.sbQLTau.show()
+            self.WMainWindow.chkDecrementarParam.setEnabled(True)
+        elif key == 3:
+            # Aleatorio
+            self.WMainWindow.lblTau.hide()
+            self.WMainWindow.sbQLTau.hide()
+            self.WMainWindow.lblEpsilon.show()
+            self.WMainWindow.sbQLEpsilon.show()
+            self.WMainWindow.sbQLEpsilon.setMinimum(1.00)
+            self.WMainWindow.sbQLEpsilon.setValue(1.00)
+            self.WMainWindow.sbQLEpsilon.setEnabled(False)
+            self.WMainWindow.chkDecrementarParam.setEnabled(False)
 
     def show_item_menu(self, posicion):
         u"""
@@ -241,6 +256,7 @@ class MainWindow(QtGui.QMainWindow):
         Ejecuta la magia de Q-Learning. Se encarga de realizar el aprendizaje
         mediante el mismo en otro hilo/proceso.
         """
+        # ----------- Comienzo de seteo de la técnica --------------
         # Obtener la información asociada al ítem actual del combobox
         item_data = self.WMainWindow.cbQLTecnicas.itemData(self.WMainWindow.cbQLTecnicas.currentIndex())
         # Obtener el índice propio de la técnica a utilizar
@@ -258,8 +274,18 @@ class MainWindow(QtGui.QMainWindow):
             # Softmax
             tau = self.WMainWindow.sbQLTau.value()
             tecnica = Softmax(tau)
+        elif id_tecnica == 3:
+            # Aleatorio
+            tecnica = Aleatorio()
         else:
             tecnica = None
+
+        if self.WMainWindow.chkDecrementarParam.isChecked():
+                paso_decremento = self.WMainWindow.sbDecrementoVal.value()
+                intervalo_decremento = self.WMainWindow.sbCantIteracionesDec.value()
+                tecnica.paso_decremento = paso_decremento
+                tecnica.intervalo_decremento = intervalo_decremento
+        # ----------- Fin de seteo de la técnica --------------
 
         gamma = self.WMainWindow.sbQLGamma.value()
         cant_episodios = int(self.WMainWindow.sbCantidadEpisodios.value())

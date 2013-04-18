@@ -9,7 +9,7 @@ from core.tecnicas.tecnica import QLTecnica
 
 class Aleatorio(QLTecnica):
     u"""Técnica EGreedy"""
-    def __init__(self, comienzo_rango=0, fin_rango=1):
+    def __init__(self):
         u"""
         Inicializador
 
@@ -17,23 +17,10 @@ class Aleatorio(QLTecnica):
         :param fin_rango: Valor final del rango de generación.
         """
         super(Aleatorio, self).__init__()
-        if comienzo_rango < fin_rango:
-            self._comienzo_rango = comienzo_rango
-            self._fin_rango = fin_rango
-        else:
-            raise ValueError
 
-    def get_comienzo_rango(self):
-        return self._comienzo_rango
+    def obtener_accion(self, matriz_q, vecinos):
+        indice = random.randint(0, (len(vecinos) - 1))
+        return vecinos[indice]
 
-    def get_fin_rango(self):
-        return self._fin_rango
-
-    def set_comienzo_rango(self, valor):
-        self._comienzo_rango = valor
-
-    def set_fin_rango(self, valor):
-        self._fin_rango = valor
-
-    comienzo_rango = property(get_comienzo_rango, set_comienzo_rango, None, "Valor inicial del rango de generación")
-    fin_rango = property(get_fin_rango, set_fin_rango, None, "Valor final del rango de generación")
+    def decrementar_parametro(self):
+        pass

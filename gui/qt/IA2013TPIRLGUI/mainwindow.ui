@@ -287,7 +287,7 @@
              <string>Cada:</string>
             </property>
             <property name="buddy">
-             <cstring>sbCantIteraciones</cstring>
+             <cstring>sbCantIteracionesDec</cstring>
             </property>
            </widget>
           </item>
@@ -308,7 +308,7 @@
            </spacer>
           </item>
           <item row="1" column="2">
-           <widget class="QSpinBox" name="sbCantIteraciones">
+           <widget class="QSpinBox" name="sbCantIteracionesDec">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -655,7 +655,7 @@
   <tabstop>sbQLEpsilon</tabstop>
   <tabstop>sbQLTau</tabstop>
   <tabstop>chkDecrementarParam</tabstop>
-  <tabstop>sbCantIteraciones</tabstop>
+  <tabstop>sbCantIteracionesDec</tabstop>
   <tabstop>sbDecrementoVal</tabstop>
   <tabstop>btnEntrenar</tabstop>
   <tabstop>btnComenzarProceso</tabstop>
@@ -700,7 +700,7 @@
   <connection>
    <sender>chkDecrementarParam</sender>
    <signal>toggled(bool)</signal>
-   <receiver>sbCantIteraciones</receiver>
+   <receiver>sbCantIteracionesDec</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
