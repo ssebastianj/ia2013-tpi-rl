@@ -291,7 +291,6 @@ class MainWindow(QtGui.QMainWindow):
 
         # Mostrar el menú y obtener el item de menu clickeado
         action = self.menu_item.exec_(self.WMainWindow.tblGridWorld.mapToGlobal(posicion))
-        logging.debug("Acción: {0}".format(action))
 
         if action is not None:
             # Obtener el tipo de estado asociado al texto clickeado
