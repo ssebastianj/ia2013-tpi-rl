@@ -109,6 +109,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setSortingEnabled(False)
         self.WMainWindow.tblGridWorld.setMouseTracking(True)
         self.setMouseTracking(True)
+        tbl_fuente = QtGui.QFont()
+        tbl_fuente.setPointSize(10)
+        self.WMainWindow.tblGridWorld.setFont(tbl_fuente)
 
         # Conexión de señales
         self._set_window_signals()
