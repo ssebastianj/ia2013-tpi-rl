@@ -77,7 +77,14 @@ class Softmax(QLTecnica):
         return probabilidades_vecinos_ponderadas
 
     def decrementar_parametro(self):
-        pass
+        decremento = self._val_param_parcial - self._paso_decremento
+        # No puede ser igual a cero sino se estaría ante un caso de
+        # técnica Greedy (E = 0)
+        if decremento > 0:
+            self._val_param_parcial = decremento
+        else:
+            # Restaurar valor original de parámetro
+            self.restaurar_val_parametro()
 
     def get_tau_general(self):
         return self._val_param_general

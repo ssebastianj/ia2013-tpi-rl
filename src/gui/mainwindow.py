@@ -51,6 +51,8 @@ class MainWindow(QtGui.QMainWindow):
         Inicializa las variables 'globales'.
         """
         self.ql_datos_in_feed = LiveDataFeed()
+        self.estado_inicial = None
+        self.estado_final = None
         self.wnd_timer = None
         self.tecnicas = {0: "Greedy",
                          1: "ε-Greedy",
@@ -236,6 +238,17 @@ class MainWindow(QtGui.QMainWindow):
                 action.setData(tipo.ide)
                 menu_item.addAction(action)
 
+                if tipo.ide == TIPOESTADO.FINAL:
+                    if self.estado_final is not None:
+                        action.setEnabled(False)
+                    else:
+                        action.setEnabled(True)
+                elif tipo.ide == TIPOESTADO.INICIAL:
+                    if self.estado_inicial is not None:
+                        action.setEnabled(False)
+                    else:
+                        action.setEnabled(True)
+
         # Mostrar el menú y obtener el item de menu clickeado
         action = menu_item.exec_(self.WMainWindow.tblGridWorld.mapToGlobal(posicion))
         if action is not None:
@@ -247,9 +260,21 @@ class MainWindow(QtGui.QMainWindow):
             item.setText(tipos_estados[tipo_num].letra)
             # Establecer color de fondo de acuerdo al tipo de estado
             item.setBackgroundColor(QtGui.QColor(tipos_estados[tipo_num].color))
-            estado = self.gridworld.get_estado(item.row() + 1, item.column() + 1)
-            # Establecer tipo de estado seleccionado al estado en la matriz
-            estado.tipo = tipos_estados[tipo_num]
+            estado_actual = self.gridworld.get_estado(item.row() + 1, item.column() + 1)
+
+            if tipo_num == TIPOESTADO.INICIAL:
+                self.estado_inicial = estado_actual
+            elif tipo_num == TIPOESTADO.FINAL:
+                self.estado_final = estado_actual
+
+            if estado_actual.tipo.ide == TIPOESTADO.INICIAL:
+                self.estado_inicial = None
+            elif estado_actual.tipo.ide == TIPOESTADO.FINAL:
+                self.estado_final = None
+
+            # Establecer tipo de estado seleccionado al estado en la matriz de
+            # Estados
+            estado_actual.tipo = tipos_estados[tipo_num]
 
     def entrenar(self):
         u"""
