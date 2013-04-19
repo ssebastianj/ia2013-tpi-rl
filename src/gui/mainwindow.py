@@ -103,6 +103,14 @@ class MainWindow(QtGui.QMainWindow):
         # Establecer por defecto un Gamma = 0.5
         self.WMainWindow.sbQLGamma.setValue(0.5)
 
+        self.lbl_item_actual = QtGui.QLabel()
+        self.WMainWindow.statusBar.addPermanentWidget(self.lbl_item_actual)
+
+        self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.WMainWindow.tblGridWorld.setSortingEnabled(False)
+        self.WMainWindow.tblGridWorld.setMouseTracking(True)
+        self.setMouseTracking(True)
+
         # Conexión de señales
         self._set_window_signals()
 
@@ -143,8 +151,6 @@ class MainWindow(QtGui.QMainWindow):
         ancho_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
         alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
         self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
-        self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.WMainWindow.tblGridWorld.setSortingEnabled(False)
 
         # Rellenar tabla con items
         for fila in range(0, self.gridworld.alto):
@@ -183,6 +189,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnGenValAleatorios.clicked.connect(self.mostrar_dialogo_gen_rnd_vals)
         self.WMainWindow.btnInicializar.clicked.connect(self.inicializar_todo)
         self.WMainWindow.btnRecorrer.clicked.connect(self.recorrer_gw)
+        self.WMainWindow.tblGridWorld.itemEntered.connect(self.mostrar_item_actual)
 
     def parametros_segun_tecnica(self, tecnica):
         u"""
@@ -240,19 +247,36 @@ class MainWindow(QtGui.QMainWindow):
             return None
 
         tipos_estados = self.gridworld.tipos_estados
+        item_actual = self.WMainWindow.tblGridWorld.itemAt(posicion)
+        estado_actual = self.gridworld.get_estado(item_actual.row() + 1,
+                                                  item_actual.column() + 1)
 
         # Crear menu contextual para los items de la tabla
-        menu_item = QtGui.QMenu("Tipo de estado")
+        self.menu_item = QtGui.QMenu("Tipo de estado")
+        tipos_estados_group = QtGui.QActionGroup(self.WMainWindow.tblGridWorld)
         for tipo in tipos_estados.values():
             if tipo.ide not in self.window_config["item"]["menu_estado"]["ocultar_tipos"]:
+
                 # Verificar si el tipo de estado posee un ícono
                 if tipo.icono is None:
-                    action = QtGui.QAction(tipo.nombre, self.WMainWindow.tblGridWorld)
+                    action = QtGui.QAction(tipo.nombre,
+                                           self.WMainWindow.tblGridWorld)
                 else:
-                    action = QtGui.QAction(QtGui.QIcon(tipo.icono), tipo.nombre, self.WMainWindow.tblGridWorld)
+                    action = QtGui.QAction(QtGui.QIcon(tipo.icono),
+                                           tipo.nombre,
+                                           self.WMainWindow.tblGridWorld)
+
                 # Asociar al texto del menu el tipo de estado correspondiente
                 action.setData(tipo.ide)
-                menu_item.addAction(action)
+                action.setActionGroup(tipos_estados_group)
+                action.setCheckable(True)
+
+                if estado_actual.tipo.ide == tipo.ide:
+                    action.setChecked(True)
+
+                action.setStatusTip("Establecer calidad de estado a {0}"
+                                 .format(tipo.nombre))
+                self.menu_item.addAction(action)
 
                 if tipo.ide == TIPOESTADO.FINAL:
                     if self.estado_final is not None:
@@ -266,7 +290,9 @@ class MainWindow(QtGui.QMainWindow):
                         action.setEnabled(True)
 
         # Mostrar el menú y obtener el item de menu clickeado
-        action = menu_item.exec_(self.WMainWindow.tblGridWorld.mapToGlobal(posicion))
+        action = self.menu_item.exec_(self.WMainWindow.tblGridWorld.mapToGlobal(posicion))
+        logging.debug("Acción: {0}".format(action))
+
         if action is not None:
             # Obtener el tipo de estado asociado al texto clickeado
             tipo_num = action.data().toInt()[0]
@@ -455,6 +481,9 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer.start(100)
 
     def on_fin_proceso(self):
+        u"""
+        Ejecuta tareas al finalizar la ejecución de un thread/proceso.
+        """
         # Detener Timer asociado a la ventana principal
         self.wnd_timer.stop()
 
@@ -562,3 +591,20 @@ class MainWindow(QtGui.QMainWindow):
         if cant_active_threads == 0:
             logging.debug("No hay threads activos. Detener Window Timer.")
             self.on_fin_proceso()
+
+    def mostrar_item_actual(self, item):
+        u"""
+        Muestra en la barra de estado las coordenadas del ítem sobre el
+        cual el cursor se encuentra arriba.
+
+        :param item: Item debajo del cursor.
+        """
+        self.lbl_item_actual.setText("X: {0}, Y: {1}"
+                                     .format(item.row() + 1,
+                                             item.column() + 1))
+
+    def mouseMoveEvent(self, event):
+        self.lbl_item_actual.setText("")
+
+    def enterEvent(self, event):
+        self.lbl_item_actual.setText("")
