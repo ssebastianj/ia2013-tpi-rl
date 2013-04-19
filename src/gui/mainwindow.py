@@ -164,8 +164,9 @@ class MainWindow(QtGui.QMainWindow):
                 item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
 
                 if self.window_config["item"]["show_tooltip"]:
-                    item.setToolTip("X={0}, Y={1}\nTipo: {2}\nRecompensa: {3}"
-                                    .format(fila + 1, columna + 1, estado.tipo.nombre,
+                    item.setToolTip("Fila: {0} Columna: {1}\nTipo: {2}\nRecompensa: {3}"
+                                    .format(fila + 1, columna + 1,
+                                    estado.tipo.nombre,
                                     estado.tipo.recompensa))
 
                 self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
@@ -318,7 +319,7 @@ class MainWindow(QtGui.QMainWindow):
             estado_actual.tipo = tipos_estados[tipo_num]
 
             if self.window_config["item"]["show_tooltip"]:
-                item.setToolTip("X={0}, Y={1}\nTipo: {2}\nRecompensa: {3}"
+                item.setToolTip("Fila: {0}\nColumna: {1}\nTipo: {2}\nRecompensa: {3}"
                                 .format(item.row() + 1, item.column() + 1,
                                 estado_actual.tipo.nombre,
                                 estado_actual.tipo.recompensa))
@@ -397,6 +398,7 @@ class MainWindow(QtGui.QMainWindow):
             self.qlearning_entrenar_worker = None
 
         if self.qlearning_entrenar_worker is not None:
+            self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
             self.on_comienzo_proceso()
 
     def recorrer_gw(self):
@@ -430,6 +432,7 @@ class MainWindow(QtGui.QMainWindow):
             self.qlearning_recorrer_worker = None
 
         if self.qlearning_recorrer_worker is not None:
+            self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
             self.on_comienzo_proceso()
 
     def terminar_proceso(self):
@@ -443,10 +446,6 @@ class MainWindow(QtGui.QMainWindow):
             self.on_fin_proceso()
 
         self.worker_msg_out_q = None
-
-        # Habilitar GridWorld
-        self.window_config["item"]["menu_estado"]["enabled"] = True
-        self.window_config["item"]["show_tooltip"] = True
 
     def switch_tipo_estado(self, fila, columna):
         """
@@ -489,6 +488,8 @@ class MainWindow(QtGui.QMainWindow):
         # Habilitar GridWorld
         self.window_config["item"]["menu_estado"]["enabled"] = True
         self.window_config["item"]["show_tooltip"] = True
+
+        self.WMainWindow.statusBar.clearMessage()
 
     def _reintentar_detener_hilos(self):
         u"""
@@ -598,8 +599,8 @@ class MainWindow(QtGui.QMainWindow):
 
         :param item: Item debajo del cursor.
         """
-        self.lbl_item_actual.setText("X: {0}, Y: {1}"
-                                     .format(item.row() + 1,
+        self.lbl_item_actual.setText("Fila: {0} Columna: {1}"
+                                    .format(item.row() + 1,
                                              item.column() + 1))
 
     def mouseMoveEvent(self, event):
