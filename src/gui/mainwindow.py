@@ -195,6 +195,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.itemEntered.connect(self.mostrar_item_actual)
         self.WMainWindow.menuGridWorld.aboutToShow.connect(self.generar_menu_dimensiones)
         self.WMainWindow.menuQLearning.aboutToShow.connect(self.generar_menu_tecnicas)
+        self.WMainWindow.menuGridWorld.triggered.connect(self.set_gw_dimension_menu)
+        self.WMainWindow.menuQLearning.triggered.connect(self.parametros_segun_tecnica_menu)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -616,6 +618,8 @@ class MainWindow(QtGui.QMainWindow):
     def set_gw_dimension_menu(self, action):
         dimension = action.data().toString()
         logging.debug(dimension)
+        indice = self.WMainWindow.cbGWDimension.findData(dimension)
+        self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
         self.set_gw_dimension(dimension)
 
     def set_gw_dimension_cb(self, indice):
