@@ -78,7 +78,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.cbQLTecnicas.clear()
         for key, value in self.tecnicas.items():
             self.WMainWindow.cbQLTecnicas.addItem(_tr(value), key)
-            self.WMainWindow.cbQLTecnicas.addAction(QtGui.QAction(_tr(value), self))
+
         self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
         self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
         self.WMainWindow.sbQLTau.setMinimum(0.01)
@@ -89,10 +89,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.cbGWDimension.clear()
         for dimension in self.gw_dimensiones:
             self.WMainWindow.cbGWDimension.addItem(_tr(dimension), dimension)
-            self.WMainWindow.menuDimension.addAction(QtGui.QAction(_tr(dimension), self))
 
         # Establece la dimensión por defecto del tblGridWorld en 6x6
-        self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
+        self.set_gw_dimension_cb(self.WMainWindow.cbGWDimension.currentIndex())
 
         # Establecer por defecto 1 episodio
         self.WMainWindow.sbCantidadEpisodios.setValue(1)
@@ -129,7 +128,7 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Configura el tblGridWorld a la dimensión seleccionada e Inicializa los estados en Neutros.
 
-        :param dimension: Dimensión
+        :param dimension: Dimensión del GridWorld.
         """
         # Obtener ancho y alto del GridWorld
         logging.debug(dimension)
@@ -177,7 +176,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         self.WMainWindow.actionAppSalir.triggered.connect(self.exit)
         # Cambia la Dimensión del GridWorld al seleccionar la dimensión en el ComboBox
-        self.WMainWindow.cbGWDimension.currentIndexChanged[str].connect(self.set_gw_dimension)
+        self.WMainWindow.cbGWDimension.currentIndexChanged.connect(self.set_gw_dimension_cb)
         # Cambia el Tipo de Estado al clickear un casillero del tblGridWorld
         self.WMainWindow.tblGridWorld.cellClicked[int, int].connect(self.switch_tipo_estado)
         # Empieza el Entrenamiento al clickear el btnEntrenar
@@ -186,20 +185,25 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnTerminarProceso.clicked.connect(self.terminar_proceso)
         # Muestra sólo los parámetros utilizados en la técnica seleccionada en el ComboBox
         self.WMainWindow.cbQLTecnicas.currentIndexChanged.connect(self.parametros_segun_tecnica)
+        # Al hacer clic derecho sobre un item del GridWorld
         self.WMainWindow.tblGridWorld.customContextMenuRequested.connect(self.show_item_menu)
+        # Solicita la generación de valores aleatorio
         self.WMainWindow.btnGenValAleatorios.clicked.connect(self.mostrar_dialogo_gen_rnd_vals)
         self.WMainWindow.btnInicializar.clicked.connect(self.inicializar_todo)
         self.WMainWindow.btnRecorrer.clicked.connect(self.recorrer_gw)
+        # Emite cuando se coloca el cursor del mouse sobre un ítem
         self.WMainWindow.tblGridWorld.itemEntered.connect(self.mostrar_item_actual)
+        self.WMainWindow.menuGridWorld.aboutToShow.connect(self.generar_menu_dimensiones)
+        self.WMainWindow.menuQLearning.aboutToShow.connect(self.generar_menu_tecnicas)
 
-    def parametros_segun_tecnica(self, tecnica):
+    def parametros_segun_tecnica(self, indice):
         u"""
         Muestra u oculta los parámetros en función de la técnica seleccionada.
 
         :param tecnica: Técnica seleccionada
         """
         # Obtener valor asociado al item seleccionado
-        key = self.WMainWindow.cbQLTecnicas.itemData(tecnica).toInt()[0]
+        key = self.WMainWindow.cbQLTecnicas.itemData(indice).toInt()[0]
 
         if key == 0:
             # Greedy
@@ -608,3 +612,61 @@ class MainWindow(QtGui.QMainWindow):
 
     def enterEvent(self, event):
         self.lbl_item_actual.setText("")
+
+    def set_gw_dimension_menu(self, action):
+        dimension = action.data().toString()
+        logging.debug(dimension)
+        self.set_gw_dimension(dimension)
+
+    def set_gw_dimension_cb(self, indice):
+        dimension = self.WMainWindow.cbGWDimension.itemData(indice).toString()
+        logging.debug(dimension)
+        self.set_gw_dimension(dimension)
+
+    def parametros_segun_tecnica_menu(self, action):
+        indice = action.data().toInt()[0]
+        self.WMainWindow.cbQLTecnicas.setCurrentIndex(indice)
+
+    def generar_menu_dimensiones(self):
+        logging.debug("Generar Menú Dimensiones")
+        dim_idx = self.WMainWindow.cbGWDimension.currentIndex()
+        dim_data = self.WMainWindow.cbGWDimension.itemData(dim_idx).toString()
+
+        self.WMainWindow.menuGridWorld.clear()
+
+        # Cargar dimensiones posibles del tblGridWorld en el menú
+        submenu_dimension = QtGui.QMenu(_tr("Dimensiones"), self)
+        dimension_group = QtGui.QActionGroup(self)
+        for dimension in self.gw_dimensiones:
+            action = QtGui.QAction(_tr(dimension), self)
+            action.setData(dimension)
+            action.setCheckable(True)
+            action.setActionGroup(dimension_group)
+            submenu_dimension.addAction(action)
+
+            if dimension == dim_data:
+                action.setChecked(True)
+
+        self.WMainWindow.menuGridWorld.addMenu(submenu_dimension)
+
+    def generar_menu_tecnicas(self):
+        logging.debug("Generar Menú Técnicas")
+        dim_idx = self.WMainWindow.cbQLTecnicas.currentIndex()
+        dim_data = self.WMainWindow.cbQLTecnicas.itemData(dim_idx).toInt()[0]
+
+        self.WMainWindow.menuQLearning.clear()
+
+        # Cargar dimensiones posibles del tblGridWorld en el menú
+        submenu_tecnica = QtGui.QMenu(_tr("Técnicas"), self)
+        tecnica_group = QtGui.QActionGroup(self)
+        for key, value in self.tecnicas.items():
+            action = QtGui.QAction(_tr(value), self)
+            action.setData(key)
+            action.setCheckable(True)
+            action.setActionGroup(tecnica_group)
+            submenu_tecnica.addAction(action)
+
+            if key == dim_data:
+                action.setChecked(True)
+
+        self.WMainWindow.menuQLearning.addMenu(submenu_tecnica)

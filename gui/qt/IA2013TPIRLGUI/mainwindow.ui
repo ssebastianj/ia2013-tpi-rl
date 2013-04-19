@@ -116,7 +116,7 @@
     <addaction name="actionComenzarPlay"/>
     <addaction name="actionTerminarProceso"/>
    </widget>
-   <widget class="QMenu" name="menu_Configuraci_n">
+   <widget class="QMenu" name="menuConfiguracion">
     <property name="title">
      <string>&amp;Configuración</string>
     </property>
@@ -124,24 +124,18 @@
      <property name="title">
       <string>Grid World</string>
      </property>
-     <widget class="QMenu" name="menuDimension">
-      <property name="title">
-       <string>Dimensión</string>
-      </property>
-     </widget>
-     <addaction name="menuDimension"/>
     </widget>
-    <widget class="QMenu" name="menuTecnicas">
+    <widget class="QMenu" name="menuQLearning">
      <property name="title">
-      <string>Técnicas</string>
+      <string>Q-Learning</string>
      </property>
     </widget>
     <addaction name="menuGridWorld"/>
-    <addaction name="menuTecnicas"/>
+    <addaction name="menuQLearning"/>
    </widget>
    <addaction name="menuArchivo"/>
    <addaction name="menuEdicion"/>
-   <addaction name="menu_Configuraci_n"/>
+   <addaction name="menuConfiguracion"/>
    <addaction name="menuOperaciones"/>
    <addaction name="menuAyuda"/>
   </widget>
@@ -661,16 +655,6 @@
   <action name="actionTerminarProceso">
    <property name="text">
     <string>Terminar</string>
-   </property>
-  </action>
-  <action name="actionSoftmax">
-   <property name="text">
-    <string>Softmax</string>
-   </property>
-  </action>
-  <action name="actionE_Greedy">
-   <property name="text">
-    <string>E-Greedy</string>
    </property>
   </action>
  </widget>
