@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import logging
 import threading
 import time
+import random
 from core.estado.estado import TIPOESTADO
 
 
@@ -55,7 +56,7 @@ class QLearningEntrenarWorker(threading.Thread):
         logging.debug("Entrada al proceso: {0}".format(ql_ref))
 
         # Obtener matriz R de recompensa
-        matriz_r = ql_ref._gridworld.get_matriz_r()
+        matriz_r = ql_ref._gridworld.matriz_r
         # Inicializar matriz Q a un valor dado
         ql_ref.inicializar_matriz_q()
 
@@ -107,7 +108,6 @@ class QLearningEntrenarWorker(threading.Thread):
                 # Actualizar valor de Q en matriz Q
                 ql_ref.matriz_q[estado_elegido.fila - 1][estado_elegido.columna - 1] = nuevo_q
                 # Cambiar de estado
-                estado_actual = estado_elegido
 
                 cant_iteraciones += 1
 
@@ -119,7 +119,11 @@ class QLearningEntrenarWorker(threading.Thread):
                 logging.debug("Valor parámetro: {0}".format(ql_ref._tecnica._val_param_parcial))  # FIXME: Logging
                 logging.debug("Iteraciones {0}".format(cant_iteraciones))  # FIXME: Logging
                 logging.debug("Matriz Q: {0}".format(ql_ref._matriz_q))
-                self._out_queue.put(((x, y), epnum, cant_iteraciones, 0, 0))
+
+                self._out_queue.put(((estado_actual.fila, estado_actual.columna),
+                                     epnum, cant_iteraciones, None, None))
+
+                estado_actual = estado_elegido
 
             iter_end_time = time.clock()
             ep_end_time = time.clock()
@@ -129,7 +133,7 @@ class QLearningEntrenarWorker(threading.Thread):
             iter_exec_time = iter_end_time - iter_start_time
 
             # Poner en la cola de salida los resultados
-            self._out_queue.put(((x, y),
+            self._out_queue.put(((estado_actual.fila, estado_actual.columna),
                                 epnum,
                                 cant_iteraciones,
                                 ep_exec_time,
@@ -154,3 +158,107 @@ class QLearningEntrenarWorker(threading.Thread):
         logging.debug("Join")
         self._stoprequest.set()
         super(QLearningEntrenarWorker, self).join(timeout)
+
+
+class QLearningRecorrerWorker(threading.Thread):
+    u"""
+    Worker encargado de recorrer el GridWorld utilizando la matriz Q para seguir
+    el mejor camino hasta el Estado Final.
+    """
+    def __init__(self, inp_queue, out_queue, error_queue):
+        super(QLearningRecorrerWorker, super).__init__()
+        self._inp_queue = inp_queue
+        self._out_queue = out_queue
+        self._error_queue = error_queue
+        self._stoprequest = threading.Event()
+        self.name = "QLearningRecorrerWorker"
+
+    def _do_on_start(self):
+        u"""
+        Ejecuta tareas al comenzar el thread.
+        """
+        logging.debug("En ejecución.")
+
+    def _on_end(self):
+        u"""
+        Ejecuta tareas al finalizar el thread.
+        """
+        logging.debug("Terminando.")
+
+    def run(self):
+        # Realizar tareas al comienzo
+        self._do_on_start()
+
+        # Obtener la referencia a la instancia desde la cola de entrada
+        (ql_ref, estado_inicial) = self._inp_queue.get()
+        logging.debug("Entrada al proceso: {0}".format(ql_ref))
+
+        # Obtener las matrices R y Q para realizar el recorrido
+        matriz_r = ql_ref._gridworld.matriz_r
+        matriz_q = ql_ref.matriz_q
+        # Lista que contiene la secuencia de estados comenzando por el
+        # Estado Inicial
+        camino_optimo = [estado_inicial]
+
+        # Registrar tiempo de comienzo
+        proc_start_time = time.clock()
+        estado_actual = estado_inicial
+        while (not self._stoprequest.is_set()) and (not estado_actual.tipo.ide == TIPOESTADO.FINAL):
+            vecinos = matriz_r[estado_actual.fila - 1][estado_actual.columna - 1]
+
+            # Buscar el estado que posea el mayor valor de Q
+            maximo_q = 0
+            estados_qmax = []
+            for i in vecinos:
+                logging.debug("X:{0} Y:{1}".format(i.fila, i.columna))  # FIXME: Eliminar print de debug
+                q_valor = matriz_q[i.fila - 1][i.columna - 1]
+                logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug
+                if q_valor > maximo_q:
+                    maximo = q_valor
+                    estados_qmax = [i]
+                elif q_valor == maximo:
+                    estados_qmax.append(i)
+
+            # Comprobar si hay estados con valores Q iguales y elegir uno
+            # de forma aleatoria
+            if len(estados_qmax) == 1:
+                estado_qmax = estados_qmax[0]
+                logging.debug("Existe un sólo estado vecino con Q máximo")  # FIXME: Eliminar print de debug
+            else:
+                estado_qmax = estados_qmax[random.randint(0, (len(estados_qmax) - 1))]
+                logging.debug("Existen varios estados con igual valor Q")  # FIXME: Eliminar print de debug
+
+            # Agregar estado al camino óptimo
+            camino_optimo.append(estado_qmax)
+            self._out_queue.put(((estado_actual.fila,
+                                  estado_actual.columna),
+                                  None))
+
+            # Actualizar estado actual con el estado con mayor valor de Q
+            estado_actual = estado_qmax
+
+        # Registrar tiempo de finalización
+        proc_end_time = time.clock()
+        proc_exec_time = proc_end_time - proc_start_time
+
+        logging.debug("Camino óptimo: {0}".format(camino_optimo))
+
+        # Encolar la información generada por el algoritmo para realizar
+        # estadísticas
+        self._out_queue.put((estado_actual.fila, estado_actual.columna),
+                            proc_exec_time)
+
+        # Poner en cola un valor booleano para indicar que se finalizó el trabajo
+        self._out_queue.put(True)
+        # Realizar tareas al finalizar
+        self._on_end()
+
+    def join(self, timeout=None):
+        u"""
+        Sobrecarga del método 'join'.
+
+        :param timeout: Tiempo en milisegundos de espera.
+        """
+        logging.debug("Join")
+        self._stoprequest.set()
+        super(QLearningRecorrerWorker, self).join(timeout)

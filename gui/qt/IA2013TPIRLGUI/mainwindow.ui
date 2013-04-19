@@ -688,6 +688,8 @@
   <tabstop>btnEntrenar</tabstop>
   <tabstop>btnRecorrer</tabstop>
   <tabstop>btnTerminarProceso</tabstop>
+  <tabstop>btnGenValAleatorios</tabstop>
+  <tabstop>btnInicializar</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -698,12 +700,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>314</x>
-     <y>285</y>
+     <x>510</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
-     <x>362</x>
-     <y>318</y>
+     <x>394</x>
+     <y>338</y>
     </hint>
    </hints>
   </connection>
@@ -714,8 +716,8 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>347</x>
-     <y>289</y>
+     <x>510</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
      <x>344</x>
@@ -730,12 +732,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>478</x>
-     <y>288</y>
+     <x>510</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
-     <x>478</x>
-     <y>309</y>
+     <x>510</x>
+     <y>338</y>
     </hint>
    </hints>
   </connection>
@@ -746,12 +748,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>433</x>
-     <y>289</y>
+     <x>510</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
-     <x>452</x>
-     <y>343</y>
+     <x>509</x>
+     <y>365</y>
     </hint>
    </hints>
   </connection>

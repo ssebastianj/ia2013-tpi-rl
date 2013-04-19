@@ -366,6 +366,9 @@ class MainWindow(QtGui.QMainWindow):
         if self.qlearning_entrenar_worker is not None:
             self.on_comienzo_proceso()
 
+    def recorrer_gw(self):
+        pass
+
     def terminar_proceso(self):
         u"""
         Ejecutar tareas al finalizar un thread.

@@ -8,7 +8,7 @@ import Queue
 import random
 import threading
 
-from core.qlearning.workers import QLearningEntrenarWorker
+from core.qlearning.workers import QLearningEntrenarWorker, QLearningRecorrerWorker
 from core.gridworld.gridworld import GridWorld
 from core.tecnicas.tecnica import QLTecnica
 
@@ -69,6 +69,9 @@ class QLearning(object):
             pass
 
         return qlearning_entrenar_worker
+
+    def recorrer(self, out_queue, error_queue):
+        pass
 
     def get_matriz_q(self):
         return self._matriz_q
