@@ -1,8 +1,6 @@
 Prioridad Alta
 --------------
 * Bloquear tablero y controles de entrada de parámetros al momento de Entrenar y Ejecutar.
-* Asignar al Estado Final la máxima recompensa en función de la máxima recompensa de 
-  los estados intermedios.
 * Mostrar estado actual durante la fase de Entrenamiento (Aprendizaje).
 * Mostrar en UI datos de ejecución de QLearningEntrenarWorker.
 * Agregar generación de datos aleatorios (estados y parámetros).
