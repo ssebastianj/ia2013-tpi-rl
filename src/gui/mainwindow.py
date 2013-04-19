@@ -124,6 +124,7 @@ class MainWindow(QtGui.QMainWindow):
         :param dimension: Dimensión
         """
         # Obtener ancho y alto del GridWorld
+        logging.debug(dimension)
         ancho_gw, alto_gw = self.convert_dimension(dimension)
         # Crear un nuevo GridWorld dados el ancho y el alto del mismo
         self.gridworld = GridWorld(ancho_gw, alto_gw)
@@ -446,14 +447,18 @@ class MainWindow(QtGui.QMainWindow):
         Reestablece los valores por defecto de varios controles de la UI
         e inicializa variables internas del programa.
         """
+        self.WMainWindow.cbGWDimension.currentIndexChanged[str].disconnect(self.set_gw_dimension)
         self._init_vars()
-        self.WMainWindow.cbGWDimension.setCurrentIndex(0)
-        self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
-        self.WMainWindow.sbCantidadEpisodios.setValue(10)
-        self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
-        self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
-        self.WMainWindow.sbQLGamma.setValue(0.00)
-        self.WMainWindow.sbQLTau.setValue(0.00)
+        self._initialize_window()
+        #=======================================================================
+        # self.WMainWindow.cbGWDimension.setCurrentIndex(0)
+        # self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
+        # self.WMainWindow.sbCantidadEpisodios.setValue(10)
+        # self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
+        # self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
+        # self.WMainWindow.sbQLGamma.setValue(0.00)
+        # self.WMainWindow.sbQLTau.setValue(0.00)
+        #=======================================================================
 
     def mostrar_dialogo_acerca(self):
         u"""
