@@ -69,6 +69,11 @@ Contents:
    :private-members:
    :special-members:
 
+.. autoclass:: QLearningRecorrerWorker
+   :members:
+   :private-members:
+   :special-members:
+
 .. automodule:: gui.mainwindow
 .. autoclass:: MainWindow
    :members:

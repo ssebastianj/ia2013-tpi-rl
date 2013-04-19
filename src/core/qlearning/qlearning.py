@@ -44,7 +44,7 @@ class QLearning(object):
         y = random.randint(1, self._gridworld.alto)
         return (x, y)
 
-    def entrenar(self, out_queue, error_q):
+    def entrenar(self, out_queue, error_queue):
         u"""
         Ejecuta el algoritmo de aprendizaje en otro hilo/proceso. Devuelve una
         referencia al hilo/proceso ejecutado.
@@ -59,7 +59,7 @@ class QLearning(object):
         try:
             qlearning_entrenar_worker = QLearningEntrenarWorker(inp_queue,
                                                                 out_queue,
-                                                                error_q
+                                                                error_queue
                                                                 )
             qlearning_entrenar_worker.start()
         except threading.ThreadError as te:
@@ -70,8 +70,31 @@ class QLearning(object):
 
         return qlearning_entrenar_worker
 
-    def recorrer(self, out_queue, error_queue):
-        pass
+    def recorrer(self, estado_inicial, out_queue, error_queue):
+        u"""
+        Ejecuta el algoritmo de recorrido en otro hilo/proceso. Devuelve una
+        referencia al hilo/proceso ejecutado.
+
+        :param out_queue: Cola de salida.
+        :param error_q: Cola de errores (salida)
+        """
+        inp_queue = Queue.Queue()
+        inp_queue.put((self, estado_inicial))
+        qlearning_recorrer_worker = None
+
+        try:
+            qlearning_recorrer_worker = QLearningRecorrerWorker(inp_queue,
+                                                                out_queue,
+                                                                error_queue
+                                                                )
+            qlearning_recorrer_worker.start()
+        except threading.ThreadError as te:
+            logging.debug(te)
+            raise threading.ThreadError
+        finally:
+            pass
+
+        return qlearning_recorrer_worker
 
     def get_matriz_q(self):
         return self._matriz_q

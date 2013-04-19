@@ -19,8 +19,8 @@ class QLearningEntrenarWorker(threading.Thread):
         Inicializador del worker.
 
         :param inp_queue: Cola de entrada.
-        :param out_queue: Cola de salida.
-        :param error_q: Cola de errores (salida)
+        :param out_queue: Cola de salida de datos.
+        :param error_q: Cola de salida de errores.
         """
         super(QLearningEntrenarWorker, self).__init__()
         self._inp_queue = inp_queue
@@ -29,7 +29,7 @@ class QLearningEntrenarWorker(threading.Thread):
         self._stoprequest = threading.Event()
         self.name = "QLearningEntrenarWorker"
         # FIXME: Logging
-        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
+        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")  # @IgnorePep8
 
     def _do_on_start(self):
         u"""
@@ -65,7 +65,7 @@ class QLearningEntrenarWorker(threading.Thread):
             # Registrar tiempo de comienzo del episodio
             ep_start_time = time.clock()
 
-            logging.debug("Numero de episodio: {0}".format(epnum))  # FIXME: Logging
+            logging.debug("Numero de episodio: {0}".format(epnum))  # FIXME: Logging @IgnorePep8
 
             # Obtener coordenadas aleatorias y obtener Estado asociado
             (x, y) = ql_ref._generar_estado_aleatorio()
@@ -116,13 +116,14 @@ class QLearningEntrenarWorker(threading.Thread):
                     # Decrementar valor del parámetro en 1 paso
                     ql_ref.tecnica.decrementar_parametro()
 
-                logging.debug("Valor parámetro: {0}".format(ql_ref._tecnica._val_param_parcial))  # FIXME: Logging
-                logging.debug("Iteraciones {0}".format(cant_iteraciones))  # FIXME: Logging
-                logging.debug("Matriz Q: {0}".format(ql_ref._matriz_q))
+                logging.debug("Valor parámetro: {0}".format(ql_ref._tecnica._val_param_parcial))  # FIXME: Logging @IgnorePep8
+                logging.debug("Iteraciones {0}".format(cant_iteraciones))  # FIXME: Logging @IgnorePep8
+                logging.debug("Matriz Q: {0}".format(ql_ref._matriz_q))  # FIXME: Logging @IgnorePep8
 
                 self._out_queue.put(((estado_actual.fila, estado_actual.columna),
                                      epnum, cant_iteraciones, None, None))
 
+                # Actualizar estado actual
                 estado_actual = estado_elegido
 
             iter_end_time = time.clock()
@@ -166,12 +167,21 @@ class QLearningRecorrerWorker(threading.Thread):
     el mejor camino hasta el Estado Final.
     """
     def __init__(self, inp_queue, out_queue, error_queue):
-        super(QLearningRecorrerWorker, super).__init__()
+        u"""
+        Inicializador de QLearningRecorrerWorker.
+
+        :param inp_queue: Cola de entrada.
+        :param out_queue: Cola de salida de datos.
+        :param error_queue: Cola de salida de errores.
+        """
+        super(QLearningRecorrerWorker, self).__init__()
         self._inp_queue = inp_queue
         self._out_queue = out_queue
         self._error_queue = error_queue
         self._stoprequest = threading.Event()
         self.name = "QLearningRecorrerWorker"
+        # FIXME: Logging
+        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")  # @IgnorePep8
 
     def _do_on_start(self):
         u"""
@@ -210,9 +220,9 @@ class QLearningRecorrerWorker(threading.Thread):
             maximo_q = 0
             estados_qmax = []
             for i in vecinos:
-                logging.debug("X:{0} Y:{1}".format(i.fila, i.columna))  # FIXME: Eliminar print de debug
+                logging.debug("X:{0} Y:{1}".format(i.fila, i.columna))  # FIXME: Eliminar print de debug @IgnorePep8
                 q_valor = matriz_q[i.fila - 1][i.columna - 1]
-                logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug
+                logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug @IgnorePep8
                 if q_valor > maximo_q:
                     maximo = q_valor
                     estados_qmax = [i]
@@ -223,15 +233,16 @@ class QLearningRecorrerWorker(threading.Thread):
             # de forma aleatoria
             if len(estados_qmax) == 1:
                 estado_qmax = estados_qmax[0]
-                logging.debug("Existe un sólo estado vecino con Q máximo")  # FIXME: Eliminar print de debug
+                logging.debug("Existe un sólo estado vecino con Q máximo")  # FIXME: Eliminar print de debug @IgnorePep8
             else:
                 estado_qmax = estados_qmax[random.randint(0, (len(estados_qmax) - 1))]
-                logging.debug("Existen varios estados con igual valor Q")  # FIXME: Eliminar print de debug
+                logging.debug("Existen varios estados con igual valor Q")  # FIXME: Eliminar print de debug @IgnorePep8
 
             # Agregar estado al camino óptimo
             camino_optimo.append(estado_qmax)
             self._out_queue.put(((estado_actual.fila,
                                   estado_actual.columna),
+                                  None,
                                   None))
 
             # Actualizar estado actual con el estado con mayor valor de Q
@@ -246,7 +257,7 @@ class QLearningRecorrerWorker(threading.Thread):
         # Encolar la información generada por el algoritmo para realizar
         # estadísticas
         self._out_queue.put((estado_actual.fila, estado_actual.columna),
-                            proc_exec_time)
+                            camino_optimo, proc_exec_time)
 
         # Poner en cola un valor booleano para indicar que se finalizó el trabajo
         self._out_queue.put(True)

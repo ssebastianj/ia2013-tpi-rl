@@ -182,6 +182,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.customContextMenuRequested.connect(self.show_item_menu)
         self.WMainWindow.btnGenValAleatorios.clicked.connect(self.mostrar_dialogo_gen_rnd_vals)
         self.WMainWindow.btnInicializar.clicked.connect(self.inicializar_todo)
+        self.WMainWindow.btnRecorrer.clicked.connect(self.recorrer_gw)
 
     def parametros_segun_tecnica(self, tecnica):
         u"""
@@ -302,6 +303,13 @@ class MainWindow(QtGui.QMainWindow):
         Ejecuta la magia de Q-Learning. Se encarga de realizar el aprendizaje
         mediante el mismo en otro hilo/proceso.
         """
+
+        if self.estado_final is None:
+            QtGui.QMessageBox.warning(self,
+                                          _tr('QLearning - Entrenamiento'),
+                                          "Debe establecer un Estado Final antes de realizar el recorrido.")
+            return None
+
         # Bloquear GridWorld
         self.window_config["item"]["menu_estado"]["enabled"] = False
         self.window_config["item"]["show_tooltip"] = False
@@ -356,7 +364,7 @@ class MainWindow(QtGui.QMainWindow):
         self.qlearning_entrenar_worker = self.qlearning.entrenar(self.ql_entrenar_out_q,
                                                                  self.ql_entrenar_error_q)
 
-        logging.debug(self.qlearning_entrenar_worker)
+        logging.debug("Nuevo Thread: {0}".format(self.qlearning_entrenar_worker))
 
         worker_error = get_item_from_queue(self.ql_entrenar_error_q)
         if worker_error is not None:
@@ -367,7 +375,37 @@ class MainWindow(QtGui.QMainWindow):
             self.on_comienzo_proceso()
 
     def recorrer_gw(self):
-        pass
+        u"""
+        Realiza el recorrido del agente en el GridWorld buscando los valores de 
+        Q mayores.
+        """
+        if self.estado_final is None:
+            QtGui.QMessageBox.warning(self,
+                                          _tr('QLearning - Recorrido'),
+                                          "Debe establecer un Estado Final antes de realizar el recorrido.")
+            return None
+
+        if self.estado_inicial is None:
+            QtGui.QMessageBox.warning(self,
+                                          _tr('QLearning - Recorrido'),
+                                          "Debe establecer un Estado Inicial antes de realizar el recorrido.")
+            return None
+
+        self.ql_recorrer_out_q = Queue.Queue()
+        self.ql_recorrer_error_q = Queue.Queue()
+        self.qlearning_recorrer_worker = self.qlearning.recorrer(self.estado_inicial,
+                                                                 self.ql_recorrer_out_q,
+                                                                 self.ql_recorrer_error_q)
+
+        logging.debug("Nuevo Thread: {0}".format(self.qlearning_recorrer_worker))
+
+        worker_error = get_item_from_queue(self.ql_recorrer_error_q)
+        if worker_error is not None:
+            logging.debug("Error {0}: ".format(worker_error))
+            self.qlearning_recorrer_worker = None
+
+        if self.qlearning_recorrer_worker is not None:
+            self.on_comienzo_proceso()
 
     def terminar_proceso(self):
         u"""
@@ -453,15 +491,6 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.cbGWDimension.currentIndexChanged[str].disconnect(self.set_gw_dimension)
         self._init_vars()
         self._initialize_window()
-        #=======================================================================
-        # self.WMainWindow.cbGWDimension.setCurrentIndex(0)
-        # self.set_gw_dimension(self.WMainWindow.cbGWDimension.currentText())
-        # self.WMainWindow.sbCantidadEpisodios.setValue(10)
-        # self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
-        # self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
-        # self.WMainWindow.sbQLGamma.setValue(0.00)
-        # self.WMainWindow.sbQLTau.setValue(0.00)
-        #=======================================================================
 
     def mostrar_dialogo_acerca(self):
         u"""
