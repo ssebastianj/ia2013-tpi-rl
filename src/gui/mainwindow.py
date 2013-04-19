@@ -60,7 +60,12 @@ class MainWindow(QtGui.QMainWindow):
                          3: "Aleatorio"}
         self.gw_dimensiones = ["2 x 2", "3 x 3", "4 x 4", "5 x 5", "6 x 6",
                                "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
-        self.menu_contextual_estado = {"ocultar_tipos": [TIPOESTADO.AGENTE]}
+        self.window_config = {"item":
+                              {"show_tooltip": True,
+                               "menu_estado":
+                                    {"ocultar_tipos":
+                                     [TIPOESTADO.AGENTE],
+                                     "enabled": True}}}
 
     def _initialize_window(self):
         u"""
@@ -150,6 +155,12 @@ class MainWindow(QtGui.QMainWindow):
                 item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
                 item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
+
+                if self.window_config["item"]["show_tooltip"]:
+                    item.setToolTip("X={0}, Y={1}\nTipo: {2}\nRecompensa: {3}"
+                                    .format(fila + 1, columna + 1, estado.tipo.nombre,
+                                    estado.tipo.recompensa))
+
                 self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
 
     def _set_window_signals(self):
@@ -223,12 +234,15 @@ class MainWindow(QtGui.QMainWindow):
 
         :param posicion: Posición relativa del item clickeado
         """
+        if not self.window_config["item"]["menu_estado"]["enabled"]:
+            return None
+
         tipos_estados = self.gridworld.tipos_estados
 
         # Crear menu contextual para los items de la tabla
         menu_item = QtGui.QMenu("Tipo de estado")
         for tipo in tipos_estados.values():
-            if tipo.ide not in self.menu_contextual_estado["ocultar_tipos"]:
+            if tipo.ide not in self.window_config["item"]["menu_estado"]["ocultar_tipos"]:
                 # Verificar si el tipo de estado posee un ícono
                 if tipo.icono is None:
                     action = QtGui.QAction(tipo.nombre, self.WMainWindow.tblGridWorld)
@@ -276,11 +290,21 @@ class MainWindow(QtGui.QMainWindow):
             # Estados
             estado_actual.tipo = tipos_estados[tipo_num]
 
+            if self.window_config["item"]["show_tooltip"]:
+                item.setToolTip("X={0}, Y={1}\nTipo: {2}\nRecompensa: {3}"
+                                .format(item.row() + 1, item.column() + 1,
+                                estado_actual.tipo.nombre,
+                                estado_actual.tipo.recompensa))
+
     def entrenar(self):
         u"""
         Ejecuta la magia de Q-Learning. Se encarga de realizar el aprendizaje
         mediante el mismo en otro hilo/proceso.
         """
+        # Bloquear GridWorld
+        self.window_config["item"]["menu_estado"]["enabled"] = False
+        self.window_config["item"]["show_tooltip"] = False
+
         # ----------- Comienzo de seteo de la técnica --------------
         # Obtener la información asociada al ítem actual del combobox
         item_data = self.WMainWindow.cbQLTecnicas.itemData(self.WMainWindow.cbQLTecnicas.currentIndex())
@@ -353,6 +377,10 @@ class MainWindow(QtGui.QMainWindow):
 
         self.worker_msg_out_q = None
 
+        # Habilitar GridWorld
+        self.window_config["item"]["menu_estado"]["enabled"] = True
+        self.window_config["item"]["show_tooltip"] = True
+
     def switch_tipo_estado(self, fila, columna):
         """
         Rota a través de los distintos tipos de estados y los cambia acorde en
@@ -387,6 +415,10 @@ class MainWindow(QtGui.QMainWindow):
     def on_fin_proceso(self):
         # Detener Timer asociado a la ventana principal
         self.wnd_timer.stop()
+
+        # Habilitar GridWorld
+        self.window_config["item"]["menu_estado"]["enabled"] = True
+        self.window_config["item"]["show_tooltip"] = True
 
     def _reintentar_detener_hilos(self):
         u"""

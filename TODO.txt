@@ -1,6 +1,5 @@
 Prioridad Alta
 --------------
-* Permitir un único Estado Inicial y un único Estado Final.
 * Bloquear tablero y controles de entrada de parámetros al momento de Entrenar y Ejecutar.
 * Asignar al Estado Final la máxima recompensa en función de la máxima recompensa de 
   los estados intermedios.
