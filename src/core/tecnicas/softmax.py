@@ -26,7 +26,7 @@ class Softmax(QLTecnica):
 
         probabilidades_vecinos = self.obtener_probabilidades(matriz_q, vecinos)
 
-        for i in range(0, len(vecinos)):
+        for i in xrange(0, len(vecinos)):
             if rnd_valor <= probabilidades_vecinos[i]:
                 estado = vecinos[i]
 
@@ -39,20 +39,20 @@ class Softmax(QLTecnica):
         # Calcula las probabilidades de cada vecino
         for i in vecinos:
             q_valor_vecino = matriz_q[i.fila - 1][i.columna - 1]
-            probabilidad_vecino = math.e ** (q_valor_vecino / self._val_param_parcial)
+            probabilidad_vecino = math.e ** (q_valor_vecino / float(self._val_param_parcial))
             probabilidades_vecinos.append(probabilidad_vecino)
 
             logging.debug("Probabilidad del vecino: {0}".format(probabilidad_vecino))
 
         # N = constante de Normalización
         # Convertirlo a un número flotante para solucionar problema al dividir
-        n = float(sum(probabilidades_vecinos))
+        n = sum(probabilidades_vecinos)
         logging.debug("Valor de constante de normalización N: {0}".format(n))
 
         probabilidades_vecinos_normalizadas = []
         # Calcula las probabilidades de cada vecino normalizadas
-        for i in range(0, len(vecinos)):
-            probabilidad_vecino_normalizada = probabilidades_vecinos[i] / n
+        for i in xrange(0, len(vecinos)):
+            probabilidad_vecino_normalizada = probabilidades_vecinos[i] / float(n)
             probabilidades_vecinos_normalizadas.append(probabilidad_vecino_normalizada)
 
         # Si éste cálculo está bien deberia dar 1
@@ -61,9 +61,9 @@ class Softmax(QLTecnica):
 
         # Realiza la Sumatoria Ponderada de las probabilidades de los vecinos
         probabilidades_vecinos_ponderadas = []
-        for i in range(0, len(vecinos)):
+        for i in xrange(0, len(vecinos)):
             probabilidad_vecino_ponderada = 0
-            for j in range(0, i + 1):
+            for j in xrange(0, i + 1):
                 probabilidad_vecino_ponderada += probabilidades_vecinos_normalizadas[j]
 
             logging.debug("Probabilidad ponderada del vecino: {0}"

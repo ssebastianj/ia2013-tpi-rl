@@ -109,9 +109,6 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setSortingEnabled(False)
         self.WMainWindow.tblGridWorld.setMouseTracking(True)
         self.setMouseTracking(True)
-        tbl_fuente = QtGui.QFont()
-        tbl_fuente.setPointSize(10)
-        self.WMainWindow.tblGridWorld.setFont(tbl_fuente)
 
         # Conexión de señales
         self._set_window_signals()
@@ -154,6 +151,8 @@ class MainWindow(QtGui.QMainWindow):
         alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
         self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
 
+        # Desactivar actualización de la tabla para optimizar la carga
+        self.WMainWindow.tblGridWorld.setUpdatesEnabled(False)
         # Rellenar tabla con items
         for fila in range(0, self.gridworld.alto):
             for columna in range(0, self.gridworld.ancho):
@@ -172,6 +171,8 @@ class MainWindow(QtGui.QMainWindow):
                                     estado.tipo.recompensa))
 
                 self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
+        # Reactivar la actualización de la tabla
+        self.WMainWindow.tblGridWorld.setUpdatesEnabled(True)
 
     def _set_window_signals(self):
         u"""

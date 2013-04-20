@@ -74,10 +74,9 @@ class GridWorld(object):
         # La recompensa se calcula buscando la mayor recompensa entre los estados
         # intermedios y sumándole un número dadon con el objetivo de que el
         # Estado Final tenga la máxima recompensa de todos los estados.
-        maxima_recompensa = max([i.recompensa
-                                for i in self._tipos_estados.values()
-                                if i is not None])
-        recompensa_estado_final = maxima_recompensa + 50
+        recompensa_estado_final = max([i.recompensa
+                                       for i in self._tipos_estados.values()
+                                       if i is not None]) + 50
 
         self._tipos_estados[TIPOESTADO.FINAL] = TipoEstado(TIPOESTADO.FINAL,
                                                            recompensa_estado_final,
@@ -95,9 +94,9 @@ class GridWorld(object):
         self._estados = []
         self._coordenadas = []
         # Crear una lista de listas
-        for i in range(1, self._alto + 1):
+        for i in xrange(1, self._alto + 1):
             fila = []
-            for j in range(1, self._ancho + 1):
+            for j in xrange(1, self._ancho + 1):
                 fila.append(Estado(i, j, default_tipo))
                 self._coordenadas.append((i, j))
             self._estados.append(fila)
@@ -113,9 +112,9 @@ class GridWorld(object):
 
         matriz_r = []
         # Crear una lista de listas
-        for i in range(1, self._alto + 1):
+        for i in xrange(1, self._alto + 1):
             fila = []
-            for j in range(1, self._ancho + 1):
+            for j in xrange(1, self._ancho + 1):
                 # Obtener los estados vecinos del estado actual (i, j)
                 vecinos = self.get_vecinos_estado(i, j)
                 # Agregar vecinos al estado excluyendo los prohibidos
@@ -188,9 +187,9 @@ class GridWorld(object):
         :param y: Columna del estado
         """
         vecinos = []
-        for fila, columna in [(x + i, y + j)
+        for fila, columna in ((x + i, y + j)
                               for i in (-1, 0, 1) for j in (-1, 0, 1)
-                              if i != 0 or j != 0]:
+                              if i != 0 or j != 0):
             if (fila, columna) in self._coordenadas:
                 vecinos.append(self.get_estado(fila, columna))
         return vecinos
@@ -199,13 +198,9 @@ class GridWorld(object):
         u"""
         Devuelve un string representando los estados en una estructura tabular (matriz)
         """
-        matriz = ""
-        for fila in self._estados:
-            matriz += "| "
-            for estado in fila:
-                matriz += estado.tipo.letra + " | "
-            matriz += "\n"
-        return matriz
+        return "\n".join(["| {0} |".format(" | ".join(j))
+                          for j in [[i.tipo.letra for i in f]
+                                                for f in self._estados]])
 
     # Propiedades (atributos) de la clase
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")

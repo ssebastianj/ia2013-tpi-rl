@@ -70,8 +70,7 @@ class EGreedy(QLTecnica):
 
         :param lista_estados: Lista de vecinos de un estado dado.
         """
-        indice = random.randint(0, (len(lista_estados) - 1))
-        return lista_estados[indice]
+        return lista_estados[random.randint(0, (len(lista_estados) - 1))]
 
     def decrementar_parametro(self):
         decremento = self._val_param_parcial - self._paso_decremento

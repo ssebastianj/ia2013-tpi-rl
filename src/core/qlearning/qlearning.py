@@ -170,9 +170,9 @@ class QLearning(object):
         """
         self._matriz_q = []
         self._coordenadas = []
-        for i in range(1, self._gridworld.alto + 1):
+        for i in xrange(1, self._gridworld.alto + 1):
             fila = []
-            for j in range(1, self._gridworld.ancho + 1):
+            for j in xrange(1, self._gridworld.ancho + 1):
                 fila.append(default)
                 self._coordenadas.append((i, j))
             self._matriz_q.append(fila)
@@ -188,10 +188,20 @@ class QLearning(object):
         :param y: Columna de la celda
         """
         vecinos = []
-        for fila, columna in [(x + i, y + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0]:
+        for fila, columna in ((x + i, y + j)
+                              for i in (-1, 0, 1) for j in (-1, 0, 1)
+                              if i != 0 or j != 0):
             if (fila, columna) in self._coordenadas:
                 vecinos.append(self.get_estado(fila, columna))
         return vecinos
+
+    def matriz_q_to_string(self):
+        u"""
+        Devuelve un string representando la matriz Q en una estructura tabular.
+        """
+        return "\n".join(["| {0} |".format(" | ".join(j))
+                          for j in [[str(i) for i in f]
+                                                for f in self._matriz_q]])
 
     gamma = property(get_gamma, set_gamma, None, u"Propiedad Gamma de QLearning")
     tecnica = property(get_tecnica, set_tecnica, None, u"Propiedad Técnica de QLearning")

@@ -96,9 +96,8 @@ class QLearningEntrenarWorker(threading.Thread):
                 vecinos_est_elegido = matriz_r[estado_elegido.fila - 1][estado_elegido.columna - 1]
 
                 # Obtener la recompensa de cada vecino y buscar el máximo valor
-                recompensa_vecinos = []
-                for j in vecinos_est_elegido:
-                    recompensa_vecinos.append(j.tipo.recompensa)
+                recompensa_vecinos = [est.tipo.recompensa
+                                      for est in vecinos_est_elegido]
                 recompensa_max = max(recompensa_vecinos)
 
                 # Fórmula principal de Q-Learning
@@ -224,9 +223,9 @@ class QLearningRecorrerWorker(threading.Thread):
                 q_valor = matriz_q[i.fila - 1][i.columna - 1]
                 logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug @IgnorePep8
                 if q_valor > maximo_q:
-                    maximo = q_valor
+                    maximo_q = q_valor
                     estados_qmax = [i]
-                elif q_valor == maximo:
+                elif q_valor == maximo_q:
                     estados_qmax.append(i)
 
             # Comprobar si hay estados con valores Q iguales y elegir uno
