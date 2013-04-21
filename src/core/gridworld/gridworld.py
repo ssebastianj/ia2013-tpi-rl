@@ -28,7 +28,7 @@ class GridWorld(object):
         self._tipos_estados = None
         self._estados = None
         self._coordenadas = None
-        self._excluir_tipos_vecinos = None
+        self._excluir_tipos_vecinos = excluir_tipos_vecinos
         self._inicializar_tipos_estados()
         self._inicializar_estados()
 

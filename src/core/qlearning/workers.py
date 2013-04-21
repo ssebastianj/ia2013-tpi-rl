@@ -95,18 +95,37 @@ class QLearningEntrenarWorker(threading.Thread):
                 # Obtener vecinos del estado elegido por la acción
                 vecinos_est_elegido = matriz_r[estado_elegido.fila - 1][estado_elegido.columna - 1]
 
-                # Obtener la recompensa de cada vecino y buscar el máximo valor
-                recompensa_vecinos = [est.tipo.recompensa
-                                      for est in vecinos_est_elegido]
-                recompensa_max = max(recompensa_vecinos)
+
+                maximo = 0
+                estados_qmax = []
+                for i in vecinos_est_elegido:
+                    # print "X:{0} Y:{1}".format(i.fila, i.columna)  # FIXME: Eliminar print de debug
+                    q_valor = i[1]
+                    # print "Q Valor: {0}".format(q_valor)  # FIXME: Eliminar print de debug
+                    if q_valor > maximo:
+                        maximo = q_valor
+                        estados_qmax = [i]
+                    elif q_valor == maximo:
+                        estados_qmax.append(i)
+
+                # Comprobar si hay estados con recompensas iguales y elegir uno
+                # de forma aleatoria
+                if len(estados_qmax) == 1:
+                    estado_qmax = estados_qmax[0][1]
+                    # print "Existe un sólo estado vecino máximo"  # FIXME: Eliminar print de debug
+                else:
+                    estado_qmax = self.elegir_estado_aleatorio(estados_qmax)
+                    # print "Existen varios estados con igual recompensa"  # FIXME: Eliminar print de debug
+
+
+
 
                 # Fórmula principal de Q-Learning
                 if recompensa_estado is not None:
                     logging.debug("Gamma: {0}".format(ql_ref._gamma))
-                    nuevo_q = recompensa_estado + (ql_ref._gamma * recompensa_max)
-                # Actualizar valor de Q en matriz Q
-                ql_ref.matriz_q[estado_elegido.fila - 1][estado_elegido.columna - 1] = nuevo_q
-                # Cambiar de estado
+                    nuevo_q = recompensa_estado + (ql_ref._gamma * max_q)
+                    # Actualizar valor de Q en matriz Q
+                    ql_ref.matriz_q[estado_elegido.fila - 1][estado_elegido.columna - 1] = nuevo_q
 
                 cant_iteraciones += 1
 
@@ -141,11 +160,11 @@ class QLearningEntrenarWorker(threading.Thread):
 
             # Verificar si se solicitó externamente finalizar el thread
             if self._stoprequest.is_set():
-                self._out_queue.put(True)
+                # self._out_queue.put(True)
                 break
 
         # Poner en cola un valor booleano para indicar que se finalizó el trabajo
-        self._out_queue.put(True)
+        # self._out_queue.put(True)
         # Realizar tareas al finalizar
         self._on_end()
 
@@ -205,6 +224,7 @@ class QLearningRecorrerWorker(threading.Thread):
         # Obtener las matrices R y Q para realizar el recorrido
         matriz_r = ql_ref._gridworld.matriz_r
         matriz_q = ql_ref.matriz_q
+        logging.debug("matriz Q par ale recorrido: {0}".format(matriz_q))
         # Lista que contiene la secuencia de estados comenzando por el
         # Estado Inicial
         camino_optimo = [estado_inicial]
@@ -255,11 +275,11 @@ class QLearningRecorrerWorker(threading.Thread):
 
         # Encolar la información generada por el algoritmo para realizar
         # estadísticas
-        self._out_queue.put((estado_actual.fila, estado_actual.columna),
-                            camino_optimo, proc_exec_time)
+        self._out_queue.put(((estado_actual.fila, estado_actual.columna),
+                            camino_optimo, proc_exec_time))
 
         # Poner en cola un valor booleano para indicar que se finalizó el trabajo
-        self._out_queue.put(True)
+        # self._out_queue.put(True)
         # Realizar tareas al finalizar
         self._on_end()
 

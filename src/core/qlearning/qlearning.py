@@ -15,7 +15,8 @@ from core.tecnicas.tecnica import QLTecnica
 
 class QLearning(object):
     u"""Algoritmo QLearning"""
-    def __init__(self, gridworld, gamma, tecnica, episodes, init_value=0):
+    def __init__(self, gridworld, gamma, tecnica, episodes, init_value=0,
+                 excluir_tipos_vecinos=None):
         """
         Inicializador de QLearning.
 
@@ -35,6 +36,7 @@ class QLearning(object):
         self._coordenadas = None
         self._matriz_q = None
         self._episodes = episodes
+        self._excluir_tipos_vecinos = excluir_tipos_vecinos
 
     def _generar_estado_aleatorio(self):
         u"""
@@ -169,15 +171,18 @@ class QLearning(object):
         :param default: Valor con que se inicializa cada estado de la matriz.
         """
         self._matriz_q = []
-        self._coordenadas = []
-        for i in xrange(1, self._gridworld.alto + 1):
-            fila = []
-            for j in xrange(1, self._gridworld.ancho + 1):
-                fila.append(default)
-                self._coordenadas.append((i, j))
-            self._matriz_q.append(fila)
+        matriz_r = self._gridworld.matriz_r
 
-        logging.debug(self._matriz_q)  # FIXME: Logging
+        for i in xrange(1, self._gridworld._alto + 1):
+            fila = []
+            for j in xrange(1, self._gridworld._ancho + 1):
+                vecinos = matriz_r[j - 1][i - 1]
+
+                fila.append([((vecino.fila, vecino.columna), default)
+                             for vecino in vecinos])
+
+            self._matriz_q.append(fila)
+        logging.debug(self._matriz_q)
 
     def get_vecinos_estado(self, x, y):
         u"""

@@ -50,10 +50,15 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Inicializa las variables 'globales'.
         """
-        self.ql_datos_in_feed = LiveDataFeed()
+        self.ql_datos_entrenar_in_feed = LiveDataFeed()
+        self.ql_datos_recorrer_in_feed = LiveDataFeed()
         self.estado_inicial = None
         self.estado_final = None
         self.wnd_timer = None
+        self.ql_entrenar_error_q = None
+        self.ql_entrenar_out_q = None
+        self.ql_recorrer_error_q = None
+        self.ql_recorrer_out_q = None
         self.tecnicas = {0: "Greedy",
                          1: "ε-Greedy",
                          2: "Softmax",
@@ -173,6 +178,9 @@ class MainWindow(QtGui.QMainWindow):
                 self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
         # Reactivar la actualización de la tabla
         self.WMainWindow.tblGridWorld.setUpdatesEnabled(True)
+
+        self.estado_inicial = None
+        self.estado_final = None
 
     def _set_window_signals(self):
         u"""
@@ -392,6 +400,8 @@ class MainWindow(QtGui.QMainWindow):
                                    cant_episodios,
                                    valor_inicial)
 
+        logging.debug("Matriz Q Inicial: {0}".format(self.qlearning.matriz_q))
+
         # QLearningEntrenarWorker Management
         # Que empiece la magia
         # FIXME: Ejecución concurrente Entrenamiento
@@ -501,6 +511,9 @@ class MainWindow(QtGui.QMainWindow):
 
         self.WMainWindow.statusBar.clearMessage()
 
+        logging.debug("Estos son los valores de la matriz Q")
+        print self.qlearning.matriz_q
+
     def _reintentar_detener_hilos(self):
         u"""
         Solicita la finalización de todos los threads utilizados en la
@@ -562,7 +575,7 @@ class MainWindow(QtGui.QMainWindow):
         ql_datos_in = list(get_all_from_queue(cola))
         logging.debug("Leer QL Input: {0}".format(ql_datos_in))
         if len(ql_datos_in) > 0:
-            self.ql_datos_in_feed.add_data(ql_datos_in)
+            self.ql_datos_entrenar_in_feed.add_data(ql_datos_in)
             logging.debug("Datos IN: {0}".format(ql_datos_in))
 
     def actualizar_window(self):
@@ -571,9 +584,28 @@ class MainWindow(QtGui.QMainWindow):
         datos de entrada,
         """
         logging.debug("Actualizar ventana")
-        if self.ql_datos_in_feed.has_new_data:
-            data = self.ql_datos_in_feed.read_data()
-            logging.debug("Actualizar ventana con: {0}".format(data))
+        if self.ql_datos_entrenar_in_feed.has_new_data:
+            data_entrenar = self.ql_datos_entrenar_in_feed.read_data()
+            logging.debug("Actualizar ventana con: {0}".format(data_entrenar))
+
+        if self.ql_datos_recorrer_in_feed.has_new_data:
+            data_recorrer = self.ql_datos_recorrer_in_feed.read_data()
+            logging.debug("Actualizar ventana con: {0}".format(data_recorrer))
+
+
+            ultima_info = data_recorrer[-1]
+            camino_optimo = [(i.fila, i.columna) for i in ultima_info[1]]
+
+            # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
+            seen = set()
+            seen_add = seen.add
+            camino_optimo_sin_repetidos = [ x for x in camino_optimo
+                                           if x not in seen and not seen_add(x)]
+
+            logging.debug("Camino óptimo (con repetidos): {0}"
+                          .format(camino_optimo))
+            logging.debug("Camino óptimo (sin repetidos): {0}".
+                          format(camino_optimo_sin_repetidos))
 
     def comprobar_colas(self):
         u"""
@@ -581,8 +613,14 @@ class MainWindow(QtGui.QMainWindow):
         """
         logging.debug("Comprobar colas")
         if self.ql_entrenar_out_q is not None:
-            logging.debug("Comprobar cola QLearning: {0}".format(self.ql_entrenar_out_q))
+            logging.debug("Comprobar cola QLearning Entrenar: {0}"
+                          .format(self.ql_entrenar_out_q))
             self.leer_ql_input(self.ql_entrenar_out_q)
+
+        if self.ql_recorrer_out_q is not None:
+            logging.debug("Comprobar cola QLearning Recorrer: {0}"
+                          .format(self.ql_recorrer_out_q))
+            self._procesar_info_ql_recorrido(self.ql_recorrer_out_q)
 
     def comprobar_actividad_threads(self):
         u"""
@@ -678,3 +716,10 @@ class MainWindow(QtGui.QMainWindow):
                 action.setChecked(True)
 
         self.WMainWindow.menuQLearning.addMenu(submenu_tecnica)
+
+    def _procesar_info_ql_recorrido(self, cola):
+        ql_datos_in = list(get_all_from_queue(cola))
+        logging.debug("Leer QL Input: {0}".format(ql_datos_in))
+        if len(ql_datos_in) > 0:
+            self.ql_datos_recorrer_in_feed.add_data(ql_datos_in)
+            logging.debug("Datos IN: {0}".format(ql_datos_in))
