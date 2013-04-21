@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+import copy
 import logging
 import Queue
 import random
@@ -33,8 +34,6 @@ class QLearning(object):
         self._gridworld = gridworld
         self._gamma = gamma
         self._tecnica = tecnica
-        self._coordenadas = None
-        self._matriz_q = None
         self._episodes = episodes
         self._excluir_tipos_vecinos = excluir_tipos_vecinos
 
@@ -55,7 +54,15 @@ class QLearning(object):
         :param error_q: Cola de errores (salida)
         """
         inp_queue = Queue.Queue()
-        inp_queue.put(self)
+        # Encolar Matriz R, Matriz Q, Número de episodios, Parámetro Gamma
+        inp_queue.put((self._gridworld.matriz_r,
+                       self.get_matriz_q(),
+                       self._gamma,
+                       self._episodes,
+                       copy.copy(self._tecnica),
+                       (self._gridworld.alto, self._gridworld.ancho)
+                     ))
+
         qlearning_entrenar_worker = None
 
         try:
@@ -97,9 +104,6 @@ class QLearning(object):
             pass
 
         return qlearning_recorrer_worker
-
-    def get_matriz_q(self):
-        return self._matriz_q
 
     def get_gamma(self):
         return self._gamma
@@ -151,38 +155,22 @@ class QLearning(object):
     def set_episodes(self, value):
         self._episodes = value
 
-    def set_valor_estado(self, x, y, valor):
-        u"""
-        Establece el valor numérico del estado.
-
-        :param x: Fila del estado
-        :param y: Columna del estado
-        :param valor: Valor númerico
-        """
-        self._matriz_q[x - 1][y - 1] = valor
-
     def get_coordenadas(self):
         return self._coordenadas
 
-    def inicializar_matriz_q(self, default=0):
+    def get_matriz_q(self, default=0):
         u"""
         Crea la matriz Q con un valor inicial.
 
         :param default: Valor con que se inicializa cada estado de la matriz.
         """
-        self._matriz_q = []
         matriz_r = self._gridworld.matriz_r
 
-        for i in xrange(1, self._gridworld._alto + 1):
-            fila = []
-            for j in xrange(1, self._gridworld._ancho + 1):
-                vecinos = matriz_r[j - 1][i - 1]
-
-                fila.append([((vecino.fila, vecino.columna), default)
-                             for vecino in vecinos])
-
-            self._matriz_q.append(fila)
-        logging.debug(self._matriz_q)
+        matriz_q = [[dict([(i, 0)
+                     for i in columna[1].keys()])
+                     for columna in fila]
+                     for fila in matriz_r]
+        return matriz_q
 
     def get_vecinos_estado(self, x, y):
         u"""
@@ -193,10 +181,11 @@ class QLearning(object):
         :param y: Columna de la celda
         """
         vecinos = []
+        coordenadas = self._gridworld.coordenadas
         for fila, columna in ((x + i, y + j)
                               for i in (-1, 0, 1) for j in (-1, 0, 1)
                               if i != 0 or j != 0):
-            if (fila, columna) in self._coordenadas:
+            if (fila, columna) in coordenadas:
                 vecinos.append(self.get_estado(fila, columna))
         return vecinos
 
@@ -204,9 +193,10 @@ class QLearning(object):
         u"""
         Devuelve un string representando la matriz Q en una estructura tabular.
         """
+        matriz_q = self.get_matriz_q()
         return "\n".join(["| {0} |".format(" | ".join(j))
                           for j in [[str(i) for i in f]
-                                                for f in self._matriz_q]])
+                                                for f in matriz_q]])
 
     gamma = property(get_gamma, set_gamma, None, u"Propiedad Gamma de QLearning")
     tecnica = property(get_tecnica, set_tecnica, None, u"Propiedad Técnica de QLearning")

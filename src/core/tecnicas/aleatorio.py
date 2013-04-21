@@ -18,9 +18,8 @@ class Aleatorio(QLTecnica):
         """
         super(Aleatorio, self).__init__()
 
-    def obtener_accion(self, matriz_q, vecinos):
-        indice = random.randint(0, (len(vecinos) - 1))
-        return vecinos[indice]
+    def obtener_accion(self, vecinos):
+        return random.choice(list(vecinos.keys()))
 
     def decrementar_parametro(self):
         pass

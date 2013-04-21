@@ -9,7 +9,8 @@ from core.estado.estado import Estado, TipoEstado, TIPOESTADO
 
 class GridWorld(object):
     """Clase GridWorld"""
-    def __init__(self, ancho, alto, estados=None, tipos_estados=None, excluir_tipos_vecinos=None):
+    def __init__(self, ancho, alto, estados=None, tipos_estados=None,
+                 excluir_tipos_vecinos=None):
         u"""
         :param ancho: Ancho
         :param alto: Alto
@@ -68,7 +69,11 @@ class GridWorld(object):
                                                            "P",
                                                            "#000000")
         # Estado Inicial
-        self._tipos_estados[TIPOESTADO.INICIAL] = TipoEstado(TIPOESTADO.INICIAL, None, "Inicial", "I", "#FF0011")
+        self._tipos_estados[TIPOESTADO.INICIAL] = TipoEstado(TIPOESTADO.INICIAL,
+                                                             None,
+                                                             "Inicial",
+                                                             "I",
+                                                             "#FF0011")
 
         # Estado Final
         # La recompensa se calcula buscando la mayor recompensa entre los estados
@@ -115,15 +120,21 @@ class GridWorld(object):
         for i in xrange(1, self._alto + 1):
             fila = []
             for j in xrange(1, self._ancho + 1):
+                # Obtener estado actual y su ID de tipo
+                estado = self.get_estado(i, j)
+                estado_ide = estado.tipo.ide
                 # Obtener los estados vecinos del estado actual (i, j)
                 vecinos = self.get_vecinos_estado(i, j)
-                # Agregar vecinos al estado excluyendo los prohibidos
-                fila.append([vecino for vecino in vecinos
-                             if vecino.tipo.ide not in self._excluir_tipos_vecinos
-                             ])
-            matriz_r.append(fila)
+                # Agregar vecinos y su recompensa al estado
+                # excluyendo los prohibidos
+                recomp_and_vec = {}
 
-        logging.debug(matriz_r)
+                for vecino in vecinos:
+                    if vecino.tipo.ide not in self._excluir_tipos_vecinos:
+                        recomp_and_vec[(vecino.fila, vecino.columna)] = vecino.tipo.recompensa
+
+                fila.append((estado_ide, recomp_and_vec))
+            matriz_r.append(fila)
         return matriz_r
 
     def get_estado(self, x, y):
@@ -178,6 +189,9 @@ class GridWorld(object):
     def set_tipos_vecinos_excluidos(self, valor):
         self._excluir_tipos_vecinos = valor
 
+    def get_coordenadas(self):
+        return self._coordenadas
+
     def get_vecinos_estado(self, x, y):
         u"""
         Devuelve los estados adyacentes en función de un estado dado.
@@ -200,7 +214,7 @@ class GridWorld(object):
         """
         return "\n".join(["| {0} |".format(" | ".join(j))
                           for j in [[i.tipo.letra for i in f]
-                                                for f in self._estados]])
+                                    for f in self._estados]])
 
     # Propiedades (atributos) de la clase
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
@@ -212,3 +226,4 @@ class GridWorld(object):
     tipos_vecinos_excluidos = property(get_tipos_vecinos_excluidos,
                                        set_tipos_vecinos_excluidos, None,
                                        "Tipos de vecinos excluidos al calcular los vecinos adyacentes")
+    coordenadas = property(get_coordenadas, None, None, "Coordenadas")

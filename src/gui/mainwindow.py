@@ -400,6 +400,7 @@ class MainWindow(QtGui.QMainWindow):
                                    cant_episodios,
                                    valor_inicial)
 
+        logging.debug("Matriz R: {0}".format(self.gridworld.matriz_r))
         logging.debug("Matriz Q Inicial: {0}".format(self.qlearning.matriz_q))
 
         # QLearningEntrenarWorker Management
@@ -510,9 +511,6 @@ class MainWindow(QtGui.QMainWindow):
         self.window_config["item"]["show_tooltip"] = True
 
         self.WMainWindow.statusBar.clearMessage()
-
-        logging.debug("Estos son los valores de la matriz Q")
-        print self.qlearning.matriz_q
 
     def _reintentar_detener_hilos(self):
         u"""

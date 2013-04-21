@@ -12,7 +12,7 @@ class QLTecnica(object):
         self._val_param_parcial = self._val_param_general
         self._name = "QLTecnica"
 
-    def obtener_accion(self, matriz_q, vecinos):
+    def obtener_accion(self, vecinos):
         u"""
         Devuelve un sólo estado vecino de una lista de estados vecinos.
 
