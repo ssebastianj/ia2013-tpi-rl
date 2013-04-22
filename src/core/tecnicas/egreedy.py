@@ -43,14 +43,16 @@ class EGreedy(QLTecnica):
             maximo = 0
             estados_qmax = []
             for key, value in vecinos.items():
-                # print "X:{0} Y:{1}".format(i.fila, i.columna)  # FIXME: Eliminar print de debug
+                logging.debug("X:{0} Y:{1}".format(*key))  # FIXME: Eliminar print de debug
                 q_valor = value
-                # print "Q Valor: {0}".format(q_valor)  # FIXME: Eliminar print de debug
+                logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug
                 if q_valor > maximo:
                     maximo = q_valor
                     estados_qmax = [key]
                 elif q_valor == maximo:
                     estados_qmax.append(key)
+
+            logging.debug("Estados Q-Max: {0}".format(estados_qmax))
 
             # Comprobar si hay estados con recompensas iguales y elegir uno
             # de forma aleatoria
@@ -64,7 +66,7 @@ class EGreedy(QLTecnica):
             # EXPLORAR
             logging.debug("EXPLORAR")  # FIXME: Eliminar print de debug
             # Elegir un estado vecino de forma aleatoria
-            estado_qmax = self.elegir_estado_aleatorio(vecinos)
+            estado_qmax = self.elegir_estado_aleatorio(vecinos.keys())
         return estado_qmax
 
     def elegir_estado_aleatorio(self, lista_estados):
@@ -74,7 +76,7 @@ class EGreedy(QLTecnica):
 
         :param lista_estados: Lista de vecinos de un estado dado.
         """
-        return random.choice(list(lista_estados.keys()))
+        return random.choice(lista_estados)
 
     def decrementar_parametro(self):
         decremento = self._val_param_parcial - self._paso_decremento

@@ -79,7 +79,7 @@ class QLearning(object):
 
         return qlearning_entrenar_worker
 
-    def recorrer(self, estado_inicial, out_queue, error_queue):
+    def recorrer(self, matriz_q, estado_inicial, out_queue, error_queue):
         u"""
         Ejecuta el algoritmo de recorrido en otro hilo/proceso. Devuelve una
         referencia al hilo/proceso ejecutado.
@@ -88,7 +88,7 @@ class QLearning(object):
         :param error_q: Cola de errores (salida)
         """
         inp_queue = Queue.Queue()
-        inp_queue.put((self, estado_inicial))
+        inp_queue.put((matriz_q, estado_inicial))
         qlearning_recorrer_worker = None
 
         try:
@@ -166,8 +166,8 @@ class QLearning(object):
         """
         matriz_r = self._gridworld.matriz_r
 
-        matriz_q = [[dict([(i, 0)
-                     for i in columna[1].keys()])
+        matriz_q = [[(columna[0], dict([(i, 0)
+                     for i in columna[1].keys()]))
                      for columna in fila]
                      for fila in matriz_r]
         return matriz_q

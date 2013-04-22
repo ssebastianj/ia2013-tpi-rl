@@ -105,7 +105,7 @@ class QLearningEntrenarWorker(threading.Thread):
                 recompensa_estado = vecinos[(x_eleg, y_eleg)]
 
                 # Obtener vecinos del estado elegido por la acción
-                vecinos_est_elegido = matriz_q[x_eleg - 1][y_eleg - 1]
+                vecinos_est_elegido = matriz_q[x_eleg - 1][y_eleg - 1][1]
                 logging.debug("Vecinos Elegidos del Elegido: {0}".format(vecinos_est_elegido))
 
                 max_q = max([q_val for q_val in vecinos_est_elegido.values()])
@@ -116,7 +116,7 @@ class QLearningEntrenarWorker(threading.Thread):
                     logging.debug("Gamma: {0}".format(gamma))
                     nuevo_q = recompensa_estado + (gamma * max_q)
                     # Actualizar valor de Q en matriz Q
-                    matriz_q[x_act - 1][y_act - 1][(x_eleg, y_eleg)] = nuevo_q
+                    matriz_q[x_act - 1][y_act - 1][1][(x_eleg, y_eleg)] = nuevo_q
 
                 cant_iteraciones += 1
 
@@ -129,11 +129,13 @@ class QLearningEntrenarWorker(threading.Thread):
                 logging.debug("Iteraciones {0}".format(cant_iteraciones))  # FIXME: Logging @IgnorePep8
                 logging.debug("Matriz Q: {0}".format(matriz_q))  # FIXME: Logging @IgnorePep8
 
-                self._out_queue.put(((x_act, y_act),
-                                     epnum, cant_iteraciones, None, None))
+                self._out_queue.put({'EstAct': (x_act, y_act),
+                                     'NoEp': epnum,
+                                     'CantIter': cant_iteraciones,
+                                     'Joined': False})
 
                 # Actualizar estado actual
-                x_act, y_act = x_eleg, y_eleg
+                (x_act, y_act) = (x_eleg, y_eleg)
                 estado_actual = matriz_r[x_act - 1][y_act - 1]
 
             iter_end_time = time.clock()
@@ -144,24 +146,22 @@ class QLearningEntrenarWorker(threading.Thread):
             iter_exec_time = iter_end_time - iter_start_time
 
             # Poner en la cola de salida los resultados
-            self._out_queue.put(((x_act, y_act),
-                                epnum,
-                                cant_iteraciones,
-                                ep_exec_time,
-                                iter_exec_time))
+            self._out_queue.put({'EstAct': (x_act, y_act),
+                                 'NoEp': epnum,
+                                 'CantIter': cant_iteraciones,
+                                 'MatQ': matriz_q,
+                                 'EpExecT': ep_exec_time,
+                                 'IterExecT': iter_exec_time,
+                                 'Joined': False})
 
             # Verificar si se solicitó externamente finalizar el thread
             if self._stoprequest.is_set():
-                # self._out_queue.put(True)
                 break
 
         # Poner en cola un valor booleano para indicar que se finalizó el trabajo
         # self._out_queue.put(True)
         # Realizar tareas al finalizar
         self._on_end()
-
-    def elegir_estado_aleatorio(self):
-        pass
 
     def generar_estado_aleatorio(self):
         u"""
@@ -178,6 +178,7 @@ class QLearningEntrenarWorker(threading.Thread):
         """
         logging.debug("Join")
         self._stoprequest.set()
+        self._out_queue.put({'Joined': True})
         super(QLearningEntrenarWorker, self).join(timeout)
 
 
@@ -220,35 +221,33 @@ class QLearningRecorrerWorker(threading.Thread):
         self._do_on_start()
 
         # Obtener la referencia a la instancia desde la cola de entrada
-        (ql_ref, estado_inicial) = self._inp_queue.get()
-        logging.debug("Entrada al proceso: {0}".format(ql_ref))
+        matriz_q, estado_inicial = self._inp_queue.get()
+        logging.debug("Matriz Q: {0}".format(matriz_q))
+        logging.debug("Estado Inicial: {0}".format(estado_inicial))
 
-        # Obtener las matrices R y Q para realizar el recorrido
-        matriz_r = ql_ref._gridworld.matriz_r
-        matriz_q = ql_ref.matriz_q
-        logging.debug("matriz Q par ale recorrido: {0}".format(matriz_q))
         # Lista que contiene la secuencia de estados comenzando por el
         # Estado Inicial
         camino_optimo = [estado_inicial]
 
         # Registrar tiempo de comienzo
-        proc_start_time = time.clock()
-        estado_actual = estado_inicial
-        while (not self._stoprequest.is_set()) and (not estado_actual.tipo.ide == TIPOESTADO.FINAL):
-            vecinos = matriz_r[estado_actual.fila - 1][estado_actual.columna - 1]
+        rec_start_time = time.clock()
+        (x_act, y_act) = estado_inicial
+        estado_actual = matriz_q[x_act - 1][y_act - 1]
+        while (not self._stoprequest.is_set()) and (not estado_actual[0] == TIPOESTADO.FINAL):
+            vecinos = estado_actual[1]
 
             # Buscar el estado que posea el mayor valor de Q
-            maximo_q = 0
+            maximo = 0
             estados_qmax = []
-            for i in vecinos:
-                logging.debug("X:{0} Y:{1}".format(i.fila, i.columna))  # FIXME: Eliminar print de debug @IgnorePep8
-                q_valor = matriz_q[i.fila - 1][i.columna - 1]
-                logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug @IgnorePep8
-                if q_valor > maximo_q:
-                    maximo_q = q_valor
-                    estados_qmax = [i]
-                elif q_valor == maximo_q:
-                    estados_qmax.append(i)
+            for key, value in vecinos.items():
+                # print "X:{0} Y:{1}".format(i.fila, i.columna)  # FIXME: Eliminar print de debug
+                q_valor = value
+                # print "Q Valor: {0}".format(q_valor)  # FIXME: Eliminar print de debug
+                if q_valor > maximo:
+                    maximo = q_valor
+                    estados_qmax = [key]
+                elif q_valor == maximo:
+                    estados_qmax.append(key)
 
             # Comprobar si hay estados con valores Q iguales y elegir uno
             # de forma aleatoria
@@ -256,29 +255,32 @@ class QLearningRecorrerWorker(threading.Thread):
                 estado_qmax = estados_qmax[0]
                 logging.debug("Existe un sólo estado vecino con Q máximo")  # FIXME: Eliminar print de debug @IgnorePep8
             else:
-                estado_qmax = estados_qmax[random.randint(0, (len(estados_qmax) - 1))]
+                estado_qmax = random.choice(estados_qmax)
                 logging.debug("Existen varios estados con igual valor Q")  # FIXME: Eliminar print de debug @IgnorePep8
+
+            logging.debug("Estado Q Máximo: {0}".format(estado_qmax))
+            (x_eleg, y_eleg) = estado_qmax
 
             # Agregar estado al camino óptimo
             camino_optimo.append(estado_qmax)
-            self._out_queue.put(((estado_actual.fila,
-                                  estado_actual.columna),
-                                  None,
-                                  None))
+            self._out_queue.put({'EstAct': (x_act, y_act), 'Joined': False})
 
-            # Actualizar estado actual con el estado con mayor valor de Q
-            estado_actual = estado_qmax
+            # Actualizar estado actual
+            (x_act, y_act) = (x_eleg, y_eleg)
+            estado_actual = matriz_q[x_act - 1][y_act - 1]
 
         # Registrar tiempo de finalización
-        proc_end_time = time.clock()
-        proc_exec_time = proc_end_time - proc_start_time
+        rec_end_time = time.clock()
+        rec_exec_time = rec_end_time - rec_start_time
 
         logging.debug("Camino óptimo: {0}".format(camino_optimo))
 
         # Encolar la información generada por el algoritmo para realizar
         # estadísticas
-        self._out_queue.put(((estado_actual.fila, estado_actual.columna),
-                            camino_optimo, proc_exec_time))
+        self._out_queue.put({'EstAct': (x_act, y_act),
+                            'OptPath': camino_optimo,
+                            'RecExecT': rec_exec_time,
+                            'Joined': False})
 
         # Poner en cola un valor booleano para indicar que se finalizó el trabajo
         # self._out_queue.put(True)
@@ -292,5 +294,6 @@ class QLearningRecorrerWorker(threading.Thread):
         :param timeout: Tiempo en milisegundos de espera.
         """
         logging.debug("Join")
+        self._out_queue.put({'Joined': True})
         self._stoprequest.set()
         super(QLearningRecorrerWorker, self).join(timeout)

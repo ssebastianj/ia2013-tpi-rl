@@ -54,6 +54,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ql_datos_recorrer_in_feed = LiveDataFeed()
         self.estado_inicial = None
         self.estado_final = None
+        self.matriz_q = None
         self.wnd_timer = None
         self.ql_entrenar_error_q = None
         self.ql_entrenar_out_q = None
@@ -66,7 +67,7 @@ class MainWindow(QtGui.QMainWindow):
         self.gw_dimensiones = ["2 x 2", "3 x 3", "4 x 4", "5 x 5", "6 x 6",
                                "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.window_config = {"item":
-                              {"show_tooltip": True,
+                              {"show_tooltip": False,
                                "menu_estado":
                                     {"ocultar_tipos":
                                      [TIPOESTADO.AGENTE],
@@ -424,7 +425,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def recorrer_gw(self):
         u"""
-        Realiza el recorrido del agente en el GridWorld buscando los valores de 
+        Realiza el recorrido del agente en el GridWorld buscando los valores de
         Q mayores.
         """
         if self.estado_final is None:
@@ -441,7 +442,10 @@ class MainWindow(QtGui.QMainWindow):
 
         self.ql_recorrer_out_q = Queue.Queue()
         self.ql_recorrer_error_q = Queue.Queue()
-        self.qlearning_recorrer_worker = self.qlearning.recorrer(self.estado_inicial,
+        estado_inicial = (self.estado_inicial.fila,
+                                  self.estado_inicial.columna)
+        self.qlearning_recorrer_worker = self.qlearning.recorrer(self.matriz_q,
+                                                                 estado_inicial,
                                                                  self.ql_recorrer_out_q,
                                                                  self.ql_recorrer_error_q)
 
@@ -494,7 +498,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         logging.debug("Comienzo del proceso")
         # Crear Timer asociado a la ventana principal
-        self.wnd_timer = QtCore.QTimer()
+        self.wnd_timer = QtCore.QTimer(self)
         # Conectar disparo de timer con método
         self.wnd_timer.timeout.connect(self._on_window_timer)
         self.wnd_timer.start(100)
@@ -584,26 +588,57 @@ class MainWindow(QtGui.QMainWindow):
         logging.debug("Actualizar ventana")
         if self.ql_datos_entrenar_in_feed.has_new_data:
             data_entrenar = self.ql_datos_entrenar_in_feed.read_data()
-            logging.debug("Actualizar ventana con: {0}".format(data_entrenar))
+            logging.debug("[Entrenar] Actualizar ventana con: {0}"
+                          .format(data_entrenar))
+
+            for ql_ent_info in data_entrenar:
+                estado_actual = ql_ent_info.get('EstAct', None)
+                nro_episodio = ql_ent_info.get('NoEp', None)
+                cant_iteraciones = ql_ent_info.get('CantIter', None)
+                episode_exec_time = ql_ent_info.get('EpExecT', None)
+                iter_exec_time = ql_ent_info.get('IterExecT', None)
+                worker_joined = ql_ent_info.get('Joined', None)
+
+                matriz_q = ql_ent_info.get('MatQ', None)
+                if matriz_q is not None:
+                    self.matriz_q = matriz_q
+
+                logging.debug("[Entrenar] Estado actual: {0}".format(estado_actual))
+                logging.debug("[Entrenar] Episodio: {0}".format(nro_episodio))
+                logging.debug("[Entrenar] Iteraciones: {0}".format(cant_iteraciones))
+                logging.debug("[Entrenar] Tiempo ejecución episodio: {0}".format(episode_exec_time))
+                logging.debug("[Entrenar] Tiempo ejecución iteración: {0}".format(iter_exec_time))
+                logging.debug("[Entrenar] Worker joined : {0}".format(worker_joined))
+                logging.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
 
         if self.ql_datos_recorrer_in_feed.has_new_data:
             data_recorrer = self.ql_datos_recorrer_in_feed.read_data()
-            logging.debug("Actualizar ventana con: {0}".format(data_recorrer))
+            logging.debug("[Recorrer] Actualizar ventana con: {0}"
+                          .format(data_recorrer))
 
+            for ql_rec_info in data_recorrer:
+                estado_actual = ql_rec_info.get('EstAct', None)
+                camino_optimo = ql_rec_info.get('OptPath', None)
+                rec_exec_time = ql_rec_info.get('RecExecT', None)
+                worker_joined = ql_rec_info.get('Joined', None)
 
-            ultima_info = data_recorrer[-1]
-            camino_optimo = [(i.fila, i.columna) for i in ultima_info[1]]
+                logging.debug("[Recorrer] Estado actual: {0}".format(estado_actual))
+                logging.debug("[Recorrer] Camino óptimo: {0}".format(camino_optimo))
+                logging.debug("[Recorrer] Tiempo ejecución recorrido: {0}".format(rec_exec_time))
+                logging.debug("[Recorrer] Worker joined: {0}".format(worker_joined))
 
-            # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
-            seen = set()
-            seen_add = seen.add
-            camino_optimo_sin_repetidos = [ x for x in camino_optimo
-                                           if x not in seen and not seen_add(x)]
+                # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
 
-            logging.debug("Camino óptimo (con repetidos): {0}"
-                          .format(camino_optimo))
-            logging.debug("Camino óptimo (sin repetidos): {0}".
-                          format(camino_optimo_sin_repetidos))
+                if camino_optimo is not None:
+                    seen = set()
+                    seen_add = seen.add
+                    camino_optimo_sin_repetidos = [x for x in camino_optimo
+                                                   if x not in seen and not seen_add(x)]
+
+                    logging.debug("Camino óptimo (con repetidos): {0}"
+                                  .format(camino_optimo))
+                    logging.debug("Camino óptimo (sin repetidos): {0}".
+                                  format(camino_optimo_sin_repetidos))
 
     def comprobar_colas(self):
         u"""
@@ -717,7 +752,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def _procesar_info_ql_recorrido(self, cola):
         ql_datos_in = list(get_all_from_queue(cola))
-        logging.debug("Leer QL Input: {0}".format(ql_datos_in))
+        logging.debug("[Recorrer] Datos In: {0}".format(ql_datos_in))
         if len(ql_datos_in) > 0:
             self.ql_datos_recorrer_in_feed.add_data(ql_datos_in)
-            logging.debug("Datos IN: {0}".format(ql_datos_in))
+            logging.debug("[Recorrer] Datos de entrada: {0}".format(ql_datos_in))
