@@ -41,6 +41,8 @@ class QLearningEntrenarWorker(threading.Thread):
         u"""
         Ejecuta tareas al finalizar el thread.
         """
+        self._out_queue.join()
+        self._error_queue.join()
         logging.debug("Terminando.")
 
     def run(self):
@@ -214,6 +216,8 @@ class QLearningRecorrerWorker(threading.Thread):
         u"""
         Ejecuta tareas al finalizar el thread.
         """
+        self._out_queue.join()
+        self._error_queue.join()
         logging.debug("Terminando.")
 
     def run(self):

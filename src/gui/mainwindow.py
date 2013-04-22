@@ -501,7 +501,7 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer = QtCore.QTimer(self)
         # Conectar disparo de timer con método
         self.wnd_timer.timeout.connect(self._on_window_timer)
-        self.wnd_timer.start(100)
+        self.wnd_timer.start(80)
 
     def on_fin_proceso(self):
         u"""
