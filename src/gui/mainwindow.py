@@ -64,8 +64,8 @@ class MainWindow(QtGui.QMainWindow):
                          1: "ε-Greedy",
                          2: "Softmax",
                          3: "Aleatorio"}
-        self.gw_dimensiones = ["2 x 2", "3 x 3", "4 x 4", "5 x 5", "6 x 6",
-                               "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
+        self.gw_dimensiones = [  # "2 x 2", #"3 x 3", "4 x 4", "5 x 5",
+                               "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.window_config = {"item":
                               {"show_tooltip": False,
                                "menu_estado":
@@ -156,6 +156,7 @@ class MainWindow(QtGui.QMainWindow):
         ancho_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
         alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
         self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
+        # self.WMainWindow.tblGridWorld.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
 
         # Desactivar actualización de la tabla para optimizar la carga
         self.WMainWindow.tblGridWorld.setUpdatesEnabled(False)
@@ -167,7 +168,7 @@ class MainWindow(QtGui.QMainWindow):
                 # Cada item muestra la letra asignada al estado
                 item = QtGui.QTableWidgetItem(str(letra_estado))
                 item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
-                item.setFlags(QtCore.Qt.ItemIsEnabled)
+                item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
                 item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
 
                 if self.window_config["item"]["show_tooltip"]:
@@ -266,6 +267,9 @@ class MainWindow(QtGui.QMainWindow):
         if not self.window_config["item"]["menu_estado"]["enabled"]:
             return None
 
+        selected_items = self.WMainWindow.tblGridWorld.selectedItems()
+        cant_selected = len(selected_items)
+
         tipos_estados = self.gridworld.tipos_estados
         item_actual = self.WMainWindow.tblGridWorld.itemAt(posicion)
         estado_actual = self.gridworld.get_estado(item_actual.row() + 1,
@@ -299,12 +303,12 @@ class MainWindow(QtGui.QMainWindow):
                 self.menu_item.addAction(action)
 
                 if tipo.ide == TIPOESTADO.FINAL:
-                    if self.estado_final is not None:
+                    if (self.estado_final is not None) or (cant_selected > 1):
                         action.setEnabled(False)
                     else:
                         action.setEnabled(True)
                 elif tipo.ide == TIPOESTADO.INICIAL:
-                    if self.estado_inicial is not None:
+                    if (self.estado_inicial is not None) or (cant_selected > 1):
                         action.setEnabled(False)
                     else:
                         action.setEnabled(True)
@@ -313,35 +317,35 @@ class MainWindow(QtGui.QMainWindow):
         action = self.menu_item.exec_(self.WMainWindow.tblGridWorld.mapToGlobal(posicion))
 
         if action is not None:
-            # Obtener el tipo de estado asociado al texto clickeado
-            tipo_num = action.data().toInt()[0]
-            # Averiguar en cual item de la tabla se hizo clic
-            item = self.WMainWindow.tblGridWorld.itemAt(posicion)
-            # Actualizar texto del item de la tabla en función del tipo de estado
-            item.setText(tipos_estados[tipo_num].letra)
-            # Establecer color de fondo de acuerdo al tipo de estado
-            item.setBackgroundColor(QtGui.QColor(tipos_estados[tipo_num].color))
-            estado_actual = self.gridworld.get_estado(item.row() + 1, item.column() + 1)
+            for item in selected_items:
+                # Obtener el tipo de estado asociado al texto clickeado
+                tipo_num = action.data().toInt()[0]
+                # Actualizar texto del item de la tabla en función del tipo de estado
+                item.setText(tipos_estados[tipo_num].letra)
+                # Establecer color de fondo de acuerdo al tipo de estado
+                item.setBackgroundColor(QtGui.QColor(tipos_estados[tipo_num].color))
+                item.setSelected(False)
+                estado_actual = self.gridworld.get_estado(item.row() + 1, item.column() + 1)
 
-            if tipo_num == TIPOESTADO.INICIAL:
-                self.estado_inicial = estado_actual
-            elif tipo_num == TIPOESTADO.FINAL:
-                self.estado_final = estado_actual
+                if tipo_num == TIPOESTADO.INICIAL:
+                    self.estado_inicial = estado_actual
+                elif tipo_num == TIPOESTADO.FINAL:
+                    self.estado_final = estado_actual
 
-            if estado_actual.tipo.ide == TIPOESTADO.INICIAL:
-                self.estado_inicial = None
-            elif estado_actual.tipo.ide == TIPOESTADO.FINAL:
-                self.estado_final = None
+                if estado_actual.tipo.ide == TIPOESTADO.INICIAL:
+                    self.estado_inicial = None
+                elif estado_actual.tipo.ide == TIPOESTADO.FINAL:
+                    self.estado_final = None
 
-            # Establecer tipo de estado seleccionado al estado en la matriz de
-            # Estados
-            estado_actual.tipo = tipos_estados[tipo_num]
+                # Establecer tipo de estado seleccionado al estado en la matriz de
+                # Estados
+                estado_actual.tipo = tipos_estados[tipo_num]
 
-            if self.window_config["item"]["show_tooltip"]:
-                item.setToolTip("Fila: {0}\nColumna: {1}\nTipo: {2}\nRecompensa: {3}"
-                                .format(item.row() + 1, item.column() + 1,
-                                estado_actual.tipo.nombre,
-                                estado_actual.tipo.recompensa))
+                if self.window_config["item"]["show_tooltip"]:
+                    item.setToolTip("Fila: {0}\nColumna: {1}\nTipo: {2}\nRecompensa: {3}"
+                                    .format(item.row() + 1, item.column() + 1,
+                                    estado_actual.tipo.nombre,
+                                    estado_actual.tipo.recompensa))
 
     def entrenar(self):
         u"""
@@ -542,7 +546,7 @@ class MainWindow(QtGui.QMainWindow):
         Reestablece los valores por defecto de varios controles de la UI
         e inicializa variables internas del programa.
         """
-        self.WMainWindow.cbGWDimension.currentIndexChanged[str].disconnect(self.set_gw_dimension)
+        self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect(self.set_gw_dimension)
         self._init_vars()
         self._initialize_window()
 
@@ -682,7 +686,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         self.lbl_item_actual.setText("Fila: {0} Columna: {1}"
                                     .format(item.row() + 1,
-                                             item.column() + 1))
+                                            item.column() + 1))
 
     def mouseMoveEvent(self, event):
         self.lbl_item_actual.setText("")

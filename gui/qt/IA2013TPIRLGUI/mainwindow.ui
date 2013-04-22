@@ -24,9 +24,6 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="focusPolicy">
-       <enum>Qt::ClickFocus</enum>
-      </property>
       <property name="verticalScrollBarPolicy">
        <enum>Qt::ScrollBarAlwaysOff</enum>
       </property>
@@ -35,6 +32,9 @@
       </property>
       <property name="autoScroll">
        <bool>false</bool>
+      </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
       </property>
       <property name="tabKeyNavigation">
        <bool>false</bool>
@@ -45,8 +45,8 @@
       <property name="dragDropOverwriteMode">
        <bool>false</bool>
       </property>
-      <property name="selectionMode">
-       <enum>QAbstractItemView::NoSelection</enum>
+      <property name="alternatingRowColors">
+       <bool>false</bool>
       </property>
       <property name="cornerButtonEnabled">
        <bool>false</bool>
