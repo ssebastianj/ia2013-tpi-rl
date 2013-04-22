@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 
 import logging
+import numpy as np
 from core.estado.estado import Estado, TipoEstado, TIPOESTADO
 
 
@@ -96,15 +97,13 @@ class GridWorld(object):
         # Tipo de estado con el que se inicializará cada estado
         default_tipo = self._tipos_estados[default]
 
-        self._estados = []
+        self._estados = np.empty((self.alto, self.ancho), Estado)
         self._coordenadas = []
         # Crear una lista de listas
         for i in xrange(1, self._alto + 1):
-            fila = []
             for j in xrange(1, self._ancho + 1):
-                fila.append(Estado(i, j, default_tipo))
                 self._coordenadas.append((i, j))
-            self._estados.append(fila)
+                self._estados[j - 1] = Estado(i, j, default_tipo)
 
     def get_matriz_r(self):
         u"""
