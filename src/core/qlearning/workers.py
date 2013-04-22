@@ -41,8 +41,6 @@ class QLearningEntrenarWorker(threading.Thread):
         u"""
         Ejecuta tareas al finalizar el thread.
         """
-        self._out_queue.join()
-        self._error_queue.join()
         logging.debug("Terminando.")
 
     def run(self):
@@ -182,6 +180,8 @@ class QLearningEntrenarWorker(threading.Thread):
         self._stoprequest.set()
         self._out_queue.put({'Joined': True})
         super(QLearningEntrenarWorker, self).join(timeout)
+        self._out_queue.join()
+        self._error_queue.join()
 
 
 class QLearningRecorrerWorker(threading.Thread):
@@ -216,8 +216,6 @@ class QLearningRecorrerWorker(threading.Thread):
         u"""
         Ejecuta tareas al finalizar el thread.
         """
-        self._out_queue.join()
-        self._error_queue.join()
         logging.debug("Terminando.")
 
     def run(self):
@@ -301,3 +299,5 @@ class QLearningRecorrerWorker(threading.Thread):
         self._out_queue.put({'Joined': True})
         self._stoprequest.set()
         super(QLearningRecorrerWorker, self).join(timeout)
+        self._out_queue.join()
+        self._error_queue.join()

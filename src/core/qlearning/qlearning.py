@@ -158,7 +158,10 @@ class QLearning(object):
     def get_coordenadas(self):
         return self._coordenadas
 
-    def get_matriz_q(self, default=0):
+    def _q_val_inicial_callback(self, valor=0):
+        return valor
+
+    def get_matriz_q(self, q_val_inicial_callback=_q_val_inicial_callback):
         u"""
         Crea la matriz Q con un valor inicial.
 
@@ -166,8 +169,8 @@ class QLearning(object):
         """
         matriz_r = self._gridworld.matriz_r
 
-        matriz_q = [[(columna[0], dict([(i, 0)
-                     for i in columna[1].keys()]))
+        matriz_q = [[(columna[0], dict([(key, q_val_inicial_callback(value))
+                     for key, value in columna[1].iteritems()]))
                      for columna in fila]
                      for fila in matriz_r]
         return matriz_q
