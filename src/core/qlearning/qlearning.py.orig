@@ -169,6 +169,7 @@ class QLearning(object):
         :param default: Valor con que se inicializa cada estado de la matriz.
         """
         matriz_r = self._gridworld.matriz_r
+<<<<<<< HEAD
         ancho = self.gridworld.ancho
         alto = self.gridworld.alto
         matriz_q = np.empty((ancho, alto), object)
@@ -179,6 +180,13 @@ class QLearning(object):
                 vecinos = matriz_r[i][j][1]
                 vecinos = dict([(k, default) for k in vecinos.keys()])
                 matriz_q[i][j] = (tipo_estado, vecinos)
+=======
+
+        matriz_q = [[(columna[0], dict([(key, q_val_inicial_callback(value))
+                     for key, value in columna[1].iteritems()]))
+                     for columna in fila]
+                     for fila in matriz_r]
+>>>>>>> master
         return matriz_q
 
     def get_vecinos_estado(self, x, y):
