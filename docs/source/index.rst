@@ -6,6 +6,26 @@
 Inteligencia Artificial 2013: Aprendizaje por Refuerzo
 ======================================================
 
+*Grupo Nº 1*
+------------
+
+* **Levin, Fabián A.** <*fabito_levin [at] yahoo.com.ar*>
+
+  * *Bitbucket*: https://bitbucket.org/fabitolevin88
+  
+* **Seba, Sebastián J.** <*ssebastianj [at] gmail.com*> 
+  
+  * *Github*: https://github.com/ssebastianj
+  * *Bitbucket*: https://bitbucket.org/ssebastianj
+  
+* **Vallejos, Lucía B.** <*luvallejos [at] hotmail.com*>
+  
+  * *Bitbucket*: https://bitbucket.org/luvallejos
+
+
+Contenido
+---------
+
 Contents:
 
 .. toctree::
