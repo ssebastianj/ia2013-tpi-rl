@@ -27,9 +27,9 @@ class Softmax(QLTecnica):
 
         probabilidades_vecinos = self.obtener_probabilidades(vecinos)
 
-        for i in xrange(0, len(vecinos)):
-            if rnd_valor <= probabilidades_vecinos[i]:
-                estado = vecinos[i]
+        for key, value in probabilidades_vecinos.iteritems():
+            if rnd_valor <= value:
+                estado = key
 
         logging.debug("Estado Elegido: {0}".format(estado))
         return estado
@@ -38,7 +38,7 @@ class Softmax(QLTecnica):
         probabilidades_vecinos = {}
 
         # Calcula las probabilidades de cada vecino
-        for key, value in vecinos.items():
+        for key, value in vecinos.iteritems():
             q_valor_vecino = value
             exponente = decimal.Decimal(float(q_valor_vecino) / self._val_param_parcial)
             probabilidad_vecino = math.exp(exponente.adjusted())
@@ -50,11 +50,12 @@ class Softmax(QLTecnica):
         # N = constante de Normalización
         # Convertirlo a un número flotante para solucionar problema al dividir
         n = sum(probabilidades_vecinos.values())
+
         logging.debug("Valor de constante de normalización N: {0}".format(n))
 
         probabilidades_vecinos_normalizadas = {}
         # Calcula las probabilidades de cada vecino normalizadas
-        for key, value in probabilidades_vecinos.items():
+        for key, value in probabilidades_vecinos.iteritems():
             probabilidades_vecinos_normalizadas[key] = value / float(n)
 
         # Si éste cálculo está bien deberia dar 1
@@ -62,12 +63,16 @@ class Softmax(QLTecnica):
                       .format(sum(probabilidades_vecinos_normalizadas.values())))
 
         # Realiza la Sumatoria Ponderada de las probabilidades de los vecinos
-        probabilidades_vecinos_ponderadas = []
-        for i in xrange(0, len(vecinos)):
-            probabilidad_vecino_ponderada = 0
-            for j in xrange(0, i + 1):
-                probabilidad_vecino_ponderada += probabilidades_vecinos_normalizadas[j]
-            probabilidades_vecinos_ponderadas.append(probabilidad_vecino_ponderada)
+        probabilidades_vecinos_ponderadas = {}
+        prob_vec_norm_aux = list(probabilidades_vecinos_normalizadas.iteritems())
+        for i in xrange(len(prob_vec_norm_aux)):
+            sumatoria = 0
+            for j in xrange(i + 1):
+                sumatoria += prob_vec_norm_aux[j][1]
+            probabilidades_vecinos_ponderadas[prob_vec_norm_aux[j][0]] = sumatoria
+
+        logging.debug("Probabilidades ponderadas: {0}"
+                      .format(probabilidades_vecinos_ponderadas))
 
         return probabilidades_vecinos_ponderadas
 
