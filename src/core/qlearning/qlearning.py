@@ -177,7 +177,8 @@ class QLearning(object):
             for j in xrange(0, ancho):
                 tipo_estado = matriz_r[i][j][0]
                 vecinos = matriz_r[i][j][1]
-                vecinos = dict([(k, default) for k in vecinos.keys()])
+                vecinos = dict([(key, q_val_inicial_callback(value))
+                                for key, value in vecinos.iteritems()])
                 matriz_q[i][j] = (tipo_estado, vecinos)
         return matriz_q
 
