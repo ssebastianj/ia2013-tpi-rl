@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import copy
 import logging
 import Queue
+import numpy as np
 import random
 import threading
 
@@ -165,11 +166,16 @@ class QLearning(object):
         :param default: Valor con que se inicializa cada estado de la matriz.
         """
         matriz_r = self._gridworld.matriz_r
+        ancho = self.gridworld.ancho
+        alto = self.gridworld.alto
+        matriz_q = np.empty((ancho, alto), object)
 
-        matriz_q = [[(columna[0], dict([(i, 0)
-                     for i in columna[1].keys()]))
-                     for columna in fila]
-                     for fila in matriz_r]
+        for i in xrange(0, alto):
+            for j in xrange(0, ancho):
+                tipo_estado = matriz_r[i][j][0]
+                vecinos = matriz_r[i][j][1]
+                vecinos = dict([(k, default) for k in vecinos.keys()])
+                matriz_q[i][j] = (tipo_estado, vecinos)
         return matriz_q
 
     def get_vecinos_estado(self, x, y):
@@ -187,7 +193,7 @@ class QLearning(object):
                               if i != 0 or j != 0):
             if (fila, columna) in coordenadas:
                 vecinos.append(self.get_estado(fila, columna))
-        return vecinos
+        return np.array(vecinos)
 
     def matriz_q_to_string(self):
         u"""

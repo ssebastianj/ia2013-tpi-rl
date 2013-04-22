@@ -101,9 +101,11 @@ class GridWorld(object):
         self._coordenadas = []
         # Crear una lista de listas
         for i in xrange(1, self._alto + 1):
+            fila = np.empty((1, self.ancho), Estado)
             for j in xrange(1, self._ancho + 1):
+                fila[0][j - 1] = Estado(i, j, default_tipo)
                 self._coordenadas.append((i, j))
-                self._estados[j - 1] = Estado(i, j, default_tipo)
+            self._estados[i - 1] = fila
 
     def get_matriz_r(self):
         u"""
@@ -114,7 +116,7 @@ class GridWorld(object):
         if self._excluir_tipos_vecinos is None:
             self._excluir_tipos_vecinos = []
 
-        matriz_r = []
+        matriz_r = np.empty((self.alto, self.ancho), object)
         # Crear una lista de listas
         for i in xrange(1, self._alto + 1):
             fila = []
@@ -133,7 +135,7 @@ class GridWorld(object):
                         recomp_and_vec[(vecino.fila, vecino.columna)] = vecino.tipo.recompensa
 
                 fila.append((estado_ide, recomp_and_vec))
-            matriz_r.append(fila)
+            matriz_r[i - 1] = fila
         return matriz_r
 
     def get_estado(self, x, y):
@@ -205,7 +207,7 @@ class GridWorld(object):
                               if i != 0 or j != 0):
             if (fila, columna) in self._coordenadas:
                 vecinos.append(self.get_estado(fila, columna))
-        return vecinos
+        return np.array(vecinos, object)
 
     def matriz_estados_to_string(self):
         u"""
