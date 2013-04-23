@@ -345,5 +345,3 @@ class QLearningRecorrerWorker(threading.Thread):
         self._out_queue.put({'Joined': True})
         self._stoprequest.set()
         super(QLearningRecorrerWorker, self).join(timeout)
-        self._out_queue.task_done()
-        self._error_queue.task_done()
