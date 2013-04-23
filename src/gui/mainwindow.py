@@ -64,7 +64,8 @@ class MainWindow(QtGui.QMainWindow):
                          1: "ε-Greedy",
                          2: "Softmax",
                          3: "Aleatorio"}
-        self.gw_dimensiones = [  # "2 x 2", #"3 x 3", "4 x 4", "5 x 5",
+        self.gw_dimensiones = [  # "2 x 2",
+                               "3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.window_config = {"item":
                               {"show_tooltip": False,
@@ -140,7 +141,9 @@ class MainWindow(QtGui.QMainWindow):
         logging.debug(dimension)
         ancho_gw, alto_gw = self.convert_dimension(dimension)
         # Crear un nuevo GridWorld dados el ancho y el alto del mismo
-        self.gridworld = GridWorld(ancho_gw, alto_gw)
+        self.gridworld = GridWorld(ancho_gw,
+                                   alto_gw,
+                                   excluir_tipos_vecinos=[TIPOESTADO.PARED])
 
         ancho_estado_px = 40
         ancho_gw_px = ancho_estado_px * ancho_gw
@@ -546,7 +549,7 @@ class MainWindow(QtGui.QMainWindow):
         Reestablece los valores por defecto de varios controles de la UI
         e inicializa variables internas del programa.
         """
-        self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect(self.set_gw_dimension)
+        self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect(self.set_gw_dimension_cb)
         self._init_vars()
         self._initialize_window()
 
@@ -602,10 +605,8 @@ class MainWindow(QtGui.QMainWindow):
                 episode_exec_time = ql_ent_info.get('EpExecT', None)
                 iter_exec_time = ql_ent_info.get('IterExecT', None)
                 worker_joined = ql_ent_info.get('Joined', None)
-
+                loop_alarm = ql_ent_info.get('LoopAlarm', None)
                 matriz_q = ql_ent_info.get('MatQ', None)
-                if matriz_q is not None:
-                    self.matriz_q = matriz_q
 
                 logging.debug("[Entrenar] Estado actual: {0}".format(estado_actual))
                 logging.debug("[Entrenar] Episodio: {0}".format(nro_episodio))
@@ -614,6 +615,20 @@ class MainWindow(QtGui.QMainWindow):
                 logging.debug("[Entrenar] Tiempo ejecución iteración: {0}".format(iter_exec_time))
                 logging.debug("[Entrenar] Worker joined : {0}".format(worker_joined))
                 logging.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
+                logging.debug("[Entrenar] Loop Alarm: {0}".format(loop_alarm))
+
+                if matriz_q is not None:
+                    self.matriz_q = matriz_q
+
+                if loop_alarm is not None:
+                    if loop_alarm:
+                        QtGui.QMessageBox.warning(self,
+                                                  _tr('QLearning - Entrenamiento'),
+                        u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
+                        self.qlearning_entrenar_worker.join(0.01)
+                        self.qlearning_entrenar_worker = None
+                        self.ql_entrenar_error_q = None
+                        self.ql_entrenar_out_q = None
 
         if self.ql_datos_recorrer_in_feed.has_new_data:
             data_recorrer = self.ql_datos_recorrer_in_feed.read_data()

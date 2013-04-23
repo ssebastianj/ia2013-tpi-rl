@@ -58,12 +58,24 @@ class QLearningEntrenarWorker(threading.Thread):
         gamma = self.input_data[2]
         cant_episodios = self.input_data[3]
         tecnica = self.input_data[4]
+        (ancho, alto) = self.input_data[5]
+        detector_bloqueo = self.input_data[6]
+        tipos_vec_excluidos = self.input_data[7]
 
         logging.debug("Matriz R: {0}".format(matriz_r))
         logging.debug("Matriz Q: {0}".format(matriz_q))
         logging.debug("Gamma: {0}".format(gamma))
         logging.debug("Episodios: {0}".format(cant_episodios))
         logging.debug("Técnica: {0}".format(tecnica))
+        logging.debug("Ancho: {0} - Alto: [1]".format(ancho, alto))
+        logging.debug("Usar detector bloqueo: {0}".format(detector_bloqueo))
+        logging.debug("Tipos vecinos excluidos: {0}".format(tipos_vec_excluidos))
+
+        if detector_bloqueo:
+            self._contador_ref = self._crear_cont_ref()
+            self._cant_estados_libres = len(self._contador_ref)
+            self._visitados_1 = []
+            self._visitados_2 = []
 
         # Ejecutar una cantidad dada de Episodios
         for epnum in range(1, cant_episodios + 1):
@@ -76,12 +88,12 @@ class QLearningEntrenarWorker(threading.Thread):
             (x_act, y_act) = self.generar_estado_aleatorio()
 
             # Generar estados aleatorios hasta que las coordenadas no
-            # coincidan con las del estado final
+            # coincidan con las del estado final o un tipo excluido
             estado_actual = matriz_r[x_act - 1][y_act - 1]
-            while estado_actual[0] == TIPOESTADO.FINAL:
+            tipo_ide = estado_actual[0]
+            while (tipo_ide == TIPOESTADO.FINAL) or (tipo_ide in tipos_vec_excluidos):
                 (x_act, y_act) = self.generar_estado_aleatorio()
                 estado_actual = matriz_r[x_act - 1][y_act - 1]
-
             logging.debug("Estado Inicial Generado: {0}".format(estado_actual))
 
             # Forzar restauración del valor de parámetro de la técnica
@@ -93,6 +105,9 @@ class QLearningEntrenarWorker(threading.Thread):
             while (not self._stoprequest.is_set()) and (not estado_actual[0] == TIPOESTADO.FINAL):
                 # Registrar tiempo de comienzo de las iteraciones
                 iter_start_time = time.clock()
+
+                if detector_bloqueo:
+                    self._contar_ref((x_act, y_act))
 
                 # Obtener vecinos del estado actual
                 vecinos = estado_actual[1]
@@ -180,8 +195,39 @@ class QLearningEntrenarWorker(threading.Thread):
         self._stoprequest.set()
         self._out_queue.put({'Joined': True})
         super(QLearningEntrenarWorker, self).join(timeout)
-        self._out_queue.join()
-        self._error_queue.join()
+
+    def _crear_cont_ref(self):
+        matriz_q = self.input_data[1]
+
+        contador_ref = {}
+        for fila in matriz_q:
+            for columna in fila:
+                for estado in columna[1].iterkeys():
+                    contador_ref[estado] = 0
+
+        logging.debug("Contador de referencias: {0}".format(contador_ref))
+        return contador_ref
+
+    def _contar_ref(self, estado):
+        umbral_1 = 1
+        umbral_2 = 2
+
+        self._contador_ref[estado] += 1
+        cont = self._contador_ref[estado]
+
+        if cont == umbral_1:
+            self._visitados_1.append(estado)
+        elif cont == umbral_2:
+            self._visitados_2.append(estado)
+
+        self._comprobar_visitados()
+
+    def _comprobar_visitados(self):
+        test_1 = len(self._visitados_1) == self._cant_estados_libres
+        test_2 = len(self._visitados_1) == len(self._visitados_2)
+
+        if test_1 or test_2:
+            self._out_queue.put({'LoopAlarm': True})
 
 
 class QLearningRecorrerWorker(threading.Thread):
@@ -299,5 +345,5 @@ class QLearningRecorrerWorker(threading.Thread):
         self._out_queue.put({'Joined': True})
         self._stoprequest.set()
         super(QLearningRecorrerWorker, self).join(timeout)
-        self._out_queue.join()
-        self._error_queue.join()
+        self._out_queue.task_done()
+        self._error_queue.task_done()
