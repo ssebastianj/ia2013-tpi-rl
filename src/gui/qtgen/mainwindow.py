@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Fri Apr 19 17:55:54 2013
+# Created: Tue Apr 23 12:46:18 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -37,14 +37,14 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.tblGridWorld.sizePolicy().hasHeightForWidth())
         self.tblGridWorld.setSizePolicy(sizePolicy)
-        self.tblGridWorld.setFocusPolicy(QtCore.Qt.ClickFocus)
         self.tblGridWorld.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.tblGridWorld.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.tblGridWorld.setAutoScroll(False)
+        self.tblGridWorld.setEditTriggers(QtGui.QAbstractItemView.AnyKeyPressed|QtGui.QAbstractItemView.DoubleClicked|QtGui.QAbstractItemView.EditKeyPressed|QtGui.QAbstractItemView.SelectedClicked)
         self.tblGridWorld.setTabKeyNavigation(False)
         self.tblGridWorld.setProperty("showDropIndicator", False)
         self.tblGridWorld.setDragDropOverwriteMode(False)
-        self.tblGridWorld.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
+        self.tblGridWorld.setAlternatingRowColors(False)
         self.tblGridWorld.setCornerButtonEnabled(False)
         self.tblGridWorld.setObjectName(_fromUtf8("tblGridWorld"))
         self.tblGridWorld.setColumnCount(0)

@@ -61,7 +61,9 @@ class QLearning(object):
                        self._gamma,
                        self._episodes,
                        copy.copy(self._tecnica),
-                       (self._gridworld.alto, self._gridworld.ancho)
+                       (self._gridworld.alto, self._gridworld.ancho),
+                       True,
+                       self._gridworld.tipos_vecinos_excluidos
                      ))
 
         qlearning_entrenar_worker = None
