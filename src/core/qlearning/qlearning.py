@@ -62,7 +62,7 @@ class QLearning(object):
                        self._episodes,
                        copy.copy(self._tecnica),
                        (self._gridworld.alto, self._gridworld.ancho),
-                       True,
+                       False,
                        self._gridworld.tipos_vecinos_excluidos
                      ))
 

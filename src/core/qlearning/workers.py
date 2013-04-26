@@ -129,7 +129,8 @@ class QLearningEntrenarWorker(threading.Thread):
 
                 # Obtener vecinos del estado elegido por la acción
                 vecinos_est_elegido = matriz_q[x_eleg - 1][y_eleg - 1][1]
-                logging.debug("Vecinos Elegidos del Elegido: {0}".format(vecinos_est_elegido))
+                logging.debug("Vecinos Elegidos del Elegido: {0}"
+                              .format(vecinos_est_elegido))
 
                 max_q = max([q_val for q_val in vecinos_est_elegido.values()])
 
@@ -263,6 +264,7 @@ class QLearningRecorrerWorker(threading.Thread):
         self._error_queue = error_queue
         self._stoprequest = threading.Event()
         self.name = "QLearningRecorrerWorker"
+        self.input_data = None
         # FIXME: Logging
         logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")  # @IgnorePep8
 
@@ -283,7 +285,10 @@ class QLearningRecorrerWorker(threading.Thread):
         self._do_on_start()
 
         # Obtener la referencia a la instancia desde la cola de entrada
-        matriz_q, estado_inicial = self._inp_queue.get()
+        self.input_data = self._inp_queue.get()
+        matriz_q = self.input_data[0]
+        estado_inicial = self.input_data[1]
+
         logging.debug("Matriz Q: {0}".format(matriz_q))
         logging.debug("Estado Inicial: {0}".format(estado_inicial))
 
@@ -293,18 +298,22 @@ class QLearningRecorrerWorker(threading.Thread):
 
         # Registrar tiempo de comienzo
         rec_start_time = time.clock()
-        (x_act, y_act) = estado_inicial
+        x_act, y_act = estado_inicial
         estado_actual = matriz_q[x_act - 1][y_act - 1]
         while (not self._stoprequest.is_set()) and (not estado_actual[0] == TIPOESTADO.FINAL):
             vecinos = estado_actual[1]
 
             # Buscar el estado que posea el mayor valor de Q
-            maximo = 0
+            maximo = None
             estados_qmax = []
             for key, value in vecinos.items():
-                # print "X:{0} Y:{1}".format(i.fila, i.columna)  # FIXME: Eliminar print de debug
+                logging.debug("X:{0} Y:{1}".format(key[0], key[1]))  # FIXME: Eliminar print de debug
                 q_valor = value
-                # print "Q Valor: {0}".format(q_valor)  # FIXME: Eliminar print de debug
+                logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug
+
+                if maximo is None:
+                    maximo = q_valor
+
                 if q_valor > maximo:
                     maximo = q_valor
                     estados_qmax = [key]
@@ -321,14 +330,14 @@ class QLearningRecorrerWorker(threading.Thread):
                 logging.debug("Existen varios estados con igual valor Q")  # FIXME: Eliminar print de debug @IgnorePep8
 
             logging.debug("Estado Q Máximo: {0}".format(estado_qmax))
-            (x_eleg, y_eleg) = estado_qmax
+            x_eleg, y_eleg = estado_qmax
 
             # Agregar estado al camino óptimo
             camino_optimo.append(estado_qmax)
             self._out_queue.put({'EstAct': (x_act, y_act), 'Joined': False})
 
             # Actualizar estado actual
-            (x_act, y_act) = (x_eleg, y_eleg)
+            x_act, y_act = (x_eleg, y_eleg)
             estado_actual = matriz_q[x_act - 1][y_act - 1]
 
         # Registrar tiempo de finalización
