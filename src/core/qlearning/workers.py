@@ -353,7 +353,12 @@ class QLearningRecorrerWorker(threading.Thread):
 
             # Agregar estado al camino óptimo
             camino_optimo.append(estado_qmax)
-            self._out_queue.put({'EstAct': (x_act, y_act), 'Joined': False})
+
+            try:
+                self._out_queue.put({'EstAct': (x_act, y_act), 'Joined': False})
+            except Queue.Full:
+                logging.debug("Cola llena")
+                pass
 
             # Actualizar estado actual
             x_act, y_act = (x_eleg, y_eleg)
