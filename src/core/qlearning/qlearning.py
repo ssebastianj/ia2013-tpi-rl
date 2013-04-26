@@ -162,10 +162,7 @@ class QLearning(object):
     def get_coordenadas(self):
         return self._coordenadas
 
-    def _q_val_inicial_callback(self, valor=0):
-        return valor
-
-    def get_matriz_q(self, q_val_inicial_callback=_q_val_inicial_callback):
+    def get_matriz_q(self):
         u"""
         Crea la matriz Q con un valor inicial.
 
@@ -180,7 +177,7 @@ class QLearning(object):
             for j in xrange(0, ancho):
                 tipo_estado = matriz_r[i][j][0]
                 vecinos = matriz_r[i][j][1]
-                vecinos = dict([(key, q_val_inicial_callback(value))
+                vecinos = dict([(key, self._init_value_callback(value))
                                 for key, value in vecinos.iteritems()])
                 matriz_q[i][j] = (tipo_estado, vecinos)
         return matriz_q
