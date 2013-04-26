@@ -498,7 +498,7 @@ class MainWindow(QtGui.QMainWindow):
         Ejecutar tareas al finalizar un thread.
         """
         logging.debug("Detener {0}: ".format(self.working_thread))
-        self.working_thread.join(0.05)
+        self.working_thread.join(0.01)
         logging.debug(self.working_thread)
         self.working_thread = None
         if self.wnd_timer is not None:
@@ -561,7 +561,7 @@ class MainWindow(QtGui.QMainWindow):
         main_thread = threading.current_thread()
         for t in threading.enumerate():
             if t is not main_thread and t.is_alive():
-                t.join(0.05)
+                t.join(0.01)
 
     def mostrar_dialogo_gen_rnd_vals(self):
         u"""
@@ -652,7 +652,7 @@ class MainWindow(QtGui.QMainWindow):
                         QtGui.QMessageBox.warning(self,
                                                   _tr('QLearning - Entrenamiento'),
                         u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
-                        self.working_thread.join(0.05)
+                        self.working_thread.join(0.01)
                         self.qlearning_entrenar_worker = None
                         self.working_thread = None
                         self.ql_entrenar_error_q = None

@@ -77,7 +77,7 @@ class QLearningEntrenarWorker(threading.Thread):
         logging.debug("Tipos vecinos excluidos: {0}".format(tipos_vec_excluidos))
 
         if detector_bloqueo:
-            self._contador_ref = self._crear_cont_ref()
+            self._contador_ref = self._crear_cont_ref(tipos_vec_excluidos)
             self._cant_estados_libres = len(self._contador_ref)
             self._visitados_1 = []
             self._visitados_2 = []
@@ -90,15 +90,18 @@ class QLearningEntrenarWorker(threading.Thread):
             logging.debug("Numero de episodio: {0}".format(epnum))  # FIXME: Logging @IgnorePep8
 
             # Obtener coordenadas aleatorias y obtener Estado asociado
-            (x_act, y_act) = self.generar_estado_aleatorio()
+            x_act, y_act = self.generar_estado_aleatorio()
 
             # Generar estados aleatorios hasta que las coordenadas no
             # coincidan con las del estado final o un tipo excluido
             estado_actual = matriz_r[x_act - 1][y_act - 1]
             tipo_ide = estado_actual[0]
             while (tipo_ide == TIPOESTADO.FINAL) or (tipo_ide in tipos_vec_excluidos):
-                (x_act, y_act) = self.generar_estado_aleatorio()
+                x_act, y_act = self.generar_estado_aleatorio()
                 estado_actual = matriz_r[x_act - 1][y_act - 1]
+                tipo_ide = estado_actual[0]
+                logging.debug("Estado inicial generado no válido: {0}"
+                              .format((x_act, y_act)))
             logging.debug("Estado Inicial Generado: {0}".format(estado_actual))
 
             # Forzar restauración del valor de parámetro de la técnica
@@ -201,14 +204,15 @@ class QLearningEntrenarWorker(threading.Thread):
         self._out_queue.put({'Joined': True})
         super(QLearningEntrenarWorker, self).join(timeout)
 
-    def _crear_cont_ref(self):
+    def _crear_cont_ref(self, tipos_vec_exc):
         matriz_q = self.input_data[1]
+        tipos_vec_exc.append(TIPOESTADO.FINAL)
 
         contador_ref = {}
-        for fila in matriz_q:
-            for columna in fila:
-                for estado in columna[1].iterkeys():
-                    contador_ref[estado] = 0
+        for i, fila in enumerate(matriz_q):
+            for j, columna in enumerate(fila):
+                if columna[0] not in tipos_vec_exc:
+                    contador_ref[(i + 1, j + 1)] = 0
 
         logging.debug("Contador de referencias: {0}".format(contador_ref))
         return contador_ref
