@@ -16,8 +16,8 @@ from core.tecnicas.tecnica import QLTecnica
 
 class QLearning(object):
     u"""Algoritmo QLearning"""
-    def __init__(self, gridworld, gamma, tecnica, episodes, init_value=0,
-                 excluir_tipos_vecinos=None):
+    def __init__(self, gridworld, gamma, tecnica, episodes,
+                 init_value_callback, excluir_tipos_vecinos=None):
         """
         Inicializador de QLearning.
 
@@ -36,6 +36,7 @@ class QLearning(object):
         self._tecnica = tecnica
         self._episodes = episodes
         self._excluir_tipos_vecinos = excluir_tipos_vecinos
+        self._init_value_callback = init_value_callback
 
     def _generar_estado_aleatorio(self):
         u"""
@@ -160,10 +161,7 @@ class QLearning(object):
     def get_coordenadas(self):
         return self._coordenadas
 
-    def _q_val_inicial_callback(self, valor=0):
-        return valor
-
-    def get_matriz_q(self, q_val_inicial_callback=_q_val_inicial_callback):
+    def get_matriz_q(self):
         u"""
         Crea la matriz Q con un valor inicial.
 
@@ -171,7 +169,7 @@ class QLearning(object):
         """
         matriz_r = self._gridworld.matriz_r
 
-        matriz_q = [[(columna[0], dict([(key, q_val_inicial_callback(value))
+        matriz_q = [[(columna[0], dict([(key, self._init_value_callback(value))
                      for key, value in columna[1].iteritems()]))
                      for columna in fila]
                      for fila in matriz_r]

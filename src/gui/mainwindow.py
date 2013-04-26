@@ -412,14 +412,15 @@ class MainWindow(QtGui.QMainWindow):
 
         gamma = self.WMainWindow.sbQLGamma.value()
         cant_episodios = int(self.WMainWindow.sbCantidadEpisodios.value())
-        valor_inicial = 0
+        valor_inicial = self.q_val_inicial_recom
 
         # Crear nueva instancia de Q-Learning
         self.qlearning = QLearning(self.gridworld,
                                    gamma,
                                    tecnica,
                                    cant_episodios,
-                                   valor_inicial)
+                                   valor_inicial,
+                                   None)
 
         logging.debug("Matriz R: {0}".format(self.gridworld.matriz_r))
         logging.debug("Matriz Q Inicial: {0}".format(self.qlearning.matriz_q))
@@ -801,3 +802,9 @@ class MainWindow(QtGui.QMainWindow):
         if len(ql_datos_in) > 0:
             self.ql_datos_recorrer_in_feed.add_data(ql_datos_in)
             logging.debug("[Recorrer] Datos de entrada: {0}".format(ql_datos_in))
+
+    def q_val_inicial_cero(self, valor):
+        return 0
+
+    def q_val_inicial_recom(self, valor):
+        return valor
