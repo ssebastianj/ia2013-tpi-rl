@@ -28,6 +28,11 @@ class QLearningEntrenarWorker(threading.Thread):
         self._error_queue = error_q
         self._stoprequest = threading.Event()
         self.name = "QLearningEntrenarWorker"
+        self.input_data = None
+        self._visitados_1 = None
+        self._visitados_2 = None
+        self._contador_ref = None
+
         # FIXME: Logging
         logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")  # @IgnorePep8
 
@@ -219,6 +224,11 @@ class QLearningEntrenarWorker(threading.Thread):
             self._visitados_1.append(estado)
         elif cont == umbral_2:
             self._visitados_2.append(estado)
+
+        logging.debug("Contador de referencias actualizado: {0}"
+                      .format(self._contador_ref))
+        logging.debug("Visitados 1: {0}".format(self._visitados_1))
+        logging.debug("Visitados 2: {0}".format(self._visitados_2))
 
         self._comprobar_visitados()
 
