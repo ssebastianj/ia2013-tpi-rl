@@ -62,6 +62,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ql_recorrer_error_q = None
         self.ql_recorrer_out_q = None
         self.working_thread = None
+        self.worker_queues_list = None
 
         self.tecnicas = {0: "Greedy",
                          1: "ε-Greedy",
@@ -428,6 +429,8 @@ class MainWindow(QtGui.QMainWindow):
         # FIXME: Ejecución concurrente Entrenamiento
         self.ql_entrenar_out_q = Queue.Queue()
         self.ql_entrenar_error_q = Queue.Queue()
+        self.ql_datos_entrenar_in_feed = LiveDataFeed()
+
         self.qlearning_entrenar_worker = self.qlearning.entrenar(self.ql_entrenar_out_q,
                                                                  self.ql_entrenar_error_q)
 
@@ -438,6 +441,8 @@ class MainWindow(QtGui.QMainWindow):
             logging.debug("Error {0}: ".format(worker_error))
             self.qlearning_entrenar_worker = None
             self.working_thread = None
+            self.ql_entrenar_out_q = None
+            self.ql_entrenar_error_q = None
 
         if self.qlearning_entrenar_worker is not None:
             self.working_thread = self.qlearning_entrenar_worker
@@ -463,8 +468,10 @@ class MainWindow(QtGui.QMainWindow):
 
         self.ql_recorrer_out_q = Queue.Queue()
         self.ql_recorrer_error_q = Queue.Queue()
+        self.ql_datos_recorrer_in_feed = LiveDataFeed()
         estado_inicial = (self.estado_inicial.fila,
                                   self.estado_inicial.columna)
+
         self.qlearning_recorrer_worker = self.qlearning.recorrer(self.matriz_q,
                                                                  estado_inicial,
                                                                  self.ql_recorrer_out_q,
@@ -477,6 +484,8 @@ class MainWindow(QtGui.QMainWindow):
             logging.debug("Error {0}: ".format(worker_error))
             self.qlearning_recorrer_worker = None
             self.working_thread = None
+            self.ql_recorrer_out_q = None
+            self.ql_recorrer_error_q = None
 
         if self.qlearning_recorrer_worker is not None:
             self.working_thread = self.qlearning_recorrer_worker
@@ -642,8 +651,9 @@ class MainWindow(QtGui.QMainWindow):
                         QtGui.QMessageBox.warning(self,
                                                   _tr('QLearning - Entrenamiento'),
                         u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
-                        self.qlearning_entrenar_worker.join(0.01)
+                        self.working_thread.join(0.05)
                         self.qlearning_entrenar_worker = None
+                        self.working_thread = None
                         self.ql_entrenar_error_q = None
                         self.ql_entrenar_out_q = None
 
@@ -664,7 +674,6 @@ class MainWindow(QtGui.QMainWindow):
                 logging.debug("[Recorrer] Worker joined: {0}".format(worker_joined))
 
                 # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
-
                 if camino_optimo is not None:
                     seen = set()
                     seen_add = seen.add
