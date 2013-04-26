@@ -40,12 +40,17 @@ class EGreedy(QLTecnica):
         if ((valor >= 0) and (valor <= (1 - self.epsilon_parcial))):
             # EXPLOTAR
             logging.debug("EXPLOTAR")  # FIXME: Eliminar print de debug
-            maximo = 0
+
+            maximo = None
             estados_qmax = []
             for key, value in vecinos.items():
                 logging.debug("X:{0} Y:{1}".format(*key))  # FIXME: Eliminar print de debug
                 q_valor = value
                 logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug
+
+                if maximo is None:
+                    maximo = q_valor
+
                 if q_valor > maximo:
                     maximo = q_valor
                     estados_qmax = [key]
