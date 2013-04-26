@@ -96,9 +96,6 @@ class MainWindow(QtGui.QMainWindow):
 
         self._initialize_widgets()
 
-        # Conexión de señales
-        self._set_window_signals()
-
     def _initialize_widgets(self):
         u"""
         Configura y establece estado de los widgets en el cuadro de diálogo.
@@ -130,6 +127,9 @@ class MainWindow(QtGui.QMainWindow):
 
         # Establecer por defecto un Gamma = 0.5
         self.WMainWindow.sbQLGamma.setValue(0.5)
+
+        # Conexión de señales
+        self._set_window_signals()
 
     def convert_dimension(self, dim_str):
         u"""
