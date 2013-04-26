@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import logging
 import numpy as np
+import threading
 from core.estado.estado import Estado, TipoEstado, TIPOESTADO
 
 
@@ -91,6 +92,17 @@ class GridWorld(object):
                                                            "#2F4055")
 
     def _inicializar_estados(self, default=TIPOESTADO.NEUTRO):
+        inicializar_estados_worker = threading.Thread(None,
+                                                      self._inicializar_estados_worker,
+                                                      "GWInicializarEstadosWorker",
+                                                      (default,),
+                                                      None,
+                                                      None)
+        inicializar_estados_worker.start()
+        inicializar_estados_worker.join(0.05)
+        logging.debug(inicializar_estados_worker)
+
+    def _inicializar_estados_worker(self, default=TIPOESTADO.NEUTRO):
         u"""
         Crea la matriz de estados con un tipo de estado predeterminado.
         """

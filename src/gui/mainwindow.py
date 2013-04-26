@@ -10,6 +10,7 @@ import threading
 from PyQt4 import QtCore, QtGui
 
 from gui.genrndvalsdialog import GenRndValsDialog
+from gui.aboutdialog import AboutDialog
 from gui.qtgen.mainwindow import Ui_MainWindow
 
 from core.estado.estado import TIPOESTADO
@@ -37,11 +38,11 @@ class MainWindow(QtGui.QMainWindow):
     """
     def __init__(self):
         super(MainWindow, self).__init__()
-        # FIXME: Logging
-        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
-
         self.WMainWindow = Ui_MainWindow()
         self.WMainWindow.setupUi(self)
+
+        # FIXME: Logging
+        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
 
         self._init_vars()
         self._initialize_window()
@@ -60,11 +61,15 @@ class MainWindow(QtGui.QMainWindow):
         self.ql_entrenar_out_q = None
         self.ql_recorrer_error_q = None
         self.ql_recorrer_out_q = None
+        self.working_thread = None
+        self.worker_queues_list = None
+
         self.tecnicas = {0: "Greedy",
                          1: "ε-Greedy",
                          2: "Softmax",
                          3: "Aleatorio"}
-        self.gw_dimensiones = [  # "2 x 2", "3 x 3", "4 x 4", "5 x 5",
+        self.gw_dimensiones = [  # "2 x 2",
+                               "3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.window_config = {"item":
                               {"show_tooltip": False,
@@ -74,12 +79,28 @@ class MainWindow(QtGui.QMainWindow):
                                      "enabled": True}}}
 
     def _initialize_window(self):
+        # Aspectos de la ventana principal
+        self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
+        screen_geometry = QtGui.QApplication.desktop().screenGeometry()
+        y_wnd = (screen_geometry.height() - self.height()) / 2.0
+        x_wnd = (screen_geometry.width() - self.width()) / 2.0
+        # Centrar la ventana en la pantalla
+        self.move(x_wnd, y_wnd)
+
+        self.lbl_item_actual = QtGui.QLabel()
+        self.WMainWindow.statusBar.addPermanentWidget(self.lbl_item_actual)
+
+        self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.WMainWindow.tblGridWorld.setSortingEnabled(False)
+        self.WMainWindow.tblGridWorld.setMouseTracking(True)
+        self.setMouseTracking(True)
+
+        self._initialize_widgets()
+
+    def _initialize_widgets(self):
         u"""
         Configura y establece estado de los widgets en el cuadro de diálogo.
         """
-        # Aspectos de la ventana principal
-        self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
-
         # Cargar técnicas posibles
         self.WMainWindow.cbQLTecnicas.clear()
         for key, value in self.tecnicas.items():
@@ -107,14 +128,6 @@ class MainWindow(QtGui.QMainWindow):
 
         # Establecer por defecto un Gamma = 0.5
         self.WMainWindow.sbQLGamma.setValue(0.5)
-
-        self.lbl_item_actual = QtGui.QLabel()
-        self.WMainWindow.statusBar.addPermanentWidget(self.lbl_item_actual)
-
-        self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.WMainWindow.tblGridWorld.setSortingEnabled(False)
-        self.WMainWindow.tblGridWorld.setMouseTracking(True)
-        self.setMouseTracking(True)
 
         # Conexión de señales
         self._set_window_signals()
@@ -213,6 +226,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuQLearning.aboutToShow.connect(self.generar_menu_tecnicas)
         self.WMainWindow.menuGridWorld.triggered.connect(self.set_gw_dimension_menu)
         self.WMainWindow.menuQLearning.triggered.connect(self.parametros_segun_tecnica_menu)
+        self.WMainWindow.actionAcercaDe.triggered.connect(self.mostrar_dialogo_acerca)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -398,14 +412,15 @@ class MainWindow(QtGui.QMainWindow):
 
         gamma = self.WMainWindow.sbQLGamma.value()
         cant_episodios = int(self.WMainWindow.sbCantidadEpisodios.value())
-        valor_inicial = 0
+        valor_inicial = self.q_val_inicial_recom
 
         # Crear nueva instancia de Q-Learning
         self.qlearning = QLearning(self.gridworld,
                                    gamma,
                                    tecnica,
                                    cant_episodios,
-                                   valor_inicial)
+                                   valor_inicial,
+                                   None)
 
         logging.debug("Matriz R: {0}".format(self.gridworld.matriz_r))
         logging.debug("Matriz Q Inicial: {0}".format(self.qlearning.matriz_q))
@@ -415,6 +430,8 @@ class MainWindow(QtGui.QMainWindow):
         # FIXME: Ejecución concurrente Entrenamiento
         self.ql_entrenar_out_q = Queue.Queue()
         self.ql_entrenar_error_q = Queue.Queue()
+        self.ql_datos_entrenar_in_feed = LiveDataFeed()
+
         self.qlearning_entrenar_worker = self.qlearning.entrenar(self.ql_entrenar_out_q,
                                                                  self.ql_entrenar_error_q)
 
@@ -424,8 +441,12 @@ class MainWindow(QtGui.QMainWindow):
         if worker_error is not None:
             logging.debug("Error {0}: ".format(worker_error))
             self.qlearning_entrenar_worker = None
+            self.working_thread = None
+            self.ql_entrenar_out_q = None
+            self.ql_entrenar_error_q = None
 
         if self.qlearning_entrenar_worker is not None:
+            self.working_thread = self.qlearning_entrenar_worker
             self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
             self.on_comienzo_proceso()
 
@@ -448,8 +469,10 @@ class MainWindow(QtGui.QMainWindow):
 
         self.ql_recorrer_out_q = Queue.Queue()
         self.ql_recorrer_error_q = Queue.Queue()
+        self.ql_datos_recorrer_in_feed = LiveDataFeed()
         estado_inicial = (self.estado_inicial.fila,
                                   self.estado_inicial.columna)
+
         self.qlearning_recorrer_worker = self.qlearning.recorrer(self.matriz_q,
                                                                  estado_inicial,
                                                                  self.ql_recorrer_out_q,
@@ -461,8 +484,12 @@ class MainWindow(QtGui.QMainWindow):
         if worker_error is not None:
             logging.debug("Error {0}: ".format(worker_error))
             self.qlearning_recorrer_worker = None
+            self.working_thread = None
+            self.ql_recorrer_out_q = None
+            self.ql_recorrer_error_q = None
 
         if self.qlearning_recorrer_worker is not None:
+            self.working_thread = self.qlearning_recorrer_worker
             self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
             self.on_comienzo_proceso()
 
@@ -470,9 +497,10 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Ejecutar tareas al finalizar un thread.
         """
-        logging.debug("Detener {0}: ".format(self.qlearning_entrenar_worker))
-        self.qlearning_entrenar_worker.join(0.05)
-        logging.debug(self.qlearning_entrenar_worker)
+        logging.debug("Detener {0}: ".format(self.working_thread))
+        self.working_thread.join(0.01)
+        logging.debug(self.working_thread)
+        self.working_thread = None
         if self.wnd_timer is not None:
             self.on_fin_proceso()
 
@@ -507,7 +535,7 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer = QtCore.QTimer(self)
         # Conectar disparo de timer con método
         self.wnd_timer.timeout.connect(self._on_window_timer)
-        self.wnd_timer.start(80)
+        self.wnd_timer.start(60)
 
     def on_fin_proceso(self):
         u"""
@@ -550,7 +578,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect(self.set_gw_dimension_cb)
         self._init_vars()
-        self._initialize_window()
+        self._initialize_widgets()
 
     def mostrar_dialogo_acerca(self):
         u"""
@@ -624,8 +652,9 @@ class MainWindow(QtGui.QMainWindow):
                         QtGui.QMessageBox.warning(self,
                                                   _tr('QLearning - Entrenamiento'),
                         u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
-                        self.qlearning_entrenar_worker.join(0.01)
+                        self.working_thread.join(0.01)
                         self.qlearning_entrenar_worker = None
+                        self.working_thread = None
                         self.ql_entrenar_error_q = None
                         self.ql_entrenar_out_q = None
 
@@ -646,7 +675,6 @@ class MainWindow(QtGui.QMainWindow):
                 logging.debug("[Recorrer] Worker joined: {0}".format(worker_joined))
 
                 # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
-
                 if camino_optimo is not None:
                     seen = set()
                     seen_add = seen.add
@@ -774,3 +802,9 @@ class MainWindow(QtGui.QMainWindow):
         if len(ql_datos_in) > 0:
             self.ql_datos_recorrer_in_feed.add_data(ql_datos_in)
             logging.debug("[Recorrer] Datos de entrada: {0}".format(ql_datos_in))
+
+    def q_val_inicial_cero(self, valor):
+        return 0
+
+    def q_val_inicial_recom(self, valor):
+        return valor

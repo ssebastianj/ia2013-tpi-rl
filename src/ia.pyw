@@ -6,8 +6,8 @@ from __future__ import absolute_import
 import sys
 from PyQt4.QtGui import QApplication
 from PyQt4.QtCore import QCoreApplication
-from gui.mainwindow import MainWindow
 from info import app_info
+from gui.mainwindow import MainWindow
 
 
 def main():

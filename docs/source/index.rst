@@ -103,6 +103,11 @@ Contents:
 .. autoclass:: GenRndValsDialog
    :members:
    :private-members:
+   
+.. automodule:: gui.aboutdialog
+.. autoclass:: AboutDialog
+   :members:
+   :private-members:   
 
 .. automodule:: tools.enum
 

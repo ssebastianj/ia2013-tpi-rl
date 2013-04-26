@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Tue Apr 23 12:46:18 2013
+# Created: Fri Apr 26 00:45:36 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -306,7 +306,7 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.btnGenValAleatorios, self.btnInicializar)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Grupo Nº 1 - Inteligencia Artificial 2013 - Aprendizaje por Refuerzo", None))
         self.menuArchivo.setTitle(_translate("MainWindow", "&Archivo", None))
         self.menuEdicion.setTitle(_translate("MainWindow", "&Edición", None))
         self.menuAyuda.setTitle(_translate("MainWindow", "Ay&uda", None))
