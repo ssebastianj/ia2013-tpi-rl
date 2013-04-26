@@ -609,6 +609,10 @@ class MainWindow(QtGui.QMainWindow):
         :param cola: Cola de salida del worker.
         """
         ql_datos_in = list(get_all_from_queue(cola))
+
+        # Testing
+        cola.task_done()
+
         logging.debug("Leer QL Input: {0}".format(ql_datos_in))
         if len(ql_datos_in) > 0:
             self.ql_datos_entrenar_in_feed.add_data(ql_datos_in)
@@ -798,6 +802,13 @@ class MainWindow(QtGui.QMainWindow):
 
     def _procesar_info_ql_recorrido(self, cola):
         ql_datos_in = list(get_all_from_queue(cola))
+
+        # Testing
+        try:
+            cola.task_done()
+        except ValueError:
+            pass
+
         logging.debug("[Recorrer] Datos In: {0}".format(ql_datos_in))
         if len(ql_datos_in) > 0:
             self.ql_datos_recorrer_in_feed.add_data(ql_datos_in)

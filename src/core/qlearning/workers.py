@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 
 import logging
+import Queue
 import threading
 import time
 import random
@@ -57,7 +58,12 @@ class QLearningEntrenarWorker(threading.Thread):
         self._do_on_start()
 
         # Obtener matriz R y matriz Q
-        self.input_data = self._inp_queue.get()
+        try:
+            self.input_data = self._inp_queue.get()
+        except Queue.Empty:
+            logging.debug("Cola de entrada vacía")
+            return None
+
         matriz_r = self.input_data[0]
         matriz_q = self.input_data[1]
         gamma = self.input_data[2]
@@ -153,10 +159,14 @@ class QLearningEntrenarWorker(threading.Thread):
                 logging.debug("Iteraciones {0}".format(cant_iteraciones))  # FIXME: Logging @IgnorePep8
                 logging.debug("Matriz Q: {0}".format(matriz_q))  # FIXME: Logging @IgnorePep8
 
-                self._out_queue.put({'EstAct': (x_act, y_act),
-                                     'NoEp': epnum,
-                                     'CantIter': cant_iteraciones,
-                                     'Joined': False})
+                try:
+                    self._out_queue.put({'EstAct': (x_act, y_act),
+                                         'NoEp': epnum,
+                                         'CantIter': cant_iteraciones,
+                                         'Joined': False})
+                except Queue.Full:
+                    logging.debug("Cola llena")
+                    pass
 
                 # Actualizar estado actual
                 (x_act, y_act) = (x_eleg, y_eleg)
@@ -170,13 +180,17 @@ class QLearningEntrenarWorker(threading.Thread):
             iter_exec_time = iter_end_time - iter_start_time
 
             # Poner en la cola de salida los resultados
-            self._out_queue.put({'EstAct': (x_act, y_act),
-                                 'NoEp': epnum,
-                                 'CantIter': cant_iteraciones,
-                                 'MatQ': matriz_q,
-                                 'EpExecT': ep_exec_time,
-                                 'IterExecT': iter_exec_time,
-                                 'Joined': False})
+            try:
+                self._out_queue.put({'EstAct': (x_act, y_act),
+                                     'NoEp': epnum,
+                                     'CantIter': cant_iteraciones,
+                                     'MatQ': matriz_q,
+                                     'EpExecT': ep_exec_time,
+                                     'IterExecT': iter_exec_time,
+                                     'Joined': False})
+            except Queue.Full:
+                logging.debug("Cola llena")
+                pass
 
             # Verificar si se solicitó externamente finalizar el thread
             if self._stoprequest.is_set():
@@ -285,7 +299,12 @@ class QLearningRecorrerWorker(threading.Thread):
         self._do_on_start()
 
         # Obtener la referencia a la instancia desde la cola de entrada
-        self.input_data = self._inp_queue.get()
+        try:
+            self.input_data = self._inp_queue.get()
+        except Queue.Empty:
+            logging.debug("Cola de entrada vacía")
+            return None
+
         matriz_q = self.input_data[0]
         estado_inicial = self.input_data[1]
 
@@ -348,10 +367,14 @@ class QLearningRecorrerWorker(threading.Thread):
 
         # Encolar la información generada por el algoritmo para realizar
         # estadísticas
-        self._out_queue.put({'EstAct': (x_act, y_act),
-                            'OptPath': camino_optimo,
-                            'RecExecT': rec_exec_time,
-                            'Joined': False})
+        try:
+            self._out_queue.put({'EstAct': (x_act, y_act),
+                                 'OptPath': camino_optimo,
+                                 'RecExecT': rec_exec_time,
+                                 'Joined': False})
+        except Queue.Full:
+            logging.debug("Cola llena")
+            pass
 
         # Poner en cola un valor booleano para indicar que se finalizó el trabajo
         # self._out_queue.put(True)
