@@ -99,15 +99,20 @@ Contents:
    :members:
    :private-members:
    
-.. automodule:: gui.genrndvalsdialog
-.. autoclass:: GenRndValsDialog
-   :members:
-   :private-members:
-   
 .. automodule:: gui.aboutdialog
 .. autoclass:: AboutDialog
    :members:
-   :private-members:   
+   :private-members:
+   
+.. automodule:: gui.gwgenrndestadosdialog
+.. autoclass:: GWGenRndEstadosDialog
+   :members:
+   :private-members:
+
+.. automodule:: gui.gwopcionesdialog
+.. autoclass:: GWOpcionesDialog
+   :members:
+   :private-members:
 
 .. automodule:: tools.enum
 

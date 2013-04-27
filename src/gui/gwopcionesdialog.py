@@ -39,3 +39,4 @@ class GWOpcionesDialog(QtGui.QDialog):
         u"""
         Configura y establece estado de los widgets en el cuadro de diálogo.
         """
+        pass
