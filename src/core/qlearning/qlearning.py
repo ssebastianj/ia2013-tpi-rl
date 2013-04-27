@@ -6,7 +6,7 @@ from __future__ import absolute_import
 import copy
 import logging
 import Queue
-import numpy as np
+import numpy
 import random
 import threading
 
@@ -171,7 +171,7 @@ class QLearning(object):
         matriz_r = self._gridworld.matriz_r
         ancho = self.gridworld.ancho
         alto = self.gridworld.alto
-        matriz_q = np.empty((ancho, alto), object)
+        matriz_q = numpy.empty((ancho, alto), object)
 
         for i in xrange(0, alto):
             for j in xrange(0, ancho):
@@ -197,7 +197,7 @@ class QLearning(object):
                               if i != 0 or j != 0):
             if (fila, columna) in coordenadas:
                 vecinos.append(self.get_estado(fila, columna))
-        return np.array(vecinos)
+        return numpy.array(vecinos)
 
     def matriz_q_to_string(self):
         u"""

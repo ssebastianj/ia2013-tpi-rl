@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 
 import logging
-import numpy as np
+import numpy
 import threading
 from core.estado.estado import Estado, TipoEstado, TIPOESTADO
 
@@ -109,11 +109,11 @@ class GridWorld(object):
         # Tipo de estado con el que se inicializará cada estado
         default_tipo = self._tipos_estados[default]
 
-        self._estados = np.empty((self.alto, self.ancho), Estado)
+        self._estados = numpy.empty((self.alto, self.ancho), Estado)
         self._coordenadas = []
         # Crear una lista de listas
         for i in xrange(1, self._alto + 1):
-            fila = np.empty((1, self.ancho), Estado)
+            fila = numpy.empty((1, self.ancho), Estado)
             for j in xrange(1, self._ancho + 1):
                 fila[0][j - 1] = Estado(i, j, default_tipo)
                 self._coordenadas.append((i, j))
@@ -128,7 +128,7 @@ class GridWorld(object):
         if self._excluir_tipos_vecinos is None:
             self._excluir_tipos_vecinos = []
 
-        matriz_r = np.empty((self.alto, self.ancho), object)
+        matriz_r = numpy.empty((self.alto, self.ancho), object)
         # Crear una lista de listas
         for i in xrange(1, self._alto + 1):
             fila = []
@@ -219,7 +219,7 @@ class GridWorld(object):
                               if i != 0 or j != 0):
             if (fila, columna) in self._coordenadas:
                 vecinos.append(self.get_estado(fila, columna))
-        return np.array(vecinos, object)
+        return numpy.array(vecinos, object)
 
     def matriz_estados_to_string(self):
         u"""

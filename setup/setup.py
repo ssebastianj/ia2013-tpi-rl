@@ -46,6 +46,7 @@ def main():
     main_path = os.path.abspath(os.path.join(os.path.pardir, 'src', 'ia.pyw'))
     spec_path = os.path.abspath(os.path.join(os.path.curdir, 'spec'))
     icon_path = os.path.abspath(os.path.join(os.path.pardir, 'src', 'img', 'app.ico'))
+    dist_path = os.path.abspath(os.path.join(os.path.curdir, 'dist'))
 
     # Build EXE
     msg_4 = u'\n--------------------- Generar archivo ejecutable ---------------------'
@@ -55,11 +56,13 @@ def main():
     args = [sys.executable,
             "C:\\PyInstaller\\pyinstaller.py",
             "--noconfirm",
+            "--clean",
             "--log-level=DEBUG",
            # "--onefile",
            # "--noupx",
             "--onedir",
-            "--out=" + spec_path,
+            "--distpath=" + dist_path,
+            "--specpath=" + spec_path,
             "--name=ia",
             "--windowed",
             "--version-file=" + vi_txt_path,
