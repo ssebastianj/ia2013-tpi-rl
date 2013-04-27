@@ -9,9 +9,10 @@ import threading
 
 from PyQt4 import QtCore, QtGui
 
-from gui.genrndvalsdialog import GenRndValsDialog
-from gui.aboutdialog import AboutDialog
 from gui.qtgen.mainwindow import Ui_MainWindow
+from gui.aboutdialog import AboutDialog
+from gui.gwgenrndestadosdialog import GWGenRndEstadosDialog
+from gui.gwopcionesdialog import GWOpcionesDialog
 
 from core.estado.estado import TIPOESTADO
 from core.gridworld.gridworld import GridWorld
@@ -95,39 +96,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setMouseTracking(True)
         self.setMouseTracking(True)
 
-        self._initialize_widgets()
-
-    def _initialize_widgets(self):
-        u"""
-        Configura y establece estado de los widgets en el cuadro de diálogo.
-        """
-        # Cargar técnicas posibles
-        self.WMainWindow.cbQLTecnicas.clear()
-        for key, value in self.tecnicas.items():
-            self.WMainWindow.cbQLTecnicas.addItem(_tr(value), key)
-
-        self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
-        self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
-        self.WMainWindow.sbQLTau.setMinimum(0.01)
-        self.WMainWindow.lblTau.hide()
-        self.WMainWindow.sbQLTau.hide()
-
-        # Cargar dimensiones posibles del tblGridWorld
-        self.WMainWindow.cbGWDimension.clear()
-        for dimension in self.gw_dimensiones:
-            self.WMainWindow.cbGWDimension.addItem(_tr(dimension), dimension)
-
-        # Establece la dimensión por defecto del tblGridWorld en 6x6
-        self.set_gw_dimension_cb(self.WMainWindow.cbGWDimension.currentIndex())
-
-        # Establecer por defecto 1 episodio
-        self.WMainWindow.sbCantidadEpisodios.setValue(1)
-
-        # Establecer por defecto un Epsilon = 0.5
-        self.WMainWindow.sbQLEpsilon.setValue(0.5)
-
-        # Establecer por defecto un Gamma = 0.5
-        self.WMainWindow.sbQLGamma.setValue(0.5)
+        self.inicializar_todo()
 
         # Conexión de señales
         self._set_window_signals()
@@ -216,9 +185,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.cbQLTecnicas.currentIndexChanged.connect(self.parametros_segun_tecnica)
         # Al hacer clic derecho sobre un item del GridWorld
         self.WMainWindow.tblGridWorld.customContextMenuRequested.connect(self.show_item_menu)
-        # Solicita la generación de valores aleatorio
-        self.WMainWindow.btnGenValAleatorios.clicked.connect(self.mostrar_dialogo_gen_rnd_vals)
-        self.WMainWindow.btnInicializar.clicked.connect(self.inicializar_todo)
+        self.WMainWindow.btnInicializarTodo.clicked.connect(self.inicializar_todo)
         self.WMainWindow.btnRecorrer.clicked.connect(self.recorrer_gw)
         # Emite cuando se coloca el cursor del mouse sobre un ítem
         self.WMainWindow.tblGridWorld.itemEntered.connect(self.mostrar_item_actual)
@@ -227,6 +194,11 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuGridWorld.triggered.connect(self.set_gw_dimension_menu)
         self.WMainWindow.menuQLearning.triggered.connect(self.parametros_segun_tecnica_menu)
         self.WMainWindow.actionAcercaDe.triggered.connect(self.mostrar_dialogo_acerca)
+        self.WMainWindow.btnGWGenerarEstados.clicked.connect(self.mostrar_gen_rnd_estados_dialog)
+        self.WMainWindow.btnInicializarGW.clicked.connect(self.refresh_gw)
+        self.WMainWindow.btnInicializarValoresQL.clicked.connect(self.inicializar_ql_vals)
+        self.WMainWindow.actionInicializarTodo.triggered.connect(self.inicializar_todo)
+        self.WMainWindow.btnGWOpciones.clicked.connect(self.mostrar_opciones_gw)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -497,14 +469,16 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Ejecutar tareas al finalizar un thread.
         """
-        logging.debug("Detener {0}: ".format(self.working_thread))
-        self.working_thread.join(0.01)
-        logging.debug(self.working_thread)
-        self.working_thread = None
-        if self.wnd_timer is not None:
-            self.on_fin_proceso()
+        if self.working_thread is not None:
+            logging.debug("Detener {0}: ".format(self.working_thread))
+            self.working_thread.join(0.01)
+            logging.debug(self.working_thread)
+            self.working_thread = None
 
-        self.worker_msg_out_q = None
+            if self.wnd_timer is not None:
+                self.on_fin_proceso()
+
+            self.worker_msg_out_q = None
 
     def switch_tipo_estado(self, fila, columna):
         """
@@ -563,28 +537,20 @@ class MainWindow(QtGui.QMainWindow):
             if t is not main_thread and t.is_alive():
                 t.join(0.01)
 
-    def mostrar_dialogo_gen_rnd_vals(self):
-        u"""
-        Instancia y muestra el diálogo para generar valores aleatorios.
-        """
-        self.GenRndValsD = GenRndValsDialog(self)
-        if self.GenRndValsD.exec_():
-            pass
-
     def inicializar_todo(self):
         u"""
         Reestablece los valores por defecto de varios controles de la UI
         e inicializa variables internas del programa.
         """
-        self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect(self.set_gw_dimension_cb)
+        # self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect(self.set_gw_dimension_cb)
         self._init_vars()
-        self._initialize_widgets()
+        self.inicializar_gw()
+        self.inicializar_ql_vals()
 
     def mostrar_dialogo_acerca(self):
         u"""
         Muestra el cuadro de diálogo Acerca de...
         """
-        # TODO: Implementar AboutDialog
         self.AboutD = AboutDialog(self)
         self.AboutD.show()
 
@@ -819,3 +785,51 @@ class MainWindow(QtGui.QMainWindow):
 
     def q_val_inicial_recom(self, valor):
         return valor
+
+    def mostrar_opciones_gw(self):
+        self.GWOpcionesD = GWOpcionesDialog(self)
+        if self.GWOpcionesD.exec_():
+            pass
+
+    def mostrar_gen_rnd_estados_dialog(self):
+        self.GWGenRndEstValsD = GWGenRndEstadosDialog(self)
+        if self.GWGenRndEstValsD.exec_():
+            pass
+
+    def inicializar_gw(self):
+        # Cargar dimensiones posibles del tblGridWorld
+        self.WMainWindow.cbGWDimension.clear()
+        for dimension in self.gw_dimensiones:
+            self.WMainWindow.cbGWDimension.addItem(_tr(dimension), dimension)
+
+        self.refresh_gw()
+
+    def refresh_gw(self):
+        # Establece la dimensión por defecto del tblGridWorld en 6x6
+        self.set_gw_dimension_cb(self.WMainWindow.cbGWDimension.currentIndex())
+
+    def inicializar_ql_vals(self):
+        # Cargar técnicas posibles
+        self.WMainWindow.cbQLTecnicas.clear()
+        for key, value in self.tecnicas.items():
+            self.WMainWindow.cbQLTecnicas.addItem(_tr(value), key)
+
+        self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
+        self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
+        self.WMainWindow.sbQLTau.setMinimum(0.01)
+        self.WMainWindow.lblTau.hide()
+        self.WMainWindow.sbQLTau.hide()
+
+        # Establecer por defecto 1 episodio
+        self.WMainWindow.sbCantidadEpisodios.setValue(1)
+
+        # Establecer por defecto un Epsilon = 0.5
+        self.WMainWindow.sbQLEpsilon.setValue(0.5)
+
+        # Establecer por defecto un Gamma = 0.5
+        self.WMainWindow.sbQLGamma.setValue(0.5)
+
+        self.WMainWindow.sbDecrementoVal.setValue(0.01)
+        self.WMainWindow.sbCantIteracionesDec.setValue(1)
+        self.WMainWindow.chkDecrementarParam.setChecked(False)
+        self.WMainWindow.sbQLTau.setValue(0.5)

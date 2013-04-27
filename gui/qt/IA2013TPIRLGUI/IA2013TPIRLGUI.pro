@@ -15,14 +15,19 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     genrndvalsdialog.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    gwgenrndestadosdialog.cpp \
+    gwopcionesdialog.cpp
 
 HEADERS  += mainwindow.h \
     genrndvalsdialog.h \
-    aboutdialog.h
+    aboutdialog.h \
+    gwgenrndestadosdialog.h \
+    gwopcionesdialog.h
 
 FORMS    += mainwindow.ui \
-    genrndvalsdialog.ui \
-    aboutdialog.ui
+    aboutdialog.ui \
+    gwgenrndestadosdialog.ui \
+    gwopcionesdialog.ui
 
 TRANSLATIONS += EN-US
