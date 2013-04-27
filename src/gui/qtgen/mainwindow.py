@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Fri Apr 26 21:41:45 2013
+# Created: Sat Apr 27 12:55:33 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -268,14 +268,23 @@ class Ui_MainWindow(object):
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
         self.btnEntrenar = QtGui.QPushButton(self.groupBox_2)
         self.btnEntrenar.setMaximumSize(QtCore.QSize(130, 16777215))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Aprender.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnEntrenar.setIcon(icon)
         self.btnEntrenar.setObjectName(_fromUtf8("btnEntrenar"))
         self.gridLayout_3.addWidget(self.btnEntrenar, 2, 1, 1, 1)
         self.btnRecorrer = QtGui.QPushButton(self.groupBox_2)
         self.btnRecorrer.setMaximumSize(QtCore.QSize(130, 16777215))
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Recorrer.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnRecorrer.setIcon(icon1)
         self.btnRecorrer.setObjectName(_fromUtf8("btnRecorrer"))
         self.gridLayout_3.addWidget(self.btnRecorrer, 3, 1, 1, 1)
         self.btnTerminarProceso = QtGui.QPushButton(self.groupBox_2)
         self.btnTerminarProceso.setMaximumSize(QtCore.QSize(130, 16777215))
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Cancelar.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnTerminarProceso.setIcon(icon2)
         self.btnTerminarProceso.setObjectName(_fromUtf8("btnTerminarProceso"))
         self.gridLayout_3.addWidget(self.btnTerminarProceso, 4, 1, 1, 1)
         spacerItem5 = QtGui.QSpacerItem(35, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
@@ -392,3 +401,4 @@ class Ui_MainWindow(object):
         self.actionAgenteCancelar.setText(_translate("MainWindow", "Cancelar", None))
         self.actionInicializarTodo.setText(_translate("MainWindow", "Inicializar todo", None))
 
+import recursos_rc

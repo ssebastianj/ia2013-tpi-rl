@@ -31,3 +31,6 @@ FORMS    += mainwindow.ui \
     gwopcionesdialog.ui
 
 TRANSLATIONS += EN-US
+
+RESOURCES += \
+    recursos.qrc
