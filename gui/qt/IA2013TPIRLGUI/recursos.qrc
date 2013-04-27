@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/:iconos">
-        <file>Recorrer.png</file>
-        <file>Cancelar.png</file>
-        <file>Aprender.png</file>
+        <file alias="Recorrer">Recorrer.png</file>
+        <file alias="Cancelar">Cancelar.png</file>
+        <file alias="Aprender">Aprender.png</file>
     </qresource>
 </RCC>

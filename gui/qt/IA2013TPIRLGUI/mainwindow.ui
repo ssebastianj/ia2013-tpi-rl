@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>559</width>
-    <height>700</height>
+    <height>701</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -648,7 +648,7 @@
           </property>
           <property name="icon">
            <iconset resource="recursos.qrc">
-            <normaloff>:/:iconos/Aprender.png</normaloff>:/:iconos/Aprender.png</iconset>
+            <normaloff>:/:iconos/Aprender</normaloff>:/:iconos/Aprender</iconset>
           </property>
          </widget>
         </item>
@@ -665,7 +665,7 @@
           </property>
           <property name="icon">
            <iconset resource="recursos.qrc">
-            <normaloff>:/:iconos/Recorrer.png</normaloff>:/:iconos/Recorrer.png</iconset>
+            <normaloff>:/:iconos/Recorrer</normaloff>:/:iconos/Recorrer</iconset>
           </property>
          </widget>
         </item>
@@ -682,7 +682,7 @@
           </property>
           <property name="icon">
            <iconset resource="recursos.qrc">
-            <normaloff>:/:iconos/Cancelar.png</normaloff>:/:iconos/Cancelar.png</iconset>
+            <normaloff>:/:iconos/Cancelar</normaloff>:/:iconos/Cancelar</iconset>
           </property>
          </widget>
         </item>
