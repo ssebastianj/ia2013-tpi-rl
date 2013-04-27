@@ -59,7 +59,7 @@ def main():
             "--clean",
             "--log-level=DEBUG",
            # "--onefile",
-           # "--noupx",
+            "--noupx",
             "--onedir",
             "--distpath=" + dist_path,
             "--specpath=" + spec_path,
