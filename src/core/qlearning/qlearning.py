@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 import copy
 import logging
-import Queue
+import multiprocessing
 import numpy
 import random
 import threading
@@ -13,6 +13,7 @@ import threading
 from core.qlearning.workers import QLearningEntrenarWorker, QLearningRecorrerWorker
 from core.gridworld.gridworld import GridWorld
 from core.tecnicas.tecnica import QLTecnica
+from core.tecnicas.egreedy import EGreedy
 
 
 class QLearning(object):
@@ -55,17 +56,17 @@ class QLearning(object):
         :param out_queue: Cola de salida.
         :param error_q: Cola de errores (salida)
         """
-        inp_queue = Queue.Queue()
+        inp_queue = multiprocessing.Queue()
         # Encolar Matriz R, Matriz Q, Número de episodios, Parámetro Gamma
         inp_queue.put((self._gridworld.matriz_r,
                        self.get_matriz_q(),
                        self._gamma,
                        self._episodes,
-                       copy.copy(self._tecnica),
+                       self._tecnica,
                        (self._gridworld.alto, self._gridworld.ancho),
                        False,
                        self._gridworld.tipos_vecinos_excluidos
-                     ))
+                      ))
 
         qlearning_entrenar_worker = None
 
@@ -75,9 +76,9 @@ class QLearning(object):
                                                                 error_queue
                                                                 )
             qlearning_entrenar_worker.start()
-        except threading.ThreadError as te:
-            logging.debug(te)
-            raise threading.ThreadError
+        except multiprocessing.ProcessError as pe:
+            logging.debug(pe)
+            raise multiprocessing.ProcessError
         finally:
             pass
 
@@ -91,7 +92,7 @@ class QLearning(object):
         :param out_queue: Cola de salida.
         :param error_q: Cola de errores (salida)
         """
-        inp_queue = Queue.Queue()
+        inp_queue = multiprocessing.Queue()
         inp_queue.put((matriz_q, estado_inicial))
         qlearning_recorrer_worker = None
 
@@ -101,9 +102,9 @@ class QLearning(object):
                                                                 error_queue
                                                                 )
             qlearning_recorrer_worker.start()
-        except threading.ThreadError as te:
-            logging.debug(te)
-            raise threading.ThreadError
+        except multiprocessing.ProcessError as pe:
+            logging.debug(pe)
+            raise multiprocessing.ProcessError
         finally:
             pass
 

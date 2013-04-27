@@ -4,8 +4,7 @@
 from __future__ import absolute_import
 
 import logging
-import Queue
-import threading
+import multiprocessing
 
 from PyQt4 import QtCore, QtGui
 
@@ -43,7 +42,14 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.setupUi(self)
 
         # FIXME: Logging
-        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
+        logging.basicConfig(level=logging.DEBUG,
+                            format="[%(levelname)s] – %(threadName)-10s : %(message)s")
+
+        # Freeze Support
+        logging.debug("Activar Freeze Support")
+        multiprocessing.freeze_support()
+        logging.debug("Cantidad de CPUs: {0}"
+                      .format(multiprocessing.cpu_count()))
 
         self._init_vars()
         self._initialize_window()
@@ -62,8 +68,9 @@ class MainWindow(QtGui.QMainWindow):
         self.ql_entrenar_out_q = None
         self.ql_recorrer_error_q = None
         self.ql_recorrer_out_q = None
-        self.working_thread = None
+        self.working_process = None
         self.worker_queues_list = None
+        self.active_processes = None
 
         self.tecnicas = {0: "Greedy",
                          1: "ε-Greedy",
@@ -400,8 +407,8 @@ class MainWindow(QtGui.QMainWindow):
         # QLearningEntrenarWorker Management
         # Que empiece la magia
         # FIXME: Ejecución concurrente Entrenamiento
-        self.ql_entrenar_out_q = Queue.Queue()
-        self.ql_entrenar_error_q = Queue.Queue()
+        self.ql_entrenar_out_q = multiprocessing.Queue()
+        self.ql_entrenar_error_q = multiprocessing.Queue()
         self.ql_datos_entrenar_in_feed = LiveDataFeed()
 
         self.qlearning_entrenar_worker = self.qlearning.entrenar(self.ql_entrenar_out_q,
@@ -413,12 +420,18 @@ class MainWindow(QtGui.QMainWindow):
         if worker_error is not None:
             logging.debug("Error {0}: ".format(worker_error))
             self.qlearning_entrenar_worker = None
-            self.working_thread = None
+            self.working_process = None
             self.ql_entrenar_out_q = None
             self.ql_entrenar_error_q = None
 
         if self.qlearning_entrenar_worker is not None:
-            self.working_thread = self.qlearning_entrenar_worker
+            self.working_proc = self.qlearning_entrenar_worker
+
+            if self.active_processes is None:
+                self.active_processes = [self.qlearning_entrenar_worker]
+            else:
+                self.active_processes.append(self.qlearning_entrenar_worker)
+
             self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
             self.on_comienzo_proceso()
 
@@ -439,11 +452,11 @@ class MainWindow(QtGui.QMainWindow):
                                           "Debe establecer un Estado Inicial antes de realizar el recorrido.")
             return None
 
-        self.ql_recorrer_out_q = Queue.Queue()
-        self.ql_recorrer_error_q = Queue.Queue()
+        self.ql_recorrer_out_q = multiprocessing.Queue()
+        self.ql_recorrer_error_q = multiprocessing.Queue()
         self.ql_datos_recorrer_in_feed = LiveDataFeed()
         estado_inicial = (self.estado_inicial.fila,
-                                  self.estado_inicial.columna)
+                          self.estado_inicial.columna)
 
         self.qlearning_recorrer_worker = self.qlearning.recorrer(self.matriz_q,
                                                                  estado_inicial,
@@ -456,12 +469,18 @@ class MainWindow(QtGui.QMainWindow):
         if worker_error is not None:
             logging.debug("Error {0}: ".format(worker_error))
             self.qlearning_recorrer_worker = None
-            self.working_thread = None
+            self.working_process = None
             self.ql_recorrer_out_q = None
             self.ql_recorrer_error_q = None
 
         if self.qlearning_recorrer_worker is not None:
-            self.working_thread = self.qlearning_recorrer_worker
+            self.working_process = self.qlearning_recorrer_worker
+
+            if self.active_processes is None:
+                self.active_processes = [self.qlearning_recorrer_worker]
+            else:
+                self.active_processes.append(self.qlearning_recorrer_worker)
+
             self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
             self.on_comienzo_proceso()
 
@@ -469,11 +488,11 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Ejecutar tareas al finalizar un thread.
         """
-        if self.working_thread is not None:
-            logging.debug("Detener {0}: ".format(self.working_thread))
-            self.working_thread.join(0.01)
-            logging.debug(self.working_thread)
-            self.working_thread = None
+        if self.working_process is not None:
+            logging.debug("Detener {0}: ".format(self.working_process))
+            self.working_process.join(0.01)
+            logging.debug(self.working_process)
+            self.working_process = None
 
             if self.wnd_timer is not None:
                 self.on_fin_proceso()
@@ -498,7 +517,7 @@ class MainWindow(QtGui.QMainWindow):
         logging.debug("Timeout")
         self.comprobar_colas()
         self.actualizar_window()
-        self.comprobar_actividad_threads()
+        self.comprobar_actividad_procesos()
 
     def on_comienzo_proceso(self):
         u"""
@@ -509,7 +528,7 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer = QtCore.QTimer(self)
         # Conectar disparo de timer con método
         self.wnd_timer.timeout.connect(self._on_window_timer)
-        self.wnd_timer.start(60)
+        self.wnd_timer.start(40)
 
     def on_fin_proceso(self):
         u"""
@@ -529,13 +548,14 @@ class MainWindow(QtGui.QMainWindow):
         Solicita la finalización de todos los threads utilizados en la
         aplicación. Este método debe ser llamado al desconectarse o al salir
         de la aplicación.
-
-        Fuente: http://pymotw.com/2/threading/
         """
-        main_thread = threading.current_thread()
-        for t in threading.enumerate():
-            if t is not main_thread and t.is_alive():
-                t.join(0.01)
+        main_proc = multiprocessing.current_process()
+
+        if self.active_processes is not None:
+            for proc in self.active_processes:
+                logging.debug("Comprobando proceso: {0}".format(proc))
+                if proc.pid != main_proc.pid:
+                    proc.terminate()
 
     def inicializar_todo(self):
         u"""
@@ -577,7 +597,7 @@ class MainWindow(QtGui.QMainWindow):
         ql_datos_in = list(get_all_from_queue(cola))
 
         # Testing
-        cola.task_done()
+        # cola.task_done()
 
         logging.debug("Leer QL Input: {0}".format(ql_datos_in))
         if len(ql_datos_in) > 0:
@@ -622,9 +642,9 @@ class MainWindow(QtGui.QMainWindow):
                         QtGui.QMessageBox.warning(self,
                                                   _tr('QLearning - Entrenamiento'),
                         u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
-                        self.working_thread.join(0.01)
+                        self.working_process.join(0.01)
                         self.qlearning_entrenar_worker = None
-                        self.working_thread = None
+                        self.working_process = None
                         self.ql_entrenar_error_q = None
                         self.ql_entrenar_out_q = None
 
@@ -671,23 +691,26 @@ class MainWindow(QtGui.QMainWindow):
                           .format(self.ql_recorrer_out_q))
             self._procesar_info_ql_recorrido(self.ql_recorrer_out_q)
 
-    def comprobar_actividad_threads(self):
+    def comprobar_actividad_procesos(self):
         u"""
         Comprueba si hay threads activos (sin incluir el MainThread). Si no
         existen threads activos se detiene el Timer de la ventana.
         """
-        logging.debug("Comprobar actividad threads")
-        main_thread = threading.current_thread()
-        active_threads = threading.enumerate()
+        logging.debug("Comprobar actividad de procesos")
+        main_proc = multiprocessing.current_process()
 
-        cant_active_threads = 0
-        for t in active_threads:
-            if t is not main_thread:
-                cant_active_threads += 1
+        logging.debug("Lista de procesos: {0}".format(self.active_processes))
 
-        if cant_active_threads == 0:
-            logging.debug("No hay threads activos. Detener Window Timer.")
-            self.on_fin_proceso()
+        if self.active_processes is not None:
+            for proc in self.active_processes:
+                logging.debug("Comprobando proceso: {0}"
+                              .format(proc))
+                if (proc.pid != main_proc.pid) and not proc.is_alive():
+                    proc.join(0.01)
+                    self.active_processes.remove(proc)
+
+            if len(self.active_processes) == 0:
+                self.on_fin_proceso()
 
     def mostrar_item_actual(self, item):
         u"""
@@ -770,10 +793,12 @@ class MainWindow(QtGui.QMainWindow):
         ql_datos_in = list(get_all_from_queue(cola))
 
         # Testing
-        try:
-            cola.task_done()
-        except ValueError:
-            pass
+        #=======================================================================
+        # try:
+        #     cola.task_done()
+        # except ValueError:
+        #     pass
+        #=======================================================================
 
         logging.debug("[Recorrer] Datos In: {0}".format(ql_datos_in))
         if len(ql_datos_in) > 0:

@@ -5,13 +5,13 @@ from __future__ import absolute_import
 
 import logging
 import Queue
-import threading
+import multiprocessing
 import time
 import random
 from core.estado.estado import TIPOESTADO
 
 
-class QLearningEntrenarWorker(threading.Thread):
+class QLearningEntrenarWorker(multiprocessing.Process):
     u"""
     Worker encargado de realizar el aprendizaje de Q-Learning.
     """
@@ -27,7 +27,7 @@ class QLearningEntrenarWorker(threading.Thread):
         self._inp_queue = inp_queue
         self._out_queue = out_queue
         self._error_queue = error_q
-        self._stoprequest = threading.Event()
+        self._stoprequest = multiprocessing.Event()
         self.name = "QLearningEntrenarWorker"
         self.input_data = None
         self._visitados_1 = None
@@ -35,7 +35,8 @@ class QLearningEntrenarWorker(threading.Thread):
         self._contador_ref = None
 
         # FIXME: Logging
-        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")  # @IgnorePep8
+        logging.basicConfig(level=logging.DEBUG,
+                            format="[%(levelname)s] – %(threadName)-10s : %(message)s")  # @IgnorePep8
 
     def _do_on_start(self):
         u"""
@@ -245,7 +246,7 @@ class QLearningEntrenarWorker(threading.Thread):
             self._visitados_2.append(estado)
 
         logging.debug("Contador de referencias actualizado: {0}"
-                      .format(self._contador_ref))
+                          .format(self._contador_ref))
         logging.debug("Visitados 1: {0}".format(self._visitados_1))
         logging.debug("Visitados 2: {0}".format(self._visitados_2))
 
@@ -259,7 +260,7 @@ class QLearningEntrenarWorker(threading.Thread):
             self._out_queue.put({'LoopAlarm': True})
 
 
-class QLearningRecorrerWorker(threading.Thread):
+class QLearningRecorrerWorker(multiprocessing.Process):
     u"""
     Worker encargado de recorrer el GridWorld utilizando la matriz Q para seguir
     el mejor camino hasta el Estado Final.
@@ -276,11 +277,13 @@ class QLearningRecorrerWorker(threading.Thread):
         self._inp_queue = inp_queue
         self._out_queue = out_queue
         self._error_queue = error_queue
-        self._stoprequest = threading.Event()
+        self._stoprequest = multiprocessing.Event()
         self.name = "QLearningRecorrerWorker"
         self.input_data = None
+
         # FIXME: Logging
-        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")  # @IgnorePep8
+        logging.basicConfig(level=logging.DEBUG,
+                            format="[%(levelname)s] – %(threadName)-10s : %(message)s")  # @IgnorePep8
 
     def _do_on_start(self):
         u"""
