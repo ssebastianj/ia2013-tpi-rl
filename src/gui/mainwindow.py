@@ -490,7 +490,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         if self.working_process is not None:
             logging.debug("Detener {0}: ".format(self.working_process))
-            self.working_process.join(0.01)
+            self.working_process.join(0.05)
             logging.debug(self.working_process)
             self.working_process = None
 
@@ -551,11 +551,16 @@ class MainWindow(QtGui.QMainWindow):
         """
         main_proc = multiprocessing.current_process()
 
-        if self.active_processes is not None:
-            for proc in self.active_processes:
-                logging.debug("Comprobando proceso: {0}".format(proc))
-                if proc.pid != main_proc.pid:
-                    proc.terminate()
+        for proc in multiprocessing.active_children():
+            proc.terminate()
+
+        #=======================================================================
+        # if self.active_processes is not None:
+        #     for proc in self.active_processes:
+        #         logging.debug("Comprobando proceso: {0}".format(proc))
+        #         if proc.pid != main_proc.pid:
+        #             proc.terminate()
+        #=======================================================================
 
     def inicializar_todo(self):
         u"""
@@ -631,7 +636,7 @@ class MainWindow(QtGui.QMainWindow):
                 logging.debug("[Entrenar] Tiempo ejecución episodio: {0}".format(episode_exec_time))
                 logging.debug("[Entrenar] Tiempo ejecución iteración: {0}".format(iter_exec_time))
                 logging.debug("[Entrenar] Worker joined : {0}".format(worker_joined))
-                logging.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
+                # logging.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
                 logging.debug("[Entrenar] Loop Alarm: {0}".format(loop_alarm))
 
                 if matriz_q is not None:
@@ -701,16 +706,28 @@ class MainWindow(QtGui.QMainWindow):
 
         logging.debug("Lista de procesos: {0}".format(self.active_processes))
 
-        if self.active_processes is not None:
-            for proc in self.active_processes:
-                logging.debug("Comprobando proceso: {0}"
-                              .format(proc))
-                if (proc.pid != main_proc.pid) and not proc.is_alive():
-                    proc.join(0.01)
-                    self.active_processes.remove(proc)
+        for proc in multiprocessing.active_children():
+            if not proc.is_alive():
+                proc.join(0.05)
+                self.active_processes.remove(proc)
 
-            if len(self.active_processes) == 0:
-                self.on_fin_proceso()
+            logging.debug("Children: {0}".format(proc))
+
+        if len(multiprocessing.active_children()) == 0:
+            self.on_fin_proceso()
+
+#===============================================================================
+#         if self.active_processes is not None:
+#             for proc in self.active_processes:
+#                 logging.debug("Comprobando proceso: {0}"
+#                               .format(proc))
+#                 if (proc.pid != main_proc.pid) and not proc.is_alive():
+#                     proc.join(0.01)
+#                     self.active_processes.remove(proc)
+#
+#             if len(self.active_processes) == 0:
+#                 self.on_fin_proceso()
+#===============================================================================
 
     def mostrar_item_actual(self, item):
         u"""

@@ -49,6 +49,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         Ejecuta tareas al finalizar el thread.
         """
         logging.debug("Terminando.")
+        self._inp_queue.close()
+        self._error_queue.close()
+        self._out_queue.close()
 
     def run(self):
         u"""
@@ -296,6 +299,9 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         Ejecuta tareas al finalizar el thread.
         """
         logging.debug("Terminando.")
+        self._inp_queue.close()
+        self._error_queue.close()
+        self._out_queue.close()
 
     def run(self):
         # Realizar tareas al comienzo
