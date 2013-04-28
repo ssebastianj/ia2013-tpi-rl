@@ -103,10 +103,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             x_act, y_act = self.generar_estado_aleatorio()
 
             # Generar estados aleatorios hasta que las coordenadas no
-            # coincidan con las del estado final o un tipo excluido
+            # coincidan con las de un tipo excluido
             estado_actual = matriz_r[x_act - 1][y_act - 1]
             tipo_ide = estado_actual[0]
-            while (tipo_ide == TIPOESTADO.FINAL) or (tipo_ide in tipos_vec_excluidos):
+            while tipo_ide in tipos_vec_excluidos:
                 x_act, y_act = self.generar_estado_aleatorio()
                 estado_actual = matriz_r[x_act - 1][y_act - 1]
                 tipo_ide = estado_actual[0]
