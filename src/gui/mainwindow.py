@@ -16,6 +16,9 @@ from gui.gwopcionesdialog import GWOpcionesDialog
 from core.estado.estado import TIPOESTADO
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
+from core.qlearning.matrixinits import QLMatrixInitEnCero
+from core.qlearning.matrixinits import QLMatrixInitEnRecompensa
+from core.qlearning.matrixinits import QLMatrixInitRandom
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 from core.tecnicas.aleatorio import Aleatorio
@@ -391,22 +394,19 @@ class MainWindow(QtGui.QMainWindow):
 
         gamma = self.WMainWindow.sbQLGamma.value()
         cant_episodios = int(self.WMainWindow.sbCantidadEpisodios.value())
-        valor_inicial = self.q_val_inicial_recom
+        # TODO: Se puede cambiar la función para inicializar la Matriz Q
+        init_value_fn = QLMatrixInitEnCero()
 
         # Crear nueva instancia de Q-Learning
         self.qlearning = QLearning(self.gridworld,
                                    gamma,
                                    tecnica,
                                    cant_episodios,
-                                   valor_inicial,
+                                   init_value_fn,
                                    None)
-
-        logging.debug("Matriz R: {0}".format(self.gridworld.matriz_r))
-        logging.debug("Matriz Q Inicial: {0}".format(self.qlearning.matriz_q))
 
         # QLearningEntrenarWorker Management
         # Que empiece la magia
-        # FIXME: Ejecución concurrente Entrenamiento
         self.ql_entrenar_out_q = multiprocessing.Queue()
         self.ql_entrenar_error_q = multiprocessing.Queue()
         self.ql_datos_entrenar_in_feed = LiveDataFeed()
@@ -821,12 +821,6 @@ class MainWindow(QtGui.QMainWindow):
         if len(ql_datos_in) > 0:
             self.ql_datos_recorrer_in_feed.add_data(ql_datos_in)
             logging.debug("[Recorrer] Datos de entrada: {0}".format(ql_datos_in))
-
-    def q_val_inicial_cero(self, valor):
-        return 0
-
-    def q_val_inicial_recom(self, valor):
-        return valor
 
     def mostrar_opciones_gw(self):
         self.GWOpcionesD = GWOpcionesDialog(self)

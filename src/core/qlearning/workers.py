@@ -6,7 +6,9 @@ from __future__ import absolute_import
 import logging
 import Queue
 import multiprocessing
+import numpy
 import time
+import sys
 import random
 from core.estado.estado import TIPOESTADO
 
@@ -33,6 +35,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self._visitados_1 = None
         self._visitados_2 = None
         self._contador_ref = None
+        self.matriz_r = None
+        self.matriz_q = None
+        self.estados = None
+        self.excluir_tipos_vecinos = None
 
         # FIXME: Logging
         logging.basicConfig(level=logging.DEBUG,
@@ -68,34 +74,43 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             logging.debug("Cola de entrada vacía")
             return None
 
-        matriz_r = self.input_data[0]
-        matriz_q = self.input_data[1]
-        gamma = self.input_data[2]
-        cant_episodios = self.input_data[3]
-        tecnica = self.input_data[4]
-        (ancho, alto) = self.input_data[5]
-        detector_bloqueo = self.input_data[6]
-        tipos_vec_excluidos = self.input_data[7]
+        self.estados = self.input_data[0]
+        self.coordenadas = self.input_data[1]
+        self.gamma = self.input_data[2]
+        self.cant_episodios = self.input_data[3]
+        self.tecnica = self.input_data[4]
+        self.ancho, self.alto = self.input_data[5]
+        self.detector_bloqueo = self.input_data[6]
+        self.tipos_vec_excluidos = self.input_data[7]
+        self.q_init_value_fn = self.input_data[8]
 
-        logging.debug("Matriz R: {0}".format(matriz_r))
-        logging.debug("Matriz Q: {0}".format(matriz_q))
-        logging.debug("Gamma: {0}".format(gamma))
-        logging.debug("Episodios: {0}".format(cant_episodios))
-        logging.debug("Técnica: {0}".format(tecnica))
-        logging.debug("Ancho: {0} - Alto: [1]".format(ancho, alto))
-        logging.debug("Usar detector bloqueo: {0}".format(detector_bloqueo))
-        logging.debug("Tipos vecinos excluidos: {0}".format(tipos_vec_excluidos))
+        self.matriz_r = self.get_matriz_r()
+        self.matriz_q = self.get_matriz_q(self.matriz_r)
 
-        if detector_bloqueo:
-            self._contador_ref = self._crear_cont_ref(tipos_vec_excluidos)
+        logging.debug("Estados: {0}".format(self.estados))
+        logging.debug("Coordenadas: {0}".format(self.coordenadas))
+        logging.debug("Gamma: {0}".format(self.gamma))
+        logging.debug("Episodios: {0}".format(self.cant_episodios))
+        logging.debug("Técnica: {0}".format(self.tecnica))
+        logging.debug("Ancho: {0} - Alto: [1]".format(self.ancho, self.alto))
+        logging.debug("Usar detector bloqueo: {0}".format(self.detector_bloqueo))
+        logging.debug("Tipos vecinos excluidos: {0}".format(self.tipos_vec_excluidos))
+
+        if self.detector_bloqueo:
+            self._contador_ref = self._crear_cont_ref(self.tipos_vec_excluidos)
             self._cant_estados_libres = len(self._contador_ref)
             self._visitados_1 = []
             self._visitados_2 = []
 
+        if sys.platform == 'win32':
+            _timer = time.clock
+        else:
+            _timer = time.time
+
         # Ejecutar una cantidad dada de Episodios
-        for epnum in range(1, cant_episodios + 1):
+        for epnum in range(1, self.cant_episodios + 1):
             # Registrar tiempo de comienzo del episodio
-            ep_start_time = time.clock()
+            ep_start_time = _timer()
 
             logging.debug("Numero de episodio: {0}".format(epnum))  # FIXME: Logging @IgnorePep8
 
@@ -104,11 +119,11 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
             # Generar estados aleatorios hasta que las coordenadas no
             # coincidan con las de un tipo excluido
-            estado_actual = matriz_r[x_act - 1][y_act - 1]
+            estado_actual = self.matriz_r[x_act - 1][y_act - 1]
             tipo_ide = estado_actual[0]
-            while tipo_ide in tipos_vec_excluidos:
+            while tipo_ide in self.tipos_vec_excluidos:
                 x_act, y_act = self.generar_estado_aleatorio()
-                estado_actual = matriz_r[x_act - 1][y_act - 1]
+                estado_actual = self.matriz_r[x_act - 1][y_act - 1]
                 tipo_ide = estado_actual[0]
                 logging.debug("Estado inicial generado no válido: {0}"
                               .format((x_act, y_act)))
@@ -116,29 +131,29 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
             # Forzar restauración del valor de parámetro de la técnica
             # utilizada antes de comenzar un nuevo Episodio
-            tecnica.restaurar_val_parametro()
+            self.tecnica.restaurar_val_parametro()
 
             # Realizar 1 Episodio mientras no estemos en el Estado Final
             cant_iteraciones = 0
             while (not self._stoprequest.is_set()) and (not estado_actual[0] == TIPOESTADO.FINAL):
                 # Registrar tiempo de comienzo de las iteraciones
-                iter_start_time = time.clock()
+                iter_start_time = _timer()
 
-                if detector_bloqueo:
+                if self.detector_bloqueo:
                     self._contar_ref((x_act, y_act))
 
                 # Obtener vecinos del estado actual
                 vecinos = estado_actual[1]
                 logging.debug("Vecinos Estado Actual: {0}".format(vecinos))
                 # Invocar a la técnica para que seleccione uno de los vecinos
-                estado_elegido = tecnica.obtener_accion(vecinos)
+                estado_elegido = self.tecnica.obtener_accion(vecinos)
                 logging.debug("Estado Elegido: {0}".format(estado_elegido))
                 x_eleg, y_eleg = estado_elegido
 
                 recompensa_estado = vecinos[(x_eleg, y_eleg)]
 
                 # Obtener vecinos del estado elegido por la acción
-                vecinos_est_elegido = matriz_q[x_eleg - 1][y_eleg - 1][1]
+                vecinos_est_elegido = self.matriz_q[x_eleg - 1][y_eleg - 1][1]
                 logging.debug("Vecinos Elegidos del Elegido: {0}"
                               .format(vecinos_est_elegido))
 
@@ -147,21 +162,22 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Fórmula principal de Q-Learning
                 # -------------------------------
                 if recompensa_estado is not None:
-                    logging.debug("Gamma: {0}".format(gamma))
-                    nuevo_q = recompensa_estado + (gamma * max_q)
+                    logging.debug("Gamma: {0}".format(self.gamma))
+                    nuevo_q = recompensa_estado + (self.gamma * max_q)
                     # Actualizar valor de Q en matriz Q
-                    matriz_q[x_act - 1][y_act - 1][1][(x_eleg, y_eleg)] = nuevo_q
+                    self.matriz_q[x_act - 1][y_act - 1][1][(x_eleg, y_eleg)] = nuevo_q
 
                 cant_iteraciones += 1
 
                 # Comprobar si es necesario decrementar el valor del parámetro
-                if tecnica.intervalo_decremento == cant_iteraciones:
+                if self.tecnica.intervalo_decremento == cant_iteraciones:
                     # Decrementar valor del parámetro en 1 paso
-                    tecnica.decrementar_parametro()
+                    self.tecnica.decrementar_parametro()
 
-                logging.debug("Valor parámetro: {0}".format(tecnica._val_param_parcial))  # FIXME: Logging @IgnorePep8
+                logging.debug("Valor parámetro: {0}"
+                              .format(self.tecnica._val_param_parcial))  # FIXME: Logging @IgnorePep8
                 logging.debug("Iteraciones {0}".format(cant_iteraciones))  # FIXME: Logging @IgnorePep8
-                logging.debug("Matriz Q: {0}".format(matriz_q))  # FIXME: Logging @IgnorePep8
+                logging.debug("Matriz Q: {0}".format(self.matriz_q))  # FIXME: Logging @IgnorePep8
 
                 try:
                     self._out_queue.put({'EstAct': (x_act, y_act),
@@ -174,10 +190,11 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
                 # Actualizar estado actual
                 (x_act, y_act) = (x_eleg, y_eleg)
-                estado_actual = matriz_r[x_act - 1][y_act - 1]
+                estado_actual = self.matriz_r[x_act - 1][y_act - 1]
 
-            iter_end_time = time.clock()
-            ep_end_time = time.clock()
+            iter_end_time = _timer()
+            ep_end_time = _timer()
+
             # Calcular tiempo de ejecución del episodio
             ep_exec_time = ep_end_time - ep_start_time
             # Calcular tiempo de ejecución de las iteraciones
@@ -188,7 +205,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 self._out_queue.put({'EstAct': (x_act, y_act),
                                      'NoEp': epnum,
                                      'CantIter': cant_iteraciones,
-                                     'MatQ': matriz_q,
+                                     'MatQ': self.matriz_q,
                                      'EpExecT': ep_exec_time,
                                      'IterExecT': iter_exec_time,
                                      'Joined': False})
@@ -262,6 +279,79 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         if test_1 or test_2:
             self._out_queue.put({'LoopAlarm': True})
 
+    def get_matriz_r(self):
+        u"""
+        Crea y devuelve la matriz R de recompensa en en función de la ubicación de los estados
+        y sus vecinos. Representa las transiciones posibles.
+        """
+        # Verificar si hay tipos de vecinos a excluir de la matriz R
+        if self.excluir_tipos_vecinos is None:
+            self.excluir_tipos_vecinos = []
+
+        matriz_r = numpy.empty((self.alto, self.ancho), object)
+        # Crear una lista de listas
+        for i in xrange(1, self.alto + 1):
+            fila = []
+            for j in xrange(1, self.ancho + 1):
+                # Obtener estado actual y su ID de tipo
+                estado = self.get_estado(i, j)
+                estado_ide = estado.tipo.ide
+                # Obtener los estados vecinos del estado actual (i, j)
+                vecinos = self.get_vecinos_estado(i, j)
+                # Agregar vecinos y su recompensa al estado
+                # excluyendo los prohibidos
+                recomp_and_vec = {}
+
+                for vecino in vecinos:
+                    if vecino.tipo.ide not in self.excluir_tipos_vecinos:
+                        recomp_and_vec[(vecino.fila, vecino.columna)] = vecino.tipo.recompensa
+
+                fila.append((estado_ide, recomp_and_vec))
+            matriz_r[i - 1] = fila
+        return matriz_r
+
+    def get_matriz_q(self, matriz_r):
+        u"""
+        Crea la matriz Q con un valor inicial.
+
+        :param default: Valor con que se inicializa cada estado de la matriz.
+        """
+        matriz_q = numpy.empty((self.ancho, self.alto), object)
+
+        for i in xrange(0, self.alto):
+            for j in xrange(0, self.ancho):
+                tipo_estado = matriz_r[i][j][0]
+                vecinos = matriz_r[i][j][1]
+                vecinos = dict([(key, self.q_init_value_fn.procesar_valor(value))
+                                for key, value in vecinos.iteritems()])
+                matriz_q[i][j] = (tipo_estado, vecinos)
+        return matriz_q
+
+    def get_vecinos_estado(self, x, y):
+        u"""
+        Devuelve los estados adyacentes en función de un estado dado.
+        Fuente: http://stackoverflow.com/questions/2373306/pythonic-and-efficient-way-of-finding-adjacent-cells-in-grid
+
+        :param x: Fila del estado
+        :param y: Columna del estado
+        """
+        vecinos = []
+        for fila, columna in ((x + i, y + j)
+                              for i in (-1, 0, 1) for j in (-1, 0, 1)
+                              if i != 0 or j != 0):
+            if (fila, columna) in self.coordenadas:
+                vecinos.append(self.get_estado(fila, columna))
+        return numpy.array(vecinos, object)
+
+    def get_estado(self, x, y):
+        u"""
+        Devuelve un estado dadas sus coordenadas.
+
+        :param x: Fila del estado
+        :param y: Columna del estado
+        """
+        return self.estados[x - 1][y - 1]
+
 
 class QLearningRecorrerWorker(multiprocessing.Process):
     u"""
@@ -324,8 +414,13 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         # Estado Inicial
         camino_optimo = [estado_inicial]
 
+        if sys.platform == 'win32':
+            _timer = time.clock
+        else:
+            _timer = time.time
+
         # Registrar tiempo de comienzo
-        rec_start_time = time.clock()
+        rec_start_time = _timer()
         x_act, y_act = estado_inicial
         estado_actual = matriz_q[x_act - 1][y_act - 1]
         while (not self._stoprequest.is_set()) and (not estado_actual[0] == TIPOESTADO.FINAL):
@@ -374,7 +469,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             estado_actual = matriz_q[x_act - 1][y_act - 1]
 
         # Registrar tiempo de finalización
-        rec_end_time = time.clock()
+        rec_end_time = _timer()
         rec_exec_time = rec_end_time - rec_start_time
 
         logging.debug("Camino óptimo: {0}".format(camino_optimo))

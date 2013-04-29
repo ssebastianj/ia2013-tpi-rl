@@ -3,23 +3,20 @@
 
 from __future__ import absolute_import
 
-import copy
 import logging
 import multiprocessing
 import numpy
 import random
-import threading
 
 from core.qlearning.workers import QLearningEntrenarWorker, QLearningRecorrerWorker
 from core.gridworld.gridworld import GridWorld
 from core.tecnicas.tecnica import QLTecnica
-from core.tecnicas.egreedy import EGreedy
 
 
 class QLearning(object):
     u"""Algoritmo QLearning"""
     def __init__(self, gridworld, gamma, tecnica, episodes,
-                 init_value_callback, excluir_tipos_vecinos=None):
+                 init_value_fn, excluir_tipos_vecinos=None):
         """
         Inicializador de QLearning.
 
@@ -38,7 +35,7 @@ class QLearning(object):
         self._tecnica = tecnica
         self._episodes = episodes
         self._excluir_tipos_vecinos = excluir_tipos_vecinos
-        self._init_value_callback = init_value_callback
+        self._init_value_fn = init_value_fn
 
     def _generar_estado_aleatorio(self):
         u"""
@@ -58,14 +55,15 @@ class QLearning(object):
         """
         inp_queue = multiprocessing.Queue()
         # Encolar Matriz R, Matriz Q, Número de episodios, Parámetro Gamma
-        inp_queue.put((self._gridworld.matriz_r,
-                       self.get_matriz_q(),
+        inp_queue.put((self._gridworld.estados,
+                       self.gridworld.coordenadas,
                        self._gamma,
                        self._episodes,
                        self._tecnica,
                        (self._gridworld.alto, self._gridworld.ancho),
                        False,
-                       self._gridworld.tipos_vecinos_excluidos
+                       self._gridworld.tipos_vecinos_excluidos,
+                       self._init_value_fn
                       ))
 
         qlearning_entrenar_worker = None
@@ -178,7 +176,7 @@ class QLearning(object):
             for j in xrange(0, ancho):
                 tipo_estado = matriz_r[i][j][0]
                 vecinos = matriz_r[i][j][1]
-                vecinos = dict([(key, self._init_value_callback(value))
+                vecinos = dict([(key, self._init_value_fn.procesar_valor(value))
                                 for key, value in vecinos.iteritems()])
                 matriz_q[i][j] = (tipo_estado, vecinos)
         return matriz_q
