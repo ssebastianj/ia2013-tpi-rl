@@ -122,6 +122,27 @@ Contents:
    :private-members:
    :special-members:
    
+.. automodule:: core.qlearning.matrixinits
+.. autoclass:: QLMatrixInicializador
+   :members:
+   :private-members:
+   :special-members:
+
+.. autoclass:: QLMatrixInitEnCero
+   :members:
+   :private-members:
+   :special-members:
+   
+.. autoclass:: QLMatrixInitRandom
+   :members:
+   :private-members:
+   :special-members:
+   
+.. autoclass:: QLMatrixInitEnRecompensa
+   :members:
+   :private-members:
+   :special-members:
+
 Indices and tables
 ==================
 
