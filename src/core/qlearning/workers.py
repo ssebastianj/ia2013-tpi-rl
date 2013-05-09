@@ -107,8 +107,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         else:
             _timer = time.time
 
+        decrementar_step = 0
         # Ejecutar una cantidad dada de Episodios
-        for epnum in range(1, self.cant_episodios + 1):
+        for epnum in xrange(1, self.cant_episodios + 1):
             # Registrar tiempo de comienzo del episodio
             ep_start_time = _timer()
 
@@ -169,11 +170,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
                 cant_iteraciones += 1
 
-                # Comprobar si es necesario decrementar el valor del parámetro
-                if self.tecnica.intervalo_decremento == cant_iteraciones:
-                    # Decrementar valor del parámetro en 1 paso
-                    self.tecnica.decrementar_parametro()
-
                 logging.debug("Valor parámetro: {0}"
                               .format(self.tecnica._val_param_parcial))  # FIXME: Logging @IgnorePep8
                 logging.debug("Iteraciones {0}".format(cant_iteraciones))  # FIXME: Logging @IgnorePep8
@@ -191,6 +187,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Actualizar estado actual
                 (x_act, y_act) = (x_eleg, y_eleg)
                 estado_actual = self.matriz_r[x_act - 1][y_act - 1]
+
+            decrementar_step += 1
+            # Comprobar si es necesario decrementar el valor del parámetro
+            if self.tecnica.intervalo_decremento == decrementar_step:
+                # Decrementar valor del parámetro en 1 paso
+                self.tecnica.decrementar_parametro()
+                decrementar_step = 0
 
             iter_end_time = _timer()
             ep_end_time = _timer()

@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>559</width>
-    <height>701</height>
+    <height>703</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -427,6 +427,9 @@
            </item>
            <item row="1" column="0">
             <layout class="QGridLayout" name="gridLayout_2">
+             <property name="topMargin">
+              <number>4</number>
+             </property>
              <item row="1" column="1">
               <widget class="QLabel" name="label_3">
                <property name="enabled">
@@ -436,7 +439,7 @@
                 <string>Cada:</string>
                </property>
                <property name="buddy">
-                <cstring>sbCantIteracionesDec</cstring>
+                <cstring>sbCantEpisodiosDec</cstring>
                </property>
               </widget>
              </item>
@@ -457,15 +460,12 @@
               </spacer>
              </item>
              <item row="1" column="2">
-              <widget class="QSpinBox" name="sbCantIteracionesDec">
+              <widget class="QSpinBox" name="sbCantEpisodiosDec">
                <property name="enabled">
                 <bool>false</bool>
                </property>
                <property name="toolTip">
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Intervalo de iteraciones entre las cuales el parámetro será decrementado.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="suffix">
-                <string> iteraciones</string>
                </property>
                <property name="minimum">
                 <number>1</number>
@@ -767,7 +767,7 @@
   <tabstop>sbQLEpsilon</tabstop>
   <tabstop>sbQLTau</tabstop>
   <tabstop>chkDecrementarParam</tabstop>
-  <tabstop>sbCantIteracionesDec</tabstop>
+  <tabstop>sbCantEpisodiosDec</tabstop>
   <tabstop>sbDecrementoVal</tabstop>
   <tabstop>btnInicializarValoresQL</tabstop>
   <tabstop>tblGridWorld</tabstop>
@@ -815,7 +815,7 @@
   <connection>
    <sender>chkDecrementarParam</sender>
    <signal>toggled(bool)</signal>
-   <receiver>sbCantIteracionesDec</receiver>
+   <receiver>sbCantEpisodiosDec</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

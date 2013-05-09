@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Sat Apr 27 13:30:37 2013
+# Created: Thu May 09 18:38:25 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(559, 701)
+        MainWindow.resize(559, 703)
         self.centralWidget = QtGui.QWidget(MainWindow)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.gridLayout_6 = QtGui.QGridLayout(self.centralWidget)
@@ -197,6 +197,7 @@ class Ui_MainWindow(object):
         self.gridLayout_4.addWidget(self.sbQLTau, 2, 2, 1, 2)
         self.gridLayout_12.addLayout(self.gridLayout_4, 0, 0, 1, 1)
         self.gridLayout_2 = QtGui.QGridLayout()
+        self.gridLayout_2.setContentsMargins(-1, 4, -1, -1)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.label_3 = QtGui.QLabel(self.groupBox_6)
         self.label_3.setEnabled(False)
@@ -204,12 +205,12 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.label_3, 1, 1, 1, 1)
         spacerItem2 = QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem2, 1, 0, 1, 1)
-        self.sbCantIteracionesDec = QtGui.QSpinBox(self.groupBox_6)
-        self.sbCantIteracionesDec.setEnabled(False)
-        self.sbCantIteracionesDec.setMinimum(1)
-        self.sbCantIteracionesDec.setMaximum(1000000000)
-        self.sbCantIteracionesDec.setObjectName(_fromUtf8("sbCantIteracionesDec"))
-        self.gridLayout_2.addWidget(self.sbCantIteracionesDec, 1, 2, 1, 1)
+        self.sbCantEpisodiosDec = QtGui.QSpinBox(self.groupBox_6)
+        self.sbCantEpisodiosDec.setEnabled(False)
+        self.sbCantEpisodiosDec.setMinimum(1)
+        self.sbCantEpisodiosDec.setMaximum(1000000000)
+        self.sbCantEpisodiosDec.setObjectName(_fromUtf8("sbCantEpisodiosDec"))
+        self.gridLayout_2.addWidget(self.sbCantEpisodiosDec, 1, 2, 1, 1)
         self.label_5 = QtGui.QLabel(self.groupBox_6)
         self.label_5.setEnabled(False)
         self.label_5.setObjectName(_fromUtf8("label_5"))
@@ -325,13 +326,13 @@ class Ui_MainWindow(object):
         self.lblTau.setBuddy(self.sbQLTau)
         self.lblEpsilon.setBuddy(self.sbQLEpsilon)
         self.lblTecnica.setBuddy(self.cbQLTecnicas)
-        self.label_3.setBuddy(self.sbCantIteracionesDec)
+        self.label_3.setBuddy(self.sbCantEpisodiosDec)
         self.label_5.setBuddy(self.sbDecrementoVal)
 
         self.retranslateUi(MainWindow)
         QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.label_3.setEnabled)
         QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.label_5.setEnabled)
-        QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbCantIteracionesDec.setEnabled)
+        QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbCantEpisodiosDec.setEnabled)
         QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbDecrementoVal.setEnabled)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.cbGWDimension, self.btnInicializarGW)
@@ -343,8 +344,8 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.cbQLTecnicas, self.sbQLEpsilon)
         MainWindow.setTabOrder(self.sbQLEpsilon, self.sbQLTau)
         MainWindow.setTabOrder(self.sbQLTau, self.chkDecrementarParam)
-        MainWindow.setTabOrder(self.chkDecrementarParam, self.sbCantIteracionesDec)
-        MainWindow.setTabOrder(self.sbCantIteracionesDec, self.sbDecrementoVal)
+        MainWindow.setTabOrder(self.chkDecrementarParam, self.sbCantEpisodiosDec)
+        MainWindow.setTabOrder(self.sbCantEpisodiosDec, self.sbDecrementoVal)
         MainWindow.setTabOrder(self.sbDecrementoVal, self.btnInicializarValoresQL)
         MainWindow.setTabOrder(self.btnInicializarValoresQL, self.tblGridWorld)
         MainWindow.setTabOrder(self.tblGridWorld, self.btnEntrenar)
@@ -380,8 +381,7 @@ class Ui_MainWindow(object):
         self.sbQLEpsilon.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600; font-style:italic;\">Epsilon (</span><span style=\" font-size:9pt; font-weight:600; font-style:italic;\">ɛ</span><span style=\" font-weight:600; font-style:italic;\">)</span></p><p>Parámetro que establece la probabilidad de seleccionar una <span style=\" font-style:italic;\">acción</span> aleatoria por sobre la política óptima. Rango de valores: 0 ≤ <span style=\" font-size:9pt;\">ɛ</span> &lt; 1.</p></body></html>", None))
         self.sbQLTau.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600; font-style:italic;\">Tau (</span><span style=\" font-size:9pt; font-weight:600; font-style:italic;\">τ</span><span style=\" font-weight:600; font-style:italic;\">)</span></p><p>Parámetro que establece la <span style=\" font-style:italic;\">temperatura</span>. Una <span style=\" font-style:italic;\">temperatura alta</span> causa que todas las acciones sean (casi) equiprobables. Una <span style=\" font-style:italic;\">temperatura baja</span> causa una mayor diferencia en la probabilidad de selección para las acciones que difieran en las estimaciones de sus valores.</p></body></html>", None))
         self.label_3.setText(_translate("MainWindow", "Cada:", None))
-        self.sbCantIteracionesDec.setToolTip(_translate("MainWindow", "<html><head/><body><p>Intervalo de iteraciones entre las cuales el parámetro será decrementado.</p></body></html>", None))
-        self.sbCantIteracionesDec.setSuffix(_translate("MainWindow", " iteraciones", None))
+        self.sbCantEpisodiosDec.setToolTip(_translate("MainWindow", "<html><head/><body><p>Intervalo de iteraciones entre las cuales el parámetro será decrementado.</p></body></html>", None))
         self.label_5.setText(_translate("MainWindow", "Decremento:", None))
         self.sbDecrementoVal.setToolTip(_translate("MainWindow", "<html><head/><body><p><span style=\" font-style:italic;\">Paso</span> o valor de decremento. En cada intervalo el parámetro será decrementado en un <span style=\" font-style:italic;\">paso.</span></p></body></html>", None))
         self.chkDecrementarParam.setToolTip(_translate("MainWindow", "<html><head/><body><p>Decrementar el parámetro que se esté utilizando.</p></body></html>", None))

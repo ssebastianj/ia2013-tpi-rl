@@ -129,7 +129,7 @@ class MainWindow(QtGui.QMainWindow):
         :param dimension: Dimensión del GridWorld.
         """
         # Obtener ancho y alto del GridWorld
-        logging.debug(dimension)
+        logging.debug("Dimensión: {0}".format(dimension))
         ancho_gw, alto_gw = self.convert_dimension(dimension)
         # Crear un nuevo GridWorld dados el ancho y el alto del mismo
         self.gridworld = GridWorld(ancho_gw,
@@ -748,14 +748,14 @@ class MainWindow(QtGui.QMainWindow):
 
     def set_gw_dimension_menu(self, action):
         dimension = action.data().toString()
-        logging.debug(dimension)
+        logging.debug("Dimensión: {0}".format(dimension))
         indice = self.WMainWindow.cbGWDimension.findData(dimension)
         self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
         self.set_gw_dimension(dimension)
 
     def set_gw_dimension_cb(self, indice):
         dimension = self.WMainWindow.cbGWDimension.itemData(indice).toString()
-        logging.debug(dimension)
+        logging.debug("Dimensión: {0}".format(dimension))
         self.set_gw_dimension(dimension)
 
     def parametros_segun_tecnica_menu(self, action):
@@ -834,15 +834,22 @@ class MainWindow(QtGui.QMainWindow):
 
     def inicializar_gw(self):
         # Cargar dimensiones posibles del tblGridWorld
+        try:
+            self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect()
+        except Exception:
+            pass
+
         self.WMainWindow.cbGWDimension.clear()
         for dimension in self.gw_dimensiones:
             self.WMainWindow.cbGWDimension.addItem(_tr(dimension), dimension)
+
+        self.WMainWindow.cbGWDimension.currentIndexChanged.connect(self.set_gw_dimension_cb)
 
         self.refresh_gw()
 
     def refresh_gw(self):
         # Establece la dimensión por defecto del tblGridWorld en 6x6
-        self.set_gw_dimension_cb(self.WMainWindow.cbGWDimension.currentIndex())
+        self.set_gw_dimension(self.WMainWindow.cbGWDimension.itemData(0).toString())
 
     def inicializar_ql_vals(self):
         # Cargar técnicas posibles
@@ -866,6 +873,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbQLGamma.setValue(0.5)
 
         self.WMainWindow.sbDecrementoVal.setValue(0.01)
-        self.WMainWindow.sbCantIteracionesDec.setValue(1)
+        self.WMainWindow.sbCantEpisodiosDec.setValue(1)
+        self.WMainWindow.sbCantEpisodiosDec.setSuffix(_tr(" episodios"))
         self.WMainWindow.chkDecrementarParam.setChecked(False)
         self.WMainWindow.sbQLTau.setValue(0.5)
