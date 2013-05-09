@@ -73,7 +73,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ql_recorrer_out_q = None
         self.working_process = None
         self.worker_queues_list = None
-        self.active_processes = None
 
         self.tecnicas = {0: "Greedy",
                          1: "ε-Greedy",
@@ -427,11 +426,6 @@ class MainWindow(QtGui.QMainWindow):
         if self.qlearning_entrenar_worker is not None:
             self.working_proc = self.qlearning_entrenar_worker
 
-            if self.active_processes is None:
-                self.active_processes = [self.qlearning_entrenar_worker]
-            else:
-                self.active_processes.append(self.qlearning_entrenar_worker)
-
             self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
             self.on_comienzo_proceso()
 
@@ -475,11 +469,6 @@ class MainWindow(QtGui.QMainWindow):
 
         if self.qlearning_recorrer_worker is not None:
             self.working_process = self.qlearning_recorrer_worker
-
-            if self.active_processes is None:
-                self.active_processes = [self.qlearning_recorrer_worker]
-            else:
-                self.active_processes.append(self.qlearning_recorrer_worker)
 
             self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
             self.on_comienzo_proceso()
@@ -543,24 +532,17 @@ class MainWindow(QtGui.QMainWindow):
 
         self.WMainWindow.statusBar.clearMessage()
 
+        logging.debug("Procesos hijos activos: {0}"
+                      .format(multiprocessing.active_children()))
+
     def _reintentar_detener_hilos(self):
         u"""
         Solicita la finalización de todos los threads utilizados en la
         aplicación. Este método debe ser llamado al desconectarse o al salir
         de la aplicación.
         """
-        main_proc = multiprocessing.current_process()
-
         for proc in multiprocessing.active_children():
             proc.terminate()
-
-        #=======================================================================
-        # if self.active_processes is not None:
-        #     for proc in self.active_processes:
-        #         logging.debug("Comprobando proceso: {0}".format(proc))
-        #         if proc.pid != main_proc.pid:
-        #             proc.terminate()
-        #=======================================================================
 
     def inicializar_todo(self):
         u"""
@@ -702,32 +684,14 @@ class MainWindow(QtGui.QMainWindow):
         existen threads activos se detiene el Timer de la ventana.
         """
         logging.debug("Comprobar actividad de procesos")
-        main_proc = multiprocessing.current_process()
-
-        logging.debug("Lista de procesos: {0}".format(self.active_processes))
 
         for proc in multiprocessing.active_children():
             if not proc.is_alive():
                 proc.join(0.05)
-                self.active_processes.remove(proc)
-
-            logging.debug("Children: {0}".format(proc))
+            logging.debug("Proceso hijo: {0}".format(proc))
 
         if len(multiprocessing.active_children()) == 0:
             self.on_fin_proceso()
-
-#===============================================================================
-#         if self.active_processes is not None:
-#             for proc in self.active_processes:
-#                 logging.debug("Comprobando proceso: {0}"
-#                               .format(proc))
-#                 if (proc.pid != main_proc.pid) and not proc.is_alive():
-#                     proc.join(0.01)
-#                     self.active_processes.remove(proc)
-#
-#             if len(self.active_processes) == 0:
-#                 self.on_fin_proceso()
-#===============================================================================
 
     def mostrar_item_actual(self, item):
         u"""
