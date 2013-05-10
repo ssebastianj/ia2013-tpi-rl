@@ -40,3 +40,10 @@ class GWOpcionesDialog(QtGui.QDialog):
         Configura y establece estado de los widgets en el cuadro de diálogo.
         """
         pass
+
+    def accept(self):
+        self.GWEstadoSize = self.GWOpcionesD.sbGWEstadoSize.value()
+        super(GWOpcionesDialog, self).accept()
+
+    def reject(self):
+        super(GWOpcionesDialog, self).reject()

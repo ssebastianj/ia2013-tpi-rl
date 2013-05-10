@@ -86,7 +86,8 @@ class MainWindow(QtGui.QMainWindow):
                                "menu_estado":
                                     {"ocultar_tipos":
                                      [TIPOESTADO.AGENTE],
-                                     "enabled": True}}}
+                                     "enabled": True},
+                               "size": 40}}
 
     def _initialize_window(self):
         # Aspectos de la ventana principal
@@ -135,7 +136,7 @@ class MainWindow(QtGui.QMainWindow):
                                    alto_gw,
                                    excluir_tipos_vecinos=[TIPOESTADO.PARED])
 
-        ancho_estado_px = 40
+        ancho_estado_px = self.window_config["item"]["size"]
         ancho_gw_px = ancho_estado_px * ancho_gw
 
         # Establecer propiedades visuales de la tabla
@@ -386,7 +387,7 @@ class MainWindow(QtGui.QMainWindow):
 
         if self.WMainWindow.chkDecrementarParam.isChecked():
                 paso_decremento = self.WMainWindow.sbDecrementoVal.value()
-                intervalo_decremento = self.WMainWindow.sbCantIteracionesDec.value()
+                intervalo_decremento = self.WMainWindow.sbCantEpisodiosDec.value()
                 tecnica.paso_decremento = paso_decremento
                 tecnica.intervalo_decremento = intervalo_decremento
         # ----------- Fin de seteo de la técnica --------------
@@ -787,9 +788,12 @@ class MainWindow(QtGui.QMainWindow):
             logging.debug("[Recorrer] Datos de entrada: {0}".format(ql_datos_in))
 
     def mostrar_opciones_gw(self):
+        # Inicializar cuadros de diálogo
         self.GWOpcionesD = GWOpcionesDialog(self)
         if self.GWOpcionesD.exec_():
-            pass
+            self.window_config["item"]["size"] = self.GWOpcionesD.GWEstadoSize
+
+            self.refresh_gw()
 
     def mostrar_gen_rnd_estados_dialog(self):
         self.GWGenRndEstValsD = GWGenRndEstadosDialog(self)
@@ -839,5 +843,5 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbDecrementoVal.setValue(0.01)
         self.WMainWindow.sbCantEpisodiosDec.setValue(1)
         self.WMainWindow.sbCantEpisodiosDec.setSuffix(_tr(" episodios"))
-        self.WMainWindow.chkDecrementarParam.setChecked(False)
+        self.WMainWindow.chkDecrementarParam.setChecked(True)
         self.WMainWindow.sbQLTau.setValue(0.5)

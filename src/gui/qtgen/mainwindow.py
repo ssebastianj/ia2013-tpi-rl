@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Thu May 09 18:38:25 2013
+# Created: Thu May 09 21:26:43 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -381,7 +381,7 @@ class Ui_MainWindow(object):
         self.sbQLEpsilon.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600; font-style:italic;\">Epsilon (</span><span style=\" font-size:9pt; font-weight:600; font-style:italic;\">ɛ</span><span style=\" font-weight:600; font-style:italic;\">)</span></p><p>Parámetro que establece la probabilidad de seleccionar una <span style=\" font-style:italic;\">acción</span> aleatoria por sobre la política óptima. Rango de valores: 0 ≤ <span style=\" font-size:9pt;\">ɛ</span> &lt; 1.</p></body></html>", None))
         self.sbQLTau.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600; font-style:italic;\">Tau (</span><span style=\" font-size:9pt; font-weight:600; font-style:italic;\">τ</span><span style=\" font-weight:600; font-style:italic;\">)</span></p><p>Parámetro que establece la <span style=\" font-style:italic;\">temperatura</span>. Una <span style=\" font-style:italic;\">temperatura alta</span> causa que todas las acciones sean (casi) equiprobables. Una <span style=\" font-style:italic;\">temperatura baja</span> causa una mayor diferencia en la probabilidad de selección para las acciones que difieran en las estimaciones de sus valores.</p></body></html>", None))
         self.label_3.setText(_translate("MainWindow", "Cada:", None))
-        self.sbCantEpisodiosDec.setToolTip(_translate("MainWindow", "<html><head/><body><p>Intervalo de iteraciones entre las cuales el parámetro será decrementado.</p></body></html>", None))
+        self.sbCantEpisodiosDec.setToolTip(_translate("MainWindow", "<html><head/><body><p>Intervalo de episodios entre las cuales el parámetro será decrementado.</p></body></html>", None))
         self.label_5.setText(_translate("MainWindow", "Decremento:", None))
         self.sbDecrementoVal.setToolTip(_translate("MainWindow", "<html><head/><body><p><span style=\" font-style:italic;\">Paso</span> o valor de decremento. En cada intervalo el parámetro será decrementado en un <span style=\" font-style:italic;\">paso.</span></p></body></html>", None))
         self.chkDecrementarParam.setToolTip(_translate("MainWindow", "<html><head/><body><p>Decrementar el parámetro que se esté utilizando.</p></body></html>", None))
