@@ -791,7 +791,7 @@ class MainWindow(QtGui.QMainWindow):
         # Inicializar cuadros de diálogo
         self.GWOpcionesD = GWOpcionesDialog(self)
         if self.GWOpcionesD.exec_():
-            self.window_config["item"]["size"] = self.GWOpcionesD.GWEstadoSize
+            self.window_config["item"]["size"] = self.GWOpcionesD.estado_size
 
             self.refresh_gw()
 

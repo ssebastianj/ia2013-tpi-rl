@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Thu May 09 21:26:43 2013
+# Created: Sat May 11 12:09:12 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(559, 703)
+        MainWindow.resize(559, 704)
         self.centralWidget = QtGui.QWidget(MainWindow)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.gridLayout_6 = QtGui.QGridLayout(self.centralWidget)
@@ -367,6 +367,7 @@ class Ui_MainWindow(object):
         self.groupBox_5.setTitle(_translate("MainWindow", "Acciones", None))
         self.btnInicializarGW.setText(_translate("MainWindow", "Inicializar GW", None))
         self.btnGWGenerarEstados.setText(_translate("MainWindow", "Generar estados...", None))
+        self.btnGWOpciones.setToolTip(_translate("MainWindow", "<html><head/><body><p>Configurar Grid World</p></body></html>", None))
         self.btnGWOpciones.setText(_translate("MainWindow", "...", None))
         self.label.setText(_translate("MainWindow", "Dimensión:", None))
         self.groupBox_3.setTitle(_translate("MainWindow", "Q-Learning", None))

@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>559</width>
-    <height>703</height>
+    <height>704</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -218,6 +218,9 @@
                  <width>16777215</width>
                  <height>22</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Configurar Grid World&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>...</string>
