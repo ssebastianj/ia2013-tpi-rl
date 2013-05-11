@@ -619,7 +619,7 @@ class MainWindow(QtGui.QMainWindow):
                 logging.debug("[Entrenar] Tiempo ejecución episodio: {0}".format(episode_exec_time))
                 logging.debug("[Entrenar] Tiempo ejecución iteración: {0}".format(iter_exec_time))
                 logging.debug("[Entrenar] Worker joined : {0}".format(worker_joined))
-                logging.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
+                # logging.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
                 logging.debug("[Entrenar] Loop Alarm: {0}".format(loop_alarm))
 
                 if matriz_q is not None:
