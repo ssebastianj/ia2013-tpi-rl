@@ -39,57 +39,58 @@ class GridWorld(object):
         u"""
         Inicializa los distintos tipos de estados
         """
-        self._tipos_estados = {}
-        # Estado Agente
-        self._tipos_estados[TIPOESTADO.AGENTE] = TipoEstado(TIPOESTADO.AGENTE,
-                                                            None,
-                                                            "Agente",
-                                                            "A",
-                                                            "#FF2288")
-        # Estados Intermedios
-        self._tipos_estados[TIPOESTADO.EXCELENTE] = TipoEstado(TIPOESTADO.EXCELENTE,
-                                                               100,
-                                                               "Excelente",
-                                                               "E",
-                                                               "#BB0011")
-        self._tipos_estados[TIPOESTADO.BUENO] = TipoEstado(TIPOESTADO.BUENO,
-                                                           50,
-                                                           "Bueno",
-                                                           "B",
-                                                           "#4F0ACC")
-        self._tipos_estados[TIPOESTADO.MALO] = TipoEstado(TIPOESTADO.MALO, 10,
-                                                          "Malo",
-                                                          "M",
-                                                          "#EB00A1")
-        self._tipos_estados[TIPOESTADO.NEUTRO] = TipoEstado(TIPOESTADO.NEUTRO,
-                                                            0,
-                                                            "Neutro",
-                                                            "N")
-        self._tipos_estados[TIPOESTADO.PARED] = TipoEstado(TIPOESTADO.PARED,
-                                                           - 100,
-                                                           "Pared",
-                                                           "P",
-                                                           "#000000")
-        # Estado Inicial
-        self._tipos_estados[TIPOESTADO.INICIAL] = TipoEstado(TIPOESTADO.INICIAL,
-                                                             None,
-                                                             "Inicial",
-                                                             "I",
-                                                             "#FF0011")
+        if self._tipos_estados is None:
+            self._tipos_estados = {}
+            # Estado Agente
+            self._tipos_estados[TIPOESTADO.AGENTE] = TipoEstado(TIPOESTADO.AGENTE,
+                                                                None,
+                                                                "Agente",
+                                                                "A",
+                                                                "#FF2288")
+            # Estados Intermedios
+            self._tipos_estados[TIPOESTADO.EXCELENTE] = TipoEstado(TIPOESTADO.EXCELENTE,
+                                                                   100,
+                                                                   "Excelente",
+                                                                   "E",
+                                                                   "#BB0011")
+            self._tipos_estados[TIPOESTADO.BUENO] = TipoEstado(TIPOESTADO.BUENO,
+                                                               50,
+                                                               "Bueno",
+                                                               "B",
+                                                               "#4F0ACC")
+            self._tipos_estados[TIPOESTADO.MALO] = TipoEstado(TIPOESTADO.MALO, 10,
+                                                              "Malo",
+                                                              "M",
+                                                              "#EB00A1")
+            self._tipos_estados[TIPOESTADO.NEUTRO] = TipoEstado(TIPOESTADO.NEUTRO,
+                                                                0,
+                                                                "Neutro",
+                                                                "N")
+            self._tipos_estados[TIPOESTADO.PARED] = TipoEstado(TIPOESTADO.PARED,
+                                                               - 100,
+                                                               "Pared",
+                                                               "P",
+                                                               "#000000")
+            # Estado Inicial
+            self._tipos_estados[TIPOESTADO.INICIAL] = TipoEstado(TIPOESTADO.INICIAL,
+                                                                 None,
+                                                                 "Inicial",
+                                                                 "I",
+                                                                 "#FF0011")
 
-        # Estado Final
-        # La recompensa se calcula buscando la mayor recompensa entre los estados
-        # intermedios y sumándole un número dadon con el objetivo de que el
-        # Estado Final tenga la máxima recompensa de todos los estados.
-        recompensa_estado_final = max([i.recompensa
-                                       for i in self._tipos_estados.values()
-                                       if i is not None]) + 50
+            # Estado Final
+            # La recompensa se calcula buscando la mayor recompensa entre los estados
+            # intermedios y sumándole un número dadon con el objetivo de que el
+            # Estado Final tenga la máxima recompensa de todos los estados.
+            recompensa_estado_final = max([i.recompensa
+                                           for i in self._tipos_estados.values()
+                                           if i is not None]) + 50
 
-        self._tipos_estados[TIPOESTADO.FINAL] = TipoEstado(TIPOESTADO.FINAL,
-                                                           recompensa_estado_final,
-                                                           "Final",
-                                                           "F",
-                                                           "#2F4055")
+            self._tipos_estados[TIPOESTADO.FINAL] = TipoEstado(TIPOESTADO.FINAL,
+                                                               recompensa_estado_final,
+                                                               "Final",
+                                                               "F",
+                                                               "#2F4055")
 
     def _inicializar_estados(self, default=TIPOESTADO.NEUTRO):
         inicializar_estados_worker = threading.Thread(None,
