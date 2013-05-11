@@ -84,7 +84,7 @@ class GridWorld(object):
             # Estado Final tenga la máxima recompensa de todos los estados.
             recompensa_estado_final = max([i.recompensa
                                            for i in self._tipos_estados.values()
-                                           if i is not None]) + 50
+                                           if i is not None]) + 150
 
             self._tipos_estados[TIPOESTADO.FINAL] = TipoEstado(TIPOESTADO.FINAL,
                                                                recompensa_estado_final,
