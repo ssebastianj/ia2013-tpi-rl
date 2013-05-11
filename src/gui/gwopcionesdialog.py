@@ -44,6 +44,7 @@ class GWOpcionesDialog(QtGui.QDialog):
         self.recomp_bueno = None
         self.recomp_malo = None
         self.recomp_pared = None
+        self.recomp_max = None
 
     def initialize_dialog(self):
         u"""
@@ -59,13 +60,22 @@ class GWOpcionesDialog(QtGui.QDialog):
         self.GWOpcionesD.sbRecomBueno.setValue(50)
         self.GWOpcionesD.sbRecomMalo.setValue(10)
         self.GWOpcionesD.sbRecomPared.setValue(-100)
+        self.GWOpcionesD.sbRecomFinal.setMaximum(self.GWOpcionesD.sbRecomExcelente.maximum() + 50)
 
     def _set_dialog_signals(self):
         self.GWOpcionesD.cbRecomPared.currentIndexChanged.connect(self.toggle_recom_pared)
         self.GWOpcionesD.sbRecomExcelente.valueChanged.connect(self.update_recom_final)
+        self.GWOpcionesD.sbRecomBueno.valueChanged.connect(self.update_recom_final)
+        self.GWOpcionesD.sbRecomMalo.valueChanged.connect(self.update_recom_final)
+        self.GWOpcionesD.sbRecomPared.valueChanged.connect(self.update_recom_final)
 
     def update_recom_final(self, valor):
-        self.GWOpcionesD.sbRecomFinal.setValue(int(valor) + 50)
+        self.recomp_max = max([self.GWOpcionesD.sbRecomExcelente.value(),
+                               self.GWOpcionesD.sbRecomBueno.value(),
+                               self.GWOpcionesD.sbRecomMalo.value(),
+                               self.GWOpcionesD.sbRecomPared.value()])
+        self.recomp_max += 50
+        self.GWOpcionesD.sbRecomFinal.setValue(self.recomp_max)
 
     def toggle_recom_pared(self, indice):
         if indice == 0:
