@@ -46,9 +46,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow = Ui_MainWindow()
         self.WMainWindow.setupUi(self)
 
-        # FIXME: Logging
+        # Logging Config
         logging.basicConfig(level=logging.DEBUG,
-                            format="[%(levelname)s] – %(threadName)-10s : %(message)s")
+                           format="[%(levelname)s] – %(threadName)-10s : %(message)s")
         self._logger = logging.getLogger()
         self._logger.disabled = not app_info.__DEBUG__
 
