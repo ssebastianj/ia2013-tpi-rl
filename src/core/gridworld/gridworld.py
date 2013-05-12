@@ -24,7 +24,7 @@ class GridWorld(object):
         """
         super(GridWorld, self).__init__()
         # FIXME: Logging
-        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
+        self._logger = logging.getLogger()
 
         self._ancho = ancho
         self._alto = alto
@@ -101,7 +101,7 @@ class GridWorld(object):
                                                       None)
         inicializar_estados_worker.start()
         inicializar_estados_worker.join(0.05)
-        logging.debug(inicializar_estados_worker)
+        self._logger.debug(inicializar_estados_worker)
 
     def _inicializar_estados_worker(self, default=TIPOESTADO.NEUTRO):
         u"""

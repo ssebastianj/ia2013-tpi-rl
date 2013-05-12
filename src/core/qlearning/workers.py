@@ -42,7 +42,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # FIXME: Logging
         logging.basicConfig(level=logging.DEBUG,
-                            format="[%(levelname)s] – %(threadName)-10s : %(message)s")  # @IgnorePep8
+                            format="[%(levelname)s] – %(threadName)-10s : %(message)s")
 
     def _do_on_start(self):
         u"""

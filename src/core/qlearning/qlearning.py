@@ -27,8 +27,9 @@ class QLearning(object):
         :param init_value: Valor con que se inicializa cada estado de la matriz.
         """
         super(QLearning, self).__init__()
+
         # FIXME: Logging
-        logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] – %(threadName)-10s : %(message)s")
+        self._logger = logging.getLogger()
 
         self._gridworld = gridworld
         self._gamma = gamma
@@ -75,7 +76,7 @@ class QLearning(object):
                                                                 )
             qlearning_entrenar_worker.start()
         except multiprocessing.ProcessError as pe:
-            logging.debug(pe)
+            self._logger.debug(pe)
             raise multiprocessing.ProcessError
         finally:
             pass
@@ -101,7 +102,7 @@ class QLearning(object):
                                                                 )
             qlearning_recorrer_worker.start()
         except multiprocessing.ProcessError as pe:
-            logging.debug(pe)
+            self._logger.debug(pe)
             raise multiprocessing.ProcessError
         finally:
             pass
