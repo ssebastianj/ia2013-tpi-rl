@@ -26,8 +26,9 @@ from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
 from tools.livedatafeed import LiveDataFeed
-from tools.queue import get_all_from_queue, get_item_from_queue
 from tools.listacircular import ListaCircular
+from tools.queue import get_all_from_queue, get_item_from_queue
+from tools.taskbar import taskbar
 
 
 try:
@@ -547,6 +548,14 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.gbQLearning.setDisabled(True)
         self.WMainWindow.gbGeneral.setDisabled(True)
 
+        try:
+            self.wnd_taskbar = taskbar.WindowsTaskBar()
+            self.wnd_taskbar.HrInit()
+            self.wnd_taskbar.SetProgressState(self.winId(),
+                                              self.wnd_taskbar.TBPF_INDETERMINATE)
+        except RuntimeError:
+            pass
+
     def on_fin_proceso(self):
         u"""
         Ejecuta tareas al finalizar la ejecución de un thread/proceso.
@@ -583,6 +592,12 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.gbGridWorld.setEnabled(True)
         self.WMainWindow.gbQLearning.setEnabled(True)
         self.WMainWindow.gbGeneral.setEnabled(True)
+
+        try:
+            self.wnd_taskbar.SetProgressState(self.winId(),
+                                              self.wnd_taskbar.TBPF_NOPROGRESS)
+        except RuntimeError:
+            pass
 
     def _reintentar_detener_hilos(self):
         u"""
