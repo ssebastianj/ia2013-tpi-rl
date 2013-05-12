@@ -539,6 +539,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self._logger.debug("Procesos hijos activos: {0}"
                       .format(multiprocessing.active_children()))
+        self._logger.debug("Fin de procesamiento")
 
     def _reintentar_detener_hilos(self):
         u"""
