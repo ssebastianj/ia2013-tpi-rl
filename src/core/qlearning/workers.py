@@ -3,8 +3,8 @@
 
 from __future__ import absolute_import
 
-import logging
 import Queue
+import logging
 import multiprocessing
 import numpy
 import time
@@ -42,7 +42,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # FIXME: Logging
         logging.basicConfig(level=logging.DEBUG,
-                            format="[%(levelname)s] – %(threadName)-10s : %(message)s")  # @IgnorePep8
+                            format="[%(levelname)s] – %(threadName)-10s : %(message)s")
 
     def _do_on_start(self):
         u"""
@@ -376,6 +376,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._stoprequest = multiprocessing.Event()
         self.name = "QLearningRecorrerWorker"
         self.input_data = None
+        self._contador_ref = {}
+        self._visitados = []
 
         # FIXME: Logging
         logging.basicConfig(level=logging.DEBUG,
@@ -428,6 +430,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         estado_actual = matriz_q[x_act - 1][y_act - 1]
         while (not self._stoprequest.is_set()) and (not estado_actual[0] == TIPOESTADO.FINAL):
             vecinos = estado_actual[1]
+            vecinos = dict([(key, value) for key, value in vecinos.iteritems()
+                            if key not in self._visitados])
 
             # Buscar el estado que posea el mayor valor de Q
             maximo = None
@@ -457,6 +461,9 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
             logging.debug("Estado Q Máximo: {0}".format(estado_qmax))
             x_eleg, y_eleg = estado_qmax
+
+            # Marcar como visitado
+            self._contar_ref((x_eleg, y_eleg))
 
             # Agregar estado al camino óptimo
             camino_optimo.append(estado_qmax)
@@ -503,3 +510,18 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._out_queue.put({'Joined': True})
         self._stoprequest.set()
         super(QLearningRecorrerWorker, self).join(timeout)
+
+    def _contar_ref(self, estado):
+        umbral = 1
+
+        if self._contador_ref.has_key(estado):
+            self._contador_ref[estado] += 1
+        else:
+            self._contador_ref[estado] = 0
+
+        if self._contador_ref[estado] == umbral:
+            self._visitados.append(estado)
+
+        logging.debug("Contador de referencias actualizado: {0}"
+                          .format(self._contador_ref))
+        logging.debug("Visitados: {0}".format(self._visitados))
