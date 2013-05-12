@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>Configurar Grid World</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="recursos.qrc">
+    <normaloff>:/:iconos/Configurar</normaloff>:/:iconos/Configurar</iconset>
+  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
@@ -318,7 +322,9 @@
   <tabstop>sbRecomPared</tabstop>
   <tabstop>pushButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="recursos.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>pushButton</sender>

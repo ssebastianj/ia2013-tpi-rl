@@ -4,5 +4,6 @@
         <file alias="Cancelar">Cancelar.png</file>
         <file alias="Aprender">Aprender.png</file>
         <file alias="Configurar">Configurar.png</file>
+        <file alias="LogoUTN">UTN.ico</file>
     </qresource>
 </RCC>

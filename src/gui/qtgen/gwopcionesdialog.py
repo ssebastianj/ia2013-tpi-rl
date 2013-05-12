@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\gwopcionesdialog.ui'
 #
-# Created: Sun May 12 16:15:38 2013
+# Created: Sun May 12 17:40:22 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,6 +28,9 @@ class Ui_GWOpcionesDialog(object):
         GWOpcionesDialog.setObjectName(_fromUtf8("GWOpcionesDialog"))
         GWOpcionesDialog.resize(245, 309)
         GWOpcionesDialog.setMinimumSize(QtCore.QSize(201, 0))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Configurar")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        GWOpcionesDialog.setWindowIcon(icon)
         GWOpcionesDialog.setModal(True)
         self.gridLayout_5 = QtGui.QGridLayout(GWOpcionesDialog)
         self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
@@ -189,3 +192,4 @@ class Ui_GWOpcionesDialog(object):
         self.label_5.setText(_translate("GWOpcionesDialog", "Bueno:", None))
         self.label_4.setText(_translate("GWOpcionesDialog", "Excelente:", None))
 
+import recursos_rc

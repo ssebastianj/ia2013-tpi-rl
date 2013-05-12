@@ -31,8 +31,6 @@ class GWOpcionesDialog(QtGui.QDialog):
                             QtCore.Qt.WindowSystemMenuHint |
                             QtCore.Qt.WindowTitleHint)
 
-        self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
-
         self._init_vars()
         self.initialize_dialog()
 

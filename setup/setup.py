@@ -45,7 +45,7 @@ def main():
     vi_txt_path = os.path.abspath(os.path.join(os.path.curdir, 'version_info.txt'))
     main_path = os.path.abspath(os.path.join(os.path.pardir, 'src', 'ia.pyw'))
     spec_path = os.path.abspath(os.path.join(os.path.curdir, 'spec'))
-    icon_path = os.path.abspath(os.path.join(os.path.pardir, 'src', 'img', 'app.ico'))
+    icon_path = os.path.abspath(os.path.join(os.path.pardir, 'src', 'img', 'UTN.ico'))
     dist_path = os.path.abspath(os.path.join(os.path.curdir, 'dist'))
 
     # Build EXE

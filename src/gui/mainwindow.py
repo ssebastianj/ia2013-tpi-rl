@@ -97,7 +97,6 @@ class MainWindow(QtGui.QMainWindow):
 
     def _initialize_window(self):
         # Aspectos de la ventana principal
-        self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
         screen_geometry = QtGui.QApplication.desktop().screenGeometry()
         y_wnd = (screen_geometry.height() - self.height()) / 2.0
         x_wnd = (screen_geometry.width() - self.width()) / 2.0

@@ -14,6 +14,10 @@
   <property name="windowTitle">
    <string>Grupo Nº 1 - Inteligencia Artificial 2013 - Aprendizaje por Refuerzo</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="recursos.qrc">
+    <normaloff>:/:iconos/LogoUTN</normaloff>:/:iconos/LogoUTN</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_6">
     <item row="0" column="1">
