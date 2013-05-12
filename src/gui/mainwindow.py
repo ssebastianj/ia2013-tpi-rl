@@ -543,6 +543,9 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.btnRecorrer.setDisabled(self.recorrer_is_running)
 
         self.WMainWindow.btnTerminarProceso.setEnabled(True)
+        self.WMainWindow.gbGridWorld.setDisabled(True)
+        self.WMainWindow.gbQLearning.setDisabled(True)
+        self.WMainWindow.gbGeneral.setDisabled(True)
 
     def on_fin_proceso(self):
         u"""
@@ -576,8 +579,10 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.actionAgenteRecorrer.setEnabled(True)
 
         self.WMainWindow.btnTerminarProceso.setEnabled(False)
-
         self.WMainWindow.statusBar.clearMessage()
+        self.WMainWindow.gbGridWorld.setEnabled(True)
+        self.WMainWindow.gbQLearning.setEnabled(True)
+        self.WMainWindow.gbGeneral.setEnabled(True)
 
     def _reintentar_detener_hilos(self):
         u"""
