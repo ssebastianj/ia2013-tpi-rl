@@ -77,6 +77,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ql_recorrer_out_q = None
         self.working_process = None
         self.worker_queues_list = None
+        self.entrenar_is_running = False
+        self.recorrer_is_running = False
 
         self.tecnicas = {0: "Greedy",
                          1: "ε-Greedy",
@@ -108,6 +110,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.WMainWindow.tblGridWorld.setSortingEnabled(False)
         self.WMainWindow.tblGridWorld.setMouseTracking(True)
+        self.WMainWindow.btnTerminarProceso.setEnabled(False)
+        self.WMainWindow.btnRecorrer.setEnabled(False)
         self.setMouseTracking(True)
 
         self.inicializar_todo()
@@ -430,8 +434,8 @@ class MainWindow(QtGui.QMainWindow):
 
         if self.qlearning_entrenar_worker is not None:
             self.working_proc = self.qlearning_entrenar_worker
+            self.entrenar_is_running = True
 
-            self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
             self.on_comienzo_proceso()
 
     def recorrer_gw(self):
@@ -473,9 +477,9 @@ class MainWindow(QtGui.QMainWindow):
             self.ql_recorrer_error_q = None
 
         if self.qlearning_recorrer_worker is not None:
+            self.recorrer_is_running = True
             self.working_process = self.qlearning_recorrer_worker
 
-            self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
             self.on_comienzo_proceso()
 
     def terminar_proceso(self):
@@ -524,6 +528,18 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer.timeout.connect(self._on_window_timer)
         self.wnd_timer.start(40)
 
+        if self.entrenar_is_running:
+            self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
+            self.WMainWindow.btnEntrenar.setDisabled(self.entrenar_is_running)
+            self.WMainWindow.btnRecorrer.setDisabled(self.entrenar_is_running)
+
+        if self.recorrer_is_running:
+            self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
+            self.WMainWindow.btnEntrenar.setDisabled(self.recorrer_is_running)
+            self.WMainWindow.btnRecorrer.setDisabled(self.recorrer_is_running)
+
+        self.WMainWindow.btnTerminarProceso.setEnabled(True)
+
     def on_fin_proceso(self):
         u"""
         Ejecuta tareas al finalizar la ejecución de un thread/proceso.
@@ -535,11 +551,23 @@ class MainWindow(QtGui.QMainWindow):
         self.window_config["item"]["menu_estado"]["enabled"] = True
         self.window_config["item"]["show_tooltip"] = True
 
-        self.WMainWindow.statusBar.clearMessage()
-
         self._logger.debug("Procesos hijos activos: {0}"
                       .format(multiprocessing.active_children()))
         self._logger.debug("Fin de procesamiento")
+
+        if self.entrenar_is_running:
+            self.entrenar_is_running = False
+            self.WMainWindow.btnEntrenar.setEnabled(True)
+            self.WMainWindow.btnRecorrer.setEnabled(self.matriz_q is not None)
+
+        if self.recorrer_is_running:
+            self.recorrer_is_running = False
+            self.WMainWindow.btnEntrenar.setEnabled(True)
+            self.WMainWindow.btnRecorrer.setEnabled(True)
+
+        self.WMainWindow.btnTerminarProceso.setEnabled(False)
+
+        self.WMainWindow.statusBar.clearMessage()
 
     def _reintentar_detener_hilos(self):
         u"""
@@ -609,20 +637,22 @@ class MainWindow(QtGui.QMainWindow):
             # self._logger.debug("[Entrenar] Actualizar ventana con: {0}".format(data_entrenar))
 
             for ql_ent_info in data_entrenar:
-                estado_actual = ql_ent_info.get('EstAct', None)
-                nro_episodio = ql_ent_info.get('NoEp', None)
-                cant_iteraciones = ql_ent_info.get('CantIter', None)
-                episode_exec_time = ql_ent_info.get('EpExecT', None)
-                iter_exec_time = ql_ent_info.get('IterExecT', None)
-                worker_joined = ql_ent_info.get('Joined', None)
+                estado_actual = ql_ent_info.get('EstadoActual', None)
+                nro_episodio = ql_ent_info.get('NroEpisodio', None)
+                cant_iteraciones = ql_ent_info.get('NroIteracion', None)
+                episode_exec_time = ql_ent_info.get('EpisodioExecTime', None)
+                iter_exec_time = ql_ent_info.get('IteracionExecTime', None)
+                worker_joined = ql_ent_info.get('ProcesoJoined', None)
                 loop_alarm = ql_ent_info.get('LoopAlarm', None)
-                matriz_q = ql_ent_info.get('MatQ', None)
+                matriz_q = ql_ent_info.get('MatrizQ', None)
+                running_exec_time = ql_ent_info.get('RunningExecTime', None)
 
                 self._logger.debug("[Entrenar] Estado actual: {0}".format(estado_actual))
                 self._logger.debug("[Entrenar] Episodio: {0}".format(nro_episodio))
                 self._logger.debug("[Entrenar] Iteraciones: {0}".format(cant_iteraciones))
                 self._logger.debug("[Entrenar] Tiempo ejecución episodio: {0}".format(episode_exec_time))
                 self._logger.debug("[Entrenar] Tiempo ejecución iteración: {0}".format(iter_exec_time))
+                self._logger.debug("[Entrenar] Tiempo ejecución total: {0}".format(running_exec_time))
                 self._logger.debug("[Entrenar] Worker joined : {0}".format(worker_joined))
                 # self._logger.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
                 self._logger.debug("[Entrenar] Loop Alarm: {0}".format(loop_alarm))
@@ -647,10 +677,10 @@ class MainWindow(QtGui.QMainWindow):
                           .format(data_recorrer))
 
             for ql_rec_info in data_recorrer:
-                estado_actual = ql_rec_info.get('EstAct', None)
-                camino_optimo = ql_rec_info.get('OptPath', None)
-                rec_exec_time = ql_rec_info.get('RecExecT', None)
-                worker_joined = ql_rec_info.get('Joined', None)
+                estado_actual = ql_rec_info.get('EstadoActual', None)
+                camino_optimo = ql_rec_info.get('CaminoRecorrido', None)
+                rec_exec_time = ql_rec_info.get('RunningExecTime', None)
+                worker_joined = ql_rec_info.get('ProcesoJoined', None)
 
                 self._logger.debug("[Recorrer] Estado actual: {0}".format(estado_actual))
                 self._logger.debug("[Recorrer] Camino óptimo: {0}".format(camino_optimo))

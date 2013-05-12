@@ -64,6 +64,14 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         Método sobrecargado de clase padre Thread. Ejecuta el algoritmo de
         aprendizaje de Q-Learning.
         """
+        if sys.platform == 'win32':
+            _timer = time.clock
+        else:
+            _timer = time.time
+
+        # Registrar tiempo de comienzo
+        running_start_time = _timer()
+
         # Realizar tareas al comienzo
         self._do_on_start()
 
@@ -101,11 +109,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             self._cant_estados_libres = len(self._contador_ref)
             self._visitados_1 = []
             self._visitados_2 = []
-
-        if sys.platform == 'win32':
-            _timer = time.clock
-        else:
-            _timer = time.time
 
         decrementar_step = 0
         # Ejecutar una cantidad dada de Episodios
@@ -176,10 +179,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 logging.debug("Matriz Q: {0}".format(self.matriz_q))  # FIXME: Logging @IgnorePep8
 
                 try:
-                    self._out_queue.put({'EstAct': (x_act, y_act),
-                                         'NoEp': epnum,
-                                         'CantIter': cant_iteraciones,
-                                         'Joined': False})
+                    self._out_queue.put({'EstadoActual': (x_act, y_act),
+                                         'NroEpisodio': epnum,
+                                         'NroIteracion': cant_iteraciones,
+                                         'ProcesoJoined': False})
                 except Queue.Full:
                     logging.debug("Cola llena")
                     pass
@@ -205,23 +208,38 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
             # Poner en la cola de salida los resultados
             try:
-                self._out_queue.put({'EstAct': (x_act, y_act),
-                                     'NoEp': epnum,
-                                     'CantIter': cant_iteraciones,
-                                     'MatQ': self.matriz_q,
-                                     'EpExecT': ep_exec_time,
-                                     'IterExecT': iter_exec_time,
-                                     'Joined': False})
+                self._out_queue.put({'EstadoActual': (x_act, y_act),
+                                     'NroEpisodio': epnum,
+                                     'NroIteracion': cant_iteraciones,
+                                     'EpisodioExecTime': ep_exec_time,
+                                     'IteracionesExecTime': iter_exec_time,
+                                     'ProcesoJoined': False})
             except Queue.Full:
                 logging.debug("Cola llena")
                 pass
 
-            # Verificar si se solicitó externamente finalizar el thread
+            # Verificar si se solicitó externamente finalizar el proceso
             if self._stoprequest.is_set():
                 break
 
-        # Poner en cola un valor booleano para indicar que se finalizó el trabajo
-        # self._out_queue.put(True)
+        # Registrar tiempo de finalización
+        running_end_time = _timer()
+        running_exec_time = running_end_time - running_start_time
+
+        # Poner en la cola de salida los resultados
+        try:
+            self._out_queue.put({'EstadoActual': (x_act, y_act),
+                                 'NroEpisodio': epnum,
+                                 'NroIteracion': cant_iteraciones,
+                                 'MatrizQ': self.matriz_q,
+                                 'EpisodioExecTime': ep_exec_time,
+                                 'IteracionesExecTime': iter_exec_time,
+                                 'ProcesoJoined': False,
+                                 'RunningExecTime': running_exec_time})
+        except Queue.Full:
+            logging.debug("Cola llena")
+            pass
+
         # Realizar tareas al finalizar
         self._on_end()
 
@@ -399,6 +417,18 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._out_queue.close()
 
     def run(self):
+        u"""
+        Método sobrecargado de clase padre Thread. Ejecuta el algoritmo de
+        recorrido de Q-Learning.
+        """
+        if sys.platform == 'win32':
+            _timer = time.clock
+        else:
+            _timer = time.time
+
+        # Registrar tiempo de comienzo
+        running_start_time = _timer()
+
         # Realizar tareas al comienzo
         self._do_on_start()
 
@@ -418,11 +448,6 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         # Lista que contiene la secuencia de estados comenzando por el
         # Estado Inicial
         camino_optimo = [estado_inicial]
-
-        if sys.platform == 'win32':
-            _timer = time.clock
-        else:
-            _timer = time.time
 
         # Registrar tiempo de comienzo
         rec_start_time = _timer()
@@ -487,16 +512,25 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         # Encolar la información generada por el algoritmo para realizar
         # estadísticas
         try:
-            self._out_queue.put({'EstAct': (x_act, y_act),
-                                 'OptPath': camino_optimo,
-                                 'RecExecT': rec_exec_time,
-                                 'Joined': False})
+            self._out_queue.put({'EstadoActual': (x_act, y_act),
+                                 'CaminoRecorrido': camino_optimo,
+                                 'RunningExecTime': rec_exec_time,
+                                 'ProcesoJoined': False})
         except Queue.Full:
             logging.debug("Cola llena")
             pass
 
-        # Poner en cola un valor booleano para indicar que se finalizó el trabajo
-        # self._out_queue.put(True)
+        # Registrar tiempo de finalización
+        running_end_time = _timer()
+        running_exec_time = running_end_time - running_start_time
+
+        # Poner en la cola de salida los resultados
+        try:
+            self._out_queue.put({'RunningExecTime': running_exec_time})
+        except Queue.Full:
+            logging.debug("Cola llena")
+            pass
+
         # Realizar tareas al finalizar
         self._on_end()
 
@@ -514,7 +548,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
     def _contar_ref(self, estado):
         umbral = 1
 
-        if self._contador_ref.has_key(estado):
+        if estado in self._contador_ref:
             self._contador_ref[estado] += 1
         else:
             self._contador_ref[estado] = 0
