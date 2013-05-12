@@ -8,6 +8,8 @@ import multiprocessing
 
 from PyQt4 import QtCore, QtGui
 
+from info import app_info
+
 from gui.qtgen.mainwindow import Ui_MainWindow
 from gui.aboutdialog import AboutDialog
 from gui.gwgenrndestadosdialog import GWGenRndEstadosDialog
@@ -19,9 +21,9 @@ from core.qlearning.qlearning import QLearning
 from core.qlearning.matrixinits import QLMatrixInitEnCero
 from core.qlearning.matrixinits import QLMatrixInitEnRecompensa
 from core.qlearning.matrixinits import QLMatrixInitRandom
+from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
-from core.tecnicas.aleatorio import Aleatorio
 
 from tools.livedatafeed import LiveDataFeed
 from tools.queue import get_all_from_queue, get_item_from_queue
@@ -47,11 +49,13 @@ class MainWindow(QtGui.QMainWindow):
         # FIXME: Logging
         logging.basicConfig(level=logging.DEBUG,
                             format="[%(levelname)s] – %(threadName)-10s : %(message)s")
+        self._logger = logging.getLogger()
+        self._logger.disabled = not app_info.__DEBUG__
 
         # Freeze Support
-        logging.debug("Activar Freeze Support")
+        self._logger.debug("Activar Freeze Support")
         multiprocessing.freeze_support()
-        logging.debug("Cantidad de CPUs: {0}"
+        self._logger.debug("Cantidad de CPUs: {0}"
                       .format(multiprocessing.cpu_count()))
 
         self._init_vars()
@@ -129,7 +133,7 @@ class MainWindow(QtGui.QMainWindow):
         :param dimension: Dimensión del GridWorld.
         """
         # Obtener ancho y alto del GridWorld
-        logging.debug("Dimensión: {0}".format(dimension))
+        self._logger.debug("Dimensión: {0}".format(dimension))
         ancho_gw, alto_gw = self.convert_dimension(dimension)
         # Crear un nuevo GridWorld dados el ancho y el alto del mismo
         self.gridworld = GridWorld(ancho_gw,
@@ -414,11 +418,11 @@ class MainWindow(QtGui.QMainWindow):
         self.qlearning_entrenar_worker = self.qlearning.entrenar(self.ql_entrenar_out_q,
                                                                  self.ql_entrenar_error_q)
 
-        logging.debug("Nuevo Thread: {0}".format(self.qlearning_entrenar_worker))
+        self._logger.debug("Nuevo Thread: {0}".format(self.qlearning_entrenar_worker))
 
         worker_error = get_item_from_queue(self.ql_entrenar_error_q)
         if worker_error is not None:
-            logging.debug("Error {0}: ".format(worker_error))
+            self._logger.debug("Error {0}: ".format(worker_error))
             self.qlearning_entrenar_worker = None
             self.working_process = None
             self.ql_entrenar_out_q = None
@@ -458,11 +462,11 @@ class MainWindow(QtGui.QMainWindow):
                                                                  self.ql_recorrer_out_q,
                                                                  self.ql_recorrer_error_q)
 
-        logging.debug("Nuevo Thread: {0}".format(self.qlearning_recorrer_worker))
+        self._logger.debug("Nuevo Thread: {0}".format(self.qlearning_recorrer_worker))
 
         worker_error = get_item_from_queue(self.ql_recorrer_error_q)
         if worker_error is not None:
-            logging.debug("Error {0}: ".format(worker_error))
+            self._logger.debug("Error {0}: ".format(worker_error))
             self.qlearning_recorrer_worker = None
             self.working_process = None
             self.ql_recorrer_out_q = None
@@ -479,9 +483,9 @@ class MainWindow(QtGui.QMainWindow):
         Ejecutar tareas al finalizar un thread.
         """
         if self.working_process is not None:
-            logging.debug("Detener {0}: ".format(self.working_process))
+            self._logger.debug("Detener {0}: ".format(self.working_process))
             self.working_process.join(0.05)
-            logging.debug(self.working_process)
+            self._logger.debug(self.working_process)
             self.working_process = None
 
             if self.wnd_timer is not None:
@@ -504,7 +508,7 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Ejecuta diversas acciones a cada disparo del Timer principal.
         """
-        logging.debug("Timeout")
+        self._logger.debug("Timeout")
         self.comprobar_colas()
         self.actualizar_window()
         self.comprobar_actividad_procesos()
@@ -513,7 +517,7 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Ejecutar tareas al ejecutar un thread.
         """
-        logging.debug("Comienzo del proceso")
+        self._logger.debug("Comienzo del proceso")
         # Crear Timer asociado a la ventana principal
         self.wnd_timer = QtCore.QTimer(self)
         # Conectar disparo de timer con método
@@ -533,7 +537,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.WMainWindow.statusBar.clearMessage()
 
-        logging.debug("Procesos hijos activos: {0}"
+        self._logger.debug("Procesos hijos activos: {0}"
                       .format(multiprocessing.active_children()))
 
     def _reintentar_detener_hilos(self):
@@ -588,20 +592,20 @@ class MainWindow(QtGui.QMainWindow):
         # Testing
         # cola.task_done()
 
-        logging.debug("Leer QL Input: {0}".format(ql_datos_in))
+        self._logger.debug("Leer QL Input: {0}".format(ql_datos_in))
         if len(ql_datos_in) > 0:
             self.ql_datos_entrenar_in_feed.add_data(ql_datos_in)
-            logging.debug("Datos IN: {0}".format(ql_datos_in))
+            self._logger.debug("Datos IN: {0}".format(ql_datos_in))
 
     def actualizar_window(self):
         u"""
         Actualiza la información mostrada en la ventana de acuerdo a los
         datos de entrada,
         """
-        logging.debug("Actualizar ventana")
+        self._logger.debug("Actualizar ventana")
         if self.ql_datos_entrenar_in_feed.has_new_data:
             data_entrenar = self.ql_datos_entrenar_in_feed.read_data()
-            # logging.debug("[Entrenar] Actualizar ventana con: {0}".format(data_entrenar))
+            # self._logger.debug("[Entrenar] Actualizar ventana con: {0}".format(data_entrenar))
 
             for ql_ent_info in data_entrenar:
                 estado_actual = ql_ent_info.get('EstAct', None)
@@ -613,14 +617,14 @@ class MainWindow(QtGui.QMainWindow):
                 loop_alarm = ql_ent_info.get('LoopAlarm', None)
                 matriz_q = ql_ent_info.get('MatQ', None)
 
-                logging.debug("[Entrenar] Estado actual: {0}".format(estado_actual))
-                logging.debug("[Entrenar] Episodio: {0}".format(nro_episodio))
-                logging.debug("[Entrenar] Iteraciones: {0}".format(cant_iteraciones))
-                logging.debug("[Entrenar] Tiempo ejecución episodio: {0}".format(episode_exec_time))
-                logging.debug("[Entrenar] Tiempo ejecución iteración: {0}".format(iter_exec_time))
-                logging.debug("[Entrenar] Worker joined : {0}".format(worker_joined))
-                # logging.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
-                logging.debug("[Entrenar] Loop Alarm: {0}".format(loop_alarm))
+                self._logger.debug("[Entrenar] Estado actual: {0}".format(estado_actual))
+                self._logger.debug("[Entrenar] Episodio: {0}".format(nro_episodio))
+                self._logger.debug("[Entrenar] Iteraciones: {0}".format(cant_iteraciones))
+                self._logger.debug("[Entrenar] Tiempo ejecución episodio: {0}".format(episode_exec_time))
+                self._logger.debug("[Entrenar] Tiempo ejecución iteración: {0}".format(iter_exec_time))
+                self._logger.debug("[Entrenar] Worker joined : {0}".format(worker_joined))
+                # self._logger.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
+                self._logger.debug("[Entrenar] Loop Alarm: {0}".format(loop_alarm))
 
                 if matriz_q is not None:
                     self.matriz_q = matriz_q
@@ -638,7 +642,7 @@ class MainWindow(QtGui.QMainWindow):
 
         if self.ql_datos_recorrer_in_feed.has_new_data:
             data_recorrer = self.ql_datos_recorrer_in_feed.read_data()
-            logging.debug("[Recorrer] Actualizar ventana con: {0}"
+            self._logger.debug("[Recorrer] Actualizar ventana con: {0}"
                           .format(data_recorrer))
 
             for ql_rec_info in data_recorrer:
@@ -647,10 +651,10 @@ class MainWindow(QtGui.QMainWindow):
                 rec_exec_time = ql_rec_info.get('RecExecT', None)
                 worker_joined = ql_rec_info.get('Joined', None)
 
-                logging.debug("[Recorrer] Estado actual: {0}".format(estado_actual))
-                logging.debug("[Recorrer] Camino óptimo: {0}".format(camino_optimo))
-                logging.debug("[Recorrer] Tiempo ejecución recorrido: {0}".format(rec_exec_time))
-                logging.debug("[Recorrer] Worker joined: {0}".format(worker_joined))
+                self._logger.debug("[Recorrer] Estado actual: {0}".format(estado_actual))
+                self._logger.debug("[Recorrer] Camino óptimo: {0}".format(camino_optimo))
+                self._logger.debug("[Recorrer] Tiempo ejecución recorrido: {0}".format(rec_exec_time))
+                self._logger.debug("[Recorrer] Worker joined: {0}".format(worker_joined))
 
                 # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
                 if camino_optimo is not None:
@@ -659,23 +663,23 @@ class MainWindow(QtGui.QMainWindow):
                     camino_optimo_sin_repetidos = [x for x in camino_optimo
                                                    if x not in seen and not seen_add(x)]
 
-                    logging.debug("Camino óptimo (con repetidos): {0}"
+                    self._logger.debug("Camino óptimo (con repetidos): {0}"
                                   .format(camino_optimo))
-                    logging.debug("Camino óptimo (sin repetidos): {0}".
+                    self._logger.debug("Camino óptimo (sin repetidos): {0}".
                                   format(camino_optimo_sin_repetidos))
 
     def comprobar_colas(self):
         u"""
         Comprueba si hay datos en las colas de entrada y salida y actúa acorde.
         """
-        logging.debug("Comprobar colas")
+        self._logger.debug("Comprobar colas")
         if self.ql_entrenar_out_q is not None:
-            logging.debug("Comprobar cola QLearning Entrenar: {0}"
+            self._logger.debug("Comprobar cola QLearning Entrenar: {0}"
                           .format(self.ql_entrenar_out_q))
             self.leer_ql_input(self.ql_entrenar_out_q)
 
         if self.ql_recorrer_out_q is not None:
-            logging.debug("Comprobar cola QLearning Recorrer: {0}"
+            self._logger.debug("Comprobar cola QLearning Recorrer: {0}"
                           .format(self.ql_recorrer_out_q))
             self._procesar_info_ql_recorrido(self.ql_recorrer_out_q)
 
@@ -684,12 +688,12 @@ class MainWindow(QtGui.QMainWindow):
         Comprueba si hay threads activos (sin incluir el MainThread). Si no
         existen threads activos se detiene el Timer de la ventana.
         """
-        logging.debug("Comprobar actividad de procesos")
+        self._logger.debug("Comprobar actividad de procesos")
 
         for proc in multiprocessing.active_children():
             if not proc.is_alive():
                 proc.join(0.05)
-            logging.debug("Proceso hijo: {0}".format(proc))
+            self._logger.debug("Proceso hijo: {0}".format(proc))
 
         if len(multiprocessing.active_children()) == 0:
             self.on_fin_proceso()
@@ -713,14 +717,14 @@ class MainWindow(QtGui.QMainWindow):
 
     def set_gw_dimension_menu(self, action):
         dimension = action.data().toString()
-        logging.debug("Dimensión: {0}".format(dimension))
+        self._logger.debug("Dimensión: {0}".format(dimension))
         indice = self.WMainWindow.cbGWDimension.findData(dimension)
         self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
         self.set_gw_dimension(dimension)
 
     def set_gw_dimension_cb(self, indice):
         dimension = self.WMainWindow.cbGWDimension.itemData(indice).toString()
-        logging.debug("Dimensión: {0}".format(dimension))
+        self._logger.debug("Dimensión: {0}".format(dimension))
         self.set_gw_dimension(dimension)
 
     def parametros_segun_tecnica_menu(self, action):
@@ -728,7 +732,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.cbQLTecnicas.setCurrentIndex(indice)
 
     def generar_menu_dimensiones(self):
-        logging.debug("Generar Menú Dimensiones")
+        self._logger.debug("Generar Menú Dimensiones")
         dim_idx = self.WMainWindow.cbGWDimension.currentIndex()
         dim_data = self.WMainWindow.cbGWDimension.itemData(dim_idx).toString()
 
@@ -750,7 +754,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuGridWorld.addMenu(submenu_dimension)
 
     def generar_menu_tecnicas(self):
-        logging.debug("Generar Menú Técnicas")
+        self._logger.debug("Generar Menú Técnicas")
         dim_idx = self.WMainWindow.cbQLTecnicas.currentIndex()
         dim_data = self.WMainWindow.cbQLTecnicas.itemData(dim_idx).toInt()[0]
 
@@ -782,10 +786,10 @@ class MainWindow(QtGui.QMainWindow):
         #     pass
         #=======================================================================
 
-        logging.debug("[Recorrer] Datos In: {0}".format(ql_datos_in))
+        self._logger.debug("[Recorrer] Datos In: {0}".format(ql_datos_in))
         if len(ql_datos_in) > 0:
             self.ql_datos_recorrer_in_feed.add_data(ql_datos_in)
-            logging.debug("[Recorrer] Datos de entrada: {0}".format(ql_datos_in))
+            self._logger.debug("[Recorrer] Datos de entrada: {0}".format(ql_datos_in))
 
     def mostrar_opciones_gw(self):
         # Inicializar cuadros de diálogo
