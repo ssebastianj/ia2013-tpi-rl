@@ -569,6 +569,7 @@ class MainWindow(QtGui.QMainWindow):
         :param event: Evento.
         """
         self._reintentar_detener_hilos()
+        logging.shutdown()
 
     def exit(self):
         u"""
@@ -600,8 +601,7 @@ class MainWindow(QtGui.QMainWindow):
         logging.debug("Actualizar ventana")
         if self.ql_datos_entrenar_in_feed.has_new_data:
             data_entrenar = self.ql_datos_entrenar_in_feed.read_data()
-            logging.debug("[Entrenar] Actualizar ventana con: {0}"
-                          .format(data_entrenar))
+            # logging.debug("[Entrenar] Actualizar ventana con: {0}".format(data_entrenar))
 
             for ql_ent_info in data_entrenar:
                 estado_actual = ql_ent_info.get('EstAct', None)
