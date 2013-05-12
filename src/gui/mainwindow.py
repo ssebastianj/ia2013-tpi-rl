@@ -438,7 +438,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ql_entrenar_error_q = None
 
         if self.qlearning_entrenar_worker is not None:
-            self.working_proc = self.qlearning_entrenar_worker
+            self.working_process = self.qlearning_entrenar_worker
             self.entrenar_is_running = True
 
             self.on_comienzo_proceso()
@@ -492,7 +492,7 @@ class MainWindow(QtGui.QMainWindow):
         Ejecutar tareas al finalizar un thread.
         """
         if self.working_process is not None:
-            self._logger.debug("Detener {0}: ".format(self.working_process))
+            self._logger.debug("Detener {0}".format(self.working_process))
             self.working_process.join(0.05)
             self._logger.debug(self.working_process)
             self.working_process = None
@@ -695,7 +695,7 @@ class MainWindow(QtGui.QMainWindow):
                         QtGui.QMessageBox.warning(self,
                                                   _tr('QLearning - Entrenamiento'),
                         u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
-                        self.working_process.join(0.01)
+                        self.working_process.join(0.05)
                         self.qlearning_entrenar_worker = None
                         self.working_process = None
                         self.ql_entrenar_error_q = None
