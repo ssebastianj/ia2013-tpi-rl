@@ -84,8 +84,7 @@ class MainWindow(QtGui.QMainWindow):
                          1: "ε-Greedy",
                          2: "Softmax",
                          3: "Aleatorio"}
-        self.gw_dimensiones = [  # "2 x 2",
-                               "3 x 3", "4 x 4", "5 x 5",
+        self.gw_dimensiones = [  # "2 x 2", "3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.window_config = {"item":
                               {"show_tooltip": False,
@@ -112,6 +111,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setMouseTracking(True)
         self.WMainWindow.btnTerminarProceso.setEnabled(False)
         self.WMainWindow.btnRecorrer.setEnabled(False)
+        self.WMainWindow.actionAgenteRecorrer.setDisabled(True)
+        self.WMainWindow.actionAgenteCancelar.setDisabled(True)
         self.setMouseTracking(True)
 
         self.inicializar_todo()
@@ -217,6 +218,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnInicializarValoresQL.clicked.connect(self.inicializar_ql_vals)
         self.WMainWindow.actionInicializarTodo.triggered.connect(self.inicializar_todo)
         self.WMainWindow.btnGWOpciones.clicked.connect(self.mostrar_opciones_gw)
+        self.WMainWindow.actionAgenteEntrenar.triggered.connect(self.entrenar)
+        self.WMainWindow.actionAgenteRecorrer.triggered.connect(self.recorrer_gw)
+        self.WMainWindow.actionAgenteCancelar.triggered.connect(self.terminar_proceso)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -558,12 +562,18 @@ class MainWindow(QtGui.QMainWindow):
         if self.entrenar_is_running:
             self.entrenar_is_running = False
             self.WMainWindow.btnEntrenar.setEnabled(True)
-            self.WMainWindow.btnRecorrer.setEnabled(self.matriz_q is not None)
+            self.WMainWindow.actionAgenteEntrenar.setEnabled(True)
+
+            test_matriz_q = self.matriz_q is not None
+            self.WMainWindow.btnRecorrer.setEnabled(test_matriz_q)
+            self.WMainWindow.actionAgenteRecorrer.setEnabled(test_matriz_q)
 
         if self.recorrer_is_running:
             self.recorrer_is_running = False
             self.WMainWindow.btnEntrenar.setEnabled(True)
+            self.WMainWindow.actionAgenteEntrenar.setEnabled(True)
             self.WMainWindow.btnRecorrer.setEnabled(True)
+            self.WMainWindow.actionAgenteRecorrer.setEnabled(True)
 
         self.WMainWindow.btnTerminarProceso.setEnabled(False)
 

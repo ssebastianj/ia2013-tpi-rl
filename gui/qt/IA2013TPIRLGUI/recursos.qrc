@@ -3,5 +3,6 @@
         <file alias="Recorrer">Recorrer.png</file>
         <file alias="Cancelar">Cancelar.png</file>
         <file alias="Aprender">Aprender.png</file>
+        <file alias="Configurar">Configurar.png</file>
     </qresource>
 </RCC>
