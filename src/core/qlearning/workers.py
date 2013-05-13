@@ -111,11 +111,11 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             self._visitados_2 = []
 
         decrementar_step = 0
+        # Registrar tiempo de comienzo de los episodios
+        ep_start_time = _timer()
+
         # Ejecutar una cantidad dada de Episodios
         for epnum in xrange(1, self.cant_episodios + 1):
-            # Registrar tiempo de comienzo del episodio
-            ep_start_time = _timer()
-
             logging.debug("Numero de episodio: {0}".format(epnum))  # FIXME: Logging @IgnorePep8
 
             # Obtener coordenadas aleatorias y obtener Estado asociado
@@ -199,10 +199,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 decrementar_step = 0
 
             iter_end_time = _timer()
-            ep_end_time = _timer()
 
-            # Calcular tiempo de ejecución del episodio
-            ep_exec_time = ep_end_time - ep_start_time
             # Calcular tiempo de ejecución de las iteraciones
             iter_exec_time = iter_end_time - iter_start_time
 
@@ -211,7 +208,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 self._out_queue.put({'EstadoActual': (x_act, y_act),
                                      'NroEpisodio': epnum,
                                      'NroIteracion': cant_iteraciones,
-                                     'EpisodioExecTime': ep_exec_time,
                                      'IteracionesExecTime': iter_exec_time,
                                      'ProcesoJoined': False})
             except Queue.Full:
@@ -222,8 +218,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             if self._stoprequest.is_set():
                 break
 
-        # Registrar tiempo de finalización
-        running_end_time = _timer()
+        # Calcular tiempos de finalización
+        running_end_time = ep_end_time = _timer()
+        ep_exec_time = ep_end_time - ep_start_time
         running_exec_time = running_end_time - running_start_time
 
         # Poner en la cola de salida los resultados
@@ -232,7 +229,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                  'NroEpisodio': epnum,
                                  'NroIteracion': cant_iteraciones,
                                  'MatrizQ': self.matriz_q,
-                                 'EpisodioExecTime': ep_exec_time,
+                                 'EpisodiosExecTime': ep_exec_time,
                                  'IteracionesExecTime': iter_exec_time,
                                  'ProcesoJoined': False,
                                  'RunningExecTime': running_exec_time})

@@ -113,6 +113,31 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnRecorrer.setEnabled(False)
         self.WMainWindow.actionAgenteRecorrer.setDisabled(True)
         self.WMainWindow.actionAgenteCancelar.setDisabled(True)
+
+        # Asignar shorcuts
+        entrenar_shortcut = "F5"
+        recorrer_shortcut = "F6"
+        cancelar_shortcut = "Shift+X"
+        self.WMainWindow.btnEntrenar.setShortcut(QtGui.QKeySequence(entrenar_shortcut))
+        self.WMainWindow.btnRecorrer.setShortcut(QtGui.QKeySequence(recorrer_shortcut))
+        self.WMainWindow.btnTerminarProceso.setShortcut(QtGui.QKeySequence(cancelar_shortcut))
+
+        self.WMainWindow.btnEntrenar.setToolTip("<html><head/><body><p>\
+                                                Entrenar agente \
+                                                <span style='font-size:7pt;'>\
+                                                {0}</span></p></body></html>"
+                                                .format(entrenar_shortcut))
+        self.WMainWindow.btnRecorrer.setToolTip("<html><head/><body><p>\
+                                                Recorrer GridWorld \
+                                                <span style='font-size:7pt;'>\
+                                                {0}</span></p></body></html>"
+                                                .format(recorrer_shortcut))
+        self.WMainWindow.btnTerminarProceso.setToolTip("<html><head/><body><p>\
+                                                    Cancelar proceso \
+                                                    <span style='font-size:7pt;'>\
+                                                    {0}</span></p></body></html>"
+                                                    .format(cancelar_shortcut))
+
         self.setMouseTracking(True)
 
         self.inicializar_todo()
@@ -650,10 +675,10 @@ class MainWindow(QtGui.QMainWindow):
         # Testing
         # cola.task_done()
 
-        self._logger.debug("Leer QL Input: {0}".format(ql_datos_in))
+        # self._logger.debug("Leer QL Input: {0}".format(ql_datos_in))
         if len(ql_datos_in) > 0:
             self.ql_datos_entrenar_in_feed.add_data(ql_datos_in)
-            self._logger.debug("Datos IN: {0}".format(ql_datos_in))
+            # self._logger.debug("Datos IN: {0}".format(ql_datos_in))
 
     def actualizar_window(self):
         u"""
@@ -661,6 +686,7 @@ class MainWindow(QtGui.QMainWindow):
         datos de entrada,
         """
         self._logger.debug("Actualizar ventana")
+
         if self.ql_datos_entrenar_in_feed.has_new_data:
             data_entrenar = self.ql_datos_entrenar_in_feed.read_data()
             # self._logger.debug("[Entrenar] Actualizar ventana con: {0}".format(data_entrenar))
@@ -669,12 +695,12 @@ class MainWindow(QtGui.QMainWindow):
                 estado_actual = ql_ent_info.get('EstadoActual', None)
                 nro_episodio = ql_ent_info.get('NroEpisodio', None)
                 cant_iteraciones = ql_ent_info.get('NroIteracion', None)
-                episode_exec_time = ql_ent_info.get('EpisodioExecTime', None)
-                iter_exec_time = ql_ent_info.get('IteracionExecTime', None)
+                episode_exec_time = ql_ent_info.get('EpisodiosExecTime', 0.0)
+                iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
                 worker_joined = ql_ent_info.get('ProcesoJoined', None)
                 loop_alarm = ql_ent_info.get('LoopAlarm', None)
                 matriz_q = ql_ent_info.get('MatrizQ', None)
-                running_exec_time = ql_ent_info.get('RunningExecTime', None)
+                running_exec_time = ql_ent_info.get('RunningExecTime', 0.0)
 
                 self._logger.debug("[Entrenar] Estado actual: {0}".format(estado_actual))
                 self._logger.debug("[Entrenar] Episodio: {0}".format(nro_episodio))
@@ -699,6 +725,16 @@ class MainWindow(QtGui.QMainWindow):
                         self.working_process = None
                         self.ql_entrenar_error_q = None
                         self.ql_entrenar_out_q = None
+
+                self.WMainWindow.lblEstadoActual.setText("X:{0}  Y:{1}"
+                                                         .format(estado_actual[0],
+                                                                 estado_actual[1]
+                                                                 ))
+                self.WMainWindow.lblNroEpisodio.setText(str(nro_episodio))
+                self.WMainWindow.lblNroIteracion.setText(str(cant_iteraciones))
+                self.WMainWindow.lblExecTimeEpisodios.setText("{0:.3f} seg".format(episode_exec_time))
+                self.WMainWindow.lblExecTimeIteraciones.setText("{0:.3f} seg".format(iter_exec_time))
+                self.WMainWindow.lblExecTimeTotal.setText("{0:.3f} seg".format(running_exec_time))
 
         if self.ql_datos_recorrer_in_feed.has_new_data:
             data_recorrer = self.ql_datos_recorrer_in_feed.read_data()
@@ -846,10 +882,10 @@ class MainWindow(QtGui.QMainWindow):
         #     pass
         #=======================================================================
 
-        self._logger.debug("[Recorrer] Datos In: {0}".format(ql_datos_in))
+        # self._logger.debug("[Recorrer] Datos In: {0}".format(ql_datos_in))
         if len(ql_datos_in) > 0:
             self.ql_datos_recorrer_in_feed.add_data(ql_datos_in)
-            self._logger.debug("[Recorrer] Datos de entrada: {0}".format(ql_datos_in))
+            # self._logger.debug("[Recorrer] Datos de entrada: {0}".format(ql_datos_in))
 
     def mostrar_opciones_gw(self):
         # Inicializar cuadros de diálogo

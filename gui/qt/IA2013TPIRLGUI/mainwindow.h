@@ -18,6 +18,9 @@ public:
 protected:
     void changeEvent(QEvent *e);
     
+private slots:
+    void on_btnEntrenar_4_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
