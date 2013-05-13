@@ -55,6 +55,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         Ejecuta tareas al finalizar el thread.
         """
         logging.debug("Terminando.")
+        # Cerrar Queues
         self._inp_queue.close()
         self._error_queue.close()
         self._out_queue.close()
@@ -64,6 +65,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         Método sobrecargado de clase padre Thread. Ejecuta el algoritmo de
         aprendizaje de Q-Learning.
         """
+        # En Windows se obtiene mayor precisión al utilizar clock()
+        # En UNIX conviene utilizar time()
         if sys.platform == 'win32':
             _timer = time.clock
         else:
@@ -82,6 +85,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             logging.debug("Cola de entrada vacía")
             return None
 
+        # Obtener valores de entrada
         self.estados = self.input_data[0]
         self.coordenadas = self.input_data[1]
         self.gamma = self.input_data[2]
@@ -114,7 +118,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Registrar tiempo de comienzo de los episodios
         ep_start_time = _timer()
 
-        # Ejecutar una cantidad dada de Episodios
+        # Ejecutar una cantidad dada de episodios
         for epnum in xrange(1, self.cant_episodios + 1):
             logging.debug("Numero de episodio: {0}".format(epnum))  # FIXME: Logging @IgnorePep8
 
@@ -143,6 +147,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Registrar tiempo de comienzo de las iteraciones
                 iter_start_time = _timer()
 
+                # TODO: Utilizar detector de bloqueos
                 if self.detector_bloqueo:
                     self._contar_ref((x_act, y_act))
 
@@ -152,8 +157,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Invocar a la técnica para que seleccione uno de los vecinos
                 estado_elegido = self.tecnica.obtener_accion(vecinos)
                 logging.debug("Estado Elegido: {0}".format(estado_elegido))
+                # Asignar coordenadas X,Y
                 x_eleg, y_eleg = estado_elegido
 
+                # Obtener recompensa inmediata del estado actual
                 recompensa_estado = vecinos[(x_eleg, y_eleg)]
 
                 # Obtener vecinos del estado elegido por la acción
@@ -161,6 +168,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 logging.debug("Vecinos Elegidos del Elegido: {0}"
                               .format(vecinos_est_elegido))
 
+                # Calcular el máximo valor Q de todos los vecinos
                 max_q = max([q_val for q_val in vecinos_est_elegido.values()])
 
                 # Fórmula principal de Q-Learning
@@ -191,6 +199,12 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 (x_act, y_act) = (x_eleg, y_eleg)
                 estado_actual = self.matriz_r[x_act - 1][y_act - 1]
 
+            # Primero verificación para comprobar si se solicitó externamente
+            # finalizar el proceso. Es necesario colocarla luego del bucle
+            # 'while' por si se salió del mismo por la solicitud de parada.
+            if self._stoprequest.is_set():
+                break
+
             decrementar_step += 1
             # Comprobar si es necesario decrementar el valor del parámetro
             if self.tecnica.intervalo_decremento == decrementar_step:
@@ -214,7 +228,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 logging.debug("Cola llena")
                 pass
 
-            # Verificar si se solicitó externamente finalizar el proceso
+            # Segunda verificación para comprobar si se solicitó finalizar
+            # el proceso de forma externa
             if self._stoprequest.is_set():
                 break
 
@@ -245,6 +260,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         Devuelve una tupla conteniendo las coordenadas X e Y aleatorias.
         """
         alto, ancho = self.input_data[5]
+        # Devolver un estado seleccionado aleatoriamente del conjunto de vecinos
         return (random.randint(1, ancho), random.randint(1, alto))
 
     def join(self, timeout=None):
@@ -254,11 +270,18 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         :param timeout: Tiempo en milisegundos de espera.
         """
         logging.debug("Join")
+        # Activar flag indicando de que se solicitó detener el proceso
         self._stoprequest.set()
+        # Notificar a proceso padre
         self._out_queue.put({'Joined': True})
         super(QLearningEntrenarWorker, self).join(timeout)
 
     def _crear_cont_ref(self, tipos_vec_exc):
+        u"""
+        Crea y configura un contador de referencias por cada estado accesible.
+
+        :param tipos_vec_exc: Tipos de vecinos a excluir del contador.
+        """
         matriz_q = self.input_data[1]
         tipos_vec_exc.append(TIPOESTADO.FINAL)
 
@@ -272,6 +295,11 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         return contador_ref
 
     def _contar_ref(self, estado):
+        u"""
+        Incrementa en 1 el contador de cada estado por cada acceso a sus coordenadas.
+
+        :param estado: Estado al cual se ha accedido.
+        """
         umbral_1 = 1
         umbral_2 = 2
 
@@ -291,6 +319,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self._comprobar_visitados()
 
     def _comprobar_visitados(self):
+        u"""
+        Verifica si el agente no puede acceder al estado final y finaliza la
+        ejecución del algoritmo.
+        """
         test_1 = len(self._visitados_1) == self._cant_estados_libres
         test_2 = len(self._visitados_1) == len(self._visitados_2)
 

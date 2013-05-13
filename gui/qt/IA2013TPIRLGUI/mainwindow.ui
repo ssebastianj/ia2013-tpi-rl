@@ -313,6 +313,9 @@
             <property name="text">
              <string>Cantidad de episodios:</string>
             </property>
+            <property name="buddy">
+             <cstring>sbCantidadEpisodios</cstring>
+            </property>
            </widget>
           </item>
           <item row="1" column="1" colspan="2">
@@ -689,7 +692,7 @@
       <number>4</number>
      </property>
      <item row="0" column="0">
-      <widget class="QGroupBox" name="groupBox">
+      <widget class="QGroupBox" name="gbMatrices">
        <property name="title">
         <string>Matrices</string>
        </property>
@@ -859,7 +862,7 @@
       </widget>
      </item>
      <item row="0" column="2">
-      <widget class="QGroupBox" name="groupBox_2">
+      <widget class="QGroupBox" name="gbEstadoEjecucion">
        <property name="minimumSize">
         <size>
          <width>220</width>
@@ -1157,8 +1160,13 @@
   <tabstop>sbCantEpisodiosDec</tabstop>
   <tabstop>sbDecrementoVal</tabstop>
   <tabstop>btnInicializarValoresQL</tabstop>
-  <tabstop>tblGridWorld</tabstop>
   <tabstop>btnInicializarTodo</tabstop>
+  <tabstop>tblGridWorld</tabstop>
+  <tabstop>btnMostrarMatrizR</tabstop>
+  <tabstop>btnMostrarMatrizQ</tabstop>
+  <tabstop>btnEntrenar</tabstop>
+  <tabstop>btnRecorrer</tabstop>
+  <tabstop>btnTerminarProceso</tabstop>
  </tabstops>
  <resources>
   <include location="recursos.qrc"/>

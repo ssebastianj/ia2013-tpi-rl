@@ -113,6 +113,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnRecorrer.setEnabled(False)
         self.WMainWindow.actionAgenteRecorrer.setDisabled(True)
         self.WMainWindow.actionAgenteCancelar.setDisabled(True)
+        self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
+        self.WMainWindow.btnMostrarMatrizR.setDisabled(True)
 
         # Asignar shorcuts
         entrenar_shortcut = "F5"
@@ -162,6 +164,9 @@ class MainWindow(QtGui.QMainWindow):
 
         :param dimension: Dimensión del GridWorld.
         """
+        # Desactivar la visualización de la Matriz R
+        self.WMainWindow.btnMostrarMatrizR.setDisabled(True)
+
         # Obtener ancho y alto del GridWorld
         self._logger.debug("Dimensión: {0}".format(dimension))
         ancho_gw, alto_gw = self.convert_dimension(dimension)
@@ -211,6 +216,9 @@ class MainWindow(QtGui.QMainWindow):
 
         self.estado_inicial = None
         self.estado_final = None
+
+        # Activar la visualización de la Matriz R
+        self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
 
     def _set_window_signals(self):
         u"""
@@ -571,6 +579,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.gbGridWorld.setDisabled(True)
         self.WMainWindow.gbQLearning.setDisabled(True)
         self.WMainWindow.gbGeneral.setDisabled(True)
+        self.WMainWindow.gbMatrices.setDisabled(True)
 
         try:
             self.wnd_taskbar = taskbar.WindowsTaskBar()
@@ -595,6 +604,11 @@ class MainWindow(QtGui.QMainWindow):
                       .format(multiprocessing.active_children()))
         self._logger.debug("Fin de procesamiento")
 
+        self.WMainWindow.gbGridWorld.setEnabled(True)
+        self.WMainWindow.gbQLearning.setEnabled(True)
+        self.WMainWindow.gbGeneral.setEnabled(True)
+        self.WMainWindow.gbMatrices.setEnabled(True)
+
         if self.entrenar_is_running:
             self.entrenar_is_running = False
             self.WMainWindow.btnEntrenar.setEnabled(True)
@@ -603,6 +617,7 @@ class MainWindow(QtGui.QMainWindow):
             test_matriz_q = self.matriz_q is not None
             self.WMainWindow.btnRecorrer.setEnabled(test_matriz_q)
             self.WMainWindow.actionAgenteRecorrer.setEnabled(test_matriz_q)
+            self.WMainWindow.btnMostrarMatrizQ.setEnabled(test_matriz_q)
 
         if self.recorrer_is_running:
             self.recorrer_is_running = False
@@ -613,9 +628,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.WMainWindow.btnTerminarProceso.setEnabled(False)
         self.WMainWindow.statusBar.clearMessage()
-        self.WMainWindow.gbGridWorld.setEnabled(True)
-        self.WMainWindow.gbQLearning.setEnabled(True)
-        self.WMainWindow.gbGeneral.setEnabled(True)
+        self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
 
         try:
             self.wnd_taskbar.SetProgressState(self.winId(),
