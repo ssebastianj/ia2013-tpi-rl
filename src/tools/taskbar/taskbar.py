@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+
 class WindowsTaskBar(object):
     def __init__(self):
         if not is_windows7_or_later():
@@ -79,6 +80,7 @@ class WindowsTaskBar(object):
 
     def SetThumbnailClip(self, hwnd, clip):
         self._taskbar.SetThumbnailClip(hwnd, clip)
+
 
 def is_windows7_or_later():
     import sys

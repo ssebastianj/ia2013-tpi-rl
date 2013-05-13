@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
+
+import os
 import subprocess
 import sys
-import os
+
 
 def main():
     # Build documentation
@@ -47,6 +49,7 @@ def main():
     spec_path = os.path.abspath(os.path.join(os.path.curdir, 'spec'))
     icon_path = os.path.abspath(os.path.join(os.path.pardir, 'src', 'img', 'UTN.ico'))
     dist_path = os.path.abspath(os.path.join(os.path.curdir, 'dist'))
+    hooks_dir = os.path.abspath(os.path.join(os.path.curdir, 'hooks'))
 
     # Build EXE
     msg_4 = u'\n--------------------- Generar archivo ejecutable ---------------------'
@@ -61,6 +64,7 @@ def main():
            # "--onefile",
             "--noupx",
             "--onedir",
+            "--additional-hooks-dir=" + hooks_dir,
             "--distpath=" + dist_path,
             "--specpath=" + spec_path,
             "--name=ia",
