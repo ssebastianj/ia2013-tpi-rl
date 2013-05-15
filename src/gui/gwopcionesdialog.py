@@ -56,7 +56,7 @@ class GWOpcionesDialog(QtGui.QDialog):
         self.GWOpcionesD.sbGWEstadoSize.setValue(40)
         self.GWOpcionesD.sbRecomExcelente.setValue(100)
         self.GWOpcionesD.sbRecomBueno.setValue(50)
-        self.GWOpcionesD.sbRecomMalo.setValue(10)
+        self.GWOpcionesD.sbRecomMalo.setValue(-10)
         self.GWOpcionesD.sbRecomPared.setValue(-100)
         self.GWOpcionesD.sbRecomFinal.setMaximum(self.GWOpcionesD.sbRecomExcelente.maximum() + 50)
 
