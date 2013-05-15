@@ -951,7 +951,6 @@ class MainWindow(QtGui.QMainWindow):
 
     def show_matriz_r(self):
         matriz_r = self.gridworld.get_matriz_r()
-        print matriz_r
         self.show_matriz_dialog(matriz_r, "Matriz R", "Matriz de recompensas")
 
     def show_matriz_q(self):
