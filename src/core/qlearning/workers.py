@@ -576,7 +576,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         super(QLearningRecorrerWorker, self).join(timeout)
 
     def _contar_ref(self, estado):
-        umbral = 1
+        umbral = 2
 
         if estado in self._contador_ref:
             self._contador_ref[estado] += 1
