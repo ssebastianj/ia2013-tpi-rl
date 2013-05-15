@@ -11,8 +11,7 @@ import sys
 def main():
     # Build documentation
     msg_1 = u'\n---------------------- Generar Documentación ---------------------'
-    msg_1 = msg_1.encode('ascii', 'ignore')
-    print msg_1
+    print msg_1.encode('ascii', 'ignore')
 
     doc_builder = "make"
     doc_build_path = os.path.abspath(os.path.join('..', 'docs'))
@@ -28,8 +27,7 @@ def main():
 
     # Compile UI files
     msg_2 = u'\n---------------------- Compilar archivos de interfaz grafica ---------------------'
-    msg_2 = msg_2.encode('ascii', 'ignore')
-    print msg_2
+    print msg_2.encode('ascii', 'ignore')
 
     compile_ui_path = os.path.join('..', 'gui', 'compile_ui.py')
     comp_ui_args = [sys.executable, compile_ui_path]
@@ -37,8 +35,7 @@ def main():
 
     # Generate Version Info
     msg_3 = u'\n------------------- Generar informacion de version -------------------'
-    msg_3 = msg_3.encode('ascii', 'ignore')
-    print msg_3
+    print msg_3.encode('ascii', 'ignore')
 
     vi_gen_path = os.path.abspath(os.path.join(os.curdir, 'version_info.py'))
     vi_gen_args = [sys.executable, vi_gen_path]
@@ -53,8 +50,7 @@ def main():
 
     # Build EXE
     msg_4 = u'\n--------------------- Generar archivo ejecutable ---------------------'
-    msg_4 = msg_4.encode('ascii', 'ignore')
-    print msg_4
+    print msg_4.encode('ascii', 'ignore')
 
     args = [sys.executable,
             "C:\\PyInstaller\\pyinstaller.py",
@@ -75,8 +71,10 @@ def main():
     subprocess.call(args)
 
     msg_5 = u'\n---------------------- Generacion de componentes finalizada ----------------------'
-    msg_5 = msg_5.encode('ascii', 'ignore')
-    print msg_5
+    print msg_5.encode('ascii', 'ignore')
+
+    msg_6 = u'\n---------------------- Crear archivo comprimido ----------------------'
+    print msg_6.encode('ascii', 'ignore')
 
 if __name__ == '__main__':
     main()

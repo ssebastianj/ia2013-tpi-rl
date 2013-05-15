@@ -88,8 +88,8 @@ class ShowMatrizDialog(QtGui.QDialog):
                                           QtCore.Qt.AlignCenter)
                     item.setToolTip(str(value))
 
-                    coord_y = (fila * alto_gw) + columna
-                    coord_x = ((key[0] - 1) * ancho_gw) + (key[1] - 1)
+                    coord_x = (fila * alto_gw) + columna
+                    coord_y = ((key[0] - 1) * ancho_gw) + (key[1] - 1)
                     self.ShowMatrizD.tblMatriz.setItem(coord_x, coord_y, item)
 
         # Reactivar la actualización de la tabla
