@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import logging
 import multiprocessing
+import Queue
 
 from PyQt4 import QtCore, QtGui
 
@@ -551,8 +552,7 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Ejecuta diversas acciones a cada disparo del Timer principal.
         """
-        self._logger.debug("Timeout")
-        self.comprobar_colas()
+        self._logger.debug("Timer Timeout")
         self.actualizar_window()
         self.comprobar_actividad_procesos()
 
@@ -679,22 +679,6 @@ class MainWindow(QtGui.QMainWindow):
         """
         self.close()
 
-    def leer_ql_input(self, cola):
-        u"""
-        Lee los datos del worker desde la cola de salida del mismo.
-
-        :param cola: Cola de salida del worker.
-        """
-        ql_datos_in = list(get_all_from_queue(cola))
-
-        # Testing
-        # cola.task_done()
-
-        # self._logger.debug("Leer QL Input: {0}".format(ql_datos_in))
-        if len(ql_datos_in) > 0:
-            self.ql_datos_entrenar_in_feed.add_data(ql_datos_in)
-            # self._logger.debug("Datos IN: {0}".format(ql_datos_in))
-
     def actualizar_window(self):
         u"""
         Actualiza la información mostrada en la ventana de acuerdo a los
@@ -702,9 +686,9 @@ class MainWindow(QtGui.QMainWindow):
         """
         self._logger.debug("Actualizar ventana")
 
-        if self.ql_datos_entrenar_in_feed.has_new_data:
-            data_entrenar = self.ql_datos_entrenar_in_feed.read_data()
-            # self._logger.debug("[Entrenar] Actualizar ventana con: {0}".format(data_entrenar))
+        try:
+            data_entrenar = self.get_all_from_queue(self.ql_entrenar_out_q)
+            # self._logger.debug("[Entrenar] Actualizar ventana con: {0}".format(data_entrenar)) @IgnorePep8
 
             for ql_ent_info in data_entrenar:
                 estado_actual = ql_ent_info.get('EstadoActual', None)
@@ -750,11 +734,14 @@ class MainWindow(QtGui.QMainWindow):
                 self.WMainWindow.lblExecTimeEpisodios.setText("{0:.3f} seg".format(episode_exec_time))
                 self.WMainWindow.lblExecTimeIteraciones.setText("{0:.3f} seg".format(iter_exec_time))
                 self.WMainWindow.lblExecTimeTotal.setText("{0:.3f} seg".format(running_exec_time))
+        except Queue.Empty:
+            pass
+        except AttributeError:
+            pass
 
-        if self.ql_datos_recorrer_in_feed.has_new_data:
-            data_recorrer = self.ql_datos_recorrer_in_feed.read_data()
-            self._logger.debug("[Recorrer] Actualizar ventana con: {0}"
-                          .format(data_recorrer))
+        try:
+            data_recorrer = self.get_all_from_queue(self.ql_recorrer_out_q)
+            # self._logger.debug("[Recorrer] Actualizar ventana con: {0}".format(data_recorrer)) @IgnorePep8
 
             for ql_rec_info in data_recorrer:
                 estado_actual = ql_rec_info.get('EstadoActual', None)
@@ -778,21 +765,23 @@ class MainWindow(QtGui.QMainWindow):
                                   .format(camino_optimo))
                     self._logger.debug("Camino óptimo (sin repetidos): {0}".
                                   format(camino_optimo_sin_repetidos))
+        except Queue.Empty:
+            pass
+        except AttributeError:
+            pass
 
-    def comprobar_colas(self):
-        u"""
-        Comprueba si hay datos en las colas de entrada y salida y actúa acorde.
+    def get_all_from_queue(self, cola):
+        u"""Generator to yield one after the others all items
+            currently in the queue Q, without any waiting.
+            Grupo Nº 1 wants to thanks to Eli Bendersky for the idea.
+
+            :param cola: Cola de entrada
         """
-        self._logger.debug("Comprobar colas")
-        if self.ql_entrenar_out_q is not None:
-            self._logger.debug("Comprobar cola QLearning Entrenar: {0}"
-                          .format(self.ql_entrenar_out_q))
-            self.leer_ql_input(self.ql_entrenar_out_q)
-
-        if self.ql_recorrer_out_q is not None:
-            self._logger.debug("Comprobar cola QLearning Recorrer: {0}"
-                          .format(self.ql_recorrer_out_q))
-            self._procesar_info_ql_recorrido(self.ql_recorrer_out_q)
+        try:
+            while True:
+                yield cola.get_nowait()
+        except Queue.Empty:
+            raise StopIteration
 
     def comprobar_actividad_procesos(self):
         u"""
@@ -885,22 +874,6 @@ class MainWindow(QtGui.QMainWindow):
                 action.setChecked(True)
 
         self.WMainWindow.menuQLearning.addMenu(submenu_tecnica)
-
-    def _procesar_info_ql_recorrido(self, cola):
-        ql_datos_in = list(get_all_from_queue(cola))
-
-        # Testing
-        #=======================================================================
-        # try:
-        #     cola.task_done()
-        # except ValueError:
-        #     pass
-        #=======================================================================
-
-        # self._logger.debug("[Recorrer] Datos In: {0}".format(ql_datos_in))
-        if len(ql_datos_in) > 0:
-            self.ql_datos_recorrer_in_feed.add_data(ql_datos_in)
-            # self._logger.debug("[Recorrer] Datos de entrada: {0}".format(ql_datos_in))
 
     def mostrar_opciones_gw(self):
         # Inicializar cuadros de diálogo

@@ -60,15 +60,6 @@ class ShowMatrizDialog(QtGui.QDialog):
         # Establecer propiedades visuales de la tabla
         self.ShowMatrizD.tblMatriz.setRowCount(dimension)
         self.ShowMatrizD.tblMatriz.setColumnCount(dimension)
-        self.ShowMatrizD.tblMatriz.horizontalHeader().setDefaultSectionSize(ancho_estado_px)
-        self.ShowMatrizD.tblMatriz.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-        self.ShowMatrizD.tblMatriz.verticalHeader().setDefaultSectionSize(ancho_estado_px)
-        self.ShowMatrizD.tblMatriz.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-        self.ShowMatrizD.tblMatriz.setCursor(QtCore.Qt.PointingHandCursor)
-        ancho_contenedor = ancho_gw_px + self.ShowMatrizD.tblMatriz.verticalHeader().width() + 1
-        alto_contenedor = ancho_gw_px + self.ShowMatrizD.tblMatriz.horizontalHeader().height() + 1
-        # self.ShowMatrizD.tblMatriz.setFixedSize(ancho_contenedor, alto_contenedor)
-        # self.ShowMatrizD.tblMatriz.setMaximumSize(ancho_contenedor, alto_contenedor)
 
         # Desactivar actualización de la tabla para optimizar la carga
         self.ShowMatrizD.tblMatriz.setUpdatesEnabled(False)
@@ -91,9 +82,11 @@ class ShowMatrizDialog(QtGui.QDialog):
                     # Cada item muestra la letra asignada al estado
                     item = QtGui.QTableWidgetItem(str(value))
                     item.setBackgroundColor(QtGui.QColor("#FFFFFF"))
-                    item.setFlags(QtCore.Qt.ItemIsEnabled)
+                    item.setFlags(QtCore.Qt.ItemIsEnabled |
+                                  QtCore.Qt.ItemIsSelectable)
                     item.setTextAlignment(QtCore.Qt.AlignHCenter |
                                           QtCore.Qt.AlignCenter)
+                    item.setToolTip(str(value))
 
                     coord_y = (fila * alto_gw) + columna
                     coord_x = ((key[0] - 1) * ancho_gw) + (key[1] - 1)
@@ -101,6 +94,17 @@ class ShowMatrizDialog(QtGui.QDialog):
 
         # Reactivar la actualización de la tabla
         self.ShowMatrizD.tblMatriz.setUpdatesEnabled(True)
+
+        self.ShowMatrizD.tblMatriz.horizontalHeader().setDefaultSectionSize(ancho_estado_px)
+        self.ShowMatrizD.tblMatriz.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
+        self.ShowMatrizD.tblMatriz.verticalHeader().setDefaultSectionSize(ancho_estado_px)
+        self.ShowMatrizD.tblMatriz.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
+        # self.ShowMatrizD.tblMatriz.setCursor(QtCore.Qt.PointingHandCursor)
+        ancho_contenedor = ancho_gw_px + self.ShowMatrizD.tblMatriz.verticalHeader().width() + 1
+        alto_contenedor = ancho_gw_px + self.ShowMatrizD.tblMatriz.horizontalHeader().height() + 1
+        # self.ShowMatrizD.tblMatriz.setFixedSize(ancho_contenedor, alto_contenedor)
+        # self.ShowMatrizD.tblMatriz.setMaximumSize(ancho_contenedor, alto_contenedor)
+        self.setMaximumSize(ancho_contenedor + 25, alto_contenedor + 62)
 
     def _set_dialog_signals(self):
         pass

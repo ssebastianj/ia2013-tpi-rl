@@ -68,12 +68,12 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # En Windows se obtiene mayor precisión al utilizar clock()
         # En UNIX conviene utilizar time()
         if sys.platform == 'win32':
-            _timer = time.clock
+            wtimer = time.clock
         else:
-            _timer = time.time
+            wtimer = time.time
 
         # Registrar tiempo de comienzo
-        running_start_time = _timer()
+        running_start_time = wtimer()
 
         # Realizar tareas al comienzo
         self._do_on_start()
@@ -116,7 +116,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         decrementar_step = 0
         # Registrar tiempo de comienzo de los episodios
-        ep_start_time = _timer()
+        ep_start_time = wtimer()
 
         # Ejecutar una cantidad dada de episodios
         for epnum in xrange(1, self.cant_episodios + 1):
@@ -145,7 +145,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             cant_iteraciones = 0
             while (not self._stoprequest.is_set()) and (not estado_actual[0] == TIPOESTADO.FINAL):
                 # Registrar tiempo de comienzo de las iteraciones
-                iter_start_time = _timer()
+                iter_start_time = wtimer()
 
                 # TODO: Utilizar detector de bloqueos
                 if self.detector_bloqueo:
@@ -212,7 +212,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 self.tecnica.decrementar_parametro()
                 decrementar_step = 0
 
-            iter_end_time = _timer()
+            iter_end_time = wtimer()
 
             # Calcular tiempo de ejecución de las iteraciones
             iter_exec_time = iter_end_time - iter_start_time
@@ -234,7 +234,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 break
 
         # Calcular tiempos de finalización
-        running_end_time = ep_end_time = _timer()
+        running_end_time = ep_end_time = wtimer()
         ep_exec_time = ep_end_time - ep_start_time
         running_exec_time = running_end_time - running_start_time
 
@@ -451,12 +451,12 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         recorrido de Q-Learning.
         """
         if sys.platform == 'win32':
-            _timer = time.clock
+            wtimer = time.clock
         else:
-            _timer = time.time
+            wtimer = time.time
 
         # Registrar tiempo de comienzo
-        running_start_time = _timer()
+        running_start_time = wtimer()
 
         # Realizar tareas al comienzo
         self._do_on_start()
@@ -479,7 +479,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         camino_optimo = [estado_inicial]
 
         # Registrar tiempo de comienzo
-        rec_start_time = _timer()
+        rec_start_time = wtimer()
         x_act, y_act = estado_inicial
         estado_actual = matriz_q[x_act - 1][y_act - 1]
         while (not self._stoprequest.is_set()) and (not estado_actual[0] == TIPOESTADO.FINAL):
@@ -534,7 +534,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             estado_actual = matriz_q[x_act - 1][y_act - 1]
 
         # Registrar tiempo de finalización
-        rec_end_time = _timer()
+        rec_end_time = wtimer()
         rec_exec_time = rec_end_time - rec_start_time
 
         logging.debug("Camino óptimo: {0}".format(camino_optimo))
@@ -551,7 +551,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             pass
 
         # Registrar tiempo de finalización
-        running_end_time = _timer()
+        running_end_time = wtimer()
         running_exec_time = running_end_time - running_start_time
 
         # Poner en la cola de salida los resultados
