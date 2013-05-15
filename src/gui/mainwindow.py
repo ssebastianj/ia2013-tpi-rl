@@ -565,7 +565,7 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer = QtCore.QTimer(self)
         # Conectar disparo de timer con método
         self.wnd_timer.timeout.connect(self._on_window_timer)
-        self.wnd_timer.start(40)
+        self.wnd_timer.start(20)
 
         if self.entrenar_is_running:
             self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
