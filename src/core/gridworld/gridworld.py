@@ -58,7 +58,7 @@ class GridWorld(object):
                                                                "Bueno",
                                                                "B",
                                                                "#4F0ACC")
-            self._tipos_estados[TIPOESTADO.MALO] = TipoEstado(TIPOESTADO.MALO, 10,
+            self._tipos_estados[TIPOESTADO.MALO] = TipoEstado(TIPOESTADO.MALO, -10,
                                                               "Malo",
                                                               "M",
                                                               "#EB00A1")
