@@ -865,7 +865,7 @@
       <widget class="QGroupBox" name="gbEstadoEjecucion">
        <property name="minimumSize">
         <size>
-         <width>220</width>
+         <width>250</width>
          <height>0</height>
         </size>
        </property>
@@ -1013,6 +1013,12 @@
              </item>
              <item>
               <widget class="QLabel" name="lblExecTimeEpisodios">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>-</string>
                </property>
@@ -1043,6 +1049,12 @@
              </item>
              <item>
               <widget class="QLabel" name="lblExecTimeIteraciones">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>-</string>
                </property>
@@ -1073,6 +1085,12 @@
              </item>
              <item>
               <widget class="QLabel" name="lblExecTimeTotal">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>-</string>
                </property>

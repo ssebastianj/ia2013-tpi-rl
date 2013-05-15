@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Tue May 14 23:51:44 2013
+# Created: Wed May 15 00:41:21 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -347,7 +347,7 @@ class Ui_MainWindow(object):
         self.gridLayout_18.addItem(spacerItem8, 0, 2, 1, 1)
         self.gridLayout_20.addWidget(self.gbAgente, 0, 1, 1, 1)
         self.gbEstadoEjecucion = QtGui.QGroupBox(self.dockWidgetContents_4)
-        self.gbEstadoEjecucion.setMinimumSize(QtCore.QSize(220, 0))
+        self.gbEstadoEjecucion.setMinimumSize(QtCore.QSize(250, 0))
         self.gbEstadoEjecucion.setObjectName(_fromUtf8("gbEstadoEjecucion"))
         self.gridLayout_3 = QtGui.QGridLayout(self.gbEstadoEjecucion)
         self.gridLayout_3.setContentsMargins(-1, 5, -1, -1)
@@ -416,6 +416,11 @@ class Ui_MainWindow(object):
         self.label_13.setObjectName(_fromUtf8("label_13"))
         self.horizontalLayout_7.addWidget(self.label_13)
         self.lblExecTimeEpisodios = QtGui.QLabel(self.groupBox_3)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lblExecTimeEpisodios.sizePolicy().hasHeightForWidth())
+        self.lblExecTimeEpisodios.setSizePolicy(sizePolicy)
         self.lblExecTimeEpisodios.setObjectName(_fromUtf8("lblExecTimeEpisodios"))
         self.horizontalLayout_7.addWidget(self.lblExecTimeEpisodios)
         self.gridLayout_21.addLayout(self.horizontalLayout_7, 0, 0, 1, 1)
@@ -431,6 +436,11 @@ class Ui_MainWindow(object):
         self.label_11.setObjectName(_fromUtf8("label_11"))
         self.horizontalLayout_6.addWidget(self.label_11)
         self.lblExecTimeIteraciones = QtGui.QLabel(self.groupBox_3)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lblExecTimeIteraciones.sizePolicy().hasHeightForWidth())
+        self.lblExecTimeIteraciones.setSizePolicy(sizePolicy)
         self.lblExecTimeIteraciones.setObjectName(_fromUtf8("lblExecTimeIteraciones"))
         self.horizontalLayout_6.addWidget(self.lblExecTimeIteraciones)
         self.gridLayout_21.addLayout(self.horizontalLayout_6, 1, 0, 1, 1)
@@ -446,6 +456,11 @@ class Ui_MainWindow(object):
         self.label_15.setObjectName(_fromUtf8("label_15"))
         self.horizontalLayout_8.addWidget(self.label_15)
         self.lblExecTimeTotal = QtGui.QLabel(self.groupBox_3)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lblExecTimeTotal.sizePolicy().hasHeightForWidth())
+        self.lblExecTimeTotal.setSizePolicy(sizePolicy)
         self.lblExecTimeTotal.setObjectName(_fromUtf8("lblExecTimeTotal"))
         self.horizontalLayout_8.addWidget(self.lblExecTimeTotal)
         self.gridLayout_21.addLayout(self.horizontalLayout_8, 2, 0, 1, 1)

@@ -104,6 +104,8 @@ class MainWindow(QtGui.QMainWindow):
         # Centrar la ventana en la pantalla
         self.move(x_wnd, y_wnd)
 
+        self.setWindowFlags(QtCore.Qt.WindowSoftkeysVisibleHint)
+
         self.lbl_item_actual = QtGui.QLabel()
         self.WMainWindow.statusBar.addPermanentWidget(self.lbl_item_actual)
 
@@ -731,9 +733,15 @@ class MainWindow(QtGui.QMainWindow):
                                                                  ))
                 self.WMainWindow.lblNroEpisodio.setText(str(nro_episodio))
                 self.WMainWindow.lblNroIteracion.setText(str(cant_iteraciones))
-                self.WMainWindow.lblExecTimeEpisodios.setText("{0:.3f} seg".format(episode_exec_time))
-                self.WMainWindow.lblExecTimeIteraciones.setText("{0:.3f} seg".format(iter_exec_time))
-                self.WMainWindow.lblExecTimeTotal.setText("{0:.3f} seg".format(running_exec_time))
+                self.WMainWindow.lblExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                              .format(episode_exec_time,
+                                                                      episode_exec_time * 1000))
+                self.WMainWindow.lblExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                                .format(iter_exec_time,
+                                                                        iter_exec_time * 1000))
+                self.WMainWindow.lblExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                          .format(running_exec_time,
+                                                                  running_exec_time * 1000))
         except Queue.Empty:
             pass
         except AttributeError:
