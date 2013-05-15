@@ -80,7 +80,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # Obtener matriz R y matriz Q
         try:
-            self.input_data = self._inp_queue.get()
+            self.input_data = self._inp_queue.get(True, 0.05)
         except Queue.Empty:
             logging.debug("Cola de entrada vacía")
             return None
@@ -190,7 +190,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                     self._out_queue.put({'EstadoActual': (x_act, y_act),
                                          'NroEpisodio': epnum,
                                          'NroIteracion': cant_iteraciones,
-                                         'ProcesoJoined': False})
+                                         'ProcesoJoined': False},
+                                        True,
+                                        0.01)
                 except Queue.Full:
                     logging.debug("Cola llena")
                     pass
@@ -223,7 +225,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                      'NroEpisodio': epnum,
                                      'NroIteracion': cant_iteraciones,
                                      'IteracionesExecTime': iter_exec_time,
-                                     'ProcesoJoined': False})
+                                     'ProcesoJoined': False},
+                                    True,
+                                    0.01)
             except Queue.Full:
                 logging.debug("Cola llena")
                 pass
@@ -247,7 +251,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                  'EpisodiosExecTime': ep_exec_time,
                                  'IteracionesExecTime': iter_exec_time,
                                  'ProcesoJoined': False,
-                                 'RunningExecTime': running_exec_time})
+                                 'RunningExecTime': running_exec_time},
+                                True,
+                                0.01)
         except Queue.Full:
             logging.debug("Cola llena")
             pass
@@ -273,7 +279,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Activar flag indicando de que se solicitó detener el proceso
         self._stoprequest.set()
         # Notificar a proceso padre
-        self._out_queue.put({'Joined': True})
+        self._out_queue.put({'Joined': True}, True, 0.01)
         super(QLearningEntrenarWorker, self).join(timeout)
 
     def _crear_cont_ref(self, tipos_vec_exc):
@@ -327,7 +333,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         test_2 = len(self._visitados_1) == len(self._visitados_2)
 
         if test_1 or test_2:
-            self._out_queue.put({'LoopAlarm': True})
+            self._out_queue.put({'LoopAlarm': True}, True, 0.01)
 
     def get_matriz_r(self):
         u"""
@@ -463,7 +469,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
         # Obtener la referencia a la instancia desde la cola de entrada
         try:
-            self.input_data = self._inp_queue.get()
+            self.input_data = self._inp_queue.get(True, 0.01)
         except Queue.Empty:
             logging.debug("Cola de entrada vacía")
             return None
@@ -523,7 +529,10 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             camino_optimo.append(estado_qmax)
 
             try:
-                self._out_queue.put({'EstAct': (x_act, y_act), 'Joined': False})
+                self._out_queue.put({'EstAct': (x_act, y_act),
+                                     'Joined': False},
+                                    True,
+                                    0.01)
             except Queue.Full:
                 logging.debug("Cola llena")
                 pass
@@ -544,7 +553,9 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             self._out_queue.put({'EstadoActual': (x_act, y_act),
                                  'CaminoRecorrido': camino_optimo,
                                  'RunningExecTime': rec_exec_time,
-                                 'ProcesoJoined': False})
+                                 'ProcesoJoined': False},
+                                True,
+                                0.01)
         except Queue.Full:
             logging.debug("Cola llena")
             pass
@@ -555,7 +566,9 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
         # Poner en la cola de salida los resultados
         try:
-            self._out_queue.put({'RunningExecTime': running_exec_time})
+            self._out_queue.put({'RunningExecTime': running_exec_time},
+                                True,
+                                0.01)
         except Queue.Full:
             logging.debug("Cola llena")
             pass
@@ -570,7 +583,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         :param timeout: Tiempo en milisegundos de espera.
         """
         logging.debug("Join")
-        self._out_queue.put({'Joined': True})
+        self._out_queue.put({'Joined': True}, True, 0.01)
         self._stoprequest.set()
         super(QLearningRecorrerWorker, self).join(timeout)
 

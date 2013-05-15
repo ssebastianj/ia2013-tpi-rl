@@ -10,10 +10,11 @@ from PyQt4 import QtCore, QtGui
 
 from info import app_info
 
-from gui.qtgen.mainwindow import Ui_MainWindow
 from gui.aboutdialog import AboutDialog
+from gui.qtgen.mainwindow import Ui_MainWindow
 from gui.gwgenrndestadosdialog import GWGenRndEstadosDialog
 from gui.gwopcionesdialog import GWOpcionesDialog
+from gui.matrizdialog import ShowMatrizDialog
 
 from core.estado.estado import TIPOESTADO
 from core.gridworld.gridworld import GridWorld
@@ -29,7 +30,6 @@ from tools.livedatafeed import LiveDataFeed
 from tools.listacircular import ListaCircular
 from tools.queue import get_all_from_queue, get_item_from_queue
 from tools.taskbar import taskbar
-
 
 try:
     _tr = QtCore.QString.fromUtf8
@@ -85,7 +85,7 @@ class MainWindow(QtGui.QMainWindow):
                          1: "ε-Greedy",
                          2: "Softmax",
                          3: "Aleatorio"}
-        self.gw_dimensiones = [  # "2 x 2", "3 x 3", "4 x 4", "5 x 5",
+        self.gw_dimensiones = ["3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.window_config = {"item":
                               {"show_tooltip": False,
@@ -194,8 +194,8 @@ class MainWindow(QtGui.QMainWindow):
         # Desactivar actualización de la tabla para optimizar la carga
         self.WMainWindow.tblGridWorld.setUpdatesEnabled(False)
         # Rellenar tabla con items
-        for fila in range(0, self.gridworld.alto):
-            for columna in range(0, self.gridworld.ancho):
+        for fila in xrange(0, self.gridworld.alto):
+            for columna in xrange(0, self.gridworld.ancho):
                 estado = self.gridworld.get_estado(fila + 1, columna + 1)
                 letra_estado = estado.tipo.letra
                 # Cada item muestra la letra asignada al estado
@@ -254,6 +254,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.actionAgenteEntrenar.triggered.connect(self.entrenar)
         self.WMainWindow.actionAgenteRecorrer.triggered.connect(self.recorrer_gw)
         self.WMainWindow.actionAgenteCancelar.triggered.connect(self.terminar_proceso)
+        self.WMainWindow.btnMostrarMatrizQ.clicked.connect(self.show_matriz_q)
+        self.WMainWindow.btnMostrarMatrizR.clicked.connect(self.show_matriz_r)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -958,3 +960,18 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbCantEpisodiosDec.setSuffix(_tr(" episodios"))
         self.WMainWindow.chkDecrementarParam.setChecked(True)
         self.WMainWindow.sbQLTau.setValue(0.5)
+
+    def show_matriz_dialog(self, matriz, titulo_corto, titulo_largo):
+        ShowMatrizD = ShowMatrizDialog(matriz,
+                                       titulo_corto,
+                                       titulo_largo,
+                                       self)
+        ShowMatrizD.exec_()
+
+    def show_matriz_r(self):
+        matriz_r = self.gridworld.get_matriz_r()
+        self.show_matriz_dialog(matriz_r, "Matriz R", "Matriz de recompensas")
+
+    def show_matriz_q(self):
+        if self.matriz_q is not None:
+            self.show_matriz_dialog(self.matriz_q, "Matriz Q", "Matriz Q")
