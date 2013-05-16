@@ -57,7 +57,7 @@ class QLearning(object):
         inp_queue = multiprocessing.Queue()
         # Encolar Matriz R, Matriz Q, Número de episodios, Parámetro Gamma
         inp_queue.put((self._gridworld.estados,
-                       self.gridworld.coordenadas,
+                       self._gridworld.coordenadas,
                        self._gamma,
                        self._episodes,
                        self._tecnica,

@@ -38,7 +38,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self.matriz_r = None
         self.matriz_q = None
         self.estados = None
-        self.excluir_tipos_vecinos = None
+        self.tipos_vec_excluidos = None
 
         # FIXME: Logging
         logging.basicConfig(level=logging.DEBUG,
@@ -335,8 +335,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         y sus vecinos. Representa las transiciones posibles.
         """
         # Verificar si hay tipos de vecinos a excluir de la matriz R
-        if self.excluir_tipos_vecinos is None:
-            self.excluir_tipos_vecinos = []
+        if self.tipos_vec_excluidos is None:
+            self.tipos_vec_excluidos = []
 
         matriz_r = numpy.empty((self.alto, self.ancho), object)
         # Crear una lista de listas
@@ -353,7 +353,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 recomp_and_vec = {}
 
                 for vecino in vecinos:
-                    if vecino.tipo.ide not in self.excluir_tipos_vecinos:
+                    if vecino.tipo.ide not in self.tipos_vec_excluidos:
                         recomp_and_vec[(vecino.fila, vecino.columna)] = vecino.tipo.recompensa
 
                 fila.append((estado_ide, recomp_and_vec))
@@ -523,8 +523,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             camino_optimo.append(estado_qmax)
 
             try:
-                self._out_queue.put({'EstAct': (x_act, y_act),
-                                     'Joined': False})
+                self._out_queue.put({'EstadoActual': (x_act, y_act),
+                                     'ProcesoJoined': False})
             except Queue.Full:
                 logging.debug("Cola llena")
                 pass
@@ -544,7 +544,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         try:
             self._out_queue.put({'EstadoActual': (x_act, y_act),
                                  'CaminoRecorrido': camino_optimo,
-                                 'RunningExecTime': rec_exec_time,
+                                 'RecorridoExecTime': rec_exec_time,
                                  'ProcesoJoined': False})
         except Queue.Full:
             logging.debug("Cola llena")
@@ -556,7 +556,11 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
         # Poner en la cola de salida los resultados
         try:
-            self._out_queue.put({'RunningExecTime': running_exec_time})
+            self._out_queue.put({'EstadoActual': (x_act, y_act),
+                                 'CaminoRecorrido': camino_optimo,
+                                 'RecorridoExecTime': rec_exec_time,
+                                 'ProcesoJoined': False,
+                                 'RunningExecTime': running_exec_time})
         except Queue.Full:
             logging.debug("Cola llena")
             pass
@@ -576,7 +580,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         super(QLearningRecorrerWorker, self).join(timeout)
 
     def _contar_ref(self, estado):
-        umbral = 2
+        umbral = 1
 
         if estado in self._contador_ref:
             self._contador_ref[estado] += 1

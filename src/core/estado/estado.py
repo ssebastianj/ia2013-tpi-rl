@@ -12,7 +12,8 @@ from tools.enum import enum
 # Ide = 3 (Neutro)
 # Ide = 4 (Excelente)
 # Ide = 5 (Bueno)
-# Ide = 6 (Pared)
+# Ide = 6 (Malo)
+# Ide = 7 (Pared)
 TIPOESTADO = enum(INICIAL=0,
                   FINAL=1,
                   AGENTE=2,

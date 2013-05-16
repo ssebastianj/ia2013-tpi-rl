@@ -585,6 +585,13 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.gbGeneral.setDisabled(True)
         self.WMainWindow.gbMatrices.setDisabled(True)
 
+        self.WMainWindow.lblEstadoActual.setText("-")
+        self.WMainWindow.lblExecTimeEpisodios.setText("-")
+        self.WMainWindow.lblExecTimeIteraciones.setText("-")
+        self.WMainWindow.lblExecTimeTotal.setText("-")
+        self.WMainWindow.lblNroEpisodio.setText("-")
+        self.WMainWindow.lblNroIteracion.setText("-")
+
         try:
             self.wnd_taskbar = taskbar.WindowsTaskBar()
             self.wnd_taskbar.HrInit()
@@ -693,7 +700,7 @@ class MainWindow(QtGui.QMainWindow):
             # self._logger.debug("[Entrenar] Actualizar ventana con: {0}".format(data_entrenar)) @IgnorePep8
 
             for ql_ent_info in data_entrenar:
-                estado_actual = ql_ent_info.get('EstadoActual', None)
+                estado_actual_ent = ql_ent_info.get('EstadoActual', None)
                 nro_episodio = ql_ent_info.get('NroEpisodio', None)
                 cant_iteraciones = ql_ent_info.get('NroIteracion', None)
                 episode_exec_time = ql_ent_info.get('EpisodiosExecTime', 0.0)
@@ -701,14 +708,14 @@ class MainWindow(QtGui.QMainWindow):
                 worker_joined = ql_ent_info.get('ProcesoJoined', None)
                 loop_alarm = ql_ent_info.get('LoopAlarm', None)
                 matriz_q = ql_ent_info.get('MatrizQ', None)
-                running_exec_time = ql_ent_info.get('RunningExecTime', 0.0)
+                running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
 
-                self._logger.debug("[Entrenar] Estado actual: {0}".format(estado_actual))
+                self._logger.debug("[Entrenar] Estado actual: {0}".format(estado_actual_ent))
                 self._logger.debug("[Entrenar] Episodio: {0}".format(nro_episodio))
                 self._logger.debug("[Entrenar] Iteraciones: {0}".format(cant_iteraciones))
                 self._logger.debug("[Entrenar] Tiempo ejecución episodio: {0}".format(episode_exec_time))
                 self._logger.debug("[Entrenar] Tiempo ejecución iteración: {0}".format(iter_exec_time))
-                self._logger.debug("[Entrenar] Tiempo ejecución total: {0}".format(running_exec_time))
+                self._logger.debug("[Entrenar] Tiempo ejecución total: {0}".format(running_exec_time_ent))
                 self._logger.debug("[Entrenar] Worker joined : {0}".format(worker_joined))
                 # self._logger.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
                 self._logger.debug("[Entrenar] Loop Alarm: {0}".format(loop_alarm))
@@ -728,8 +735,8 @@ class MainWindow(QtGui.QMainWindow):
                         self.ql_entrenar_out_q = None
 
                 self.WMainWindow.lblEstadoActual.setText("X:{0}  Y:{1}"
-                                                         .format(estado_actual[0],
-                                                                 estado_actual[1]
+                                                         .format(estado_actual_ent[0],
+                                                                 estado_actual_ent[1]
                                                                  ))
                 self.WMainWindow.lblNroEpisodio.setText(str(nro_episodio))
                 self.WMainWindow.lblNroIteracion.setText(str(cant_iteraciones))
@@ -740,8 +747,8 @@ class MainWindow(QtGui.QMainWindow):
                                                                 .format(iter_exec_time,
                                                                         iter_exec_time * 1000))
                 self.WMainWindow.lblExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                          .format(running_exec_time,
-                                                                  running_exec_time * 1000))
+                                                          .format(running_exec_time_ent,
+                                                                  running_exec_time_ent * 1000))
         except Queue.Empty:
             pass
         except AttributeError:
@@ -752,15 +759,24 @@ class MainWindow(QtGui.QMainWindow):
             # self._logger.debug("[Recorrer] Actualizar ventana con: {0}".format(data_recorrer)) @IgnorePep8
 
             for ql_rec_info in data_recorrer:
-                estado_actual = ql_rec_info.get('EstadoActual', None)
+                estado_actual_rec = ql_rec_info.get('EstadoActual', None)
                 camino_optimo = ql_rec_info.get('CaminoRecorrido', None)
-                rec_exec_time = ql_rec_info.get('RunningExecTime', None)
+                running_exec_time_rec = ql_rec_info.get('RunningExecTime', 0.0)
                 worker_joined = ql_rec_info.get('ProcesoJoined', None)
+                rec_exec_time = ql_rec_info.get('RecorridoExecTime', 0.0)
 
-                self._logger.debug("[Recorrer] Estado actual: {0}".format(estado_actual))
+                self._logger.debug("[Recorrer] Estado actual: {0}".format(estado_actual_rec))
                 self._logger.debug("[Recorrer] Camino óptimo: {0}".format(camino_optimo))
-                self._logger.debug("[Recorrer] Tiempo ejecución recorrido: {0}".format(rec_exec_time))
+                self._logger.debug("[Recorrer] Tiempo ejecución recorrido: {0}".format(running_exec_time_rec))
                 self._logger.debug("[Recorrer] Worker joined: {0}".format(worker_joined))
+
+                self.WMainWindow.lblEstadoActual.setText("X:{0}  Y:{1}"
+                                                         .format(estado_actual_rec[0],
+                                                                 estado_actual_rec[1]
+                                                                 ))
+                self.WMainWindow.lblExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                          .format(running_exec_time_rec,
+                                                                  running_exec_time_rec * 1000))
 
                 # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
                 if camino_optimo is not None:
@@ -954,5 +970,6 @@ class MainWindow(QtGui.QMainWindow):
         self.show_matriz_dialog(matriz_r, "Matriz R", "Matriz de recompensas")
 
     def show_matriz_q(self):
+        print self.matriz_q
         if self.matriz_q is not None:
             self.show_matriz_dialog(self.matriz_q, "Matriz Q", "Matriz Q")
