@@ -929,7 +929,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def refresh_gw(self):
         # Establece la dimensión por defecto del tblGridWorld en 6x6
-        self.set_gw_dimension(self.WMainWindow.cbGWDimension.itemData(0).toString())
+        indice = self.WMainWindow.cbGWDimension.currentIndex()
+        self.set_gw_dimension(self.WMainWindow.cbGWDimension.itemData(indice).toString())
 
     def inicializar_ql_vals(self):
         # Cargar técnicas posibles

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>438</width>
-    <height>501</height>
+    <width>430</width>
+    <height>392</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
+   <item row="1" column="1">
     <widget class="QTableWidget" name="tblMatriz">
      <property name="contextMenuPolicy">
       <enum>Qt::NoContextMenu</enum>
@@ -57,7 +57,41 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Acciones</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::NoTextInteraction</set>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <italic>false</italic>
+       <bold>true</bold>
+       <underline>false</underline>
+      </font>
+     </property>
+     <property name="text">
+      <string>Estados</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout">
      <item row="1" column="1">
       <widget class="QPushButton" name="btnCerrarDialogo">

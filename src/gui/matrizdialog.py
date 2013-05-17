@@ -61,8 +61,18 @@ class ShowMatrizDialog(QtGui.QDialog):
         self.ShowMatrizD.tblMatriz.setRowCount(dimension)
         self.ShowMatrizD.tblMatriz.setColumnCount(dimension)
 
+        #=======================================================================
+        # headers_horizontales = ["A" + str(i) for i in xrange(1, dimension + 1)]
+        # headers_verticales = ["E" + str(i) for i in xrange(1, dimension + 1)]
+        # self.ShowMatrizD.tblMatriz.setHorizontalHeaderLabels(headers_horizontales)
+        # self.ShowMatrizD.tblMatriz.setVerticalHeaderLabels(headers_verticales)
+        #=======================================================================
+
         # Desactivar actualización de la tabla para optimizar la carga
         self.ShowMatrizD.tblMatriz.setUpdatesEnabled(False)
+
+        headers_horizontales = []
+        headers_verticales = []
 
         for fila in xrange(dimension):
             for columna in xrange(dimension):
@@ -86,11 +96,27 @@ class ShowMatrizDialog(QtGui.QDialog):
                                   QtCore.Qt.ItemIsSelectable)
                     item.setTextAlignment(QtCore.Qt.AlignHCenter |
                                           QtCore.Qt.AlignCenter)
-                    item.setToolTip(str(value))
 
                     coord_x = (fila * alto_gw) + columna
                     coord_y = ((key[0] - 1) * ancho_gw) + (key[1] - 1)
+
+                    item.setToolTip(u"({0},{1}) ---> {2}"
+                                    .format(coord_x, coord_y, key))
                     self.ShowMatrizD.tblMatriz.setItem(coord_x, coord_y, item)
+
+                # Armar headers horizontales (Acciones)
+                headers_horizontales.append("A{0} ({1},{2})"
+                                            .format(columna + 1,
+                                                    fila + 1,
+                                                    columna + 1))
+                # Armar headers verticales (Estados)
+                headers_verticales.append("E{0} ({1},{2})"
+                                          .format(columna + 1,
+                                                  fila + 1,
+                                                  columna + 1))
+
+        self.ShowMatrizD.tblMatriz.setHorizontalHeaderLabels(headers_horizontales)
+        self.ShowMatrizD.tblMatriz.setVerticalHeaderLabels(headers_verticales)
 
         # Reactivar la actualización de la tabla
         self.ShowMatrizD.tblMatriz.setUpdatesEnabled(True)
@@ -104,7 +130,7 @@ class ShowMatrizDialog(QtGui.QDialog):
         alto_contenedor = ancho_gw_px + self.ShowMatrizD.tblMatriz.horizontalHeader().height() + 1
         # self.ShowMatrizD.tblMatriz.setFixedSize(ancho_contenedor, alto_contenedor)
         # self.ShowMatrizD.tblMatriz.setMaximumSize(ancho_contenedor, alto_contenedor)
-        self.setMaximumSize(ancho_contenedor + 25, alto_contenedor + 62)
+        self.setMaximumSize(ancho_contenedor + 75, alto_contenedor + 82)
 
     def _set_dialog_signals(self):
         pass

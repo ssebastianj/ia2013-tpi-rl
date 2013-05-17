@@ -506,12 +506,15 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
             # Comprobar si hay estados con valores Q iguales y elegir uno
             # de forma aleatoria
-            if len(estados_qmax) == 1:
+            long_vecinos = len(estados_qmax)
+            if long_vecinos == 1:
                 estado_qmax = estados_qmax[0]
                 logging.debug("Existe un sólo estado vecino con Q máximo")  # FIXME: Eliminar print de debug @IgnorePep8
-            else:
+            elif long_vecinos > 1:
                 estado_qmax = random.choice(estados_qmax)
                 logging.debug("Existen varios estados con igual valor Q")  # FIXME: Eliminar print de debug @IgnorePep8
+            else:
+                pass
 
             logging.debug("Estado Q Máximo: {0}".format(estado_qmax))
             x_eleg, y_eleg = estado_qmax
@@ -580,7 +583,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         super(QLearningRecorrerWorker, self).join(timeout)
 
     def _contar_ref(self, estado):
-        umbral = 1
+        umbral = 2
 
         if estado in self._contador_ref:
             self._contador_ref[estado] += 1
