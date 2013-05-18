@@ -105,8 +105,8 @@ class ShowMatrizDialog(QtGui.QDialog):
                     self.ShowMatrizD.tblMatriz.setItem(coord_x, coord_y, item)
 
                 # Armar headers horizontales (Acciones)
-                headers_horizontales.append("A{0} ({1},{2})"
-                                            .format(columna + 1,
+                headers_horizontales.append("A{0}\n({1},{2})"
+                                            .format((fila * alto_gw) + columna + 1,
                                                     fila + 1,
                                                     columna + 1))
                 # Armar headers verticales (Estados)
@@ -130,7 +130,7 @@ class ShowMatrizDialog(QtGui.QDialog):
         alto_contenedor = ancho_gw_px + self.ShowMatrizD.tblMatriz.horizontalHeader().height() + 1
         # self.ShowMatrizD.tblMatriz.setFixedSize(ancho_contenedor, alto_contenedor)
         # self.ShowMatrizD.tblMatriz.setMaximumSize(ancho_contenedor, alto_contenedor)
-        self.setMaximumSize(ancho_contenedor + 75, alto_contenedor + 82)
+        self.setMaximumSize(ancho_contenedor + 108, alto_contenedor + 96)
 
     def _set_dialog_signals(self):
         pass

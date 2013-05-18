@@ -16,9 +16,11 @@ class EGreedy(QLTecnica):
 
         :param epsilon: Parámetro Epsilon de la técnica.
         """
-        super(EGreedy, self).__init__(paso_decremento, intervalo_decremento)
+        super(EGreedy, self).__init__()
         self._val_param_general = epsilon
         self._name = "EGreedy"
+        self._paso_decremento = paso_decremento
+        self._intervalo_decremento = intervalo_decremento
 
     def get_epsilon_general(self):
         return self._val_param_general
