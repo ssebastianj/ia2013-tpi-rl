@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>819</width>
-    <height>579</height>
+    <width>821</width>
+    <height>581</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,7 +64,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>819</width>
+     <width>821</width>
      <height>21</height>
     </rect>
    </property>
@@ -805,6 +805,12 @@
   <widget class="QDockWidget" name="dockWidget_3">
    <property name="locale">
     <locale language="Spanish" country="Argentina"/>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Métricas</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>

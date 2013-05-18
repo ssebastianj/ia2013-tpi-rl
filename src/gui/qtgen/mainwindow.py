@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Sat May 18 16:44:50 2013
+# Created: Sat May 18 17:27:43 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(819, 579)
+        MainWindow.resize(821, 581)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/LogoUTN")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -55,7 +55,7 @@ class Ui_MainWindow(object):
         self.gridLayout_14.addWidget(self.tblGridWorld, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtGui.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 819, 21))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 821, 21))
         self.menuBar.setObjectName(_fromUtf8("menuBar"))
         self.menuArchivo = QtGui.QMenu(self.menuBar)
         self.menuArchivo.setObjectName(_fromUtf8("menuArchivo"))
@@ -341,6 +341,7 @@ class Ui_MainWindow(object):
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.dwEjecucion)
         self.dockWidget_3 = QtGui.QDockWidget(MainWindow)
         self.dockWidget_3.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.dockWidget_3.setFeatures(QtGui.QDockWidget.DockWidgetFloatable|QtGui.QDockWidget.DockWidgetMovable)
         self.dockWidget_3.setObjectName(_fromUtf8("dockWidget_3"))
         self.dockWidgetContents_3 = QtGui.QWidget()
         self.dockWidgetContents_3.setObjectName(_fromUtf8("dockWidgetContents_3"))
@@ -663,6 +664,7 @@ class Ui_MainWindow(object):
         self.btnEntrenar.setText(_translate("MainWindow", "Entrenar", None))
         self.btnRecorrer.setText(_translate("MainWindow", "Recorrer", None))
         self.btnTerminarProceso.setText(_translate("MainWindow", "Cancelar", None))
+        self.dockWidget_3.setWindowTitle(_translate("MainWindow", "Métricas", None))
         self.gbEntrenamiento.setTitle(_translate("MainWindow", "Entrenamiento", None))
         self.gbEntExecTime.setTitle(_translate("MainWindow", "Tiempo de ejecución", None))
         self.label_13.setText(_translate("MainWindow", "Episodios:", None))
