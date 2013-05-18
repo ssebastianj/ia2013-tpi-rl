@@ -749,7 +749,7 @@ class MainWindow(QtGui.QMainWindow):
                                                                  ))
                 self.WMainWindow.lblEntNroEpisodio.setText(str(nro_episodio))
                 self.WMainWindow.lblEntNroIteracion.setText(str(cant_iteraciones))
-                self.WMainWindow.lblEntValParametro.setText(str(valor_parametro))
+                self.WMainWindow.lblEntValParametro.setText("{0:.2f}".format(valor_parametro))
                 self.WMainWindow.lblEntExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)"
                                                               .format(episode_exec_time,
                                                                       episode_exec_time * 1000))
