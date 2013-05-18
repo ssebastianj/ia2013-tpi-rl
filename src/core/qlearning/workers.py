@@ -190,7 +190,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                     self._out_queue.put({'EstadoActual': (x_act, y_act),
                                          'NroEpisodio': epnum,
                                          'NroIteracion': cant_iteraciones,
-                                         'ProcesoJoined': False})
+                                         'ValorParametro': self.tecnica.valor_param_parcial,
+                                         'ProcesoJoined': False
+                                       })
                 except Queue.Full:
                     logging.debug("Cola llena")
                     pass
@@ -205,15 +207,17 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             if self._stoprequest.is_set():
                 break
 
-            decrementar_step += 1
-            # Comprobar si es necesario decrementar el valor del parámetro
-            if self.tecnica.intervalo_decremento == decrementar_step:
-                # Decrementar valor del parámetro en 1 paso
-                self.tecnica.decrementar_parametro()
-                decrementar_step = 0
+            #===================================================================
+            # decrementar_step += 1
+            # # Comprobar si es necesario decrementar el valor del parámetro
+            # if self.tecnica.intervalo_decremento == decrementar_step:
+            #     # Decrementar valor del parámetro en 1 paso
+            #     self.tecnica.decrementar_parametro()
+            #     decrementar_step = 0
+            #===================================================================
+            self.tecnica.decrementar_parametro()
 
             iter_end_time = wtimer()
-
             # Calcular tiempo de ejecución de las iteraciones
             iter_exec_time = iter_end_time - iter_start_time
 
@@ -223,7 +227,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                      'NroEpisodio': epnum,
                                      'NroIteracion': cant_iteraciones,
                                      'IteracionesExecTime': iter_exec_time,
-                                     'ProcesoJoined': False})
+                                     'ValorParametro': self.tecnica.valor_param_parcial,
+                                     'ProcesoJoined': False
+                                     })
             except Queue.Full:
                 logging.debug("Cola llena")
                 pass
@@ -247,7 +253,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                  'EpisodiosExecTime': ep_exec_time,
                                  'IteracionesExecTime': iter_exec_time,
                                  'ProcesoJoined': False,
-                                 'RunningExecTime': running_exec_time})
+                                 'ValorParametro': self.tecnica.valor_param_parcial,
+                                 'RunningExecTime': running_exec_time
+                               })
         except Queue.Full:
             logging.debug("Cola llena")
             pass

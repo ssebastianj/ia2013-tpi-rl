@@ -81,6 +81,7 @@ class MainWindow(QtGui.QMainWindow):
         self.worker_queues_list = None
         self.entrenar_is_running = False
         self.recorrer_is_running = False
+        self.wnd_taskbar = None
 
         self.tecnicas = {0: "Greedy",
                          1: "ε-Greedy",
@@ -574,23 +575,28 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.btnEntrenar.setDisabled(self.entrenar_is_running)
             self.WMainWindow.btnRecorrer.setDisabled(self.entrenar_is_running)
 
+            self.WMainWindow.lblEntEstadoActual.setText("-")
+            self.WMainWindow.lblEntExecTimeEpisodios.setText("-")
+            self.WMainWindow.lblEntExecTimeIteraciones.setText("-")
+            self.WMainWindow.lblEntExecTimeTotal.setText("-")
+            self.WMainWindow.lblEntNroEpisodio.setText("-")
+            self.WMainWindow.lblEntNroIteracion.setText("-")
+            self.WMainWindow.lblEntValParametro.setText("-")
+
         if self.recorrer_is_running:
             self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
             self.WMainWindow.btnEntrenar.setDisabled(self.recorrer_is_running)
             self.WMainWindow.btnRecorrer.setDisabled(self.recorrer_is_running)
+
+            self.WMainWindow.lblRecEstadoActual.setText("-")
+            self.WMainWindow.lblRecExecTimeRecorrido.setText("-")
+            self.WMainWindow.lblRecExecTimeTotal.setText("-")
 
         self.WMainWindow.btnTerminarProceso.setEnabled(True)
         self.WMainWindow.gbGridWorld.setDisabled(True)
         self.WMainWindow.gbQLearning.setDisabled(True)
         self.WMainWindow.gbGeneral.setDisabled(True)
         self.WMainWindow.gbMatrices.setDisabled(True)
-
-        self.WMainWindow.lblEstadoActual.setText("-")
-        self.WMainWindow.lblExecTimeEpisodios.setText("-")
-        self.WMainWindow.lblExecTimeIteraciones.setText("-")
-        self.WMainWindow.lblExecTimeTotal.setText("-")
-        self.WMainWindow.lblNroEpisodio.setText("-")
-        self.WMainWindow.lblNroIteracion.setText("-")
 
         try:
             self.wnd_taskbar = taskbar.WindowsTaskBar()
@@ -708,6 +714,7 @@ class MainWindow(QtGui.QMainWindow):
                 worker_joined = ql_ent_info.get('ProcesoJoined', None)
                 loop_alarm = ql_ent_info.get('LoopAlarm', None)
                 matriz_q = ql_ent_info.get('MatrizQ', None)
+                valor_parametro = ql_ent_info.get('ValorParametro', None)
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
 
                 self._logger.debug("[Entrenar] Estado actual: {0}".format(estado_actual_ent))
@@ -719,6 +726,7 @@ class MainWindow(QtGui.QMainWindow):
                 self._logger.debug("[Entrenar] Worker joined : {0}".format(worker_joined))
                 # self._logger.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
                 self._logger.debug("[Entrenar] Loop Alarm: {0}".format(loop_alarm))
+                self._logger.debug("[Entrenar] Valor Parámetro: {0}".format(valor_parametro))
 
                 if matriz_q is not None:
                     self.matriz_q = matriz_q
@@ -734,19 +742,20 @@ class MainWindow(QtGui.QMainWindow):
                         self.ql_entrenar_error_q = None
                         self.ql_entrenar_out_q = None
 
-                self.WMainWindow.lblEstadoActual.setText("X:{0}  Y:{1}"
+                self.WMainWindow.lblEntEstadoActual.setText("X:{0}  Y:{1}"
                                                          .format(estado_actual_ent[0],
                                                                  estado_actual_ent[1]
                                                                  ))
-                self.WMainWindow.lblNroEpisodio.setText(str(nro_episodio))
-                self.WMainWindow.lblNroIteracion.setText(str(cant_iteraciones))
-                self.WMainWindow.lblExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)"
+                self.WMainWindow.lblEntNroEpisodio.setText(str(nro_episodio))
+                self.WMainWindow.lblEntNroIteracion.setText(str(cant_iteraciones))
+                self.WMainWindow.lblEntValParametro.setText(str(valor_parametro))
+                self.WMainWindow.lblEntExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)"
                                                               .format(episode_exec_time,
                                                                       episode_exec_time * 1000))
-                self.WMainWindow.lblExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)"
+                self.WMainWindow.lblEntExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)"
                                                                 .format(iter_exec_time,
                                                                         iter_exec_time * 1000))
-                self.WMainWindow.lblExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
+                self.WMainWindow.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
                                                           .format(running_exec_time_ent,
                                                                   running_exec_time_ent * 1000))
         except Queue.Empty:
@@ -770,13 +779,16 @@ class MainWindow(QtGui.QMainWindow):
                 self._logger.debug("[Recorrer] Tiempo ejecución recorrido: {0}".format(running_exec_time_rec))
                 self._logger.debug("[Recorrer] Worker joined: {0}".format(worker_joined))
 
-                self.WMainWindow.lblEstadoActual.setText("X:{0}  Y:{1}"
+                self.WMainWindow.lblRecEstadoActual.setText("X:{0}  Y:{1}"
                                                          .format(estado_actual_rec[0],
                                                                  estado_actual_rec[1]
                                                                  ))
-                self.WMainWindow.lblExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
+                self.WMainWindow.lblRecExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
                                                           .format(running_exec_time_rec,
                                                                   running_exec_time_rec * 1000))
+                self.WMainWindow.lblRecExecTimeRecorrido.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                          .format(rec_exec_time,
+                                                                  rec_exec_time * 1000))
 
                 # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
                 if camino_optimo is not None:
@@ -971,6 +983,5 @@ class MainWindow(QtGui.QMainWindow):
         self.show_matriz_dialog(matriz_r, "Matriz R", "Matriz de recompensas")
 
     def show_matriz_q(self):
-        print self.matriz_q
         if self.matriz_q is not None:
             self.show_matriz_dialog(self.matriz_q, "Matriz Q", "Matriz Q")
