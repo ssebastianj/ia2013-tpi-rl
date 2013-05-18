@@ -4,12 +4,12 @@
 
 class QLTecnica(object):
     u"""Técnica para Q-Learning"""
-    def __init__(self, paso_decremento=0, intervalo_decremento=0):
+    def __init__(self, parametro=None, paso_decremento=0, intervalo_decremento=0):
         super(QLTecnica, self).__init__()
         self._paso_decremento = paso_decremento
         self._intervalo_decremento = intervalo_decremento
-        self._val_param_general = None
-        self._val_param_parcial = self._val_param_general
+        self._val_param_general = parametro
+        self._val_param_parcial = parametro
         self._name = "QLTecnica"
 
     def obtener_accion(self, vecinos):

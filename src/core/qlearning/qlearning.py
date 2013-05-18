@@ -33,7 +33,7 @@ class QLearning(object):
 
         self._gridworld = gridworld
         self._gamma = gamma
-        self._tecnica = tecnica
+        self._tecnica_pack = tecnica
         self._episodes = episodes
         self._excluir_tipos_vecinos = excluir_tipos_vecinos
         self._init_value_fn = init_value_fn
@@ -60,7 +60,7 @@ class QLearning(object):
                        self._gridworld.coordenadas,
                        self._gamma,
                        self._episodes,
-                       self._tecnica,
+                       self._tecnica_pack,
                        (self._gridworld.alto, self._gridworld.ancho),
                        False,
                        self._gridworld.tipos_vecinos_excluidos,
@@ -116,11 +116,11 @@ class QLearning(object):
         self._gamma = valor
 
     def get_tecnica(self):
-        return self._tecnica
+        return self._tecnica_pack
 
     def set_tecnica(self, valor):
         if isinstance(valor, QLTecnica):
-            self._tecnica = valor
+            self._tecnica_pack = valor
         else:
             raise TypeError(u"El parámetro debe ser del tipo QLTécnica")
 

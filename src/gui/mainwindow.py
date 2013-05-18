@@ -421,26 +421,24 @@ class MainWindow(QtGui.QMainWindow):
 
         if id_tecnica == 0:
             # Greedy
-            tecnica = Greedy()
+            tecnica = Greedy
         elif id_tecnica == 1:
             # E-Greedy
-            epsilon = self.WMainWindow.sbQLEpsilon.value()
-            tecnica = EGreedy(epsilon)
+            parametro = self.WMainWindow.sbQLEpsilon.value()
+            tecnica = EGreedy
         elif id_tecnica == 2:
             # Softmax
-            tau = self.WMainWindow.sbQLTau.value()
-            tecnica = Softmax(tau)
+            parametro = self.WMainWindow.sbQLTau.value()
+            tecnica = Softmax
         elif id_tecnica == 3:
             # Aleatorio
-            tecnica = Aleatorio()
+            tecnica = Aleatorio
         else:
             tecnica = None
 
         if self.WMainWindow.chkDecrementarParam.isChecked():
                 paso_decremento = self.WMainWindow.sbDecrementoVal.value()
                 intervalo_decremento = self.WMainWindow.sbCantEpisodiosDec.value()
-                tecnica.paso_decremento = paso_decremento
-                tecnica.intervalo_decremento = intervalo_decremento
         # ----------- Fin de seteo de la técnica --------------
 
         gamma = self.WMainWindow.sbQLGamma.value()
@@ -451,7 +449,10 @@ class MainWindow(QtGui.QMainWindow):
         # Crear nueva instancia de Q-Learning
         self.qlearning = QLearning(self.gridworld,
                                    gamma,
-                                   tecnica,
+                                   (tecnica,
+                                    parametro,
+                                    paso_decremento,
+                                    intervalo_decremento),
                                    cant_episodios,
                                    init_value_fn,
                                    None)

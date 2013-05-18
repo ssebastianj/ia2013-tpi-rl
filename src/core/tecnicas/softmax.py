@@ -20,6 +20,7 @@ class Softmax(QLTecnica):
         """
         super(Softmax, self).__init__(paso_decremento, intervalo_decremento)
         self._val_param_general = tau
+        self._val_param_parcial = tau
         self._name = "Softmax"
 
     def obtener_accion(self, vecinos):

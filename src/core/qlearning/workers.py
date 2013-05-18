@@ -7,6 +7,7 @@ import Queue
 import logging
 import multiprocessing
 import numpy
+import os
 import time
 import sys
 import random
@@ -90,7 +91,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self.coordenadas = self.input_data[1]
         self.gamma = self.input_data[2]
         self.cant_episodios = self.input_data[3]
-        self.tecnica = self.input_data[4]
+        self.tecnica_pack = self.input_data[4]
         self.ancho, self.alto = self.input_data[5]
         self.detector_bloqueo = self.input_data[6]
         self.tipos_vec_excluidos = self.input_data[7]
@@ -98,6 +99,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         self.matriz_r = self.get_matriz_r()
         self.matriz_q = self.get_matriz_q(self.matriz_r)
+        self.tecnica = self.tecnica_pack[0](self.tecnica_pack[1],
+                                            self.tecnica_pack[2],
+                                            self.tecnica_pack[3])
 
         logging.debug("Estados: {0}".format(self.estados))
         logging.debug("Coordenadas: {0}".format(self.coordenadas))
@@ -114,7 +118,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             self._visitados_1 = []
             self._visitados_2 = []
 
+        # Variable utilizada para saber cuando decrementar el parámetro de la técnica
         decrementar_step = 0
+        decrementar_lista = []
+
         # Registrar tiempo de comienzo de los episodios
         ep_start_time = wtimer()
 
@@ -136,10 +143,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 logging.debug("Estado inicial generado no válido: {0}"
                               .format((x_act, y_act)))
             logging.debug("Estado Inicial Generado: {0}".format(estado_actual))
-
-            # Forzar restauración del valor de parámetro de la técnica
-            # utilizada antes de comenzar un nuevo Episodio
-            self.tecnica.restaurar_val_parametro()
 
             # Realizar 1 Episodio mientras no estemos en el Estado Final
             cant_iteraciones = 0
@@ -207,15 +210,12 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             if self._stoprequest.is_set():
                 break
 
-            #===================================================================
-            # decrementar_step += 1
-            # # Comprobar si es necesario decrementar el valor del parámetro
-            # if self.tecnica.intervalo_decremento == decrementar_step:
-            #     # Decrementar valor del parámetro en 1 paso
-            #     self.tecnica.decrementar_parametro()
-            #     decrementar_step = 0
-            #===================================================================
-            self.tecnica.decrementar_parametro()
+            decrementar_step += 1
+            # Comprobar si es necesario decrementar el valor del parámetro
+            if self.tecnica.intervalo_decremento == decrementar_step:
+                # Decrementar valor del parámetro en 1 paso
+                self.tecnica.decrementar_parametro()
+                decrementar_step = 0
 
             iter_end_time = wtimer()
             # Calcular tiempo de ejecución de las iteraciones

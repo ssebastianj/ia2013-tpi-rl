@@ -18,6 +18,7 @@ class EGreedy(QLTecnica):
         """
         super(EGreedy, self).__init__()
         self._val_param_general = epsilon
+        self._val_param_parcial = epsilon
         self._name = "EGreedy"
         self._paso_decremento = paso_decremento
         self._intervalo_decremento = intervalo_decremento
@@ -93,7 +94,8 @@ class EGreedy(QLTecnica):
             self._val_param_parcial = decremento
         else:
             # Restaurar valor original de parámetro
-            self.restaurar_val_parametro()
+            # self.restaurar_val_parametro()
+            pass
 
     epsilon_general = property(get_epsilon_general,
                                set_epsilon_general,
