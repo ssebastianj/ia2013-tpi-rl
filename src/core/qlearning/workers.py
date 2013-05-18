@@ -484,13 +484,16 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         estado_actual = matriz_q[x_act - 1][y_act - 1]
         while (not self._stoprequest.is_set()) and (not estado_actual[0] == TIPOESTADO.FINAL):
             vecinos = estado_actual[1]
-            vecinos = dict([(key, value) for key, value in vecinos.iteritems()
-                            if key not in self._visitados])
 
             # Buscar el estado que posea el mayor valor de Q
             maximo = None
             estados_qmax = []
             for key, value in vecinos.items():
+
+                # Comprobar si el estado fue marcado y saltarlo si es verdadero
+                if key in self._visitados:
+                    continue
+
                 logging.debug("X:{0} Y:{1}".format(key[0], key[1]))  # FIXME: Eliminar print de debug
                 q_valor = value
                 logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug
@@ -583,7 +586,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         super(QLearningRecorrerWorker, self).join(timeout)
 
     def _contar_ref(self, estado):
-        umbral = 2
+        umbral = 1
 
         if estado in self._contador_ref:
             self._contador_ref[estado] += 1
