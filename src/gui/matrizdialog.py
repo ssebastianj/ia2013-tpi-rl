@@ -29,7 +29,8 @@ class ShowMatrizDialog(QtGui.QDialog):
 
         self.setWindowFlags(QtCore.Qt.Dialog |
                             QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowTitleHint)
+                            QtCore.Qt.WindowTitleHint |
+                            QtCore.Qt.WindowMaximizeButtonHint)
 
         self.matriz = matriz
         self.titulo_corto_dialogo = titulo_corto
@@ -124,7 +125,6 @@ class ShowMatrizDialog(QtGui.QDialog):
         self.ShowMatrizD.tblMatriz.verticalHeader().setDefaultSectionSize(ancho_estado_px)
         self.ShowMatrizD.tblMatriz.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
         self.ShowMatrizD.tblMatriz.resizeColumnsToContents()
-        self.setMaximumSize(self.size())
 
     def _set_dialog_signals(self):
         pass
