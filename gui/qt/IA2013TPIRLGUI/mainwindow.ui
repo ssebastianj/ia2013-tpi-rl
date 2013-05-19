@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>821</width>
-    <height>581</height>
+    <height>583</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="recursos.qrc">
-    <normaloff>:/:iconos/LogoUTN</normaloff>:/:iconos/LogoUTN</iconset>
+    <normaloff>:/iconos/UTN.ico</normaloff>:/iconos/UTN.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_14">
@@ -223,7 +223,7 @@
                </property>
                <property name="icon">
                 <iconset resource="recursos.qrc">
-                 <normaloff>:/:iconos/Configurar</normaloff>:/:iconos/Configurar</iconset>
+                 <normaloff>:/iconos/Configurar.png</normaloff>:/iconos/Configurar.png</iconset>
                </property>
               </widget>
              </item>
@@ -737,7 +737,7 @@
             </property>
             <property name="icon">
              <iconset resource="recursos.qrc">
-              <normaloff>:/:iconos/Aprender</normaloff>:/:iconos/Aprender</iconset>
+              <normaloff>:/iconos/Aprender.png</normaloff>:/iconos/Aprender.png</iconset>
             </property>
            </widget>
           </item>
@@ -757,7 +757,7 @@
             </property>
             <property name="icon">
              <iconset resource="recursos.qrc">
-              <normaloff>:/:iconos/Recorrer</normaloff>:/:iconos/Recorrer</iconset>
+              <normaloff>:/iconos/Recorrer.png</normaloff>:/iconos/Recorrer.png</iconset>
             </property>
            </widget>
           </item>
@@ -777,7 +777,7 @@
             </property>
             <property name="icon">
              <iconset resource="recursos.qrc">
-              <normaloff>:/:iconos/Cancelar</normaloff>:/:iconos/Cancelar</iconset>
+              <normaloff>:/iconos/Cancelar.png</normaloff>:/iconos/Cancelar.png</iconset>
             </property>
            </widget>
           </item>
@@ -1127,7 +1127,7 @@
           <item>
            <widget class="QLabel" name="lblRecEstadoActual">
             <property name="text">
-             <string>-</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -1276,7 +1276,7 @@
   </action>
   <action name="actionAgenteEntrenar">
    <property name="icon">
-    <iconset resource="recursos.qrc">
+    <iconset>
      <normaloff>:/:iconos/Aprender</normaloff>:/:iconos/Aprender</iconset>
    </property>
    <property name="text">
@@ -1285,7 +1285,7 @@
   </action>
   <action name="actionAgenteRecorrer">
    <property name="icon">
-    <iconset resource="recursos.qrc">
+    <iconset>
      <normaloff>:/:iconos/Recorrer</normaloff>:/:iconos/Recorrer</iconset>
    </property>
    <property name="text">
@@ -1294,7 +1294,7 @@
   </action>
   <action name="actionAgenteCancelar">
    <property name="icon">
-    <iconset resource="recursos.qrc">
+    <iconset>
      <normaloff>:/:iconos/Cancelar</normaloff>:/:iconos/Cancelar</iconset>
    </property>
    <property name="text">

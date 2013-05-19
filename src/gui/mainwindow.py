@@ -31,6 +31,7 @@ from tools.livedatafeed import LiveDataFeed
 from tools.listacircular import ListaCircular
 from tools.queue import get_all_from_queue, get_item_from_queue
 from tools.taskbar import taskbar
+from PyQt4.pyqtconfig import QtGuiModuleMakefile
 
 try:
     _tr = QtCore.QString.fromUtf8
@@ -84,6 +85,7 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_taskbar = None
         self.last_state_bkp = None
         self.last_state_bg = None
+        self.last_state_text = None
 
         self.tecnicas = {0: "Greedy",
                          1: "ε-Greedy",
@@ -99,8 +101,8 @@ class MainWindow(QtGui.QMainWindow):
                                      "enabled": True},
                                "size": 40},
                               "gw":
-                               {"entrenamiento": {"actual_state": {"show": True, "color": "#000000"}},
-                                "recorrido": {"actual_state": {"show": True, "color": "#000000"}}
+                               {"entrenamiento": {"actual_state": {"show": True, "color": "#000000", "icono": None}},
+                                "recorrido": {"actual_state": {"show": True, "color": "#000000", "icono": None}}
                                }
                                }
 
@@ -623,7 +625,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # Habilitar GridWorld
         self.window_config["item"]["menu_estado"]["enabled"] = True
-        self.window_config["item"]["show_tooltip"] = True
+        self.window_config["item"]["show_tooltip"] = self.window_config["item"]["show_tooltip"] and True
 
         self._logger.debug("Procesos hijos activos: {0}"
                       .format(multiprocessing.active_children()))
@@ -657,6 +659,8 @@ class MainWindow(QtGui.QMainWindow):
 
         # Restaurar color original del estado final
         self.last_state_bkp.setBackground(QtGui.QBrush(self.last_state_bg))
+        self.last_state_bkp.setText(self.last_state_text)
+        self.last_state_bkp.setIcon(QtGui.QIcon())
         self.last_state_bkp = None
         self.last_state_bg = None
 
@@ -784,15 +788,30 @@ class MainWindow(QtGui.QMainWindow):
                     item = self.WMainWindow.tblGridWorld.item(estado_actual_ent[0] - 1,
                                                               estado_actual_ent[1] - 1)
 
-                    if self.last_state_bkp is None:
-                        self.last_state_bkp = item
-                        self.last_state_bg = item.background().color()
-                    else:
-                        self.last_state_bkp.setBackground(QtGui.QBrush(self.last_state_bg))
-                        self.last_state_bkp = item
-                        self.last_state_bg = item.background()
+                    if self.window_config["gw"]["entrenamiento"]["actual_state"]["icono"] is None:
+                        if self.last_state_bkp is None:
+                            self.last_state_bkp = item
+                            self.last_state_bg = item.background().color()
+                        else:
+                            self.last_state_bkp.setBackground(QtGui.QBrush(self.last_state_bg))
+                            self.last_state_bkp = item
+                            self.last_state_bg = item.background()
 
-                    item.setBackground(QtGui.QColor(self.window_config["gw"]["entrenamiento"]["actual_state"]["color"]))
+                        item.setBackground(QtGui.QColor(self.window_config["gw"]["entrenamiento"]["actual_state"]["color"]))
+                    else:
+                        if self.last_state_bkp is None:
+                            self.last_state_bkp = item
+                            self.last_state_text = item.text()
+                        else:
+                            self.last_state_bkp.setIcon(QtGui.QIcon())
+                            self.last_state_bkp.setText(self.last_state_text)
+                            self.last_state_bkp = item
+                            self.last_state_text = item.text()
+
+                        icono = self.window_config["gw"]["entrenamiento"]["actual_state"]["icono"]
+                        item.setText("")
+                        item.setIcon(icono)
+                        item.setIconSize(QtCore.QSize(16, 16))
 
         except Queue.Empty:
             pass
@@ -976,19 +995,21 @@ class MainWindow(QtGui.QMainWindow):
             if self.GWOpcionesD.ent_show_state:
                 if self.GWOpcionesD.ent_usar_color_fondo:
                     ent_bg_color = self.GWOpcionesD.ent_state_bg
-                    print ent_bg_color
                     self.window_config["gw"]["entrenamiento"]["actual_state"]["color"] = ent_bg_color
+                    self.window_config["gw"]["entrenamiento"]["actual_state"]["icono"] = None
                 elif self.GWOpcionesD.ent_usar_icono:
-                    pass
+                    icono_agente = self.gridworld.tipos_estados[TIPOESTADO.AGENTE].icono
+                    self.window_config["gw"]["entrenamiento"]["actual_state"]["icono"] = icono_agente
             self.window_config["gw"]["entrenamiento"]["actual_state"]["show"] = self.GWOpcionesD.ent_show_state
 
             if self.GWOpcionesD.rec_show_state:
                 if self.GWOpcionesD.rec_usar_color_fondo:
                     rec_bg_color = self.GWOpcionesD.rec_state_bg
-                    print rec_bg_color
                     self.window_config["gw"]["recorrido"]["actual_state"]["color"] = rec_bg_color
+                    self.window_config["gw"]["recorrido"]["actual_state"]["icono"] = None
                 elif self.GWOpcionesD.rec_usar_icono:
-                    pass
+                    icono_agente = self.gridworld.tipos_estados[TIPOESTADO.AGENTE].icono
+                    self.window_config["gw"]["recorrido"]["actual_state"]["icono"] = icono_agente
             self.window_config["gw"]["recorrido"]["actual_state"]["show"] = self.GWOpcionesD.rec_show_state
 
     def mostrar_gen_rnd_estados_dialog(self):

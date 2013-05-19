@@ -6,6 +6,8 @@ from __future__ import absolute_import
 import logging
 import numpy
 import threading
+
+from PyQt4 import QtGui
 from core.estado.estado import Estado, TipoEstado, TIPOESTADO
 
 
@@ -42,11 +44,13 @@ class GridWorld(object):
         if self._tipos_estados is None:
             self._tipos_estados = {}
             # Estado Agente
+            icono_agente = QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))
             self._tipos_estados[TIPOESTADO.AGENTE] = TipoEstado(TIPOESTADO.AGENTE,
                                                                 None,
                                                                 "Agente",
                                                                 "A",
-                                                                "#FF2288")
+                                                                "#FF2288",
+                                                                icono_agente)
             # Estados Intermedios
             self._tipos_estados[TIPOESTADO.EXCELENTE] = TipoEstado(TIPOESTADO.EXCELENTE,
                                                                    100,

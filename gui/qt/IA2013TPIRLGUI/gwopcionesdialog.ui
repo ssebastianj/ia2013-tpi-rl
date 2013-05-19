@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>569</width>
+    <width>576</width>
     <height>318</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>569</width>
+    <width>576</width>
     <height>0</height>
    </size>
   </property>
@@ -21,7 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="recursos.qrc">
-    <normaloff>:/:iconos/Configurar</normaloff>:/:iconos/Configurar</iconset>
+    <normaloff>:/iconos/Configurar.png</normaloff>:/iconos/Configurar.png</iconset>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -348,7 +348,7 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>50</width>
+                   <width>55</width>
                    <height>20</height>
                   </size>
                  </property>
@@ -463,7 +463,7 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>50</width>
+                   <width>55</width>
                    <height>20</height>
                   </size>
                  </property>
@@ -596,12 +596,44 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>324</x>
-     <y>214</y>
+     <x>558</x>
+     <y>307</y>
     </hint>
     <hint type="destinationlabel">
      <x>182</x>
      <y>200</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>optEntMostrarColorFondo</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>btnEntSelectActStateBG</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>308</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>463</x>
+     <y>77</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>optRecMostrarColorFondo</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>btnRecSelectActStateBG</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>268</x>
+     <y>211</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>446</x>
+     <y>210</y>
     </hint>
    </hints>
   </connection>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Sat May 18 22:47:41 2013
+# Created: Sun May 19 16:06:40 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,9 +26,9 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(821, 581)
+        MainWindow.resize(821, 583)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/LogoUTN")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/UTN.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         self.centralWidget = QtGui.QWidget(MainWindow)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
@@ -114,7 +114,7 @@ class Ui_MainWindow(object):
         self.btnGWOpciones.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
         self.btnGWOpciones.setText(_fromUtf8(""))
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Configurar")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Configurar.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnGWOpciones.setIcon(icon1)
         self.btnGWOpciones.setObjectName(_fromUtf8("btnGWOpciones"))
         self.gridLayout_10.addWidget(self.btnGWOpciones, 0, 2, 1, 1)
@@ -313,7 +313,7 @@ class Ui_MainWindow(object):
         self.btnEntrenar.setMinimumSize(QtCore.QSize(100, 0))
         self.btnEntrenar.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Aprender")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Aprender.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnEntrenar.setIcon(icon2)
         self.btnEntrenar.setObjectName(_fromUtf8("btnEntrenar"))
         self.verticalLayout.addWidget(self.btnEntrenar)
@@ -321,7 +321,7 @@ class Ui_MainWindow(object):
         self.btnRecorrer.setMinimumSize(QtCore.QSize(100, 0))
         self.btnRecorrer.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Recorrer")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Recorrer.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnRecorrer.setIcon(icon3)
         self.btnRecorrer.setObjectName(_fromUtf8("btnRecorrer"))
         self.verticalLayout.addWidget(self.btnRecorrer)
@@ -329,7 +329,7 @@ class Ui_MainWindow(object):
         self.btnTerminarProceso.setMinimumSize(QtCore.QSize(100, 0))
         self.btnTerminarProceso.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Cancelar")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Cancelar.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnTerminarProceso.setIcon(icon4)
         self.btnTerminarProceso.setObjectName(_fromUtf8("btnTerminarProceso"))
         self.verticalLayout.addWidget(self.btnTerminarProceso)
@@ -498,6 +498,7 @@ class Ui_MainWindow(object):
         self.label_6.setObjectName(_fromUtf8("label_6"))
         self.horizontalLayout_13.addWidget(self.label_6)
         self.lblRecEstadoActual = QtGui.QLabel(self.gbRecorrido)
+        self.lblRecEstadoActual.setText(_fromUtf8(""))
         self.lblRecEstadoActual.setObjectName(_fromUtf8("lblRecEstadoActual"))
         self.horizontalLayout_13.addWidget(self.lblRecEstadoActual)
         self.gridLayout_16.addLayout(self.horizontalLayout_13, 0, 0, 1, 1)
@@ -560,13 +561,19 @@ class Ui_MainWindow(object):
         self.actionAcercaDe = QtGui.QAction(MainWindow)
         self.actionAcercaDe.setObjectName(_fromUtf8("actionAcercaDe"))
         self.actionAgenteEntrenar = QtGui.QAction(MainWindow)
-        self.actionAgenteEntrenar.setIcon(icon2)
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Aprender")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionAgenteEntrenar.setIcon(icon5)
         self.actionAgenteEntrenar.setObjectName(_fromUtf8("actionAgenteEntrenar"))
         self.actionAgenteRecorrer = QtGui.QAction(MainWindow)
-        self.actionAgenteRecorrer.setIcon(icon3)
+        icon6 = QtGui.QIcon()
+        icon6.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Recorrer")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionAgenteRecorrer.setIcon(icon6)
         self.actionAgenteRecorrer.setObjectName(_fromUtf8("actionAgenteRecorrer"))
         self.actionAgenteCancelar = QtGui.QAction(MainWindow)
-        self.actionAgenteCancelar.setIcon(icon4)
+        icon7 = QtGui.QIcon()
+        icon7.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Cancelar")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionAgenteCancelar.setIcon(icon7)
         self.actionAgenteCancelar.setObjectName(_fromUtf8("actionAgenteCancelar"))
         self.actionInicializarTodo = QtGui.QAction(MainWindow)
         self.actionInicializarTodo.setObjectName(_fromUtf8("actionInicializarTodo"))
@@ -683,7 +690,6 @@ class Ui_MainWindow(object):
         self.lblEntNroIteracion.setText(_translate("MainWindow", "-", None))
         self.gbRecorrido.setTitle(_translate("MainWindow", "Recorrido", None))
         self.label_6.setText(_translate("MainWindow", "Posición agente:", None))
-        self.lblRecEstadoActual.setText(_translate("MainWindow", "-", None))
         self.gbRecExecTime.setTitle(_translate("MainWindow", "Tiempo de ejecución", None))
         self.label_16.setText(_translate("MainWindow", "Total:", None))
         self.lblRecExecTimeTotal.setText(_translate("MainWindow", "-", None))

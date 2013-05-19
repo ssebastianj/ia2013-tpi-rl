@@ -60,7 +60,16 @@ class GWOpcionesDialog(QtGui.QDialog):
         self.GWOpcionesD.sbRecomBueno.setValue(50)
         self.GWOpcionesD.sbRecomMalo.setValue(-10)
         self.GWOpcionesD.sbRecomPared.setValue(-100)
-        self.GWOpcionesD.sbRecomFinal.setMaximum(self.GWOpcionesD.sbRecomExcelente.maximum() + 50)
+        color_ent = QtGui.QColor(self.ent_state_bg)
+        color_rec = QtGui.QColor(self.rec_state_bg)
+        self.GWOpcionesD.lblEntActStateBG.setPalette(QtGui.QPalette(color_ent))
+        self.GWOpcionesD.lblRecActStateBG.setPalette(QtGui.QPalette(color_rec))
+        self.GWOpcionesD.lblEntActStateBG.setText(color_ent.name())
+        self.GWOpcionesD.lblRecActStateBG.setText(color_rec.name())
+        self.GWOpcionesD.lblEntActStateBG.setAutoFillBackground(True)
+        self.GWOpcionesD.lblRecActStateBG.setAutoFillBackground(True)
+
+        self.update_recom_final()
 
     def _set_dialog_signals(self):
         self.GWOpcionesD.cbRecomPared.currentIndexChanged.connect(self.toggle_recom_pared)
@@ -71,7 +80,7 @@ class GWOpcionesDialog(QtGui.QDialog):
         self.GWOpcionesD.btnEntSelectActStateBG.clicked.connect(self.select_ent_state_color)
         self.GWOpcionesD.btnRecSelectActStateBG.clicked.connect(self.select_rec_state_color)
 
-    def update_recom_final(self, valor):
+    def update_recom_final(self, valor=None):
         self.recomp_max = max([self.GWOpcionesD.sbRecomExcelente.value(),
                                self.GWOpcionesD.sbRecomBueno.value(),
                                self.GWOpcionesD.sbRecomMalo.value(),
@@ -89,6 +98,7 @@ class GWOpcionesDialog(QtGui.QDialog):
 
     def select_ent_state_color(self):
         qcolordiag = QtGui.QColorDialog(self)
+        qcolordiag.setOption(qcolordiag.ShowAlphaChannel)
         state_color = qcolordiag.getColor()
 
         if state_color.isValid():
@@ -99,6 +109,7 @@ class GWOpcionesDialog(QtGui.QDialog):
 
     def select_rec_state_color(self):
         qcolordiag = QtGui.QColorDialog(self)
+        qcolordiag.setOption(qcolordiag.ShowAlphaChannel)
         state_color = qcolordiag.getColor()
 
         if state_color.isValid():

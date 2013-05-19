@@ -31,8 +31,6 @@ class GWGenRndEstadosDialog(QtGui.QDialog):
                             QtCore.Qt.WindowSystemMenuHint |
                             QtCore.Qt.WindowTitleHint)
 
-        self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
-
         self.initialize_dialog()
 
     def initialize_dialog(self):

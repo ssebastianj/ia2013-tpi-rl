@@ -61,13 +61,6 @@ class ShowMatrizDialog(QtGui.QDialog):
         self.ShowMatrizD.tblMatriz.setRowCount(dimension)
         self.ShowMatrizD.tblMatriz.setColumnCount(dimension)
 
-        #=======================================================================
-        # headers_horizontales = ["A" + str(i) for i in xrange(1, dimension + 1)]
-        # headers_verticales = ["E" + str(i) for i in xrange(1, dimension + 1)]
-        # self.ShowMatrizD.tblMatriz.setHorizontalHeaderLabels(headers_horizontales)
-        # self.ShowMatrizD.tblMatriz.setVerticalHeaderLabels(headers_verticales)
-        #=======================================================================
-
         # Desactivar actualización de la tabla para optimizar la carga
         self.ShowMatrizD.tblMatriz.setUpdatesEnabled(False)
 

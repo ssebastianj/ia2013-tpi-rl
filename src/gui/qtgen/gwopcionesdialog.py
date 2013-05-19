@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\gwopcionesdialog.ui'
 #
-# Created: Sat May 18 22:47:41 2013
+# Created: Sun May 19 16:06:40 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,10 +26,10 @@ except AttributeError:
 class Ui_GWOpcionesDialog(object):
     def setupUi(self, GWOpcionesDialog):
         GWOpcionesDialog.setObjectName(_fromUtf8("GWOpcionesDialog"))
-        GWOpcionesDialog.resize(569, 318)
-        GWOpcionesDialog.setMinimumSize(QtCore.QSize(569, 0))
+        GWOpcionesDialog.resize(576, 318)
+        GWOpcionesDialog.setMinimumSize(QtCore.QSize(576, 0))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Configurar")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Configurar.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         GWOpcionesDialog.setWindowIcon(icon)
         GWOpcionesDialog.setModal(True)
         self.gridLayout_9 = QtGui.QGridLayout(GWOpcionesDialog)
@@ -185,7 +185,7 @@ class Ui_GWOpcionesDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblRecActStateBG.sizePolicy().hasHeightForWidth())
         self.lblRecActStateBG.setSizePolicy(sizePolicy)
-        self.lblRecActStateBG.setMinimumSize(QtCore.QSize(50, 20))
+        self.lblRecActStateBG.setMinimumSize(QtCore.QSize(55, 20))
         self.lblRecActStateBG.setMaximumSize(QtCore.QSize(20, 20))
         self.lblRecActStateBG.setFrameShape(QtGui.QFrame.Box)
         self.lblRecActStateBG.setText(_fromUtf8(""))
@@ -230,7 +230,7 @@ class Ui_GWOpcionesDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblEntActStateBG.sizePolicy().hasHeightForWidth())
         self.lblEntActStateBG.setSizePolicy(sizePolicy)
-        self.lblEntActStateBG.setMinimumSize(QtCore.QSize(50, 20))
+        self.lblEntActStateBG.setMinimumSize(QtCore.QSize(55, 20))
         self.lblEntActStateBG.setMaximumSize(QtCore.QSize(20, 20))
         self.lblEntActStateBG.setFrameShape(QtGui.QFrame.Box)
         self.lblEntActStateBG.setText(_fromUtf8(""))
@@ -275,6 +275,8 @@ class Ui_GWOpcionesDialog(object):
 
         self.retranslateUi(GWOpcionesDialog)
         QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), GWOpcionesDialog.accept)
+        QtCore.QObject.connect(self.optEntMostrarColorFondo, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.btnEntSelectActStateBG.setEnabled)
+        QtCore.QObject.connect(self.optRecMostrarColorFondo, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.btnRecSelectActStateBG.setEnabled)
         QtCore.QMetaObject.connectSlotsByName(GWOpcionesDialog)
         GWOpcionesDialog.setTabOrder(self.sbGWEstadoSize, self.sbRecomFinal)
         GWOpcionesDialog.setTabOrder(self.sbRecomFinal, self.sbRecomExcelente)
