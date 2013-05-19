@@ -714,6 +714,13 @@ class MainWindow(QtGui.QMainWindow):
         """
         self._logger.debug("Actualizar ventana")
 
+        self.update_window_entrenar()
+        self.update_window_recorrer()
+
+    def update_window_entrenar(self):
+        u"""
+        Actualizar ventana con información del Entrenamiento
+        """
         try:
             data_entrenar = self.get_all_from_queue(self.ql_entrenar_out_q)
             # self._logger.debug("[Entrenar] Actualizar ventana con: {0}".format(data_entrenar)) @IgnorePep8
@@ -792,6 +799,10 @@ class MainWindow(QtGui.QMainWindow):
         except AttributeError:
             pass
 
+    def update_window_recorrer(self):
+        u"""
+        Actualizar ventana con información del Recorrido
+        """
         try:
             data_recorrer = self.get_all_from_queue(self.ql_recorrer_out_q)
             # self._logger.debug("[Recorrer] Actualizar ventana con: {0}".format(data_recorrer)) @IgnorePep8
@@ -818,6 +829,21 @@ class MainWindow(QtGui.QMainWindow):
                 self.WMainWindow.lblRecExecTimeRecorrido.setText("{0:.3f} seg  ({1:.2f} ms)"
                                                           .format(rec_exec_time,
                                                                   rec_exec_time * 1000))
+
+                # Mostrar estado actual en grilla
+                if self.window_config["gw"]["recorrido"]["actual_state"]["show"]:
+                    item = self.WMainWindow.tblGridWorld.item(estado_actual_rec[0] - 1,
+                                                              estado_actual_rec[1] - 1)
+
+                    if self.last_state_bkp is None:
+                        self.last_state_bkp = item
+                        self.last_state_bg = item.background().color()
+                    else:
+                        self.last_state_bkp.setBackground(QtGui.QBrush(self.last_state_bg))
+                        self.last_state_bkp = item
+                        self.last_state_bg = item.background()
+
+                    item.setBackground(QtGui.QColor(self.window_config["gw"]["recorrido"]["actual_state"]["color"]))
 
                 # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
                 if camino_optimo is not None:
@@ -945,8 +971,25 @@ class MainWindow(QtGui.QMainWindow):
         self.GWOpcionesD = GWOpcionesDialog(self)
         if self.GWOpcionesD.exec_():
             self.window_config["item"]["size"] = self.GWOpcionesD.estado_size
-
             self.refresh_gw()
+
+            if self.GWOpcionesD.ent_show_state:
+                if self.GWOpcionesD.ent_usar_color_fondo:
+                    ent_bg_color = self.GWOpcionesD.ent_state_bg
+                    print ent_bg_color
+                    self.window_config["gw"]["entrenamiento"]["actual_state"]["color"] = ent_bg_color
+                elif self.GWOpcionesD.ent_usar_icono:
+                    pass
+            self.window_config["gw"]["entrenamiento"]["actual_state"]["show"] = self.GWOpcionesD.ent_show_state
+
+            if self.GWOpcionesD.rec_show_state:
+                if self.GWOpcionesD.rec_usar_color_fondo:
+                    rec_bg_color = self.GWOpcionesD.rec_state_bg
+                    print rec_bg_color
+                    self.window_config["gw"]["recorrido"]["actual_state"]["color"] = rec_bg_color
+                elif self.GWOpcionesD.rec_usar_icono:
+                    pass
+            self.window_config["gw"]["recorrido"]["actual_state"]["show"] = self.GWOpcionesD.rec_show_state
 
     def mostrar_gen_rnd_estados_dialog(self):
         self.GWGenRndEstValsD = GWGenRndEstadosDialog(self)
