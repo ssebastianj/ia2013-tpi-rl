@@ -154,6 +154,23 @@ class MainWindow(QtGui.QMainWindow):
                                                     {0}</span></p></body></html>"
                                                     .format(cancelar_shortcut))
 
+        # Asignar shortcuts
+        mostrar_mat_r_sc = "Ctrl+R"
+        mostrar_mat_q_sc = "Ctrl+Q"
+        self.WMainWindow.btnMostrarMatrizR.setShortcut(QtGui.QKeySequence(mostrar_mat_r_sc))
+        self.WMainWindow.btnMostrarMatrizQ.setShortcut(QtGui.QKeySequence(mostrar_mat_q_sc))
+
+        self.WMainWindow.btnMostrarMatrizR.setToolTip("<html><head/><body><p>\
+                                                Mostrar matriz de recompensas \
+                                                <span style='font-size:7pt;'>\
+                                                {0}</span></p></body></html>"
+                                                .format(mostrar_mat_r_sc))
+        self.WMainWindow.btnMostrarMatrizQ.setToolTip("<html><head/><body><p>\
+                                                Mostrar matriz Q \
+                                                <span style='font-size:7pt;'>\
+                                                {0}</span></p></body></html>"
+                                                .format(mostrar_mat_q_sc))
+
         self.setMouseTracking(True)
 
         self.inicializar_todo()
