@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import logging
 import multiprocessing
+import threading
 import Queue
 
 from PyQt4 import QtCore, QtGui
@@ -421,6 +422,12 @@ class MainWindow(QtGui.QMainWindow):
         self.window_config["item"]["menu_estado"]["enabled"] = False
         self.window_config["item"]["show_tooltip"] = False
 
+        # Parámetros para mostrar el estado actual en pantalla
+        self.ent_show_estado_act = self.window_config["gw"]["entrenamiento"]["actual_state"]["show"]
+        self.ent_color_estado_act = QtGui.QColor(self.window_config["gw"]["entrenamiento"]["actual_state"]["color"])
+        self.ent_icon_estado_act = self.window_config["gw"]["entrenamiento"]["actual_state"]["icono"]
+        self.ent_null_icon = QtGui.QIcon()
+
         # ----------- Comienzo de seteo de la técnica --------------
         # Obtener la información asociada al ítem actual del combobox
         item_data = self.WMainWindow.cbQLTecnicas.itemData(self.WMainWindow.cbQLTecnicas.currentIndex())
@@ -508,6 +515,13 @@ class MainWindow(QtGui.QMainWindow):
                                           "Debe establecer un Estado Inicial antes de realizar el recorrido.")
             return None
 
+        # Parámetros para mostrar el estado actual en pantalla
+        self.rec_show_estado_act = self.window_config["gw"]["recorrido"]["actual_state"]["show"]
+        self.rec_color_estado_act = QtGui.QColor(self.window_config["gw"]["recorrido"]["actual_state"]["color"])
+        self.rec_icon_estado_act = self.window_config["gw"]["recorrido"]["actual_state"]["icono"]
+        self.rec_null_icon = QtGui.QIcon()
+
+        # Crear colas para comunicarse con el proceso
         self.ql_recorrer_out_q = multiprocessing.Queue()
         self.ql_recorrer_error_q = multiprocessing.Queue()
         self.ql_datos_recorrer_in_feed = LiveDataFeed()
@@ -662,6 +676,12 @@ class MainWindow(QtGui.QMainWindow):
             self.last_state_bkp.setBackground(QtGui.QBrush(self.last_state_bg))
             self.last_state_bkp.setText(self.last_state_text)
             self.last_state_bkp.setIcon(QtGui.QIcon())
+            self.ent_color_estado_act = None
+            self.ent_icon_estado_act = None
+            self.ent_show_estado_act = None
+            self.rec_color_estado_act = None
+            self.rec_icon_estado_act = None
+            self.rec_show_estado_act = None
         except AttributeError:
             pass
         except TypeError:
@@ -742,10 +762,12 @@ class MainWindow(QtGui.QMainWindow):
                 episode_exec_time = ql_ent_info.get('EpisodiosExecTime', 0.0)
                 iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
                 worker_joined = ql_ent_info.get('ProcesoJoined', None)
-                loop_alarm = ql_ent_info.get('LoopAlarm', None)
+                loop_alarm = ql_ent_info.get('LoopAlarm', False)
                 matriz_q = ql_ent_info.get('MatrizQ', None)
                 valor_parametro = ql_ent_info.get('ValorParametro', None)
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
+
+                self.matriz_q = matriz_q
 
                 self._logger.debug("[Entrenar] Estado actual: {0}".format(estado_actual_ent))
                 self._logger.debug("[Entrenar] Episodio: {0}".format(nro_episodio))
@@ -758,20 +780,17 @@ class MainWindow(QtGui.QMainWindow):
                 self._logger.debug("[Entrenar] Loop Alarm: {0}".format(loop_alarm))
                 self._logger.debug("[Entrenar] Valor Parámetro: {0}".format(valor_parametro))
 
-                if matriz_q is not None:
-                    self.matriz_q = matriz_q
+                if loop_alarm:
+                    QtGui.QMessageBox.warning(self,
+                                              _tr('QLearning - Entrenamiento'),
+                    u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
+                    self.working_process.join(0.05)
+                    self.qlearning_entrenar_worker = None
+                    self.working_process = None
+                    self.ql_entrenar_error_q = None
+                    self.ql_entrenar_out_q = None
 
-                if loop_alarm is not None:
-                    if loop_alarm:
-                        QtGui.QMessageBox.warning(self,
-                                                  _tr('QLearning - Entrenamiento'),
-                        u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
-                        self.working_process.join(0.05)
-                        self.qlearning_entrenar_worker = None
-                        self.working_process = None
-                        self.ql_entrenar_error_q = None
-                        self.ql_entrenar_out_q = None
-
+                # Mostrar información de entrenamiento en etiquetas
                 self.WMainWindow.lblEntEstadoActual.setText("X:{0}  Y:{1}"
                                                          .format(estado_actual_ent[0],
                                                                  estado_actual_ent[1]
@@ -790,34 +809,26 @@ class MainWindow(QtGui.QMainWindow):
                                                                   running_exec_time_ent * 1000))
 
                 # Mostrar estado actual en grilla
-                if self.window_config["gw"]["entrenamiento"]["actual_state"]["show"]:
+                if self.ent_show_estado_act:
                     item = self.WMainWindow.tblGridWorld.item(estado_actual_ent[0] - 1,
-                                                              estado_actual_ent[1] - 1)
+                                          estado_actual_ent[1] - 1)
 
-                    if self.window_config["gw"]["entrenamiento"]["actual_state"]["icono"] is None:
-                        if self.last_state_bkp is None:
-                            self.last_state_bkp = item
-                            self.last_state_bg = item.background().color()
-                        else:
-                            self.last_state_bkp.setBackground(QtGui.QBrush(self.last_state_bg))
-                            self.last_state_bkp = item
-                            self.last_state_bg = item.background()
+                    try:
+                        self.last_state_bkp.setIcon(self.ent_null_icon)
+                        self.last_state_bkp.setBackground(self.last_state_bg)
+                        self.last_state_bkp.setText(self.last_state_text)
+                    except AttributeError:
+                        pass
+                    finally:
+                        self.last_state_bkp = item
+                        self.last_state_text = item.text()
+                        self.last_state_bg = item.background()
 
-                        item.setBackground(QtGui.QColor(self.window_config["gw"]["entrenamiento"]["actual_state"]["color"]))
-                    else:
-                        if self.last_state_bkp is None:
-                            self.last_state_bkp = item
-                            self.last_state_text = item.text()
-                        else:
-                            self.last_state_bkp.setIcon(QtGui.QIcon())
-                            self.last_state_bkp.setText(self.last_state_text)
-                            self.last_state_bkp = item
-                            self.last_state_text = item.text()
-
-                        icono = self.window_config["gw"]["entrenamiento"]["actual_state"]["icono"]
+                    try:
                         item.setText("")
-                        item.setIcon(icono)
-                        item.setIconSize(QtCore.QSize(16, 16))
+                        item.setIcon(self.ent_icon_estado_act)
+                    except TypeError:
+                        item.setBackground(self.ent_color_estado_act)
 
         except Queue.Empty:
             pass
@@ -856,19 +867,26 @@ class MainWindow(QtGui.QMainWindow):
                                                                   rec_exec_time * 1000))
 
                 # Mostrar estado actual en grilla
-                if self.window_config["gw"]["recorrido"]["actual_state"]["show"]:
+                if self.rec_show_estado_act:
                     item = self.WMainWindow.tblGridWorld.item(estado_actual_rec[0] - 1,
                                                               estado_actual_rec[1] - 1)
 
-                    if self.last_state_bkp is None:
+                    try:
+                        self.last_state_bkp.setIcon(self.rec_null_icon)
+                        self.last_state_bkp.setBackground(self.last_state_bg)
+                        self.last_state_bkp.setText(self.last_state_text)
+                    except AttributeError:
+                        pass
+                    finally:
                         self.last_state_bkp = item
-                        self.last_state_bg = item.background().color()
-                    else:
-                        self.last_state_bkp.setBackground(QtGui.QBrush(self.last_state_bg))
-                        self.last_state_bkp = item
+                        self.last_state_text = item.text()
                         self.last_state_bg = item.background()
 
-                    item.setBackground(QtGui.QColor(self.window_config["gw"]["recorrido"]["actual_state"]["color"]))
+                    try:
+                        item.setText("")
+                        item.setIcon(self.rec_icon_estado_act)
+                    except TypeError:
+                        item.setBackground(self.rec_color_estado_act)
 
                 # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
                 if camino_optimo is not None:
@@ -995,9 +1013,6 @@ class MainWindow(QtGui.QMainWindow):
         # Inicializar cuadros de diálogo
         self.GWOpcionesD = GWOpcionesDialog(self)
         if self.GWOpcionesD.exec_():
-            self.window_config["item"]["size"] = self.GWOpcionesD.estado_size
-            self.refresh_gw()
-
             if self.GWOpcionesD.ent_show_state:
                 if self.GWOpcionesD.ent_usar_color_fondo:
                     ent_bg_color = self.GWOpcionesD.ent_state_bg
@@ -1017,6 +1032,9 @@ class MainWindow(QtGui.QMainWindow):
                     icono_agente = self.gridworld.tipos_estados[TIPOESTADO.AGENTE].icono
                     self.window_config["gw"]["recorrido"]["actual_state"]["icono"] = icono_agente
             self.window_config["gw"]["recorrido"]["actual_state"]["show"] = self.GWOpcionesD.rec_show_state
+
+            self.window_config["item"]["size"] = self.GWOpcionesD.estado_size
+            self.resize_gw_estados()
 
     def mostrar_gen_rnd_estados_dialog(self):
         self.GWGenRndEstValsD = GWGenRndEstadosDialog(self)
@@ -1084,3 +1102,15 @@ class MainWindow(QtGui.QMainWindow):
     def show_matriz_q(self):
         if self.matriz_q is not None:
             self.show_matriz_dialog(self.matriz_q, "Matriz Q", "Matriz Q")
+
+    def resize_gw_estados(self):
+        ancho_estado_px = self.window_config["item"]["size"]
+        ancho_gw_px = ancho_estado_px * self.gridworld.ancho
+
+        self.WMainWindow.tblGridWorld.horizontalHeader().setDefaultSectionSize(ancho_estado_px)
+        self.WMainWindow.tblGridWorld.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
+        self.WMainWindow.tblGridWorld.verticalHeader().setDefaultSectionSize(ancho_estado_px)
+        self.WMainWindow.tblGridWorld.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
+        ancho_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
+        alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
+        self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
