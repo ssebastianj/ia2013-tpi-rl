@@ -97,21 +97,25 @@ class ShowMatrizDialog(QtGui.QDialog):
                     item.setTextAlignment(QtCore.Qt.AlignHCenter |
                                           QtCore.Qt.AlignCenter)
 
+                    # Coordenadas
                     coord_x = (fila * alto_gw) + columna
                     coord_y = ((key[0] - 1) * ancho_gw) + (key[1] - 1)
 
                     item.setToolTip(u"({0},{1}) ---> {2}"
-                                    .format(coord_x, coord_y, key))
+                                    .format(fila + 1, columna + 1, key))
                     self.ShowMatrizD.tblMatriz.setItem(coord_x, coord_y, item)
+
+                # Coordenadas
+                coord_x = (fila * alto_gw) + columna
 
                 # Armar headers horizontales (Acciones)
                 headers_horizontales.append("A{0}\n({1},{2})"
-                                            .format((fila * alto_gw) + columna + 1,
+                                            .format(coord_x + 1,
                                                     fila + 1,
                                                     columna + 1))
                 # Armar headers verticales (Estados)
                 headers_verticales.append("E{0} ({1},{2})"
-                                          .format(columna + 1,
+                                          .format(coord_x + 1,
                                                   fila + 1,
                                                   columna + 1))
 

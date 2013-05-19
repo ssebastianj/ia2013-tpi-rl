@@ -82,6 +82,8 @@ class MainWindow(QtGui.QMainWindow):
         self.entrenar_is_running = False
         self.recorrer_is_running = False
         self.wnd_taskbar = None
+        self.last_state_bkp = None
+        self.last_state_bg = None
 
         self.tecnicas = {0: "Greedy",
                          1: "ε-Greedy",
@@ -95,7 +97,12 @@ class MainWindow(QtGui.QMainWindow):
                                     {"ocultar_tipos":
                                      [TIPOESTADO.AGENTE],
                                      "enabled": True},
-                               "size": 40}}
+                               "size": 40},
+                              "gw":
+                               {"entrenamiento": {"actual_state": {"show": True, "color": "#000000"}},
+                                "recorrido": {"actual_state": {"show": True, "color": "#000000"}}
+                               }
+                               }
 
     def _initialize_window(self):
         # Aspectos de la ventana principal
@@ -648,6 +655,11 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.statusBar.clearMessage()
         self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
 
+        # Restaurar color original del estado final
+        self.last_state_bkp.setBackground(QtGui.QBrush(self.last_state_bg))
+        self.last_state_bkp = None
+        self.last_state_bg = None
+
         try:
             self.wnd_taskbar.SetProgressState(self.winId(),
                                               self.wnd_taskbar.TBPF_NOPROGRESS)
@@ -759,6 +771,22 @@ class MainWindow(QtGui.QMainWindow):
                 self.WMainWindow.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
                                                           .format(running_exec_time_ent,
                                                                   running_exec_time_ent * 1000))
+
+                # Mostrar estado actual en grilla
+                if self.window_config["gw"]["entrenamiento"]["actual_state"]["show"]:
+                    item = self.WMainWindow.tblGridWorld.item(estado_actual_ent[0] - 1,
+                                                              estado_actual_ent[1] - 1)
+
+                    if self.last_state_bkp is None:
+                        self.last_state_bkp = item
+                        self.last_state_bg = item.background().color()
+                    else:
+                        self.last_state_bkp.setBackground(QtGui.QBrush(self.last_state_bg))
+                        self.last_state_bkp = item
+                        self.last_state_bg = item.background()
+
+                    item.setBackground(QtGui.QColor(self.window_config["gw"]["entrenamiento"]["actual_state"]["color"]))
+
         except Queue.Empty:
             pass
         except AttributeError:
