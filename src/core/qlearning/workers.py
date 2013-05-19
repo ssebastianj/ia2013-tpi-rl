@@ -7,7 +7,6 @@ import Queue
 import logging
 import multiprocessing
 import numpy
-import os
 import time
 import sys
 import random
@@ -120,7 +119,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # Variable utilizada para saber cuando decrementar el parámetro de la técnica
         decrementar_step = 0
-        decrementar_lista = []
 
         # Registrar tiempo de comienzo de los episodios
         ep_start_time = wtimer()
@@ -176,9 +174,14 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
                 # Fórmula principal de Q-Learning
                 # -------------------------------
-                if recompensa_estado is not None:
-                    logging.debug("Gamma: {0}".format(self.gamma))
+                logging.debug("Gamma: {0}".format(self.gamma))
+                try:
                     nuevo_q = recompensa_estado + (self.gamma * max_q)
+                except TypeError:
+                    nuevo_q = 0 + (self.gamma * max_q)
+                except ValueError:
+                    nuevo_q = 0 + (self.gamma * max_q)
+                finally:
                     # Actualizar valor de Q en matriz Q
                     self.matriz_q[x_act - 1][y_act - 1][1][(x_eleg, y_eleg)] = nuevo_q
 
@@ -496,7 +499,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             # Buscar el estado que posea el mayor valor de Q
             maximo = None
             estados_qmax = []
-            for key, value in vecinos.items():
+            for key, value in vecinos.iteritems():
 
                 # Comprobar si el estado fue marcado y saltarlo si es verdadero
                 if key in self._visitados:

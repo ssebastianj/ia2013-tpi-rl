@@ -46,19 +46,19 @@ class EGreedy(QLTecnica):
 
             maximo = None
             estados_qmax = []
-            for key, value in vecinos.items():
+            for key, value in vecinos.iteritems():
                 logging.debug("X:{0} Y:{1}".format(*key))  # FIXME: Eliminar print de debug
                 q_valor = value
                 logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug
 
-                if maximo is None:
+                try:
+                    if q_valor > maximo:
+                        maximo = q_valor
+                        estados_qmax = [key]
+                    elif q_valor == maximo:
+                        estados_qmax.append(key)
+                except TypeError:
                     maximo = q_valor
-
-                if q_valor > maximo:
-                    maximo = q_valor
-                    estados_qmax = [key]
-                elif q_valor == maximo:
-                    estados_qmax.append(key)
 
             logging.debug("Estados Q-Max: {0}".format(estados_qmax))
 

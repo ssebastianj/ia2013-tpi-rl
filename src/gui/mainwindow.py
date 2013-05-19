@@ -658,9 +658,15 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
 
         # Restaurar color original del estado final
-        self.last_state_bkp.setBackground(QtGui.QBrush(self.last_state_bg))
-        self.last_state_bkp.setText(self.last_state_text)
-        self.last_state_bkp.setIcon(QtGui.QIcon())
+        try:
+            self.last_state_bkp.setBackground(QtGui.QBrush(self.last_state_bg))
+            self.last_state_bkp.setText(self.last_state_text)
+            self.last_state_bkp.setIcon(QtGui.QIcon())
+        except AttributeError:
+            pass
+        except TypeError:
+            pass
+
         self.last_state_bkp = None
         self.last_state_bg = None
 
