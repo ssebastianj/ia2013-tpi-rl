@@ -1276,8 +1276,8 @@
   </action>
   <action name="actionAgenteEntrenar">
    <property name="icon">
-    <iconset>
-     <normaloff>:/:iconos/Aprender</normaloff>:/:iconos/Aprender</iconset>
+    <iconset resource="recursos.qrc">
+     <normaloff>:/iconos/Aprender.png</normaloff>:/iconos/Aprender.png</iconset>
    </property>
    <property name="text">
     <string>Entrenar</string>
@@ -1285,8 +1285,8 @@
   </action>
   <action name="actionAgenteRecorrer">
    <property name="icon">
-    <iconset>
-     <normaloff>:/:iconos/Recorrer</normaloff>:/:iconos/Recorrer</iconset>
+    <iconset resource="recursos.qrc">
+     <normaloff>:/iconos/Recorrer.png</normaloff>:/iconos/Recorrer.png</iconset>
    </property>
    <property name="text">
     <string>Recorrer</string>
@@ -1294,8 +1294,8 @@
   </action>
   <action name="actionAgenteCancelar">
    <property name="icon">
-    <iconset>
-     <normaloff>:/:iconos/Cancelar</normaloff>:/:iconos/Cancelar</iconset>
+    <iconset resource="recursos.qrc">
+     <normaloff>:/iconos/Cancelar.png</normaloff>:/iconos/Cancelar.png</iconset>
    </property>
    <property name="text">
     <string>Cancelar</string>

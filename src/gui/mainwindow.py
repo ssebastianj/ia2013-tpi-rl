@@ -472,6 +472,9 @@ class MainWindow(QtGui.QMainWindow):
         if self.WMainWindow.chkDecrementarParam.isChecked():
                 paso_decremento = self.WMainWindow.sbDecrementoVal.value()
                 intervalo_decremento = self.WMainWindow.sbCantEpisodiosDec.value()
+        else:
+            paso_decremento = 0
+            intervalo_decremento = 0
         # ----------- Fin de seteo de la técnica --------------
 
         gamma = self.WMainWindow.sbQLGamma.value()

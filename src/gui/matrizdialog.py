@@ -84,7 +84,11 @@ class ShowMatrizDialog(QtGui.QDialog):
 
                 for key, value in acciones.iteritems():
                     # Cada item muestra la letra asignada al estado
-                    item = QtGui.QTableWidgetItem(str(value))
+                    if isinstance(value, float):
+                        item = QtGui.QTableWidgetItem("{0:.2f}".format(value))
+                    elif isinstance(value, int):
+                        item = QtGui.QTableWidgetItem(str(value))
+
                     item.setBackgroundColor(QtGui.QColor("#FFFFFF"))
                     item.setFlags(QtCore.Qt.ItemIsEnabled |
                                   QtCore.Qt.ItemIsSelectable)

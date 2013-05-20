@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Sun May 19 16:06:40 2013
+# Created: Sun May 19 21:40:21 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -561,19 +561,13 @@ class Ui_MainWindow(object):
         self.actionAcercaDe = QtGui.QAction(MainWindow)
         self.actionAcercaDe.setObjectName(_fromUtf8("actionAcercaDe"))
         self.actionAgenteEntrenar = QtGui.QAction(MainWindow)
-        icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Aprender")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionAgenteEntrenar.setIcon(icon5)
+        self.actionAgenteEntrenar.setIcon(icon2)
         self.actionAgenteEntrenar.setObjectName(_fromUtf8("actionAgenteEntrenar"))
         self.actionAgenteRecorrer = QtGui.QAction(MainWindow)
-        icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Recorrer")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionAgenteRecorrer.setIcon(icon6)
+        self.actionAgenteRecorrer.setIcon(icon3)
         self.actionAgenteRecorrer.setObjectName(_fromUtf8("actionAgenteRecorrer"))
         self.actionAgenteCancelar = QtGui.QAction(MainWindow)
-        icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap(_fromUtf8(":/:iconos/Cancelar")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionAgenteCancelar.setIcon(icon7)
+        self.actionAgenteCancelar.setIcon(icon4)
         self.actionAgenteCancelar.setObjectName(_fromUtf8("actionAgenteCancelar"))
         self.actionInicializarTodo = QtGui.QAction(MainWindow)
         self.actionInicializarTodo.setObjectName(_fromUtf8("actionInicializarTodo"))
