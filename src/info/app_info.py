@@ -6,7 +6,7 @@ from __future__ import absolute_import
 __author__ = u"Grupo Nº 1"
 __email__ = "ssebastianj[at]gmail.com"
 __license__ = u"Copyright(C) 2013 Grupo Nº 1"
-__version__ = "1.8.0"
+__version__ = "1.8.2"
 __status__ = "Development"
 __url__ = "https://bitbucket.org/ssebastianj/ia2013-tpi-rl"
 __copyright__ = __license__
