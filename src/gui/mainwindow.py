@@ -17,7 +17,7 @@ from gui.gwgenrndestadosdialog import GWGenRndEstadosDialog
 from gui.gwopcionesdialog import GWOpcionesDialog
 from gui.matrizdialog import ShowMatrizDialog
 
-from core.estado.estado import TIPOESTADO
+from core.estado.estado import TIPOESTADO, TipoEstado
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
 from core.qlearning.matrixinits import QLMatrixInitEnCero
@@ -93,7 +93,7 @@ class MainWindow(QtGui.QMainWindow):
         self.gw_dimensiones = ["3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.window_config = {"item":
-                              {"show_tooltip": False,
+                              {"show_tooltip": True,
                                "menu_estado":
                                     {"ocultar_tipos":
                                      [TIPOESTADO.AGENTE],
@@ -102,8 +102,19 @@ class MainWindow(QtGui.QMainWindow):
                               "gw":
                                {"entrenamiento": {"actual_state": {"show": True, "color": "#000000", "icono": None}},
                                 "recorrido": {"actual_state": {"show": True, "color": "#000000", "icono": None}}
-                               }
-                               }
+                               },
+                              "tipos_estados":
+                               {0: TipoEstado(0, None, _tr("Inicial"), _tr("I"), "#FF5500", None),
+                                1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#0071A6", None),
+                                2: TipoEstado(2, None, _tr("Agente"), _tr("A"), "#FEFEFE",
+                                              QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))),
+                                3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
+                                4: TipoEstado(4, 100, _tr("Excelente"), _tr("E"), "#BB0011", None),
+                                5: TipoEstado(5, 50, _tr("Bueno"), _tr("B"), "#4F0ACC", None),
+                                6: TipoEstado(6, -10, _tr("Malo"), _tr("M"), "#EB00A1", None),
+                                7: TipoEstado(7, None, _tr("Pared"), _tr("P"), "#000000", None),
+                                }
+                             }
 
     def _initialize_window(self):
         # Aspectos de la ventana principal
@@ -199,10 +210,13 @@ class MainWindow(QtGui.QMainWindow):
         # Obtener ancho y alto del GridWorld
         self._logger.debug("Dimensión: {0}".format(dimension))
         ancho_gw, alto_gw = self.convert_dimension(dimension)
+
         # Crear un nuevo GridWorld dados el ancho y el alto del mismo
         self.gridworld = GridWorld(ancho_gw,
                                    alto_gw,
-                                   excluir_tipos_vecinos=[TIPOESTADO.PARED])
+                                   self.window_config["tipos_estados"],
+                                   None,
+                                   [TIPOESTADO.PARED])
 
         ancho_estado_px = self.window_config["item"]["size"]
         ancho_gw_px = ancho_estado_px * ancho_gw
@@ -1030,6 +1044,7 @@ class MainWindow(QtGui.QMainWindow):
     def mostrar_opciones_gw(self):
         # Inicializar cuadros de diálogo
         self.GWOpcionesD = GWOpcionesDialog(self)
+
         if self.GWOpcionesD.exec_():
             if self.GWOpcionesD.ent_show_state:
                 if self.GWOpcionesD.ent_usar_color_fondo:
@@ -1052,7 +1067,13 @@ class MainWindow(QtGui.QMainWindow):
             self.window_config["gw"]["recorrido"]["actual_state"]["show"] = self.GWOpcionesD.rec_show_state
 
             self.window_config["item"]["size"] = self.GWOpcionesD.estado_size
-            self.resize_gw_estados()
+
+            new_tipos_estados = self.GWOpcionesD.tipos_estados
+            old_tipos_estados = self.window_config["tipos_estados"]
+
+            if (new_tipos_estados is not None) and (new_tipos_estados != old_tipos_estados):
+                old_tipos_estados = new_tipos_estados
+                self.refresh_gw()
 
     def mostrar_gen_rnd_estados_dialog(self):
         self.GWGenRndEstValsD = GWGenRndEstadosDialog(self)

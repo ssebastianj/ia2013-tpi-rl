@@ -7,13 +7,12 @@ import logging
 import numpy
 import threading
 
-from PyQt4 import QtGui
-from core.estado.estado import Estado, TipoEstado, TIPOESTADO
+from core.estado.estado import Estado, TIPOESTADO
 
 
 class GridWorld(object):
     """Clase GridWorld"""
-    def __init__(self, ancho, alto, estados=None, tipos_estados=None,
+    def __init__(self, ancho, alto, tipos_estados, estados=None,
                  excluir_tipos_vecinos=None):
         u"""
         :param ancho: Ancho
@@ -30,82 +29,26 @@ class GridWorld(object):
 
         self._ancho = ancho
         self._alto = alto
-        self._tipos_estados = None
+        self._tipos_estados = tipos_estados
         self._estados = None
         self._coordenadas = None
         self._excluir_tipos_vecinos = excluir_tipos_vecinos
-        self._inicializar_tipos_estados()
+
         self._inicializar_estados()
 
-    def _inicializar_tipos_estados(self):
-        u"""
-        Inicializa los distintos tipos de estados
-        """
-        if self._tipos_estados is None:
-            self._tipos_estados = {}
-            # Estado Agente
-            icono_agente = QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))
-            self._tipos_estados[TIPOESTADO.AGENTE] = TipoEstado(TIPOESTADO.AGENTE,
-                                                                None,
-                                                                "Agente",
-                                                                "A",
-                                                                "#FF2288",
-                                                                icono_agente)
-            # Estados Intermedios
-            self._tipos_estados[TIPOESTADO.EXCELENTE] = TipoEstado(TIPOESTADO.EXCELENTE,
-                                                                   100,
-                                                                   "Excelente",
-                                                                   "E",
-                                                                   "#BB0011")
-            self._tipos_estados[TIPOESTADO.BUENO] = TipoEstado(TIPOESTADO.BUENO,
-                                                               50,
-                                                               "Bueno",
-                                                               "B",
-                                                               "#4F0ACC")
-            self._tipos_estados[TIPOESTADO.MALO] = TipoEstado(TIPOESTADO.MALO, -10,
-                                                              "Malo",
-                                                              "M",
-                                                              "#EB00A1")
-            self._tipos_estados[TIPOESTADO.NEUTRO] = TipoEstado(TIPOESTADO.NEUTRO,
-                                                                0,
-                                                                "Neutro",
-                                                                "N")
-            self._tipos_estados[TIPOESTADO.PARED] = TipoEstado(TIPOESTADO.PARED,
-                                                               - 100,
-                                                               "Pared",
-                                                               "P",
-                                                               "#000000")
-            # Estado Inicial
-            self._tipos_estados[TIPOESTADO.INICIAL] = TipoEstado(TIPOESTADO.INICIAL,
-                                                                 None,
-                                                                 "Inicial",
-                                                                 "I",
-                                                                 "#FF0011")
-
-            # Estado Final
-            # La recompensa se calcula buscando la mayor recompensa entre los estados
-            # intermedios y sumándole un número dadon con el objetivo de que el
-            # Estado Final tenga la máxima recompensa de todos los estados.
-            recompensa_estado_final = max([i.recompensa
-                                           for i in self._tipos_estados.values()
-                                           if i is not None]) + 150
-
-            self._tipos_estados[TIPOESTADO.FINAL] = TipoEstado(TIPOESTADO.FINAL,
-                                                               recompensa_estado_final,
-                                                               "Final",
-                                                               "F",
-                                                               "#2F4055")
-
     def _inicializar_estados(self, default=TIPOESTADO.NEUTRO):
-        inicializar_estados_worker = threading.Thread(None,
-                                                      self._inicializar_estados_worker,
-                                                      "GWInicializarEstadosWorker",
-                                                      (default,),
-                                                      None,
-                                                      None)
-        inicializar_estados_worker.start()
-        inicializar_estados_worker.join(0.05)
-        self._logger.debug(inicializar_estados_worker)
+        if isinstance(self._tipos_estados, dict):
+            inicializar_estados_worker = threading.Thread(None,
+                                                          self._inicializar_estados_worker,
+                                                          "GWInicializarEstadosWorker",
+                                                          (default,),
+                                                          None,
+                                                          None)
+            inicializar_estados_worker.start()
+            inicializar_estados_worker.join(0.05)
+            self._logger.debug(inicializar_estados_worker)
+        else:
+            return None
 
     def _inicializar_estados_worker(self, default=TIPOESTADO.NEUTRO):
         u"""
@@ -205,7 +148,10 @@ class GridWorld(object):
         return self._excluir_tipos_vecinos
 
     def set_tipos_vecinos_excluidos(self, valor):
-        self._excluir_tipos_vecinos = valor
+        if isinstance(valor, dict):
+            self._excluir_tipos_vecinos = valor
+        else:
+            raise TypeError
 
     def get_coordenadas(self):
         return self._coordenadas
