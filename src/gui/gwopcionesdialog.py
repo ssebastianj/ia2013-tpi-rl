@@ -52,6 +52,7 @@ class GWOpcionesDialog(QtGui.QDialog):
         """
         self._set_dialog_signals()
 
+        self.GWOpcionesD.sbRecomFinal.setEnabled(True)
         self.GWOpcionesD.sbRecomPared.setEnabled(False)
         self.GWOpcionesD.cbRecomPared.addItem("Excluir de vecinos", 0)
         self.GWOpcionesD.cbRecomPared.addItem("Usar recompensa", 1)
@@ -85,8 +86,9 @@ class GWOpcionesDialog(QtGui.QDialog):
                                self.GWOpcionesD.sbRecomBueno.value(),
                                self.GWOpcionesD.sbRecomMalo.value(),
                                self.GWOpcionesD.sbRecomPared.value()])
-        self.recomp_max += 50
-        self.GWOpcionesD.sbRecomFinal.setValue(self.recomp_max)
+        self.recomp_max += 1
+        self.GWOpcionesD.sbRecomFinal.setMinimum(self.recomp_max)
+        # self.GWOpcionesD.sbRecomFinal.setValue(self.recomp_max)
 
     def toggle_recom_pared(self, indice):
         if indice == 0:

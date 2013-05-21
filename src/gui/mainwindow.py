@@ -5,7 +5,6 @@ from __future__ import absolute_import
 
 import logging
 import multiprocessing
-import threading
 import Queue
 
 from PyQt4 import QtCore, QtGui
@@ -30,9 +29,8 @@ from core.tecnicas.softmax import Softmax
 
 from tools.livedatafeed import LiveDataFeed
 from tools.listacircular import ListaCircular
-from tools.queue import get_all_from_queue, get_item_from_queue
+from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
-from PyQt4.pyqtconfig import QtGuiModuleMakefile
 
 try:
     _tr = QtCore.QString.fromUtf8
