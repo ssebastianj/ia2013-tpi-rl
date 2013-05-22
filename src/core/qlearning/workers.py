@@ -576,21 +576,11 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             x_act, y_act = (x_eleg, y_eleg)
             estado_actual = matriz_q[x_act - 1][y_act - 1]
 
-        # Registrar tiempo de finalización
-        rec_end_time = wtimer()
-        rec_exec_time = rec_end_time - rec_start_time
-
         logging.debug("Camino óptimo: {0}".format(camino_optimo))
 
-        # Encolar la información generada por el algoritmo para realizar
-        # estadísticas
-        self.encolar_salida({'EstadoActual': (x_act, y_act),
-                             'CaminoRecorrido': camino_optimo,
-                             'RecorridoExecTime': rec_exec_time,
-                             'ProcesoJoined': False})
-
         # Registrar tiempo de finalización
-        running_end_time = wtimer()
+        running_end_time = rec_end_time = wtimer()
+        rec_exec_time = rec_end_time - rec_start_time
         running_exec_time = running_end_time - running_start_time
 
         # Poner en la cola de salida los resultados
