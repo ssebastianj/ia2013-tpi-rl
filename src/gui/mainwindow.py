@@ -86,7 +86,7 @@ class MainWindow(QtGui.QMainWindow):
         self.last_state_bg = None
         self.last_state_text = None
 
-        self.tecnicas = {0: "Greedy",
+        self.tecnicas = {  # 0: "Greedy",
                          1: "ε-Greedy",
                          2: "Softmax",
                          3: "Aleatorio"}
@@ -321,7 +321,9 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbQLEpsilon.setMinimum(0.00)
             self.WMainWindow.sbQLEpsilon.setValue(0.00)
             self.WMainWindow.sbQLEpsilon.setEnabled(False)
-            self.WMainWindow.chkDecrementarParam.setEnabled(False)
+            self.WMainWindow.chkDecrementarParam.setEnabled(True)
+            self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
+            self.WMainWindow.sbDecrementoVal.setEnabled(True)
         elif key == 1:
             # E-Greedy
             self.WMainWindow.lblTau.hide()
@@ -331,6 +333,8 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
             self.WMainWindow.sbQLEpsilon.setEnabled(True)
             self.WMainWindow.chkDecrementarParam.setEnabled(True)
+            self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
+            self.WMainWindow.sbDecrementoVal.setEnabled(True)
         elif key == 2:
             # Softmax
             self.WMainWindow.lblEpsilon.hide()
@@ -338,6 +342,8 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.lblTau.show()
             self.WMainWindow.sbQLTau.show()
             self.WMainWindow.chkDecrementarParam.setEnabled(True)
+            self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
+            self.WMainWindow.sbDecrementoVal.setEnabled(True)
         elif key == 3:
             # Aleatorio
             self.WMainWindow.lblTau.hide()
@@ -347,7 +353,9 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbQLEpsilon.setMinimum(1.00)
             self.WMainWindow.sbQLEpsilon.setValue(1.00)
             self.WMainWindow.sbQLEpsilon.setEnabled(False)
-            self.WMainWindow.chkDecrementarParam.setEnabled(False)
+            self.WMainWindow.chkDecrementarParam.setDisabled(True)
+            self.WMainWindow.sbCantEpisodiosDec.setDisabled(True)
+            self.WMainWindow.sbDecrementoVal.setDisabled(True)
 
     def show_item_menu(self, posicion):
         u"""
@@ -481,6 +489,7 @@ class MainWindow(QtGui.QMainWindow):
         elif id_tecnica == 3:
             # Aleatorio
             tecnica = Aleatorio
+            parametro = None
         else:
             tecnica = None
 
@@ -846,6 +855,8 @@ class MainWindow(QtGui.QMainWindow):
                                                                          running_exec_time_ent * 1000))
                 except TypeError:
                     pass
+                except ValueError:
+                    pass
 
                 # Mostrar estado actual en grilla
                 if self.ent_show_estado_act:
@@ -906,6 +917,8 @@ class MainWindow(QtGui.QMainWindow):
                                                               .format(rec_exec_time,
                                                                       rec_exec_time * 1000))
                 except TypeError:
+                    pass
+                except ValueError:
                     pass
 
                 # Mostrar estado actual en grilla
@@ -1116,7 +1129,7 @@ class MainWindow(QtGui.QMainWindow):
         for key, value in self.tecnicas.items():
             self.WMainWindow.cbQLTecnicas.addItem(_tr(value), key)
 
-        self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
+        # self.WMainWindow.cbQLTecnicas.setCurrentIndex(1)
         self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
         self.WMainWindow.sbQLTau.setMinimum(0.01)
         self.WMainWindow.lblTau.hide()
