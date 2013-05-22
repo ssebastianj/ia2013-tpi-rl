@@ -630,12 +630,22 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         logging.debug("Visitados: {0}".format(self._visitados))
 
     def encolar_salida(self, salida):
+        u"""
+        Colocar los resultandos del procesamiento en la cola de salida.
+
+        :param salida: Información a colocar en la cola.
+        """
         try:
             self._out_queue.put(salida)
         except Queue.Full:
             pass
 
     def encolar_errores(self, error):
+        u"""
+        Colocar los mensajes de errore en la cola de errores.
+
+        :param error: Mensaje de error a colocar en la cola.
+        """
         try:
             self._error_queue.put(error)
         except Queue.Full:
