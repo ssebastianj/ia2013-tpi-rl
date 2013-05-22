@@ -65,12 +65,15 @@ class EGreedy(QLTecnica):
 
             # Comprobar si hay estados con recompensas iguales y elegir uno
             # de forma aleatoria
-            if len(estados_qmax) == 1:
+            long_vecinos = len(estados_qmax)
+            if long_vecinos == 1:
                 estado_qmax = estados_qmax[0]
                 logging.debug("Existe un sólo estado vecino máximo")  # FIXME: Eliminar print de debug
-            else:
+            elif long_vecinos > 1:
                 estado_qmax = self.elegir_estado_aleatorio(estados_qmax)
                 logging.debug("Existen varios estados con igual recompensa")  # FIXME: Eliminar print de debug
+            else:
+                pass
         else:
             # EXPLORAR
             logging.debug("EXPLORAR")  # FIXME: Eliminar print de debug

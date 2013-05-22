@@ -258,6 +258,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             pass
 
     def procesar_entrada(self):
+        u"""
+        Recibe e inicializa los datos de entradas que se utilizarán en el
+        entrenamiento.
+        """
         # Obtener matriz R y matriz Q
         try:
             self.input_data = self._inp_queue.get(True, 0.05)
@@ -516,9 +520,10 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
         # Registrar tiempo de comienzo
         rec_start_time = wtimer()
+
         x_act, y_act = estado_inicial
         estado_actual = matriz_q[x_act - 1][y_act - 1]
-        while (not self._stoprequest.is_set()) and (not estado_actual[0] == TIPOESTADO.FINAL):
+        while (not self._stoprequest.is_set()) and (estado_actual[0] != TIPOESTADO.FINAL):
             vecinos = estado_actual[1]
 
             # Buscar el estado que posea el mayor valor de Q
@@ -534,14 +539,14 @@ class QLearningRecorrerWorker(multiprocessing.Process):
                 q_valor = value
                 logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug
 
-                if maximo is None:
+                try:
+                    if q_valor > maximo:
+                        maximo = q_valor
+                        estados_qmax = [key]
+                    elif q_valor == maximo:
+                        estados_qmax.append(key)
+                except TypeError:
                     maximo = q_valor
-
-                if q_valor > maximo:
-                    maximo = q_valor
-                    estados_qmax = [key]
-                elif q_valor == maximo:
-                    estados_qmax.append(key)
 
             # Comprobar si hay estados con valores Q iguales y elegir uno
             # de forma aleatoria
@@ -564,12 +569,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             # Agregar estado al camino óptimo
             camino_optimo.append(estado_qmax)
 
-            try:
-                self._out_queue.put({'EstadoActual': (x_act, y_act),
-                                     'ProcesoJoined': False})
-            except Queue.Full:
-                logging.debug("Cola llena")
-                pass
+            self.encolar_salida({'EstadoActual': (x_act, y_act),
+                                 'ProcesoJoined': False})
 
             # Actualizar estado actual
             x_act, y_act = (x_eleg, y_eleg)
@@ -583,29 +584,21 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
         # Encolar la información generada por el algoritmo para realizar
         # estadísticas
-        try:
-            self._out_queue.put({'EstadoActual': (x_act, y_act),
-                                 'CaminoRecorrido': camino_optimo,
-                                 'RecorridoExecTime': rec_exec_time,
-                                 'ProcesoJoined': False})
-        except Queue.Full:
-            logging.debug("Cola llena")
-            pass
+        self.encolar_salida({'EstadoActual': (x_act, y_act),
+                             'CaminoRecorrido': camino_optimo,
+                             'RecorridoExecTime': rec_exec_time,
+                             'ProcesoJoined': False})
 
         # Registrar tiempo de finalización
         running_end_time = wtimer()
         running_exec_time = running_end_time - running_start_time
 
         # Poner en la cola de salida los resultados
-        try:
-            self._out_queue.put({'EstadoActual': (x_act, y_act),
-                                 'CaminoRecorrido': camino_optimo,
-                                 'RecorridoExecTime': rec_exec_time,
-                                 'ProcesoJoined': False,
-                                 'RunningExecTime': running_exec_time})
-        except Queue.Full:
-            logging.debug("Cola llena")
-            pass
+        self.encolar_salida({'EstadoActual': (x_act, y_act),
+                             'CaminoRecorrido': camino_optimo,
+                             'RecorridoExecTime': rec_exec_time,
+                             'ProcesoJoined': False,
+                             'RunningExecTime': running_exec_time})
 
         # Realizar tareas al finalizar
         self._on_end()
@@ -635,3 +628,15 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         logging.debug("Contador de referencias actualizado: {0}"
                           .format(self._contador_ref))
         logging.debug("Visitados: {0}".format(self._visitados))
+
+    def encolar_salida(self, salida):
+        try:
+            self._out_queue.put(salida)
+        except Queue.Full:
+            pass
+
+    def encolar_errores(self, error):
+        try:
+            self._error_queue.put(error)
+        except Queue.Full:
+            pass

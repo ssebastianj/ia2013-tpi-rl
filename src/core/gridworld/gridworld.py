@@ -180,6 +180,9 @@ class GridWorld(object):
                           for j in [[i.tipo.letra for i in f]
                                     for f in self._estados]])
 
+    def __len__(self):
+        return len(self._estados)
+
     # Propiedades (atributos) de la clase
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")
