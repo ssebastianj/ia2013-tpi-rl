@@ -894,16 +894,19 @@ class MainWindow(QtGui.QMainWindow):
                 self._logger.debug("[Recorrer] Tiempo ejecución recorrido: {0}".format(running_exec_time_rec))
                 self._logger.debug("[Recorrer] Worker joined: {0}".format(worker_joined))
 
-                self.WMainWindow.lblRecEstadoActual.setText("X:{0}  Y:{1}"
-                                                         .format(estado_actual_rec[0],
-                                                                 estado_actual_rec[1]
-                                                                 ))
-                self.WMainWindow.lblRecExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                          .format(running_exec_time_rec,
-                                                                  running_exec_time_rec * 1000))
-                self.WMainWindow.lblRecExecTimeRecorrido.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                          .format(rec_exec_time,
-                                                                  rec_exec_time * 1000))
+                try:
+                    self.WMainWindow.lblRecEstadoActual.setText("X:{0}  Y:{1}"
+                                                             .format(estado_actual_rec[0],
+                                                                     estado_actual_rec[1]
+                                                                     ))
+                    self.WMainWindow.lblRecExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                              .format(running_exec_time_rec,
+                                                                      running_exec_time_rec * 1000))
+                    self.WMainWindow.lblRecExecTimeRecorrido.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                              .format(rec_exec_time,
+                                                                      rec_exec_time * 1000))
+                except TypeError:
+                    pass
 
                 # Mostrar estado actual en grilla
                 if self.rec_show_estado_act:
