@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>821</width>
-    <height>583</height>
+    <height>632</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -258,69 +258,7 @@
         <string>Q-Learning</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_8">
-        <item row="0" column="0">
-         <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="0">
-           <widget class="QLabel" name="lblGamma">
-            <property name="maximumSize">
-             <size>
-              <width>115</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Gamma (Ɣ):</string>
-            </property>
-            <property name="buddy">
-             <cstring>sbQLGamma</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="maximumSize">
-             <size>
-              <width>115</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Cantidad de episodios:</string>
-            </property>
-            <property name="buddy">
-             <cstring>sbCantidadEpisodios</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QSpinBox" name="sbCantidadEpisodios">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Cantidad de Episodios&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Número de Episodios (Plays) a realizar durante la fase de aprendizaje (entrenamiento). Un episodio es un recorrido desde un estado dado hasta el estado &lt;span style=&quot; font-style:italic;&quot;&gt;final.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>1000000000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QDoubleSpinBox" name="sbQLGamma">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Factor de descuento&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Cuanto más cerca de 1 se encuentre este valor mayor será el &lt;span style=&quot; font-style:italic;&quot;&gt;peso&lt;/span&gt; asignado a los refuerzos futuros.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="maximum">
-             <double>0.990000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="1" column="0">
+        <item row="3" column="0">
          <widget class="QGroupBox" name="groupBox_6">
           <property name="title">
            <string>Técnica</string>
@@ -332,15 +270,27 @@
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_12">
+           <property name="leftMargin">
+            <number>4</number>
+           </property>
+           <property name="rightMargin">
+            <number>2</number>
+           </property>
            <item row="0" column="0">
             <layout class="QGridLayout" name="gridLayout_4">
              <item row="2" column="0" colspan="2">
               <widget class="QLabel" name="lblTau">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>116</width>
+                 <height>0</height>
+                </size>
                </property>
                <property name="maximumSize">
                 <size>
@@ -362,10 +312,16 @@
              <item row="1" column="0" colspan="2">
               <widget class="QLabel" name="lblEpsilon">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>116</width>
+                 <height>0</height>
+                </size>
                </property>
                <property name="maximumSize">
                 <size>
@@ -436,10 +392,25 @@
              <property name="topMargin">
               <number>4</number>
              </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
              <item row="1" column="1">
               <widget class="QLabel" name="label_3">
                <property name="enabled">
                 <bool>false</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>98</width>
+                 <height>0</height>
+                </size>
                </property>
                <property name="text">
                 <string>Cada:</string>
@@ -459,7 +430,7 @@
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>20</width>
+                 <width>12</width>
                  <height>20</height>
                 </size>
                </property>
@@ -485,6 +456,18 @@
               <widget class="QLabel" name="label_5">
                <property name="enabled">
                 <bool>false</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>98</width>
+                 <height>0</height>
+                </size>
                </property>
                <property name="text">
                 <string>Decremento:</string>
@@ -552,7 +535,7 @@
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>20</width>
+                 <width>12</width>
                  <height>20</height>
                 </size>
                </property>
@@ -563,7 +546,128 @@
           </layout>
          </widget>
         </item>
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="sbCantidadEpisodios">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Cantidad de Episodios&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Número de Episodios (Plays) a realizar durante la fase de aprendizaje (entrenamiento). Un episodio es un recorrido desde un estado dado hasta el estado &lt;span style=&quot; font-style:italic;&quot;&gt;final.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>1000000000</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="maximumSize">
+             <size>
+              <width>115</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Cantidad de episodios:</string>
+            </property>
+            <property name="buddy">
+             <cstring>sbCantidadEpisodios</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="sbQLGamma">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Factor de descuento&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Cuanto más cerca de 1 se encuentre este valor mayor será el &lt;span style=&quot; font-style:italic;&quot;&gt;peso&lt;/span&gt; asignado a los refuerzos futuros.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="maximum">
+             <double>0.990000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lblGamma">
+            <property name="maximumSize">
+             <size>
+              <width>115</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Gamma (Ɣ):</string>
+            </property>
+            <property name="buddy">
+             <cstring>sbQLGamma</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
         <item row="2" column="0">
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="2" column="1">
+           <widget class="QLabel" name="lblCantMaxIteraciones">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>95</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Cantidad máxima:</string>
+            </property>
+            <property name="buddy">
+             <cstring>sbCantMaxIteraciones</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QSpinBox" name="sbCantMaxIteraciones">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>1000000000</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>12</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0" colspan="3">
+           <widget class="QCheckBox" name="chkLimitarCantIteraciones">
+            <property name="text">
+             <string>Limitar cantidad de iteraciones por episodio</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="4" column="0">
          <widget class="QGroupBox" name="groupBox_7">
           <property name="title">
            <string>Acciones</string>
@@ -1315,6 +1419,8 @@
   <tabstop>btnGWOpciones</tabstop>
   <tabstop>sbQLGamma</tabstop>
   <tabstop>sbCantidadEpisodios</tabstop>
+  <tabstop>chkLimitarCantIteraciones</tabstop>
+  <tabstop>sbCantMaxIteraciones</tabstop>
   <tabstop>cbQLTecnicas</tabstop>
   <tabstop>sbQLEpsilon</tabstop>
   <tabstop>sbQLTau</tabstop>
@@ -1324,11 +1430,11 @@
   <tabstop>btnInicializarValoresQL</tabstop>
   <tabstop>btnInicializarTodo</tabstop>
   <tabstop>tblGridWorld</tabstop>
-  <tabstop>btnMostrarMatrizR</tabstop>
-  <tabstop>btnMostrarMatrizQ</tabstop>
   <tabstop>btnEntrenar</tabstop>
   <tabstop>btnRecorrer</tabstop>
   <tabstop>btnTerminarProceso</tabstop>
+  <tabstop>btnMostrarMatrizR</tabstop>
+  <tabstop>btnMostrarMatrizQ</tabstop>
  </tabstops>
  <resources>
   <include location="recursos.qrc"/>
@@ -1341,12 +1447,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>520</x>
-     <y>358</y>
+     <x>247</x>
+     <y>412</y>
     </hint>
     <hint type="destinationlabel">
-     <x>404</x>
-     <y>384</y>
+     <x>140</x>
+     <y>438</y>
     </hint>
    </hints>
   </connection>
@@ -1357,12 +1463,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>520</x>
-     <y>358</y>
+     <x>247</x>
+     <y>412</y>
     </hint>
     <hint type="destinationlabel">
-     <x>404</x>
-     <y>412</y>
+     <x>140</x>
+     <y>466</y>
     </hint>
    </hints>
   </connection>
@@ -1373,12 +1479,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>520</x>
-     <y>358</y>
+     <x>247</x>
+     <y>412</y>
     </hint>
     <hint type="destinationlabel">
-     <x>520</x>
-     <y>384</y>
+     <x>247</x>
+     <y>438</y>
     </hint>
    </hints>
   </connection>
@@ -1389,12 +1495,44 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>520</x>
-     <y>358</y>
+     <x>247</x>
+     <y>412</y>
     </hint>
     <hint type="destinationlabel">
-     <x>519</x>
-     <y>411</y>
+     <x>246</x>
+     <y>465</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkLimitarCantIteraciones</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sbCantMaxIteraciones</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>69</x>
+     <y>248</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkLimitarCantIteraciones</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lblCantMaxIteraciones</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>88</x>
+     <y>244</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>88</x>
+     <y>266</y>
     </hint>
    </hints>
   </connection>

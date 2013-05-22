@@ -15,7 +15,7 @@ from core.tecnicas.tecnica import QLTecnica
 
 class QLearning(object):
     u"""Algoritmo QLearning"""
-    def __init__(self, gridworld, gamma, tecnica, episodes,
+    def __init__(self, gridworld, gamma, tecnica, episodes, iterations_pack,
                  init_value_fn, excluir_tipos_vecinos=None):
         """
         Inicializador de QLearning.
@@ -37,6 +37,7 @@ class QLearning(object):
         self._episodes = episodes
         self._excluir_tipos_vecinos = excluir_tipos_vecinos
         self._init_value_fn = init_value_fn
+        self._iterations_pack = iterations_pack
 
     def _generar_estado_aleatorio(self):
         u"""
@@ -60,6 +61,7 @@ class QLearning(object):
                        self._gridworld.coordenadas,
                        self._gamma,
                        self._episodes,
+                       self._iterations_pack,
                        self._tecnica_pack,
                        (self._gridworld.alto, self._gridworld.ancho),
                        False,
@@ -161,6 +163,15 @@ class QLearning(object):
 
     def get_coordenadas(self):
         return self._coordenadas
+
+    def get_iterations_pack(self):
+        return self._iterations_pack
+
+    def set_iterations_pack(self, valor):
+        self._iterations_pack = valor
+
+    def get_max_iterations(self):
+        self._iterations_pack[1]
 
     def get_matriz_q(self):
         u"""

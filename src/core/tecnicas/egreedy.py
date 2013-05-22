@@ -23,6 +23,9 @@ class EGreedy(QLTecnica):
         self._paso_decremento = paso_decremento
         self._intervalo_decremento = intervalo_decremento
 
+        # Generar un número aleatorio para saber cuál política usar
+        self._rnd_num = random.uniform(0, 1)
+
     def get_epsilon_general(self):
         return self._val_param_general
 
@@ -38,9 +41,7 @@ class EGreedy(QLTecnica):
     def obtener_accion(self, vecinos):
         logging.debug("Vecinos para EGreedy: {0}".format(vecinos))
 
-        # Generar un número aleatorio para saber cuál política usar
-        valor = random.uniform(0, 1)
-        if ((valor >= 0) and (valor <= (1 - self.epsilon_parcial))):
+        if 0 <= self._rnd_num <= (1 - self.epsilon_parcial):
             # EXPLOTAR
             logging.debug("EXPLOTAR")  # FIXME: Eliminar print de debug
 

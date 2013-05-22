@@ -138,6 +138,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.actionAgenteCancelar.setDisabled(True)
         self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
         self.WMainWindow.btnMostrarMatrizR.setDisabled(True)
+        self.WMainWindow.lblCantMaxIteraciones.setDisabled(True)
+        self.WMainWindow.sbCantMaxIteraciones.setDisabled(True)
+        self.WMainWindow.sbCantMaxIteraciones.setValue(10000)
 
         # Asignar shorcuts
         entrenar_shortcut = "F5"
@@ -494,14 +497,15 @@ class MainWindow(QtGui.QMainWindow):
         # TODO: Se puede cambiar la función para inicializar la Matriz Q
         init_value_fn = QLMatrixInitEnCero()
 
+        limitar_nro_iteraciones = self.WMainWindow.chkLimitarCantIteraciones.isChecked()
+        cant_max_iter = self.WMainWindow.sbCantMaxIteraciones.value()
+
         # Crear nueva instancia de Q-Learning
         self.qlearning = QLearning(self.gridworld,
                                    gamma,
-                                   (tecnica,
-                                    parametro,
-                                    paso_decremento,
-                                    intervalo_decremento),
+                                   (tecnica, parametro, paso_decremento, intervalo_decremento),
                                    cant_episodios,
+                                   (limitar_nro_iteraciones, cant_max_iter),
                                    init_value_fn,
                                    None)
 
@@ -822,23 +826,26 @@ class MainWindow(QtGui.QMainWindow):
                     self.ql_entrenar_error_q = None
                     self.ql_entrenar_out_q = None
 
-                # Mostrar información de entrenamiento en etiquetas
-                self.WMainWindow.lblEntEstadoActual.setText("X:{0}  Y:{1}"
-                                                         .format(estado_actual_ent[0],
-                                                                 estado_actual_ent[1]
-                                                                 ))
-                self.WMainWindow.lblEntNroEpisodio.setText(str(nro_episodio))
-                self.WMainWindow.lblEntNroIteracion.setText(str(cant_iteraciones))
-                self.WMainWindow.lblEntValParametro.setText("{0:.2f}".format(valor_parametro))
-                self.WMainWindow.lblEntExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                              .format(episode_exec_time,
-                                                                      episode_exec_time * 1000))
-                self.WMainWindow.lblEntExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                                .format(iter_exec_time,
-                                                                        iter_exec_time * 1000))
-                self.WMainWindow.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                          .format(running_exec_time_ent,
-                                                                  running_exec_time_ent * 1000))
+                try:
+                    # Mostrar información de entrenamiento en etiquetas
+                    self.WMainWindow.lblEntEstadoActual.setText("X:{0}  Y:{1}"
+                                                               .format(estado_actual_ent[0],
+                                                                       estado_actual_ent[1]
+                                                                      ))
+                    self.WMainWindow.lblEntNroEpisodio.setText(str(nro_episodio))
+                    self.WMainWindow.lblEntNroIteracion.setText(str(cant_iteraciones))
+                    self.WMainWindow.lblEntValParametro.setText("{0:.2f}".format(valor_parametro))
+                    self.WMainWindow.lblEntExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                                     .format(episode_exec_time,
+                                                                             episode_exec_time * 1000))
+                    self.WMainWindow.lblEntExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                                       .format(iter_exec_time,
+                                                                               iter_exec_time * 1000))
+                    self.WMainWindow.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                                 .format(running_exec_time_ent,
+                                                                         running_exec_time_ent * 1000))
+                except TypeError:
+                    pass
 
                 # Mostrar estado actual en grilla
                 if self.ent_show_estado_act:

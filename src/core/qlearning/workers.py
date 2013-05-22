@@ -78,38 +78,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Realizar tareas al comienzo
         self._do_on_start()
 
-        # Obtener matriz R y matriz Q
-        try:
-            self.input_data = self._inp_queue.get(True, 0.05)
-        except Queue.Empty:
-            logging.debug("Cola de entrada vacía")
-            return None
-
-        # Obtener valores de entrada
-        self.estados = self.input_data[0]
-        self.coordenadas = self.input_data[1]
-        self.gamma = self.input_data[2]
-        self.cant_episodios = self.input_data[3]
-        self.tecnica_pack = self.input_data[4]
-        self.ancho, self.alto = self.input_data[5]
-        self.detector_bloqueo = self.input_data[6]
-        self.tipos_vec_excluidos = self.input_data[7]
-        self.q_init_value_fn = self.input_data[8]
-
-        self.matriz_r = self.get_matriz_r()
-        self.matriz_q = self.get_matriz_q(self.matriz_r)
-        self.tecnica = self.tecnica_pack[0](self.tecnica_pack[1],
-                                            self.tecnica_pack[2],
-                                            self.tecnica_pack[3])
-
-        logging.debug("Estados: {0}".format(self.estados))
-        logging.debug("Coordenadas: {0}".format(self.coordenadas))
-        logging.debug("Gamma: {0}".format(self.gamma))
-        logging.debug("Episodios: {0}".format(self.cant_episodios))
-        logging.debug("Técnica: {0}".format(self.tecnica))
-        logging.debug("Ancho: {0} - Alto: [1]".format(self.ancho, self.alto))
-        logging.debug("Usar detector bloqueo: {0}".format(self.detector_bloqueo))
-        logging.debug("Tipos vecinos excluidos: {0}".format(self.tipos_vec_excluidos))
+        # Procesar datos de entrada
+        self.procesar_entrada()
 
         if self.detector_bloqueo:
             self._contador_ref = self._crear_cont_ref(self.tipos_vec_excluidos)
@@ -133,18 +103,19 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             # Generar estados aleatorios hasta que las coordenadas no
             # coincidan con las de un tipo excluido
             estado_actual = self.matriz_r[x_act - 1][y_act - 1]
-            tipo_ide = estado_actual[0]
-            while tipo_ide in self.tipos_vec_excluidos:
+            tipo_estado = estado_actual[0]
+
+            while tipo_estado in self.tipos_vec_excluidos:
                 x_act, y_act = self.generar_estado_aleatorio()
                 estado_actual = self.matriz_r[x_act - 1][y_act - 1]
-                tipo_ide = estado_actual[0]
+                tipo_estado = estado_actual[0]
                 logging.debug("Estado inicial generado no válido: {0}"
                               .format((x_act, y_act)))
             logging.debug("Estado Inicial Generado: {0}".format(estado_actual))
 
             # Realizar 1 Episodio mientras no estemos en el Estado Final
             cant_iteraciones = 0
-            while (not self._stoprequest.is_set()) and (not estado_actual[0] == TIPOESTADO.FINAL):
+            while (not self._stoprequest.is_set()) and (estado_actual[0] != TIPOESTADO.FINAL):
                 # Registrar tiempo de comienzo de las iteraciones
                 iter_start_time = wtimer()
 
@@ -172,6 +143,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Calcular el máximo valor Q de todos los vecinos
                 max_q = max([q_val for q_val in vecinos_est_elegido.values()])
 
+                # -------------------------------
                 # Fórmula principal de Q-Learning
                 # -------------------------------
                 logging.debug("Gamma: {0}".format(self.gamma))
@@ -185,6 +157,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                     # Actualizar valor de Q en matriz Q
                     self.matriz_q[x_act - 1][y_act - 1][1][(x_eleg, y_eleg)] = nuevo_q
 
+                # Incrementar cantidad de iteraciones realizadas
                 cant_iteraciones += 1
 
                 logging.debug("Valor parámetro: {0}"
@@ -192,20 +165,22 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 logging.debug("Iteraciones {0}".format(cant_iteraciones))  # FIXME: Logging @IgnorePep8
                 logging.debug("Matriz Q: {0}".format(self.matriz_q))  # FIXME: Logging @IgnorePep8
 
-                try:
-                    self._out_queue.put({'EstadoActual': (x_act, y_act),
-                                         'NroEpisodio': epnum,
-                                         'NroIteracion': cant_iteraciones,
-                                         'ValorParametro': self.tecnica.valor_param_parcial,
-                                         'ProcesoJoined': False
-                                       })
-                except Queue.Full:
-                    logging.debug("Cola llena")
-                    pass
+                self.encolar_salida({'EstadoActual': (x_act, y_act),
+                                     'NroEpisodio': epnum,
+                                     'NroIteracion': cant_iteraciones,
+                                     'ValorParametro': self.tecnica.valor_param_parcial,
+                                     'ProcesoJoined': False
+                                    })
 
                 # Actualizar estado actual
-                (x_act, y_act) = (x_eleg, y_eleg)
+                x_act, y_act = (x_eleg, y_eleg)
                 estado_actual = self.matriz_r[x_act - 1][y_act - 1]
+
+                # Comprobar si se alcanzó el número máximo de iteraciones
+                if self.limitar_iteraciones and (self.cant_max_iter == cant_iteraciones):
+                    # Terminar y comenzar en un episodio nuevo
+                    self.encolar_salida({'CorteIteracion': epnum})
+                    break
 
             # Primero verificación para comprobar si se solicitó externamente
             # finalizar el proceso. Es necesario colocarla luego del bucle
@@ -225,17 +200,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             iter_exec_time = iter_end_time - iter_start_time
 
             # Poner en la cola de salida los resultados
-            try:
-                self._out_queue.put({'EstadoActual': (x_act, y_act),
-                                     'NroEpisodio': epnum,
-                                     'NroIteracion': cant_iteraciones,
-                                     'IteracionesExecTime': iter_exec_time,
-                                     'ValorParametro': self.tecnica.valor_param_parcial,
-                                     'ProcesoJoined': False
-                                     })
-            except Queue.Full:
-                logging.debug("Cola llena")
-                pass
+            self.encolar_salida({'EstadoActual': (x_act, y_act),
+                                 'NroEpisodio': epnum,
+                                 'NroIteracion': cant_iteraciones,
+                                 'IteracionesExecTime': iter_exec_time,
+                                 'ValorParametro': self.tecnica.valor_param_parcial,
+                                 'ProcesoJoined': False
+                                })
 
             # Segunda verificación para comprobar si se solicitó finalizar
             # el proceso de forma externa
@@ -248,31 +219,85 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         running_exec_time = running_end_time - running_start_time
 
         # Poner en la cola de salida los resultados
+        self.encolar_salida({'EstadoActual': (x_act, y_act),
+                             'NroEpisodio': epnum,
+                             'NroIteracion': cant_iteraciones,
+                             'MatrizQ': self.matriz_q,
+                             'EpisodiosExecTime': ep_exec_time,
+                             'IteracionesExecTime': iter_exec_time,
+                             'ProcesoJoined': False,
+                             'ValorParametro': self.tecnica.valor_param_parcial,
+                             'RunningExecTime': running_exec_time
+                            })
+
+        # Realizar tareas al finalizar
+        self._on_end()
+
+    def encolar_salida(self, salida):
+        u"""
+        Colocar los resultandos del procesamiento en la cola de salida.
+
+        :param salida: Información a colocar en la cola.
+        """
         try:
-            self._out_queue.put({'EstadoActual': (x_act, y_act),
-                                 'NroEpisodio': epnum,
-                                 'NroIteracion': cant_iteraciones,
-                                 'MatrizQ': self.matriz_q,
-                                 'EpisodiosExecTime': ep_exec_time,
-                                 'IteracionesExecTime': iter_exec_time,
-                                 'ProcesoJoined': False,
-                                 'ValorParametro': self.tecnica.valor_param_parcial,
-                                 'RunningExecTime': running_exec_time
-                               })
+            self._out_queue.put(salida)
         except Queue.Full:
             logging.debug("Cola llena")
             pass
 
-        # Realizar tareas al finalizar
-        self._on_end()
+    def encolar_errores(self, error):
+        u"""
+        Colocar los mensajes de errore en la cola de errores.
+
+        :param error: Mensaje de error a colocar en la cola.
+        """
+        try:
+            self._error_queue.put(error)
+        except Queue.Full:
+            logging.debug("Cola llena")
+            pass
+
+    def procesar_entrada(self):
+        # Obtener matriz R y matriz Q
+        try:
+            self.input_data = self._inp_queue.get(True, 0.05)
+        except Queue.Empty:
+            logging.debug("Cola de entrada vacía")
+            return None
+
+        # Obtener valores de entrada
+        self.estados = self.input_data[0]
+        self.coordenadas = self.input_data[1]
+        self.gamma = self.input_data[2]
+        self.cant_episodios = self.input_data[3]
+        self.limitar_iteraciones, self.cant_max_iter = self.input_data[4]
+        self.tecnica_pack = self.input_data[5]
+        self.ancho, self.alto = self.input_data[6]
+        self.detector_bloqueo = self.input_data[7]
+        self.tipos_vec_excluidos = self.input_data[8]
+        self.q_init_value_fn = self.input_data[9]
+
+        self.matriz_r = self.get_matriz_r()
+        self.matriz_q = self.get_matriz_q(self.matriz_r)
+        self.tecnica = self.tecnica_pack[0](self.tecnica_pack[1],
+                                            self.tecnica_pack[2],
+                                            self.tecnica_pack[3])
+
+        logging.debug("Estados: {0}".format(self.estados))
+        logging.debug("Coordenadas: {0}".format(self.coordenadas))
+        logging.debug("Gamma: {0}".format(self.gamma))
+        logging.debug("Episodios: {0}".format(self.cant_episodios))
+        logging.debug("Técnica: {0}".format(self.tecnica))
+        logging.debug("Ancho: {0} - Alto: [1]".format(self.ancho, self.alto))
+        logging.debug("Usar detector bloqueo: {0}".format(self.detector_bloqueo))
+        logging.debug("Tipos vecinos excluidos: {0}".format(self.tipos_vec_excluidos))
 
     def generar_estado_aleatorio(self):
         u"""
         Devuelve una tupla conteniendo las coordenadas X e Y aleatorias.
         """
-        alto, ancho = self.input_data[5]
         # Devolver un estado seleccionado aleatoriamente del conjunto de vecinos
-        return (random.randint(1, ancho), random.randint(1, alto))
+        return (random.randint(1, self.ancho), random.randint(1, self.alto))
 
     def join(self, timeout=None):
         u"""
@@ -293,7 +318,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         :param tipos_vec_exc: Tipos de vecinos a excluir del contador.
         """
-        matriz_q = self.input_data[1]
+        matriz_q = self.matriz_q
         tipos_vec_exc.append(TIPOESTADO.FINAL)
 
         contador_ref = {}
