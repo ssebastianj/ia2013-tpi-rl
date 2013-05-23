@@ -27,8 +27,6 @@ from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
-from tools.livedatafeed import LiveDataFeed
-from tools.listacircular import ListaCircular
 from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
 
@@ -67,8 +65,6 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Inicializa las variables 'globales'.
         """
-        self.ql_datos_entrenar_in_feed = LiveDataFeed()
-        self.ql_datos_recorrer_in_feed = LiveDataFeed()
         self.estado_inicial = None
         self.estado_final = None
         self.matriz_q = None
@@ -506,8 +502,15 @@ class MainWindow(QtGui.QMainWindow):
         # TODO: Se puede cambiar la función para inicializar la Matriz Q
         init_value_fn = QLMatrixInitEnCero()
 
+        # Determina si utilizar el limitador de iteraciones o no
         limitar_nro_iteraciones = self.WMainWindow.chkLimitarCantIteraciones.isChecked()
+        # Número máximo de iteraciones por episodio
         cant_max_iter = self.WMainWindow.sbCantMaxIteraciones.value()
+
+        # Diferencia mínima entre matrices para finalizar el entranamiento
+        matriz_min_diff = self.WMainWindow.sbMatricesMinDiff.value()
+        # Intervalo de episodios entre cálculos de diferencia entre matrices
+        intervalo_diff_calc = self.WMainWindow.sbIntervaloDiffCalc.value()
 
         # Crear nueva instancia de Q-Learning
         self.qlearning = QLearning(self.gridworld,
@@ -516,13 +519,13 @@ class MainWindow(QtGui.QMainWindow):
                                    cant_episodios,
                                    (limitar_nro_iteraciones, cant_max_iter),
                                    init_value_fn,
+                                   (matriz_min_diff, intervalo_diff_calc),
                                    None)
 
         # QLearningEntrenarWorker Management
         # Que empiece la magia
         self.ql_entrenar_out_q = multiprocessing.Queue()
         self.ql_entrenar_error_q = multiprocessing.Queue()
-        self.ql_datos_entrenar_in_feed = LiveDataFeed()
 
         self.qlearning_entrenar_worker = self.qlearning.entrenar(self.ql_entrenar_out_q,
                                                                  self.ql_entrenar_error_q)
@@ -530,6 +533,7 @@ class MainWindow(QtGui.QMainWindow):
         self._logger.debug("Nuevo Thread: {0}".format(self.qlearning_entrenar_worker))
 
         worker_error = get_item_from_queue(self.ql_entrenar_error_q)
+
         if worker_error is not None:
             self._logger.debug("Error {0}: ".format(worker_error))
             self.qlearning_entrenar_worker = None
@@ -569,7 +573,7 @@ class MainWindow(QtGui.QMainWindow):
         # Crear colas para comunicarse con el proceso
         self.ql_recorrer_out_q = multiprocessing.Queue()
         self.ql_recorrer_error_q = multiprocessing.Queue()
-        self.ql_datos_recorrer_in_feed = LiveDataFeed()
+
         estado_inicial = (self.estado_inicial.fila,
                           self.estado_inicial.columna)
 
@@ -637,7 +641,7 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer = QtCore.QTimer(self)
         # Conectar disparo de timer con método
         self.wnd_timer.timeout.connect(self._on_window_timer)
-        self.wnd_timer.start(20)
+        self.wnd_timer.start(15)
 
         if self.entrenar_is_running:
             self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
@@ -814,17 +818,6 @@ class MainWindow(QtGui.QMainWindow):
 
                 self.matriz_q = matriz_q
 
-                self._logger.debug("[Entrenar] Estado actual: {0}".format(estado_actual_ent))
-                self._logger.debug("[Entrenar] Episodio: {0}".format(nro_episodio))
-                self._logger.debug("[Entrenar] Iteraciones: {0}".format(cant_iteraciones))
-                self._logger.debug("[Entrenar] Tiempo ejecución episodio: {0}".format(episode_exec_time))
-                self._logger.debug("[Entrenar] Tiempo ejecución iteración: {0}".format(iter_exec_time))
-                self._logger.debug("[Entrenar] Tiempo ejecución total: {0}".format(running_exec_time_ent))
-                self._logger.debug("[Entrenar] Worker joined : {0}".format(worker_joined))
-                # self._logger.debug("[Entrenar] Matriz Q: {0}".format(self.matriz_q))
-                self._logger.debug("[Entrenar] Loop Alarm: {0}".format(loop_alarm))
-                self._logger.debug("[Entrenar] Valor Parámetro: {0}".format(valor_parametro))
-
                 if loop_alarm:
                     QtGui.QMessageBox.warning(self,
                                               _tr('QLearning - Entrenamiento'),
@@ -899,11 +892,6 @@ class MainWindow(QtGui.QMainWindow):
                 running_exec_time_rec = ql_rec_info.get('RunningExecTime', 0.0)
                 worker_joined = ql_rec_info.get('ProcesoJoined', None)
                 rec_exec_time = ql_rec_info.get('RecorridoExecTime', 0.0)
-
-                self._logger.debug("[Recorrer] Estado actual: {0}".format(estado_actual_rec))
-                self._logger.debug("[Recorrer] Camino óptimo: {0}".format(camino_optimo))
-                self._logger.debug("[Recorrer] Tiempo ejecución recorrido: {0}".format(running_exec_time_rec))
-                self._logger.debug("[Recorrer] Worker joined: {0}".format(worker_joined))
 
                 try:
                     self.WMainWindow.lblRecEstadoActual.setText("X:{0}  Y:{1}"
@@ -1149,6 +1137,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbCantEpisodiosDec.setSuffix(_tr(" episodios"))
         self.WMainWindow.chkDecrementarParam.setChecked(True)
         self.WMainWindow.sbQLTau.setValue(0.5)
+        self.WMainWindow.sbIntervaloDiffCalc.setSuffix(_tr(" episodios"))
 
     def show_matriz_dialog(self, matriz, titulo_corto, titulo_largo):
         ShowMatrizD = ShowMatrizDialog(matriz,

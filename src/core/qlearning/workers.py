@@ -4,7 +4,6 @@
 from __future__ import absolute_import
 
 import Queue
-import logging
 import multiprocessing
 import numpy
 import time
@@ -40,21 +39,16 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self.estados = None
         self.tipos_vec_excluidos = None
 
-        # FIXME: Logging
-        logging.basicConfig(level=logging.DEBUG,
-                            format="[%(levelname)s] – %(threadName)-10s : %(message)s")
-
     def _do_on_start(self):
         u"""
         Ejecuta tareas al comenzar el thread.
         """
-        logging.debug("En ejecución.")
+        pass
 
     def _on_end(self):
         u"""
         Ejecuta tareas al finalizar el thread.
         """
-        logging.debug("Terminando.")
         # Cerrar Queues
         self._inp_queue.close()
         self._error_queue.close()
@@ -90,12 +84,30 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Variable utilizada para saber cuando decrementar el parámetro de la técnica
         decrementar_step = 0
 
+        # Descontador utilizado para saber en que momento calcular la diferencia
+        # entre dos matrices Q
+        calc_mat_diff_cont = self.interv_diff_calc
+
+        # Variables auxiliar para resguardar los resultados de las sumas
+        suma_matriz_q_actual = None
+        suma_matriz_q_anterior = None
+
+        # Variable para resguardar temporalmente una copia de la matriz Q
+        matriz_q_anterior = None
+
+        min_diff_mat = self.min_diff_mat  # Diferencia mínima entre matrices
+        # Diferencia mínima temporal entre matrices (calculada)
+        # Se le suma 1 para que la condición para entrar en el bucle 'while'
+        # se cumpla al comenzar
+        tmp_diff_mat = min_diff_mat + 1
+        cantidad_episodios = self.cant_episodios  # Cantidad de episodios a ejecutar
+        epnum = 1  # Inicializar número de episodio
+
         # Registrar tiempo de comienzo de los episodios
         ep_start_time = wtimer()
 
-        # Ejecutar una cantidad dada de episodios
-        for epnum in xrange(1, self.cant_episodios + 1):
-            logging.debug("Numero de episodio: {0}".format(epnum))  # FIXME: Logging @IgnorePep8
+        # Ejecutar una cantidad dada de episodios o detener antes si se considera necesario
+        while (not self._stoprequest.is_set()) and (epnum < cantidad_episodios) and (tmp_diff_mat > min_diff_mat):
 
             # Obtener coordenadas aleatorias y obtener Estado asociado
             x_act, y_act = self.generar_estado_aleatorio()
@@ -109,11 +121,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 x_act, y_act = self.generar_estado_aleatorio()
                 estado_actual = self.matriz_r[x_act - 1][y_act - 1]
                 tipo_estado = estado_actual[0]
-                logging.debug("Estado inicial generado no válido: {0}"
-                              .format((x_act, y_act)))
-            logging.debug("Estado Inicial Generado: {0}".format(estado_actual))
 
-            # Realizar 1 Episodio mientras no estemos en el Estado Final
+            # Recorrer hasta encontrar el estado final
             cant_iteraciones = 0
             while (not self._stoprequest.is_set()) and (estado_actual[0] != TIPOESTADO.FINAL):
                 # Registrar tiempo de comienzo de las iteraciones
@@ -125,10 +134,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
                 # Obtener vecinos del estado actual
                 vecinos = estado_actual[1]
-                logging.debug("Vecinos Estado Actual: {0}".format(vecinos))
                 # Invocar a la técnica para que seleccione uno de los vecinos
                 estado_elegido = self.tecnica.obtener_accion(vecinos)
-                logging.debug("Estado Elegido: {0}".format(estado_elegido))
                 # Asignar coordenadas X,Y
                 x_eleg, y_eleg = estado_elegido
 
@@ -137,8 +144,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
                 # Obtener vecinos del estado elegido por la acción
                 vecinos_est_elegido = self.matriz_q[x_eleg - 1][y_eleg - 1][1]
-                logging.debug("Vecinos Elegidos del Elegido: {0}"
-                              .format(vecinos_est_elegido))
 
                 # Calcular el máximo valor Q de todos los vecinos
                 max_q = max([q_val for q_val in vecinos_est_elegido.values()])
@@ -146,7 +151,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # -------------------------------
                 # Fórmula principal de Q-Learning
                 # -------------------------------
-                logging.debug("Gamma: {0}".format(self.gamma))
                 try:
                     nuevo_q = recompensa_estado + (self.gamma * max_q)
                 except TypeError:
@@ -159,11 +163,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
                 # Incrementar cantidad de iteraciones realizadas
                 cant_iteraciones += 1
-
-                logging.debug("Valor parámetro: {0}"
-                              .format(self.tecnica._val_param_parcial))  # FIXME: Logging @IgnorePep8
-                logging.debug("Iteraciones {0}".format(cant_iteraciones))  # FIXME: Logging @IgnorePep8
-                logging.debug("Matriz Q: {0}".format(self.matriz_q))  # FIXME: Logging @IgnorePep8
 
                 self.encolar_salida({'EstadoActual': (x_act, y_act),
                                      'NroEpisodio': epnum,
@@ -182,11 +181,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                     self.encolar_salida({'CorteIteracion': epnum})
                     break
 
-            # Primero verificación para comprobar si se solicitó externamente
-            # finalizar el proceso. Es necesario colocarla luego del bucle
-            # 'while' por si se salió del mismo por la solicitud de parada.
-            if self._stoprequest.is_set():
-                break
+            iter_end_time = wtimer()
+            # Calcular tiempo de ejecución de las iteraciones
+            iter_exec_time = iter_end_time - iter_start_time
 
             decrementar_step += 1
             # Comprobar si es necesario decrementar el valor del parámetro
@@ -194,10 +191,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Decrementar valor del parámetro en 1 paso
                 self.tecnica.decrementar_parametro()
                 decrementar_step = 0
-
-            iter_end_time = wtimer()
-            # Calcular tiempo de ejecución de las iteraciones
-            iter_exec_time = iter_end_time - iter_start_time
 
             # Poner en la cola de salida los resultados
             self.encolar_salida({'EstadoActual': (x_act, y_act),
@@ -208,10 +201,37 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                  'ProcesoJoined': False
                                 })
 
-            # Segunda verificación para comprobar si se solicitó finalizar
-            # el proceso de forma externa
-            if self._stoprequest.is_set():
-                break
+            # Decrementar contador para saber si es necesario calcular
+            # la diferencia entre las matrices Q
+            calc_mat_diff_cont -= 1
+
+            if calc_mat_diff_cont == 0:
+                # Sumar todos los valores Q de la matriz anterior
+                suma_matriz_q_anterior = numpy.sum([i for i in (columna[1].values()
+                                                    for columna in (fila
+                                                    for fila in matriz_q_anterior))])
+
+                # Sumar todos los valores Q de la matriz actual
+                suma_matriz_q_actual = numpy.sum([i for i in (columna[1].values()
+                                                    for columna in (fila
+                                                    for fila in self.matriz_q))])
+
+                # Restar valores de ambas matrices
+                resta_diff_mat = numpy.subtract(suma_matriz_q_anterior,
+                                                suma_matriz_q_actual)
+
+                # Calcular el error medio cuadrático
+                tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
+
+                # Volver a cargar valor inicial a contador
+                calc_mat_diff_cont = self.interv_diff_calc
+                matriz_q_anterior = None
+            elif calc_mat_diff_cont == 1:
+                # Crear una copia de la matriz Q actual
+                matriz_q_anterior = self.matriz_q.copy()
+
+            # Avanzar un episodio
+            epnum += 1
 
         # Calcular tiempos de finalización
         running_end_time = ep_end_time = wtimer()
@@ -242,7 +262,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         try:
             self._out_queue.put(salida)
         except Queue.Full:
-            logging.debug("Cola llena")
             pass
 
     def encolar_errores(self, error):
@@ -254,7 +273,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         try:
             self._error_queue.put(error)
         except Queue.Full:
-            logging.debug("Cola llena")
             pass
 
     def procesar_entrada(self):
@@ -266,7 +284,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         try:
             self.input_data = self._inp_queue.get(True, 0.05)
         except Queue.Empty:
-            logging.debug("Cola de entrada vacía")
             return None
 
         # Obtener valores de entrada
@@ -280,21 +297,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self.detector_bloqueo = self.input_data[7]
         self.tipos_vec_excluidos = self.input_data[8]
         self.q_init_value_fn = self.input_data[9]
+        self.min_diff_mat, self.interv_diff_calc = self.input_data[10]
 
         self.matriz_r = self.get_matriz_r()
         self.matriz_q = self.get_matriz_q(self.matriz_r)
         self.tecnica = self.tecnica_pack[0](self.tecnica_pack[1],
                                             self.tecnica_pack[2],
                                             self.tecnica_pack[3])
-
-        logging.debug("Estados: {0}".format(self.estados))
-        logging.debug("Coordenadas: {0}".format(self.coordenadas))
-        logging.debug("Gamma: {0}".format(self.gamma))
-        logging.debug("Episodios: {0}".format(self.cant_episodios))
-        logging.debug("Técnica: {0}".format(self.tecnica))
-        logging.debug("Ancho: {0} - Alto: [1]".format(self.ancho, self.alto))
-        logging.debug("Usar detector bloqueo: {0}".format(self.detector_bloqueo))
-        logging.debug("Tipos vecinos excluidos: {0}".format(self.tipos_vec_excluidos))
 
     def generar_estado_aleatorio(self):
         u"""
@@ -309,7 +318,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         :param timeout: Tiempo en milisegundos de espera.
         """
-        logging.debug("Join")
         # Activar flag indicando de que se solicitó detener el proceso
         self._stoprequest.set()
         # Notificar a proceso padre
@@ -331,7 +339,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 if columna[0] not in tipos_vec_exc:
                     contador_ref[(i + 1, j + 1)] = 0
 
-        logging.debug("Contador de referencias: {0}".format(contador_ref))
         return contador_ref
 
     def _contar_ref(self, estado):
@@ -350,11 +357,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             self._visitados_1.append(estado)
         elif cont == umbral_2:
             self._visitados_2.append(estado)
-
-        logging.debug("Contador de referencias actualizado: {0}"
-                          .format(self._contador_ref))
-        logging.debug("Visitados 1: {0}".format(self._visitados_1))
-        logging.debug("Visitados 2: {0}".format(self._visitados_2))
 
         self._comprobar_visitados()
 
@@ -466,21 +468,16 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._contador_ref = {}
         self._visitados = []
 
-        # FIXME: Logging
-        logging.basicConfig(level=logging.DEBUG,
-                            format="[%(levelname)s] – %(threadName)-10s : %(message)s")  # @IgnorePep8
-
     def _do_on_start(self):
         u"""
         Ejecuta tareas al comenzar el thread.
         """
-        logging.debug("En ejecución.")
+        pass
 
     def _on_end(self):
         u"""
         Ejecuta tareas al finalizar el thread.
         """
-        logging.debug("Terminando.")
         self._inp_queue.close()
         self._error_queue.close()
         self._out_queue.close()
@@ -505,14 +502,10 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         try:
             self.input_data = self._inp_queue.get(True, 0.05)
         except Queue.Empty:
-            logging.debug("Cola de entrada vacía")
             return None
 
         matriz_q = self.input_data[0]
         estado_inicial = self.input_data[1]
-
-        logging.debug("Matriz Q: {0}".format(matriz_q))
-        logging.debug("Estado Inicial: {0}".format(estado_inicial))
 
         # Lista que contiene la secuencia de estados comenzando por el
         # Estado Inicial
@@ -535,9 +528,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
                 if key in self._visitados:
                     continue
 
-                logging.debug("X:{0} Y:{1}".format(key[0], key[1]))  # FIXME: Eliminar print de debug
                 q_valor = value
-                logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug
 
                 try:
                     if q_valor > maximo:
@@ -553,14 +544,11 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             long_vecinos = len(estados_qmax)
             if long_vecinos == 1:
                 estado_qmax = estados_qmax[0]
-                logging.debug("Existe un sólo estado vecino con Q máximo")  # FIXME: Eliminar print de debug @IgnorePep8
             elif long_vecinos > 1:
                 estado_qmax = random.choice(estados_qmax)
-                logging.debug("Existen varios estados con igual valor Q")  # FIXME: Eliminar print de debug @IgnorePep8
             else:
                 pass
 
-            logging.debug("Estado Q Máximo: {0}".format(estado_qmax))
             x_eleg, y_eleg = estado_qmax
 
             # Marcar como visitado
@@ -575,8 +563,6 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             # Actualizar estado actual
             x_act, y_act = (x_eleg, y_eleg)
             estado_actual = matriz_q[x_act - 1][y_act - 1]
-
-        logging.debug("Camino óptimo: {0}".format(camino_optimo))
 
         # Registrar tiempo de finalización
         running_end_time = rec_end_time = wtimer()
@@ -599,7 +585,6 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
         :param timeout: Tiempo en milisegundos de espera.
         """
-        logging.debug("Join")
         self._out_queue.put({'Joined': True})
         self._stoprequest.set()
         super(QLearningRecorrerWorker, self).join(timeout)
@@ -614,10 +599,6 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
         if self._contador_ref[estado] == umbral:
             self._visitados.append(estado)
-
-        logging.debug("Contador de referencias actualizado: {0}"
-                          .format(self._contador_ref))
-        logging.debug("Visitados: {0}".format(self._visitados))
 
     def encolar_salida(self, salida):
         u"""
