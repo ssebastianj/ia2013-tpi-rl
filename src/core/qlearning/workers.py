@@ -86,14 +86,11 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # Descontador utilizado para saber en que momento calcular la diferencia
         # entre dos matrices Q
-        calc_mat_diff_cont = self.interv_diff_calc
+        calc_mat_diff_cont = self.interv_diff_calc - 1
 
         # Variables auxiliar para resguardar los resultados de las sumas
         suma_matriz_q_actual = None
         suma_matriz_q_anterior = None
-
-        # Variable para resguardar temporalmente una copia de la matriz Q
-        matriz_q_anterior = None
 
         min_diff_mat = self.min_diff_mat  # Diferencia mínima entre matrices
         # Diferencia mínima temporal entre matrices (calculada)
@@ -123,7 +120,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 tipo_estado = estado_actual[0]
 
             # Recorrer hasta encontrar el estado final
-            cant_iteraciones = 0
+            cant_iteraciones = 1
             while (not self._stoprequest.is_set()) and (estado_actual[0] != TIPOESTADO.FINAL):
                 # Registrar tiempo de comienzo de las iteraciones
                 iter_start_time = wtimer()
@@ -161,9 +158,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                     # Actualizar valor de Q en matriz Q
                     self.matriz_q[x_act - 1][y_act - 1][1][(x_eleg, y_eleg)] = nuevo_q
 
-                # Incrementar cantidad de iteraciones realizadas
-                cant_iteraciones += 1
-
                 self.encolar_salida({'EstadoActual': (x_act, y_act),
                                      'NroEpisodio': epnum,
                                      'NroIteracion': cant_iteraciones,
@@ -181,6 +175,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                     self.encolar_salida({'CorteIteracion': epnum})
                     break
 
+                # Incrementar cantidad de iteraciones realizadas
+                cant_iteraciones += 1
+                # ==================== Fin de iteraciones ====================
+
             iter_end_time = wtimer()
             # Calcular tiempo de ejecución de las iteraciones
             iter_exec_time = iter_end_time - iter_start_time
@@ -192,46 +190,47 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 self.tecnica.decrementar_parametro()
                 decrementar_step = 0
 
+            # Decrementar contador para saber si es necesario calcular
+            # la diferencia entre las matrices Q
+            calc_mat_diff_cont -= 1
+
+            if calc_mat_diff_cont == 0:
+                try:
+                    # Sumar todos los valores Q de la matriz actual
+                    suma_matriz_q_actual = numpy.sum([elto for fila in self.matriz_q
+                                                           for columna in fila
+                                                           for elto in columna[1].itervalues()])
+
+                    # Restar valores de ambas matrices
+                    resta_diff_mat = numpy.subtract(suma_matriz_q_anterior,
+                                                    suma_matriz_q_actual)
+
+                    # Calcular el error medio cuadrático
+                    tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
+
+                    # Volver a cargar valor inicial a contador
+                    calc_mat_diff_cont = self.interv_diff_calc - 1
+                except TypeError:
+                    pass
+            elif calc_mat_diff_cont == 1:
+                # Sumar todos los valores Q de la matriz actual
+                suma_matriz_q_anterior = numpy.sum([elto for fila in self.matriz_q
+                                                         for columna in fila
+                                                         for elto in columna[1].itervalues()])
+
             # Poner en la cola de salida los resultados
             self.encolar_salida({'EstadoActual': (x_act, y_act),
                                  'NroEpisodio': epnum,
                                  'NroIteracion': cant_iteraciones,
                                  'IteracionesExecTime': iter_exec_time,
                                  'ValorParametro': self.tecnica.valor_param_parcial,
-                                 'ProcesoJoined': False
+                                 'ProcesoJoined': False,
+                                 'MatDiff': tmp_diff_mat
                                 })
-
-            # Decrementar contador para saber si es necesario calcular
-            # la diferencia entre las matrices Q
-            calc_mat_diff_cont -= 1
-
-            if calc_mat_diff_cont == 0:
-                # Sumar todos los valores Q de la matriz anterior
-                suma_matriz_q_anterior = numpy.sum([i for i in (columna[1].values()
-                                                    for columna in (fila
-                                                    for fila in matriz_q_anterior))])
-
-                # Sumar todos los valores Q de la matriz actual
-                suma_matriz_q_actual = numpy.sum([i for i in (columna[1].values()
-                                                    for columna in (fila
-                                                    for fila in self.matriz_q))])
-
-                # Restar valores de ambas matrices
-                resta_diff_mat = numpy.subtract(suma_matriz_q_anterior,
-                                                suma_matriz_q_actual)
-
-                # Calcular el error medio cuadrático
-                tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
-
-                # Volver a cargar valor inicial a contador
-                calc_mat_diff_cont = self.interv_diff_calc
-                matriz_q_anterior = None
-            elif calc_mat_diff_cont == 1:
-                # Crear una copia de la matriz Q actual
-                matriz_q_anterior = self.matriz_q.copy()
 
             # Avanzar un episodio
             epnum += 1
+            # ======================= Fin de episodios =======================
 
         # Calcular tiempos de finalización
         running_end_time = ep_end_time = wtimer()
@@ -247,7 +246,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                              'IteracionesExecTime': iter_exec_time,
                              'ProcesoJoined': False,
                              'ValorParametro': self.tecnica.valor_param_parcial,
-                             'RunningExecTime': running_exec_time
+                             'RunningExecTime': running_exec_time,
+                             'MatDiff': tmp_diff_mat
                             })
 
         # Realizar tareas al finalizar

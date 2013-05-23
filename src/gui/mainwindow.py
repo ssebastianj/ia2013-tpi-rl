@@ -816,6 +816,9 @@ class MainWindow(QtGui.QMainWindow):
                 matriz_q = ql_ent_info.get('MatrizQ', None)
                 valor_parametro = ql_ent_info.get('ValorParametro', None)
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
+                tmp_mat_diff = ql_ent_info.get('MatDiff', None)
+
+                logging.debug("Diferencia: {0}".format(tmp_mat_diff))
 
                 self.matriz_q = matriz_q
 
@@ -854,8 +857,11 @@ class MainWindow(QtGui.QMainWindow):
 
                 # Mostrar estado actual en grilla
                 if self.ent_show_estado_act:
-                    item = self.WMainWindow.tblGridWorld.item(estado_actual_ent[0] - 1,
-                                          estado_actual_ent[1] - 1)
+                    try:
+                        item = self.WMainWindow.tblGridWorld.item(estado_actual_ent[0] - 1,
+                                                                  estado_actual_ent[1] - 1)
+                    except TypeError:
+                        pass
 
                     try:
                         self.last_state_bkp.setIcon(self.ent_null_icon)
@@ -956,7 +962,7 @@ class MainWindow(QtGui.QMainWindow):
             :param cola: Cola de entrada
         """
         try:
-            while True:
+            while 1:
                 yield cola.get_nowait()
         except Queue.Empty:
             raise StopIteration
