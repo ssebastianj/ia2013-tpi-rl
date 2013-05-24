@@ -145,9 +145,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Calcular el máximo valor Q de todos los vecinos
                 max_q = max([q_val for q_val in vecinos_est_elegido.values()])
 
-                # -------------------------------
+                # -------------------------------------------------------------
                 # Fórmula principal de Q-Learning
-                # -------------------------------
+                # -------------------------------------------------------------
                 try:
                     nuevo_q = recompensa_estado + (self.gamma * max_q)
                 except TypeError:
@@ -516,6 +516,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
         x_act, y_act = estado_inicial
         estado_actual = matriz_q[x_act - 1][y_act - 1]
+
         while (not self._stoprequest.is_set()) and (estado_actual[0] != TIPOESTADO.FINAL):
             vecinos = estado_actual[1]
 

@@ -3,10 +3,11 @@
 
 from __future__ import absolute_import
 
-import decimal
 import logging
 import math
 import random
+
+from decimal import Decimal
 from core.tecnicas.tecnica import QLTecnica
 
 
@@ -39,9 +40,8 @@ class Softmax(QLTecnica):
         probabilidades_vecinos = {}
 
         # Calcula las probabilidades de cada vecino
-        for key, value in vecinos.iteritems():
-            q_valor_vecino = value
-            exponente = decimal.Decimal(float(q_valor_vecino) / self._val_param_parcial)
+        for key, q_valor in vecinos.iteritems():
+            exponente = Decimal(float(q_valor) / self._val_param_parcial)
             probabilidad_vecino = math.exp(exponente.adjusted())
             probabilidades_vecinos[key] = probabilidad_vecino
 
@@ -50,14 +50,14 @@ class Softmax(QLTecnica):
 
         # N = constante de Normalización
         # Convertirlo a un número flotante para solucionar problema al dividir
-        n = sum(probabilidades_vecinos.values())
+        n = float(sum(probabilidades_vecinos.values()))
 
         logging.debug("Valor de constante de normalización N: {0}".format(n))
 
         probabilidades_vecinos_normalizadas = {}
         # Calcula las probabilidades de cada vecino normalizadas
         for key, value in probabilidades_vecinos.iteritems():
-            probabilidades_vecinos_normalizadas[key] = value / float(n)
+            probabilidades_vecinos_normalizadas[key] = value / n
 
         # Si éste cálculo está bien deberia dar 1
         logging.debug("Sumatoria de las Probabilidades Normalizadas: {0}"
@@ -85,7 +85,8 @@ class Softmax(QLTecnica):
             self._val_param_parcial = decremento
         else:
             # Restaurar valor original de parámetro
-            self.restaurar_val_parametro()
+            # self.restaurar_val_parametro()
+            pass
 
     def get_tau_general(self):
         return self._val_param_general
