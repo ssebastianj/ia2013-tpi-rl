@@ -29,7 +29,6 @@ from core.tecnicas.softmax import Softmax
 
 from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
-from multiprocessing.process import active_children
 
 try:
     _tr = QtCore.QString.fromUtf8
