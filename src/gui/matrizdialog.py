@@ -68,16 +68,24 @@ class ShowMatrizDialog(QtGui.QDialog):
         headers_horizontales = []
         headers_verticales = []
 
+        # Rellenar tabla con transiciones inválidas
+        item_bg_color = QtGui.QColor(240, 240, 240)
+        item_flags = QtCore.Qt.ItemIsEnabled
+        item_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
+
         for fila in xrange(dimension):
             for columna in xrange(dimension):
                 item = QtGui.QTableWidgetItem('-')
-                item.setBackgroundColor(QtGui.QColor(240, 240, 240))
-                item.setFlags(QtCore.Qt.ItemIsEnabled)
-                item.setTextAlignment(QtCore.Qt.AlignHCenter |
-                                      QtCore.Qt.AlignCenter)
+                item.setBackgroundColor(item_bg_color)
+                item.setFlags(item_flags)
+                item.setTextAlignment(item_align)
                 self.ShowMatrizD.tblMatriz.setItem(fila, columna, item)
 
         # Rellenar tabla con items
+        item_bg_color = QtGui.QColor("#FFFFFF")
+        item_flags = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+        item_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
+
         for fila in xrange(0, alto_gw):
             for columna in xrange(0, ancho_gw):
                 acciones = self.matriz[fila][columna][1]
@@ -89,11 +97,9 @@ class ShowMatrizDialog(QtGui.QDialog):
                     elif isinstance(value, int):
                         item = QtGui.QTableWidgetItem(str(value))
 
-                    item.setBackgroundColor(QtGui.QColor("#FFFFFF"))
-                    item.setFlags(QtCore.Qt.ItemIsEnabled |
-                                  QtCore.Qt.ItemIsSelectable)
-                    item.setTextAlignment(QtCore.Qt.AlignHCenter |
-                                          QtCore.Qt.AlignCenter)
+                    item.setBackgroundColor(item_bg_color)
+                    item.setFlags(item_flags)
+                    item.setTextAlignment(item_align)
 
                     # Coordenadas
                     coord_x = (fila * alto_gw) + columna

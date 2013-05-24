@@ -29,6 +29,7 @@ from core.tecnicas.softmax import Softmax
 
 from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
+from multiprocessing.process import active_children
 
 try:
     _tr = QtCore.QString.fromUtf8
@@ -801,6 +802,9 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Actualizar ventana con información del Entrenamiento
         """
+        # Cachear acceso al objeto WMainWindow
+        main_wnd = self.WMainWindow
+
         try:
             data_entrenar = self.get_all_from_queue(self.ql_entrenar_out_q)
             # self._logger.debug("[Entrenar] Actualizar ventana con: {0}".format(data_entrenar)) @IgnorePep8
@@ -818,9 +822,8 @@ class MainWindow(QtGui.QMainWindow):
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
                 tmp_mat_diff = ql_ent_info.get('MatDiff', None)
 
-                logging.debug("Diferencia: {0}".format(tmp_mat_diff))
-
                 self.matriz_q = matriz_q
+                x_actual, y_actual = estado_actual_ent
 
                 if loop_alarm:
                     QtGui.QMessageBox.warning(self,
@@ -834,22 +837,20 @@ class MainWindow(QtGui.QMainWindow):
 
                 try:
                     # Mostrar información de entrenamiento en etiquetas
-                    self.WMainWindow.lblEntEstadoActual.setText("X:{0}  Y:{1}"
-                                                               .format(estado_actual_ent[0],
-                                                                       estado_actual_ent[1]
-                                                                      ))
-                    self.WMainWindow.lblEntNroEpisodio.setText(str(nro_episodio))
-                    self.WMainWindow.lblEntNroIteracion.setText(str(cant_iteraciones))
-                    self.WMainWindow.lblEntValParametro.setText("{0:.2f}".format(valor_parametro))
-                    self.WMainWindow.lblEntExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                                     .format(episode_exec_time,
-                                                                             episode_exec_time * 1000))
-                    self.WMainWindow.lblEntExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                                       .format(iter_exec_time,
-                                                                               iter_exec_time * 1000))
-                    self.WMainWindow.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                                 .format(running_exec_time_ent,
-                                                                         running_exec_time_ent * 1000))
+                    main_wnd.lblEntEstadoActual.setText("X:{0}  Y:{1}"
+                                                        .format(x_actual, y_actual))
+                    main_wnd.lblEntNroEpisodio.setText(str(nro_episodio))
+                    main_wnd.lblEntNroIteracion.setText(str(cant_iteraciones))
+                    main_wnd.lblEntValParametro.setText("{0:.2f}".format(valor_parametro))
+                    main_wnd.lblEntExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                             .format(episode_exec_time,
+                                                                     episode_exec_time * 1000))
+                    main_wnd.lblEntExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                               .format(iter_exec_time,
+                                                                       iter_exec_time * 1000))
+                    main_wnd.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                         .format(running_exec_time_ent,
+                                                                 running_exec_time_ent * 1000))
                 except TypeError:
                     pass
                 except ValueError:
@@ -858,8 +859,8 @@ class MainWindow(QtGui.QMainWindow):
                 # Mostrar estado actual en grilla
                 if self.ent_show_estado_act:
                     try:
-                        item = self.WMainWindow.tblGridWorld.item(estado_actual_ent[0] - 1,
-                                                                  estado_actual_ent[1] - 1)
+                        item = main_wnd.tblGridWorld.item(x_actual - 1,
+                                                          y_actual - 1)
                     except TypeError:
                         pass
 
@@ -889,6 +890,9 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Actualizar ventana con información del Recorrido
         """
+        # Cachear acceso al objeto WMainWindow
+        main_wnd = self.WMainWindow
+
         try:
             data_recorrer = self.get_all_from_queue(self.ql_recorrer_out_q)
             # self._logger.debug("[Recorrer] Actualizar ventana con: {0}".format(data_recorrer)) @IgnorePep8
@@ -900,17 +904,17 @@ class MainWindow(QtGui.QMainWindow):
                 worker_joined = ql_rec_info.get('ProcesoJoined', None)
                 rec_exec_time = ql_rec_info.get('RecorridoExecTime', 0.0)
 
+                x_actual, y_actual = estado_actual_rec
+
                 try:
-                    self.WMainWindow.lblRecEstadoActual.setText("X:{0}  Y:{1}"
-                                                             .format(estado_actual_rec[0],
-                                                                     estado_actual_rec[1]
-                                                                     ))
-                    self.WMainWindow.lblRecExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                              .format(running_exec_time_rec,
-                                                                      running_exec_time_rec * 1000))
-                    self.WMainWindow.lblRecExecTimeRecorrido.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                              .format(rec_exec_time,
-                                                                      rec_exec_time * 1000))
+                    main_wnd.lblRecEstadoActual.setText("X:{0}  Y:{1}"
+                                                        .format(x_actual, y_actual))
+                    main_wnd.lblRecExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                         .format(running_exec_time_rec,
+                                                                 running_exec_time_rec * 1000))
+                    main_wnd.lblRecExecTimeRecorrido.setText("{0:.3f} seg  ({1:.2f} ms)"
+                                                             .format(rec_exec_time,
+                                                                     rec_exec_time * 1000))
                 except TypeError:
                     pass
                 except ValueError:
@@ -918,8 +922,11 @@ class MainWindow(QtGui.QMainWindow):
 
                 # Mostrar estado actual en grilla
                 if self.rec_show_estado_act:
-                    item = self.WMainWindow.tblGridWorld.item(estado_actual_rec[0] - 1,
-                                                              estado_actual_rec[1] - 1)
+                    try:
+                        item = main_wnd.tblGridWorld.item(x_actual - 1,
+                                                          y_actual - 1)
+                    except TypeError:
+                        pass
 
                     try:
                         self.last_state_bkp.setIcon(self.rec_null_icon)
@@ -946,9 +953,9 @@ class MainWindow(QtGui.QMainWindow):
                                                    if x not in seen and not seen_add(x)]
 
                     self._logger.debug("Camino óptimo (con repetidos): {0}"
-                                  .format(camino_optimo))
-                    self._logger.debug("Camino óptimo (sin repetidos): {0}".
-                                  format(camino_optimo_sin_repetidos))
+                                       .format(camino_optimo))
+                    self._logger.debug("Camino óptimo (sin repetidos): {0}"
+                                       .format(camino_optimo_sin_repetidos))
         except Queue.Empty:
             pass
         except AttributeError:
@@ -974,12 +981,14 @@ class MainWindow(QtGui.QMainWindow):
         """
         self._logger.debug("Comprobar actividad de procesos")
 
-        for proc in multiprocessing.active_children():
-            if not proc.is_alive():
-                proc.join(0.05)
-            self._logger.debug("Proceso hijo: {0}".format(proc))
+        active_children = multiprocessing.active_children()
 
-        if len(multiprocessing.active_children()) == 0:
+        for proceso in active_children:
+            if not proceso.is_alive():
+                proceso.join(0.05)
+            self._logger.debug("Proceso hijo: {0}".format(proceso))
+
+        if not active_children:
             self.on_fin_proceso()
 
     def mostrar_item_actual(self, item):

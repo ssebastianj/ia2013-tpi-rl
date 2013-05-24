@@ -180,8 +180,12 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # ==================== Fin de iteraciones ====================
 
             iter_end_time = wtimer()
-            # Calcular tiempo de ejecución de las iteraciones
-            iter_exec_time = iter_end_time - iter_start_time
+
+            try:
+                # Calcular tiempo de ejecución de las iteraciones
+                iter_exec_time = iter_end_time - iter_start_time
+            except UnboundLocalError:
+                iter_exec_time = 0
 
             decrementar_step += 1
             # Comprobar si es necesario decrementar el valor del parámetro
@@ -234,8 +238,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # Calcular tiempos de finalización
         running_end_time = ep_end_time = wtimer()
-        ep_exec_time = ep_end_time - ep_start_time
-        running_exec_time = running_end_time - running_start_time
+
+        try:
+            ep_exec_time = ep_end_time - ep_start_time
+            running_exec_time = running_end_time - running_start_time
+        except UnboundLocalError:
+            ep_exec_time = 0
+            running_exec_time = 0
 
         # Poner en la cola de salida los resultados
         self.encolar_salida({'EstadoActual': (x_act, y_act),
@@ -321,7 +330,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Activar flag indicando de que se solicitó detener el proceso
         self._stoprequest.set()
         # Notificar a proceso padre
-        self._out_queue.put({'Joined': True})
+        self.encolar_salida({'Joined': True})
         super(QLearningEntrenarWorker, self).join(timeout)
 
     def _crear_cont_ref(self, tipos_vec_exc):
@@ -567,8 +576,13 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
         # Registrar tiempo de finalización
         running_end_time = rec_end_time = wtimer()
-        rec_exec_time = rec_end_time - rec_start_time
-        running_exec_time = running_end_time - running_start_time
+
+        try:
+            rec_exec_time = rec_end_time - rec_start_time
+            running_exec_time = running_end_time - running_start_time
+        except UnboundLocalError:
+            rec_exec_time = 0
+            running_exec_time = 0
 
         # Poner en la cola de salida los resultados
         self.encolar_salida({'EstadoActual': (x_act, y_act),
@@ -586,8 +600,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
         :param timeout: Tiempo en milisegundos de espera.
         """
-        self._out_queue.put({'Joined': True})
         self._stoprequest.set()
+        self.encolar_salida({'Joined': True})
         super(QLearningRecorrerWorker, self).join(timeout)
 
     def _contar_ref(self, estado):
