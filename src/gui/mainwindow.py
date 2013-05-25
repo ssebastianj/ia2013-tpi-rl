@@ -21,9 +21,10 @@ from gui.matrizdialog import ShowMatrizDialog
 from core.estado.estado import TIPOESTADO, TipoEstado
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
-from core.qlearning.matrixinits import QLMatrixInitEnCero
-from core.qlearning.matrixinits import QLMatrixInitEnRecompensa
-from core.qlearning.matrixinits import QLMatrixInitRandom
+from core.qlearning.matrixinits import (QLMatrixInitEnCero,
+                                        QLMatrixInitEnRecompensa,
+                                        QLMatrixInitRandom,
+                                        QLMatrixInitOptimista)
 from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
@@ -502,7 +503,8 @@ class MainWindow(QtGui.QMainWindow):
         gamma = self.WMainWindow.sbQLGamma.value()
         cant_episodios = int(self.WMainWindow.sbCantidadEpisodios.value())
         # TODO: Se puede cambiar la función para inicializar la Matriz Q
-        init_value_fn = QLMatrixInitEnCero()
+        # init_value_fn = QLMatrixInitEnCero()
+        init_value_fn = QLMatrixInitOptimista(1000)
 
         # Determina si utilizar el limitador de iteraciones o no
         limitar_nro_iteraciones = self.WMainWindow.chkLimitarCantIteraciones.isChecked()
@@ -1170,7 +1172,6 @@ class MainWindow(QtGui.QMainWindow):
         self.show_matriz_dialog(matriz_r, "Matriz R", "Matriz de recompensas")
 
     def show_matriz_q(self):
-        print self.matriz_q
         if self.matriz_q is not None:
             self.show_matriz_dialog(self.matriz_q, "Matriz Q", "Matriz Q")
 

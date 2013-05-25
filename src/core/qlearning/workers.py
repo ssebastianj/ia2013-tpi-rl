@@ -86,7 +86,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # Descontador utilizado para saber en que momento calcular la diferencia
         # entre dos matrices Q
-        calc_mat_diff_cont = self.interv_diff_calc
+        calc_mat_diff_cont = self.interv_diff_calc - 1
 
         # Variables auxiliar para resguardar los resultados de las sumas
         suma_matriz_q_actual = None
@@ -105,7 +105,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # Ejecutar una cantidad dada de episodios o detener antes si se considera necesario
         while (not self._stoprequest.is_set()) and (epnum <= cantidad_episodios) and (tmp_diff_mat > min_diff_mat):
-
 
             # Obtener coordenadas aleatorias y obtener Estado asociado
             x_act, y_act = self.generar_estado_aleatorio()
@@ -207,7 +206,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                                     suma_matriz_q_actual)
 
                     # Calcular el error medio cuadrático
-                    tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
+                    # tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
+                    tmp_diff_mat = numpy.absolute(resta_diff_mat)
 
                     # Volver a cargar valor inicial a contador
                     calc_mat_diff_cont = self.interv_diff_calc
