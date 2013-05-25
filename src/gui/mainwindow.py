@@ -1172,6 +1172,7 @@ class MainWindow(QtGui.QMainWindow):
         self.show_matriz_dialog(matriz_r, "Matriz R", "Matriz de recompensas")
 
     def show_matriz_q(self):
+        print self.matriz_q
         if self.matriz_q is not None:
             self.show_matriz_dialog(self.matriz_q, "Matriz Q", "Matriz Q")
 

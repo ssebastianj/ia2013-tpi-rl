@@ -86,7 +86,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # Descontador utilizado para saber en que momento calcular la diferencia
         # entre dos matrices Q
-        calc_mat_diff_cont = self.interv_diff_calc - 1
+        calc_mat_diff_cont = self.interv_diff_calc
 
         # Variables auxiliar para resguardar los resultados de las sumas
         suma_matriz_q_actual = None
@@ -104,7 +104,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         ep_start_time = wtimer()
 
         # Ejecutar una cantidad dada de episodios o detener antes si se considera necesario
-        while (not self._stoprequest.is_set()) and (epnum < cantidad_episodios) and (tmp_diff_mat > min_diff_mat):
+        while (not self._stoprequest.is_set()) and (epnum <= cantidad_episodios) and (tmp_diff_mat > min_diff_mat):
+
 
             # Obtener coordenadas aleatorias y obtener Estado asociado
             x_act, y_act = self.generar_estado_aleatorio()
@@ -194,10 +195,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 self.tecnica.decrementar_parametro()
                 decrementar_step = 0
 
-            # Decrementar contador para saber si es necesario calcular
-            # la diferencia entre las matrices Q
-            calc_mat_diff_cont -= 1
-
             if calc_mat_diff_cont == 0:
                 try:
                     # Sumar todos los valores Q de la matriz actual
@@ -213,7 +210,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                     tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
 
                     # Volver a cargar valor inicial a contador
-                    calc_mat_diff_cont = self.interv_diff_calc - 1
+                    calc_mat_diff_cont = self.interv_diff_calc
                 except TypeError:
                     pass
             elif calc_mat_diff_cont == 1:
@@ -232,6 +229,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                  'MatDiff': tmp_diff_mat
                                  })
 
+            # Decrementar contador para saber si es necesario calcular
+            # la diferencia entre las matrices Q
+            calc_mat_diff_cont -= 1
+
             # Avanzar un episodio
             epnum += 1
             # ======================= Fin de episodios =======================
@@ -248,7 +249,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # Poner en la cola de salida los resultados
         self.encolar_salida({'EstadoActual': (x_act, y_act),
-                             'NroEpisodio': epnum,
+                             'NroEpisodio': epnum - 1,
                              'NroIteracion': cant_iteraciones,
                              'MatrizQ': self.matriz_q,
                              'EpisodiosExecTime': ep_exec_time,
