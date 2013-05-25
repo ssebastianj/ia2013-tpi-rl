@@ -29,7 +29,8 @@ class ShowMatrizDialog(QtGui.QDialog):
 
         self.setWindowFlags(QtCore.Qt.Dialog |
                             QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowTitleHint)
+                            QtCore.Qt.WindowTitleHint |
+                            QtCore.Qt.WindowMaximizeButtonHint)
 
         self.matriz = matriz
         self.titulo_corto_dialogo = titulo_corto
@@ -64,33 +65,67 @@ class ShowMatrizDialog(QtGui.QDialog):
         # Desactivar actualización de la tabla para optimizar la carga
         self.ShowMatrizD.tblMatriz.setUpdatesEnabled(False)
 
+        headers_horizontales = []
+        headers_verticales = []
+
+        # Rellenar tabla con transiciones inválidas
+        item_bg_color = QtGui.QColor(240, 240, 240)
+        item_flags = QtCore.Qt.ItemIsEnabled
+        item_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
+
         for fila in xrange(dimension):
             for columna in xrange(dimension):
                 item = QtGui.QTableWidgetItem('-')
-                item.setBackgroundColor(QtGui.QColor(240, 240, 240))
-                item.setFlags(QtCore.Qt.ItemIsEnabled)
-                item.setTextAlignment(QtCore.Qt.AlignHCenter |
-                                      QtCore.Qt.AlignCenter)
+                item.setBackgroundColor(item_bg_color)
+                item.setFlags(item_flags)
+                item.setTextAlignment(item_align)
                 self.ShowMatrizD.tblMatriz.setItem(fila, columna, item)
 
         # Rellenar tabla con items
+        item_bg_color = QtGui.QColor("#FFFFFF")
+        item_flags = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+        item_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
+
         for fila in xrange(0, alto_gw):
             for columna in xrange(0, ancho_gw):
                 acciones = self.matriz[fila][columna][1]
 
                 for key, value in acciones.iteritems():
                     # Cada item muestra la letra asignada al estado
-                    item = QtGui.QTableWidgetItem(str(value))
-                    item.setBackgroundColor(QtGui.QColor("#FFFFFF"))
-                    item.setFlags(QtCore.Qt.ItemIsEnabled |
-                                  QtCore.Qt.ItemIsSelectable)
-                    item.setTextAlignment(QtCore.Qt.AlignHCenter |
-                                          QtCore.Qt.AlignCenter)
-                    item.setToolTip(str(value))
+                    if isinstance(value, float):
+                        item = QtGui.QTableWidgetItem("{0:.2f}".format(value))
+                    elif isinstance(value, int):
+                        item = QtGui.QTableWidgetItem(str(value))
 
+                    item.setBackgroundColor(item_bg_color)
+                    item.setFlags(item_flags)
+                    item.setTextAlignment(item_align)
+
+                    # Coordenadas
                     coord_x = (fila * alto_gw) + columna
                     coord_y = ((key[0] - 1) * ancho_gw) + (key[1] - 1)
+
+                    item.setToolTip(u"({0},{1}) ---> {2}"
+                                    .format(fila + 1, columna + 1, key))
                     self.ShowMatrizD.tblMatriz.setItem(coord_x, coord_y, item)
+
+                # Coordenadas
+                coord_x = (fila * alto_gw) + columna
+
+                # Armar headers horizontales (Acciones)
+                headers_horizontales.append("A{0}\n({1},{2})"
+                                            .format(coord_x + 1,
+                                                    fila + 1,
+                                                    columna + 1))
+
+                # Armar headers verticales (Estados)
+                headers_verticales.append("E{0} ({1},{2})"
+                                          .format(coord_x + 1,
+                                                  fila + 1,
+                                                  columna + 1))
+
+        self.ShowMatrizD.tblMatriz.setHorizontalHeaderLabels(headers_horizontales)
+        self.ShowMatrizD.tblMatriz.setVerticalHeaderLabels(headers_verticales)
 
         # Reactivar la actualización de la tabla
         self.ShowMatrizD.tblMatriz.setUpdatesEnabled(True)
@@ -99,12 +134,7 @@ class ShowMatrizDialog(QtGui.QDialog):
         self.ShowMatrizD.tblMatriz.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
         self.ShowMatrizD.tblMatriz.verticalHeader().setDefaultSectionSize(ancho_estado_px)
         self.ShowMatrizD.tblMatriz.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-        # self.ShowMatrizD.tblMatriz.setCursor(QtCore.Qt.PointingHandCursor)
-        ancho_contenedor = ancho_gw_px + self.ShowMatrizD.tblMatriz.verticalHeader().width() + 1
-        alto_contenedor = ancho_gw_px + self.ShowMatrizD.tblMatriz.horizontalHeader().height() + 1
-        # self.ShowMatrizD.tblMatriz.setFixedSize(ancho_contenedor, alto_contenedor)
-        # self.ShowMatrizD.tblMatriz.setMaximumSize(ancho_contenedor, alto_contenedor)
-        self.setMaximumSize(ancho_contenedor + 25, alto_contenedor + 62)
+        self.ShowMatrizD.tblMatriz.resizeColumnsToContents()
 
     def _set_dialog_signals(self):
         pass

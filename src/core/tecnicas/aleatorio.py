@@ -8,8 +8,8 @@ from core.tecnicas.tecnica import QLTecnica
 
 
 class Aleatorio(QLTecnica):
-    u"""Técnica EGreedy"""
-    def __init__(self):
+    u"""Técnica Aleatorio"""
+    def __init__(self, parametro=None, paso_decremento=0, intervalo_decremento=0):
         u"""
         Inicializador
 

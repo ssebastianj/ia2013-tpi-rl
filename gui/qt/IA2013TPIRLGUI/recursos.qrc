@@ -1,9 +1,11 @@
 <RCC>
-    <qresource prefix="/:iconos">
-        <file alias="Recorrer">Recorrer.png</file>
-        <file alias="Cancelar">Cancelar.png</file>
-        <file alias="Aprender">Aprender.png</file>
-        <file alias="Configurar">Configurar.png</file>
-        <file alias="LogoUTN">UTN.ico</file>
+    <qresource prefix="/iconos">
+        <file>Agente_0.png</file>
+        <file>Aprender.png</file>
+        <file>Cancelar.png</file>
+        <file>Configurar.png</file>
+        <file>Recorrer.png</file>
+        <file>UTN.ico</file>
+        <file>Agente_1.png</file>
     </qresource>
 </RCC>

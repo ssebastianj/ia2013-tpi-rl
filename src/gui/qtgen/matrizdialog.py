@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\matrizdialog.ui'
 #
-# Created: Wed May 15 00:41:21 2013
+# Created: Sat May 25 01:15:43 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MatrizDialog(object):
     def setupUi(self, MatrizDialog):
         MatrizDialog.setObjectName(_fromUtf8("MatrizDialog"))
-        MatrizDialog.resize(438, 501)
+        MatrizDialog.resize(430, 392)
         MatrizDialog.setWindowTitle(_fromUtf8(""))
         MatrizDialog.setSizeGripEnabled(True)
         MatrizDialog.setModal(True)
@@ -47,7 +47,25 @@ class Ui_MatrizDialog(object):
         self.tblMatriz.setObjectName(_fromUtf8("tblMatriz"))
         self.tblMatriz.setColumnCount(0)
         self.tblMatriz.setRowCount(0)
-        self.gridLayout_2.addWidget(self.tblMatriz, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.tblMatriz, 1, 1, 1, 1)
+        self.label = QtGui.QLabel(MatrizDialog)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.label.setFont(font)
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.gridLayout_2.addWidget(self.label, 0, 1, 1, 1)
+        self.label_2 = QtGui.QLabel(MatrizDialog)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setItalic(False)
+        font.setUnderline(False)
+        font.setWeight(75)
+        self.label_2.setFont(font)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.gridLayout_2.addWidget(self.label_2, 1, 0, 1, 1)
         self.gridLayout = QtGui.QGridLayout()
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.btnCerrarDialogo = QtGui.QPushButton(MatrizDialog)
@@ -66,12 +84,14 @@ class Ui_MatrizDialog(object):
         self.gridLayout.addWidget(self.line, 0, 0, 1, 2)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 1, 0, 1, 1)
-        self.gridLayout_2.addLayout(self.gridLayout, 1, 0, 1, 1)
+        self.gridLayout_2.addLayout(self.gridLayout, 2, 0, 1, 2)
 
         self.retranslateUi(MatrizDialog)
         QtCore.QObject.connect(self.btnCerrarDialogo, QtCore.SIGNAL(_fromUtf8("clicked()")), MatrizDialog.accept)
         QtCore.QMetaObject.connectSlotsByName(MatrizDialog)
 
     def retranslateUi(self, MatrizDialog):
+        self.label.setText(_translate("MatrizDialog", "Acciones", None))
+        self.label_2.setText(_translate("MatrizDialog", "Estados", None))
         self.btnCerrarDialogo.setText(_translate("MatrizDialog", "&Cerrar", None))
 

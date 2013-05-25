@@ -16,9 +16,12 @@ class EGreedy(QLTecnica):
 
         :param epsilon: Parámetro Epsilon de la técnica.
         """
-        super(EGreedy, self).__init__(paso_decremento, intervalo_decremento)
+        super(EGreedy, self).__init__()
         self._val_param_general = epsilon
+        self._val_param_parcial = epsilon
         self._name = "EGreedy"
+        self._paso_decremento = paso_decremento
+        self._intervalo_decremento = intervalo_decremento
 
     def get_epsilon_general(self):
         return self._val_param_general
@@ -36,37 +39,41 @@ class EGreedy(QLTecnica):
         logging.debug("Vecinos para EGreedy: {0}".format(vecinos))
 
         # Generar un número aleatorio para saber cuál política usar
-        valor = random.uniform(0, 1)
-        if ((valor >= 0) and (valor <= (1 - self.epsilon_parcial))):
+        random_num = random.uniform(0, 1)
+
+        if 0 <= random_num <= (1 - self.epsilon_parcial):
             # EXPLOTAR
             logging.debug("EXPLOTAR")  # FIXME: Eliminar print de debug
 
             maximo = None
             estados_qmax = []
-            for key, value in vecinos.items():
+            for key, value in vecinos.iteritems():
                 logging.debug("X:{0} Y:{1}".format(*key))  # FIXME: Eliminar print de debug
                 q_valor = value
                 logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug
 
-                if maximo is None:
+                try:
+                    if q_valor > maximo:
+                        maximo = q_valor
+                        estados_qmax = [key]
+                    elif q_valor == maximo:
+                        estados_qmax.append(key)
+                except TypeError:
                     maximo = q_valor
-
-                if q_valor > maximo:
-                    maximo = q_valor
-                    estados_qmax = [key]
-                elif q_valor == maximo:
-                    estados_qmax.append(key)
 
             logging.debug("Estados Q-Max: {0}".format(estados_qmax))
 
             # Comprobar si hay estados con recompensas iguales y elegir uno
             # de forma aleatoria
-            if len(estados_qmax) == 1:
+            long_vecinos = len(estados_qmax)
+            if long_vecinos == 1:
                 estado_qmax = estados_qmax[0]
                 logging.debug("Existe un sólo estado vecino máximo")  # FIXME: Eliminar print de debug
-            else:
+            elif long_vecinos > 1:
                 estado_qmax = self.elegir_estado_aleatorio(estados_qmax)
                 logging.debug("Existen varios estados con igual recompensa")  # FIXME: Eliminar print de debug
+            else:
+                pass
         else:
             # EXPLORAR
             logging.debug("EXPLORAR")  # FIXME: Eliminar print de debug
@@ -91,7 +98,8 @@ class EGreedy(QLTecnica):
             self._val_param_parcial = decremento
         else:
             # Restaurar valor original de parámetro
-            self.restaurar_val_parametro()
+            # self.restaurar_val_parametro()
+            pass
 
     epsilon_general = property(get_epsilon_general,
                                set_epsilon_general,
