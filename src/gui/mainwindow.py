@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import logging
 import multiprocessing
 import Queue
+import time
 
 from PyQt4 import QtCore, QtGui
 
@@ -752,8 +753,18 @@ class MainWindow(QtGui.QMainWindow):
         aplicación. Este método debe ser llamado al desconectarse o al salir
         de la aplicación.
         """
-        for proc in multiprocessing.active_children():
-            proc.terminate()
+        for proceso in multiprocessing.active_children():
+            try:
+                # Darle una oportunidad más al proceso de terminar
+                proceso.join(0.1)
+                # Esperar a que termine
+                time.sleep(0.1)
+                # Forzar terminación de proceso
+                proceso.terminate()
+                # Esperar antes de continuar
+                time.sleep(0.1)
+            except WindowsError:
+                pass
 
     def inicializar_todo(self):
         u"""
@@ -792,8 +803,6 @@ class MainWindow(QtGui.QMainWindow):
         Actualiza la información mostrada en la ventana de acuerdo a los
         datos de entrada,
         """
-        self._logger.debug("Actualizar ventana")
-
         self.update_window_entrenar()
         self.update_window_recorrer()
 
@@ -806,7 +815,6 @@ class MainWindow(QtGui.QMainWindow):
 
         try:
             data_entrenar = self.get_all_from_queue(self.ql_entrenar_out_q)
-            # self._logger.debug("[Entrenar] Actualizar ventana con: {0}".format(data_entrenar)) @IgnorePep8
 
             for ql_ent_info in data_entrenar:
                 estado_actual_ent = ql_ent_info.get('EstadoActual', None)
@@ -879,7 +887,6 @@ class MainWindow(QtGui.QMainWindow):
                         item.setIcon(self.ent_icon_estado_act)
                     except TypeError:
                         item.setBackground(self.ent_color_estado_act)
-
         except Queue.Empty:
             pass
         except AttributeError:
@@ -894,7 +901,6 @@ class MainWindow(QtGui.QMainWindow):
 
         try:
             data_recorrer = self.get_all_from_queue(self.ql_recorrer_out_q)
-            # self._logger.debug("[Recorrer] Actualizar ventana con: {0}".format(data_recorrer)) @IgnorePep8
 
             for ql_rec_info in data_recorrer:
                 estado_actual_rec = ql_rec_info.get('EstadoActual', None)

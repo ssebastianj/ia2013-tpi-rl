@@ -163,7 +163,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                      'NroIteracion': cant_iteraciones,
                                      'ValorParametro': self.tecnica.valor_param_parcial,
                                      'ProcesoJoined': False
-                                    })
+                                      })
 
                 # Actualizar estado actual
                 x_act, y_act = (x_eleg, y_eleg)
@@ -230,7 +230,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                  'ValorParametro': self.tecnica.valor_param_parcial,
                                  'ProcesoJoined': False,
                                  'MatDiff': tmp_diff_mat
-                                })
+                                 })
 
             # Avanzar un episodio
             epnum += 1
@@ -257,7 +257,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                              'ValorParametro': self.tecnica.valor_param_parcial,
                              'RunningExecTime': running_exec_time,
                              'MatDiff': tmp_diff_mat
-                            })
+                             })
 
         # Realizar tareas al finalizar
         self._on_end()
