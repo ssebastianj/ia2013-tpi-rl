@@ -101,6 +101,8 @@ class GWOpcionesDialog(QtGui.QDialog):
 
         self.update_recom_final()
 
+        self.GWOpcionesD.sbFinalRecompensa.setValue(1000)
+
     def _set_dialog_signals(self):
         self.GWOpcionesD.sbExcelenteRecompensa.valueChanged.connect(self.update_recom_final)
         self.GWOpcionesD.sbBuenoRecompensa.valueChanged.connect(self.update_recom_final)

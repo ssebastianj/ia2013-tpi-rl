@@ -1101,11 +1101,9 @@ class MainWindow(QtGui.QMainWindow):
             self.window_config["item"]["size"] = self.GWOpcionesD.estado_size
 
             new_tipos_estados = self.GWOpcionesD.tipos_estados
-            old_tipos_estados = self.window_config["tipos_estados"]
 
-            if (new_tipos_estados is not None) and (new_tipos_estados != old_tipos_estados):
-                old_tipos_estados = new_tipos_estados
-                self.refresh_gw()
+            self.window_config["tipos_estados"] = new_tipos_estados
+            self.refresh_gw()
 
     def mostrar_gen_rnd_estados_dialog(self):
         self.GWGenRndEstValsD = GWGenRndEstadosDialog(self)
