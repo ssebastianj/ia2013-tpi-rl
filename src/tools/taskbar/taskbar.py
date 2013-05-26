@@ -1,7 +1,14 @@
 #!/usr/bin/env python
-#! -*- coding: utf-8 -*-
+# ! -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
+
+import sys
+
+try:
+    import comtypes.gen.TaskbarLib as tbl
+except ImportError:
+    pass
 
 
 class WindowsTaskBar(object):
@@ -23,7 +30,6 @@ class WindowsTaskBar(object):
         import comtypes.client as cc
         cc.GetModule("TaskbarLib.tlb")
 
-        import comtypes.gen.TaskbarLib as tbl
         self._taskbar = cc.CreateObject("{56FDF344-FD6D-11d0-958A-006097C9A090}",
                                         interface=tbl.ITaskbarList3)
 
@@ -83,8 +89,6 @@ class WindowsTaskBar(object):
 
 
 def is_windows7_or_later():
-    import sys
-
     if sys.platform == 'win32':
         version_info = sys.getwindowsversion()
         return version_info[0] >= 6 and version_info[1] >= 1
