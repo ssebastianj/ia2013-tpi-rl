@@ -558,14 +558,14 @@ class MainWindow(QtGui.QMainWindow):
         """
         if self.estado_final is None:
             QtGui.QMessageBox.warning(self,
-                                          _tr('QLearning - Recorrido'),
-                                          "Debe establecer un Estado Final antes de realizar el recorrido.")
+                                      tr('QLearning - Recorrido'),
+                                      "Debe establecer un Estado Final antes de realizar el recorrido.")
             return None
 
         if self.estado_inicial is None:
             QtGui.QMessageBox.warning(self,
-                                          _tr('QLearning - Recorrido'),
-                                          "Debe establecer un Estado Inicial antes de realizar el recorrido.")
+                                      _tr('QLearning - Recorrido'),
+                                      "Debe establecer un Estado Inicial antes de realizar el recorrido.")
             return None
 
         # Parámetros para mostrar el estado actual en pantalla
@@ -632,7 +632,7 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Ejecuta diversas acciones a cada disparo del Timer principal.
         """
-        self._logger.debug("Timer Timeout")
+        # self._logger.debug("Timer Timeout")
         self.actualizar_window()
         self.comprobar_actividad_procesos()
 
@@ -694,9 +694,8 @@ class MainWindow(QtGui.QMainWindow):
         self.window_config["item"]["menu_estado"]["enabled"] = True
         self.window_config["item"]["show_tooltip"] = self.window_config["item"]["show_tooltip"] and True
 
-        self._logger.debug("Procesos hijos activos: {0}"
-                      .format(multiprocessing.active_children()))
-        self._logger.debug("Fin de procesamiento")
+        self._logger.debug("Procesos hijos activos: {0}\nFin de procesamiento"
+            .format(multiprocessing.active_children()))
 
         self.WMainWindow.gbGridWorld.setEnabled(True)
         self.WMainWindow.gbQLearning.setEnabled(True)
@@ -819,6 +818,8 @@ class MainWindow(QtGui.QMainWindow):
             data_entrenar = self.get_all_from_queue(self.ql_entrenar_out_q)
 
             for ql_ent_info in data_entrenar:
+                _getv = dict.get
+
                 estado_actual_ent = ql_ent_info.get('EstadoActual', None)
                 nro_episodio = ql_ent_info.get('NroEpisodio', None)
                 cant_iteraciones = ql_ent_info.get('NroIteracion', None)
@@ -846,20 +847,17 @@ class MainWindow(QtGui.QMainWindow):
 
                 try:
                     # Mostrar información de entrenamiento en etiquetas
-                    main_wnd.lblEntEstadoActual.setText("X:{0}  Y:{1}"
-                                                        .format(x_actual, y_actual))
+                    main_wnd.lblEntEstadoActual.setText("X:{0}  Y:{1}".format(x_actual,
+                                                                              y_actual))
                     main_wnd.lblEntNroEpisodio.setText(str(nro_episodio))
                     main_wnd.lblEntNroIteracion.setText(str(cant_iteraciones))
                     main_wnd.lblEntValParametro.setText("{0:.2f}".format(valor_parametro))
-                    main_wnd.lblEntExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                             .format(episode_exec_time,
-                                                                     episode_exec_time * 1000))
-                    main_wnd.lblEntExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                               .format(iter_exec_time,
-                                                                       iter_exec_time * 1000))
-                    main_wnd.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                         .format(running_exec_time_ent,
-                                                                 running_exec_time_ent * 1000))
+                    main_wnd.lblEntExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)".format(episode_exec_time,
+                                                                                                episode_exec_time * 1000))
+                    main_wnd.lblEntExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)".format(iter_exec_time,
+                                                                                                  iter_exec_time * 1000))
+                    main_wnd.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)".format(running_exec_time_ent,
+                                                                                            running_exec_time_ent * 1000))
                 except TypeError:
                     pass
                 except ValueError:
@@ -986,14 +984,14 @@ class MainWindow(QtGui.QMainWindow):
         Comprueba si hay threads activos (sin incluir el MainThread). Si no
         existen threads activos se detiene el Timer de la ventana.
         """
-        self._logger.debug("Comprobar actividad de procesos")
+        # self._logger.debug("Comprobar actividad de procesos")
 
         active_children = multiprocessing.active_children()
 
         for proceso in active_children:
             if not proceso.is_alive():
-                proceso.join(0.05)
-            self._logger.debug("Proceso hijo: {0}".format(proceso))
+                proceso.join(0.01)
+            # self._logger.debug("Proceso hijo: {0}".format(proceso))
 
         if not active_children:
             self.on_fin_proceso()
