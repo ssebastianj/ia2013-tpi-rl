@@ -525,6 +525,9 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         estado_actual = matriz_q[x_act - 1][y_act - 1]
 
         while (not self._stoprequest.is_set()) and (estado_actual[0] != TIPOESTADO.FINAL):
+            self.encolar_salida({'EstadoActual': (x_act, y_act),
+                                 'ProcesoJoined': False})
+
             vecinos = estado_actual[1]
 
             # Buscar el estado que posea el mayor valor de Q
@@ -556,9 +559,6 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
             # Agregar estado al camino óptimo
             camino_optimo.append(estado_qmax)
-
-            self.encolar_salida({'EstadoActual': (x_act, y_act),
-                                 'ProcesoJoined': False})
 
             # Actualizar estado actual
             x_act, y_act = x_eleg, y_eleg
