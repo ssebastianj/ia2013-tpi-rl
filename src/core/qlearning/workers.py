@@ -474,6 +474,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._stoprequest = multiprocessing.Event()
         self.name = "QLearningRecorrerWorker"
         self.input_data = None
+        self._visitados = []
+        self._contador_ref = {}
 
     def _do_on_start(self):
         u"""
@@ -525,7 +527,11 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         estado_actual = matriz_q[x_act - 1][y_act - 1]
 
         while (not self._stoprequest.is_set()) and (estado_actual[0] != TIPOESTADO.FINAL):
+            self.encolar_salida({'EstadoActual': (x_act, y_act),
+                                 'ProcesoJoined': False})
+
             vecinos = estado_actual[1]
+            vecinos = {key : value for key, value in vecinos.iteritems() if key not in self._visitados}  # @IgnorePep8
 
             # Buscar el estado que posea el mayor valor de Q
             maximo = None
@@ -557,8 +563,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             # Agregar estado al camino óptimo
             camino_optimo.append(estado_qmax)
 
-            self.encolar_salida({'EstadoActual': (x_act, y_act),
-                                 'ProcesoJoined': False})
+            # Contar referencia a estado elegido
+            self._contar_ref((x_eleg, y_eleg))
 
             # Actualizar estado actual
             x_act, y_act = x_eleg, y_eleg
@@ -615,3 +621,14 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             self._error_queue.put(error)
         except Queue.Full:
             pass
+
+    def _contar_ref(self, estado):
+        umbral = 1
+
+        try:
+            self._contador_ref[estado] += 1
+        except KeyError:
+            self._contador_ref[estado] = 0
+
+        if self._contador_ref[estado] == umbral:
+            self._visitados.append(estado)
