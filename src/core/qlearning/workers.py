@@ -474,6 +474,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._stoprequest = multiprocessing.Event()
         self.name = "QLearningRecorrerWorker"
         self.input_data = None
+        self._visitados = []
+        self._contador_ref = {}
 
     def _do_on_start(self):
         u"""
@@ -535,6 +537,10 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             estados_qmax = []
 
             for key, q_valor in vecinos.iteritems():
+                # Comprobar si el estado fue marcado y saltarlo si es verdadero
+                if key in self._visitados:
+                    continue
+
                 if maximo is None:
                     maximo = q_valor
 
@@ -615,3 +621,14 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             self._error_queue.put(error)
         except Queue.Full:
             pass
+
+    def _contar_ref(self, estado):
+        umbral = 1
+
+        try:
+            self._contador_ref[estado] += 1
+        except KeyError:
+            self._contador_ref[estado] = 0
+
+        if self._contador_ref[estado] == umbral:
+            self._visitados.append(estado)
