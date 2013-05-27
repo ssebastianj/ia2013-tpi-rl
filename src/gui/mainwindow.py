@@ -139,7 +139,6 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMostrarMatrizR.setDisabled(True)
         self.WMainWindow.lblCantMaxIteraciones.setDisabled(True)
         self.WMainWindow.sbCantMaxIteraciones.setDisabled(True)
-        self.WMainWindow.sbCantMaxIteraciones.setValue(10000)
 
         # Asignar shorcuts
         entrenar_shortcut = "F5"
@@ -1148,8 +1147,8 @@ class MainWindow(QtGui.QMainWindow):
         # Establecer por defecto un Epsilon = 0.5
         self.WMainWindow.sbQLEpsilon.setValue(0.5)
 
-        # Establecer por defecto un Gamma = 0.5
-        self.WMainWindow.sbQLGamma.setValue(0.5)
+        # Establecer por defecto un Gamma = 0.8
+        self.WMainWindow.sbQLGamma.setValue(0.8)
 
         self.WMainWindow.sbDecrementoVal.setValue(0.01)
         self.WMainWindow.sbCantEpisodiosDec.setValue(1)
@@ -1157,6 +1156,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.chkDecrementarParam.setChecked(True)
         self.WMainWindow.sbQLTau.setValue(0.5)
         self.WMainWindow.sbIntervaloDiffCalc.setSuffix(_tr(" episodios"))
+        self.WMainWindow.sbCantMaxIteraciones.setValue(1000)
+        self.WMainWindow.sbIntervaloDiffCalc.setMinimum(2)
+        self.WMainWindow.sbCantidadEpisodios.setValue(10)
 
     def show_matriz_dialog(self, matriz, titulo_corto, titulo_largo):
         ShowMatrizD = ShowMatrizDialog(matriz,
