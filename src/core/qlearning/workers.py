@@ -150,13 +150,12 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # -------------------------------------------------------------
                 try:
                     nuevo_q = recompensa_estado + (self.gamma * max_q)
-                except TypeError:
-                    nuevo_q = 0 + (self.gamma * max_q)
-                except ValueError:
-                    nuevo_q = 0 + (self.gamma * max_q)
-                finally:
                     # Actualizar valor de Q en matriz Q
                     self.matriz_q[x_act - 1][y_act - 1][1][(x_eleg, y_eleg)] = nuevo_q
+                except TypeError:
+                    pass
+                except ValueError:
+                    pass
 
                 self.encolar_salida({'EstadoActual': (x_act, y_act),
                                      'NroEpisodio': epnum,
@@ -475,8 +474,6 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._stoprequest = multiprocessing.Event()
         self.name = "QLearningRecorrerWorker"
         self.input_data = None
-        self._contador_ref = {}
-        self._visitados = []
 
     def _do_on_start(self):
         u"""
@@ -533,22 +530,16 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             # Buscar el estado que posea el mayor valor de Q
             maximo = None
             estados_qmax = []
-            for key, value in vecinos.iteritems():
 
-                # Comprobar si el estado fue marcado y saltarlo si es verdadero
-                if key in self._visitados:
-                    continue
-
-                q_valor = value
-
-                try:
-                    if q_valor > maximo:
-                        maximo = q_valor
-                        estados_qmax = [key]
-                    elif q_valor == maximo:
-                        estados_qmax.append(key)
-                except TypeError:
+            for key, q_valor in vecinos.iteritems():
+                if maximo is None:
                     maximo = q_valor
+
+                if q_valor > maximo:
+                    maximo = q_valor
+                    estados_qmax = [key]
+                elif q_valor == maximo:
+                    estados_qmax.append(key)
 
             # Comprobar si hay estados con valores Q iguales y elegir uno
             # de forma aleatoria
@@ -560,10 +551,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             else:
                 pass
 
+            # Descomponer coordenadas de estado
             x_eleg, y_eleg = estado_qmax
-
-            # Marcar como visitado
-            self._contar_ref((x_eleg, y_eleg))
 
             # Agregar estado al camino óptimo
             camino_optimo.append(estado_qmax)
@@ -572,7 +561,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
                                  'ProcesoJoined': False})
 
             # Actualizar estado actual
-            x_act, y_act = (x_eleg, y_eleg)
+            x_act, y_act = x_eleg, y_eleg
             estado_actual = matriz_q[x_act - 1][y_act - 1]
 
         # Registrar tiempo de finalización
@@ -604,17 +593,6 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._stoprequest.set()
         self.encolar_salida({'Joined': True})
         super(QLearningRecorrerWorker, self).join(timeout)
-
-    def _contar_ref(self, estado):
-        umbral = 1
-
-        if estado in self._contador_ref:
-            self._contador_ref[estado] += 1
-        else:
-            self._contador_ref[estado] = 0
-
-        if self._contador_ref[estado] == umbral:
-            self._visitados.append(estado)
 
     def encolar_salida(self, salida):
         u"""

@@ -69,6 +69,8 @@ class MainWindow(QtGui.QMainWindow):
         """
         self.estado_inicial = None
         self.estado_final = None
+        self.pre_estado_inicial = None
+        self.pre_estado_final = None
         self.matriz_q = None
         self.wnd_timer = None
         self.ql_entrenar_error_q = None
@@ -207,6 +209,10 @@ class MainWindow(QtGui.QMainWindow):
         """
         # Desactivar la visualización de la Matriz R
         self.WMainWindow.btnMostrarMatrizR.setDisabled(True)
+
+        # Desactiva la visualización de la Matriz Q y el Juego
+        self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
+        self.WMainWindow.btnRecorrer.setDisabled(True)
 
         # Obtener ancho y alto del GridWorld
         self._logger.debug("Dimensión: {0}".format(dimension))
@@ -396,7 +402,7 @@ class MainWindow(QtGui.QMainWindow):
                     action.setChecked(True)
 
                 action.setStatusTip("Establecer calidad de estado a {0}"
-                                 .format(tipo.nombre))
+                                   .format(tipo.nombre))
                 self.menu_item.addAction(action)
 
                 if tipo.ide == TIPOESTADO.FINAL:
@@ -422,7 +428,9 @@ class MainWindow(QtGui.QMainWindow):
                 # Establecer color de fondo de acuerdo al tipo de estado
                 item.setBackgroundColor(QtGui.QColor(tipos_estados[tipo_num].color))
                 item.setSelected(False)
-                estado_actual = self.gridworld.get_estado(item.row() + 1, item.column() + 1)
+
+                estado_actual = self.gridworld.get_estado(item.row() + 1,
+                                                      item.column() + 1)
 
                 if tipo_num == TIPOESTADO.INICIAL:
                     self.estado_inicial = estado_actual
@@ -433,6 +441,8 @@ class MainWindow(QtGui.QMainWindow):
                     self.estado_inicial = None
                 elif estado_actual.tipo.ide == TIPOESTADO.FINAL:
                     self.estado_final = None
+                    self.WMainWindow.btnRecorrer.setDisabled(True)
+                    self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
 
                 # Establecer tipo de estado seleccionado al estado en la matriz de
                 # Estados
@@ -441,8 +451,8 @@ class MainWindow(QtGui.QMainWindow):
                 if self.window_config["item"]["show_tooltip"]:
                     item.setToolTip("Fila: {0}\nColumna: {1}\nTipo: {2}\nRecompensa: {3}"
                                     .format(item.row() + 1, item.column() + 1,
-                                    estado_actual.tipo.nombre,
-                                    estado_actual.tipo.recompensa))
+                                            estado_actual.tipo.nombre,
+                                            estado_actual.tipo.recompensa))
 
     def entrenar(self):
         u"""
@@ -453,7 +463,13 @@ class MainWindow(QtGui.QMainWindow):
         if self.estado_final is None:
             QtGui.QMessageBox.warning(self,
                                           _tr('QLearning - Entrenamiento'),
-                                          "Debe establecer un Estado Final antes de realizar el recorrido.")
+                                          "Debe establecer un Estado Final antes de realizar el entrenamiento.")
+            return None
+
+        if self.estado_inicial is not None:
+            QtGui.QMessageBox.warning(self,
+                                          _tr('QLearning - Entrenamiento'),
+                                          "Quite el Estado Inicial y elija otro tipo de estado antes de realizar el entrenamiento.")
             return None
 
         # Bloquear GridWorld
@@ -830,9 +846,11 @@ class MainWindow(QtGui.QMainWindow):
                 valor_parametro = ql_ent_info.get('ValorParametro', None)
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
                 tmp_mat_diff = ql_ent_info.get('MatDiff', None)
+                corte_iteracion = ql_ent_info.get('CorteIteracion', None)
 
                 self.matriz_q = matriz_q
                 x_actual, y_actual = estado_actual_ent
+                logging.debug("Diferencia: {0}".format(tmp_mat_diff))
 
                 if loop_alarm:
                     QtGui.QMessageBox.warning(self,
@@ -857,6 +875,7 @@ class MainWindow(QtGui.QMainWindow):
                                                                                                   iter_exec_time * 1000))
                     main_wnd.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)".format(running_exec_time_ent,
                                                                                             running_exec_time_ent * 1000))
+                    main_wnd.lblEntDiffMatrices.setText(str(tmp_mat_diff))
                 except TypeError:
                     pass
                 except ValueError:
@@ -909,6 +928,7 @@ class MainWindow(QtGui.QMainWindow):
                 rec_exec_time = ql_rec_info.get('RecorridoExecTime', 0.0)
 
                 x_actual, y_actual = estado_actual_rec
+                self._logger.debug("Estado actual: {0}".format(estado_actual_rec))
 
                 try:
                     main_wnd.lblRecEstadoActual.setText("X:{0}  Y:{1}"
@@ -1121,13 +1141,14 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.cbGWDimension.addItem(_tr(dimension), dimension)
 
         self.WMainWindow.cbGWDimension.currentIndexChanged.connect(self.set_gw_dimension_cb)
-
         self.refresh_gw()
 
     def refresh_gw(self):
         # Establece la dimensión por defecto del tblGridWorld en 6x6
         indice = self.WMainWindow.cbGWDimension.currentIndex()
         self.set_gw_dimension(self.WMainWindow.cbGWDimension.itemData(indice).toString())
+        self.WMainWindow.btnRecorrer.setDisabled(True)
+        self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
 
     def inicializar_ql_vals(self):
         # Cargar técnicas posibles
