@@ -1180,6 +1180,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbCantMaxIteraciones.setValue(1000)
         self.WMainWindow.sbIntervaloDiffCalc.setMinimum(2)
         self.WMainWindow.sbCantidadEpisodios.setValue(10)
+        self.WMainWindow.sbValOptimoIncremento.setValue(500)
 
     def show_matriz_dialog(self, matriz, titulo_corto, titulo_largo):
         ShowMatrizD = ShowMatrizDialog(matriz,

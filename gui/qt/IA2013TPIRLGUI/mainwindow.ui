@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>826</width>
-    <height>705</height>
+    <width>851</width>
+    <height>784</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,7 +64,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>826</width>
+     <width>851</width>
      <height>21</height>
     </rect>
    </property>
@@ -119,7 +119,7 @@
    <addaction name="menuAyuda"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QDockWidget" name="dockWidget">
+  <widget class="QDockWidget" name="dwConfiguracion">
    <property name="locale">
     <locale language="Spanish" country="Argentina"/>
    </property>
@@ -137,6 +137,31 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QGridLayout" name="gridLayout_5">
+     <item row="2" column="0">
+      <widget class="QGroupBox" name="gbGeneral">
+       <property name="title">
+        <string>General</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_9">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="btnInicializarTodo">
+          <property name="maximumSize">
+           <size>
+            <width>130</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="locale">
+           <locale language="Spanish" country="Argentina"/>
+          </property>
+          <property name="text">
+           <string>Inicializar valores</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QGroupBox" name="gbGridWorld">
        <property name="title">
@@ -258,35 +283,9 @@
         <string>Q-Learning</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_17">
-        <item row="0" column="0">
-         <widget class="QLabel" name="lblGamma">
-          <property name="maximumSize">
-           <size>
-            <width>115</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Gamma (Ɣ):</string>
-          </property>
-          <property name="buddy">
-           <cstring>sbQLGamma</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QDoubleSpinBox" name="sbQLGamma">
-          <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Factor de descuento&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Cuanto más cerca de 1 se encuentre este valor mayor será el &lt;span style=&quot; font-style:italic;&quot;&gt;peso&lt;/span&gt; asignado a los refuerzos futuros.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="maximum">
-           <double>0.990000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.010000000000000</double>
-          </property>
-         </widget>
-        </item>
+        <property name="verticalSpacing">
+         <number>4</number>
+        </property>
         <item row="1" column="0" colspan="2">
          <widget class="QGroupBox" name="gbCondicionParada">
           <property name="title">
@@ -344,6 +343,9 @@
              </item>
              <item row="1" column="0" colspan="2">
               <layout class="QGridLayout" name="gridLayout_7">
+               <property name="verticalSpacing">
+                <number>3</number>
+               </property>
                <item row="2" column="1">
                 <widget class="QLabel" name="lblCantMaxIteraciones">
                  <property name="sizePolicy">
@@ -761,10 +763,115 @@
              </item>
             </layout>
            </item>
+           <item row="2" column="0">
+            <widget class="QGroupBox" name="gbQLMatrizQ">
+             <property name="title">
+              <string>Matriz Q</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_24">
+              <property name="leftMargin">
+               <number>2</number>
+              </property>
+              <property name="topMargin">
+               <number>2</number>
+              </property>
+              <property name="rightMargin">
+               <number>1</number>
+              </property>
+              <property name="bottomMargin">
+               <number>1</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>4</number>
+              </property>
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gridLayout_23">
+                <property name="verticalSpacing">
+                 <number>4</number>
+                </property>
+                <item row="2" column="0">
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLabel" name="label_18">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>158</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Valor ópt. = Rec. Estado Final +</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>sbValOptimoIncremento</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="2">
+                 <widget class="QSpinBox" name="sbValOptimoIncremento">
+                  <property name="minimumSize">
+                   <size>
+                    <width>60</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>10000</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0" colspan="3">
+                 <widget class="QRadioButton" name="optMQInitValOptimistas">
+                  <property name="text">
+                   <string>Inicializar con valores optimistas</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0" colspan="3">
+                 <widget class="QRadioButton" name="optMQInitEnCero">
+                  <property name="text">
+                   <string>Inicializar en cero</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
-        <item row="3" column="0" colspan="2">
+        <item row="4" column="0" colspan="2">
          <widget class="QGroupBox" name="groupBox_7">
           <property name="title">
            <string>Acciones</string>
@@ -801,28 +908,32 @@
           </layout>
          </widget>
         </item>
-       </layout>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QGroupBox" name="gbGeneral">
-       <property name="title">
-        <string>General</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_9">
         <item row="0" column="0">
-         <widget class="QPushButton" name="btnInicializarTodo">
+         <widget class="QLabel" name="lblGamma">
           <property name="maximumSize">
            <size>
-            <width>130</width>
+            <width>115</width>
             <height>16777215</height>
            </size>
           </property>
-          <property name="locale">
-           <locale language="Spanish" country="Argentina"/>
-          </property>
           <property name="text">
-           <string>Inicializar valores</string>
+           <string>Gamma (Ɣ):</string>
+          </property>
+          <property name="buddy">
+           <cstring>sbQLGamma</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="sbQLGamma">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Factor de descuento&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Cuanto más cerca de 1 se encuentre este valor mayor será el &lt;span style=&quot; font-style:italic;&quot;&gt;peso&lt;/span&gt; asignado a los refuerzos futuros.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="maximum">
+           <double>0.990000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
           </property>
          </widget>
         </item>
@@ -846,6 +957,12 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dwEjecucion">
+   <property name="maximumSize">
+    <size>
+     <width>524287</width>
+     <height>170</height>
+    </size>
+   </property>
    <property name="locale">
     <locale language="Spanish" country="Argentina"/>
    </property>
@@ -987,23 +1104,10 @@
        </layout>
       </widget>
      </item>
-     <item row="1" column="1">
-      <spacer name="verticalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget_3">
+  <widget class="QDockWidget" name="dwMetricas">
    <property name="locale">
     <locale language="Spanish" country="Argentina"/>
    </property>
@@ -1579,12 +1683,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>412</y>
+     <x>263</x>
+     <y>480</y>
     </hint>
     <hint type="destinationlabel">
      <x>140</x>
-     <y>438</y>
+     <y>506</y>
     </hint>
    </hints>
   </connection>
@@ -1595,12 +1699,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>412</y>
+     <x>263</x>
+     <y>480</y>
     </hint>
     <hint type="destinationlabel">
      <x>140</x>
-     <y>466</y>
+     <y>534</y>
     </hint>
    </hints>
   </connection>
@@ -1611,12 +1715,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>412</y>
+     <x>263</x>
+     <y>480</y>
     </hint>
     <hint type="destinationlabel">
-     <x>247</x>
-     <y>438</y>
+     <x>279</x>
+     <y>506</y>
     </hint>
    </hints>
   </connection>
@@ -1627,12 +1731,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>412</y>
+     <x>263</x>
+     <y>480</y>
     </hint>
     <hint type="destinationlabel">
-     <x>246</x>
-     <y>465</y>
+     <x>278</x>
+     <y>533</y>
     </hint>
    </hints>
   </connection>
@@ -1643,12 +1747,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>69</x>
-     <y>248</y>
+     <x>84</x>
+     <y>270</y>
     </hint>
     <hint type="destinationlabel">
-     <x>197</x>
-     <y>273</y>
+     <x>279</x>
+     <y>293</y>
     </hint>
    </hints>
   </connection>
@@ -1659,12 +1763,44 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>88</x>
-     <y>244</y>
+     <x>103</x>
+     <y>270</y>
     </hint>
     <hint type="destinationlabel">
-     <x>88</x>
-     <y>266</y>
+     <x>127</x>
+     <y>293</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>optMQInitValOptimistas</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_18</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>57</x>
+     <y>589</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>142</x>
+     <y>610</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>optMQInitValOptimistas</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sbValOptimoIncremento</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>104</x>
+     <y>585</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>257</x>
+     <y>614</y>
     </hint>
    </hints>
   </connection>
