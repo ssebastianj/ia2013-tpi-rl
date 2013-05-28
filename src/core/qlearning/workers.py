@@ -9,8 +9,9 @@ import numpy
 import time
 import sys
 import random
-from core.estado.estado import TIPOESTADO
 
+from core.estado.estado import TIPOESTADO
+from tools.sumamatriz import sumar_elementos
 
 class QLearningEntrenarWorker(multiprocessing.Process):
     u"""
@@ -196,9 +197,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             if calc_mat_diff_cont == 0:
                 try:
                     # Sumar todos los valores Q de la matriz actual
-                    suma_matriz_q_actual = sum([elto for fila in self.matriz_q
-                                                for columna in fila
-                                                for elto in columna[1].itervalues()])
+                    suma_matriz_q_actual = sumar_elementos(self.matriz_q)
 
                     # Restar valores de ambas matrices
                     resta_diff_mat = numpy.subtract(suma_matriz_q_anterior,
@@ -214,9 +213,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                     pass
             elif calc_mat_diff_cont == 1:
                 # Sumar todos los valores Q de la matriz actual
-                suma_matriz_q_anterior = sum([elto for fila in self.matriz_q
-                                              for columna in fila
-                                              for elto in columna[1].itervalues()])
+                suma_matriz_q_anterior = sumar_elementos(self.matriz_q)
 
             # Poner en la cola de salida los resultados
             self.encolar_salida({'EstadoActual': (x_act, y_act),
