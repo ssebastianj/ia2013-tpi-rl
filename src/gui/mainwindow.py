@@ -667,6 +667,9 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer.timeout.connect(self._on_window_timer)
         self.wnd_timer.start(15)
 
+        # Mostrar cursor de ocupado indicando que se está procesando
+        QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BusyCursor))
+
         if self.entrenar_is_running:
             self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
             self.WMainWindow.btnEntrenar.setDisabled(self.entrenar_is_running)
@@ -767,6 +770,9 @@ class MainWindow(QtGui.QMainWindow):
                                               self.wnd_taskbar.TBPF_NOPROGRESS)
         except RuntimeError:
             pass
+
+        # Restaurar cursor normal
+        QtGui.QApplication.restoreOverrideCursor()
 
     def _reintentar_detener_hilos(self):
         u"""
