@@ -162,7 +162,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                      'NroIteracion': cant_iteraciones,
                                      'ValorParametro': self.tecnica.valor_param_parcial,
                                      'ProcesoJoined': False
-                                      })
+                                     })
 
                 # Actualizar estado actual
                 x_act, y_act = (x_eleg, y_eleg)
