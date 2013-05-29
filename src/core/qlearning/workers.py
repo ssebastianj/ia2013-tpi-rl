@@ -162,7 +162,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                      'NroIteracion': cant_iteraciones,
                                      'ValorParametro': self.tecnica.valor_param_parcial,
                                      'ProcesoJoined': False
-                                      })
+                                     })
 
                 # Actualizar estado actual
                 x_act, y_act = (x_eleg, y_eleg)
@@ -531,7 +531,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
                                  'ProcesoJoined': False})
 
             vecinos = estado_actual[1]
-            vecinos = {key : value for key, value in vecinos.iteritems() if key not in self._visitados}  # @IgnorePep8
+            # Eliminar vecinos que alcanzaron el umbral de visitas
+            vecinos = {key: value for key, value in vecinos.iteritems() if key not in self._visitados}  # @IgnorePep8
 
             # Buscar el estado que posea el mayor valor de Q
             maximo = None
@@ -623,6 +624,11 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             pass
 
     def _contar_ref(self, estado):
+        u"""
+        Contar referencia a estado (cada vez que se accede al mismo)
+
+        :param estado: Estado que fue accedido.
+        """
         umbral = 1
 
         try:
