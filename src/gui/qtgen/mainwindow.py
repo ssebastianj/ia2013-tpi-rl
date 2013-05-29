@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Wed May 29 13:39:56 2013
+# Created: Wed May 29 14:15:34 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -794,7 +794,10 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.sbQLTau, self.chkDecrementarParam)
         MainWindow.setTabOrder(self.chkDecrementarParam, self.sbCantEpisodiosDec)
         MainWindow.setTabOrder(self.sbCantEpisodiosDec, self.sbDecrementoVal)
-        MainWindow.setTabOrder(self.sbDecrementoVal, self.btnInicializarValoresQL)
+        MainWindow.setTabOrder(self.sbDecrementoVal, self.optMQInitEnCero)
+        MainWindow.setTabOrder(self.optMQInitEnCero, self.optMQInitValOptimistas)
+        MainWindow.setTabOrder(self.optMQInitValOptimistas, self.sbValOptimoIncremento)
+        MainWindow.setTabOrder(self.sbValOptimoIncremento, self.btnInicializarValoresQL)
         MainWindow.setTabOrder(self.btnInicializarValoresQL, self.btnInicializarTodo)
         MainWindow.setTabOrder(self.btnInicializarTodo, self.tblGridWorld)
         MainWindow.setTabOrder(self.tblGridWorld, self.btnEntrenar)
@@ -802,6 +805,9 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.btnRecorrer, self.btnTerminarProceso)
         MainWindow.setTabOrder(self.btnTerminarProceso, self.btnMostrarMatrizR)
         MainWindow.setTabOrder(self.btnMostrarMatrizR, self.btnMostrarMatrizQ)
+        MainWindow.setTabOrder(self.btnMostrarMatrizQ, self.btnCOShowHide)
+        MainWindow.setTabOrder(self.btnCOShowHide, self.btnCOAnimCancel)
+        MainWindow.setTabOrder(self.btnCOAnimCancel, self.sbCOAnimDelay)
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "Grupo Nº 1 - Inteligencia Artificial 2013 - Aprendizaje por Refuerzo", None))

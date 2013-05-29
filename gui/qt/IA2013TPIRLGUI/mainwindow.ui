@@ -1846,6 +1846,9 @@
   <tabstop>chkDecrementarParam</tabstop>
   <tabstop>sbCantEpisodiosDec</tabstop>
   <tabstop>sbDecrementoVal</tabstop>
+  <tabstop>optMQInitEnCero</tabstop>
+  <tabstop>optMQInitValOptimistas</tabstop>
+  <tabstop>sbValOptimoIncremento</tabstop>
   <tabstop>btnInicializarValoresQL</tabstop>
   <tabstop>btnInicializarTodo</tabstop>
   <tabstop>tblGridWorld</tabstop>
@@ -1854,6 +1857,9 @@
   <tabstop>btnTerminarProceso</tabstop>
   <tabstop>btnMostrarMatrizR</tabstop>
   <tabstop>btnMostrarMatrizQ</tabstop>
+  <tabstop>btnCOShowHide</tabstop>
+  <tabstop>btnCOAnimCancel</tabstop>
+  <tabstop>sbCOAnimDelay</tabstop>
  </tabstops>
  <resources>
   <include location="recursos.qrc"/>
