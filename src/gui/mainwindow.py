@@ -21,10 +21,6 @@ from gui.matrizdialog import ShowMatrizDialog
 from core.estado.estado import TIPOESTADO, TipoEstado
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
-from core.qlearning.matrixinits import (QLMatrixInitEnCero,
-                                        QLMatrixInitEnRecompensa,
-                                        QLMatrixInitRandom,
-                                        QLMatrixInitOptimista)
 from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
@@ -85,6 +81,8 @@ class MainWindow(QtGui.QMainWindow):
         self.last_state_bkp = None
         self.last_state_bg = None
         self.last_state_text = None
+        self.camino_optimo = None
+        self.camino_optimo_active = None
 
         self.tecnicas = {  # 0: "Greedy",
                          1: "ε-Greedy",
@@ -114,7 +112,13 @@ class MainWindow(QtGui.QMainWindow):
                                 5: TipoEstado(5, 50, _tr("Bueno"), _tr("B"), "#4F0ACC", None),
                                 6: TipoEstado(6, -10, _tr("Malo"), _tr("M"), "#EB00A1", None),
                                 7: TipoEstado(7, None, _tr("Pared"), _tr("P"), "#000000", None),
-                                }
+                                },
+                              "opt_path":
+                                {"color": "#70DC4C",
+                                 "pintar_inicial": False,
+                                 "pintar_final": False,
+                                 "delay": 0,
+                                 "show_icon": False}
                              }
 
     def _initialize_window(self):
@@ -214,6 +218,10 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
         self.WMainWindow.btnRecorrer.setDisabled(True)
 
+        # Desactivar controles para mostrar camino optimo
+        self.WMainWindow.btnCOAnimCancel.setDisabled(True)
+        self.WMainWindow.btnCOShowHide.setDisabled(True)
+
         # Obtener ancho y alto del GridWorld
         self._logger.debug("Dimensión: {0}".format(dimension))
         ancho_gw, alto_gw = self.convert_dimension(dimension)
@@ -306,6 +314,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.actionAgenteCancelar.triggered.connect(self.terminar_proceso)
         self.WMainWindow.btnMostrarMatrizQ.clicked.connect(self.show_matriz_q)
         self.WMainWindow.btnMostrarMatrizR.clicked.connect(self.show_matriz_r)
+        self.WMainWindow.btnCOAnimCancel.clicked.connect(self.animar_camino_optimo)
+        self.WMainWindow.btnCOShowHide.clicked.connect(self.show_hide_camino_optimo)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -476,6 +486,8 @@ class MainWindow(QtGui.QMainWindow):
         self.window_config["item"]["menu_estado"]["enabled"] = False
         self.window_config["item"]["show_tooltip"] = False
 
+        self.camino_optimo = None
+
         # Parámetros para mostrar el estado actual en pantalla
         self.ent_show_estado_act = self.window_config["gw"]["entrenamiento"]["actual_state"]["show"]
         self.ent_color_estado_act = QtGui.QColor(self.window_config["gw"]["entrenamiento"]["actual_state"]["color"])
@@ -515,11 +527,20 @@ class MainWindow(QtGui.QMainWindow):
             intervalo_decremento = 0
         # ----------- Fin de seteo de la técnica --------------
 
+        # Obtener parámetro Gamma
         gamma = self.WMainWindow.sbQLGamma.value()
+        # Obtener cantidad de episodios a ejecutar
         cant_episodios = int(self.WMainWindow.sbCantidadEpisodios.value())
-        # TODO: Se puede cambiar la función para inicializar la Matriz Q
-        # init_value_fn = QLMatrixInitEnCero()
-        init_value_fn = QLMatrixInitOptimista(1000)
+
+        # Establecer valor inicial a cargar en Matriz Q
+        if self.WMainWindow.optMQInitEnCero.isChecked():
+            init_value_fn = 0
+        elif self.WMainWindow.optMQInitValOptimistas.isChecked():
+            incremento = self.WMainWindow.sbValOptimoIncremento.value()
+            max_recomp = self.window_config["tipos_estados"][TIPOESTADO.FINAL].recompensa
+            init_value_fn = max_recomp + incremento
+        else:
+            init_value_fn = 0
 
         # Determina si utilizar el limitador de iteraciones o no
         limitar_nro_iteraciones = self.WMainWindow.chkLimitarCantIteraciones.isChecked()
@@ -531,7 +552,7 @@ class MainWindow(QtGui.QMainWindow):
         # Intervalo de episodios entre cálculos de diferencia entre matrices
         intervalo_diff_calc = self.WMainWindow.sbIntervaloDiffCalc.value()
 
-        # Crear nueva instancia de Q-Learning
+        # Crear una nueva instancia de Q-Learning
         self.qlearning = QLearning(self.gridworld,
                                    gamma,
                                    (tecnica, parametro, paso_decremento, intervalo_decremento),
@@ -582,6 +603,8 @@ class MainWindow(QtGui.QMainWindow):
                                       _tr('QLearning - Recorrido'),
                                       "Debe establecer un Estado Inicial antes de realizar el recorrido.")
             return None
+
+        self.camino_optimo = None
 
         # Parámetros para mostrar el estado actual en pantalla
         self.rec_show_estado_act = self.window_config["gw"]["recorrido"]["actual_state"]["show"]
@@ -662,6 +685,9 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer.timeout.connect(self._on_window_timer)
         self.wnd_timer.start(15)
 
+        # Mostrar cursor de ocupado indicando que se está procesando
+        QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BusyCursor))
+
         if self.entrenar_is_running:
             self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
             self.WMainWindow.btnEntrenar.setDisabled(self.entrenar_is_running)
@@ -721,6 +747,7 @@ class MainWindow(QtGui.QMainWindow):
             self.entrenar_is_running = False
             self.WMainWindow.btnEntrenar.setEnabled(True)
             self.WMainWindow.actionAgenteEntrenar.setEnabled(True)
+            self.WMainWindow.statusBar.showMessage(_tr("Ha finalizado el entrenamiento."), 2000)
 
             test_matriz_q = self.matriz_q is not None
             self.WMainWindow.btnRecorrer.setEnabled(test_matriz_q)
@@ -733,9 +760,12 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.actionAgenteEntrenar.setEnabled(True)
             self.WMainWindow.btnRecorrer.setEnabled(True)
             self.WMainWindow.actionAgenteRecorrer.setEnabled(True)
+            self.WMainWindow.btnCOAnimCancel.setEnabled(True)
+            self.WMainWindow.btnCOShowHide.setEnabled(True)
+            self.WMainWindow.statusBar.showMessage(_tr("Ha finalizado la búsqueda del camino óptimo."), 2000)
 
         self.WMainWindow.btnTerminarProceso.setEnabled(False)
-        self.WMainWindow.statusBar.clearMessage()
+        # self.WMainWindow.statusBar.clearMessage()
         self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
 
         # Restaurar color original del estado final
@@ -762,6 +792,12 @@ class MainWindow(QtGui.QMainWindow):
                                               self.wnd_taskbar.TBPF_NOPROGRESS)
         except RuntimeError:
             pass
+
+        # Mostrar camino óptimo
+        self.mostrar_camino_optimo_act()
+
+        # Restaurar cursor normal
+        QtGui.QApplication.restoreOverrideCursor()
 
     def _reintentar_detener_hilos(self):
         u"""
@@ -864,17 +900,17 @@ class MainWindow(QtGui.QMainWindow):
 
                 try:
                     # Mostrar información de entrenamiento en etiquetas
-                    main_wnd.lblEntEstadoActual.setText("X:{0}  Y:{1}".format(x_actual,
-                                                                              y_actual))
+                    main_wnd.lblEntEstadoActual.setText("X:{0}  Y:{1}".format(x_actual,  # @IgnorePep8
+                                                                              y_actual))  # @IgnorePep8
                     main_wnd.lblEntNroEpisodio.setText(str(nro_episodio))
                     main_wnd.lblEntNroIteracion.setText(str(cant_iteraciones))
-                    main_wnd.lblEntValParametro.setText("{0:.2f}".format(valor_parametro))
-                    main_wnd.lblEntExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)".format(episode_exec_time,
-                                                                                                episode_exec_time * 1000))
-                    main_wnd.lblEntExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)".format(iter_exec_time,
-                                                                                                  iter_exec_time * 1000))
-                    main_wnd.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)".format(running_exec_time_ent,
-                                                                                            running_exec_time_ent * 1000))
+                    main_wnd.lblEntValParametro.setText("{0:.2f}".format(valor_parametro))  # @IgnorePep8
+                    main_wnd.lblEntExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)".format(episode_exec_time,  # @IgnorePep8
+                                                                                                episode_exec_time * 1000))  # @IgnorePep8
+                    main_wnd.lblEntExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)".format(iter_exec_time,  # @IgnorePep8
+                                                                                                  iter_exec_time * 1000))  # @IgnorePep8
+                    main_wnd.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)".format(running_exec_time_ent,  # @IgnorePep8
+                                                                                            running_exec_time_ent * 1000))  # @IgnorePep8
                     main_wnd.lblEntDiffMatrices.setText(str(tmp_mat_diff))
                 except TypeError:
                     pass
@@ -927,18 +963,16 @@ class MainWindow(QtGui.QMainWindow):
                 worker_joined = ql_rec_info.get('ProcesoJoined', None)
                 rec_exec_time = ql_rec_info.get('RecorridoExecTime', 0.0)
 
+                self.camino_optimo = camino_optimo
                 x_actual, y_actual = estado_actual_rec
                 self._logger.debug("Estado actual: {0}".format(estado_actual_rec))
 
                 try:
-                    main_wnd.lblRecEstadoActual.setText("X:{0}  Y:{1}"
-                                                        .format(x_actual, y_actual))
-                    main_wnd.lblRecExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                         .format(running_exec_time_rec,
-                                                                 running_exec_time_rec * 1000))
-                    main_wnd.lblRecExecTimeRecorrido.setText("{0:.3f} seg  ({1:.2f} ms)"
-                                                             .format(rec_exec_time,
-                                                                     rec_exec_time * 1000))
+                    main_wnd.lblRecEstadoActual.setText("X:{0}  Y:{1}".format(x_actual, y_actual))  # @IgnorePep8
+                    main_wnd.lblRecExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)".format(running_exec_time_rec,  # @IgnorePep8
+                                                                                            running_exec_time_rec * 1000))  # @IgnorePep8
+                    main_wnd.lblRecExecTimeRecorrido.setText("{0:.3f} seg  ({1:.2f} ms)".format(rec_exec_time,  # @IgnorePep8
+                                                                                                rec_exec_time * 1000))  # @IgnorePep8
                 except TypeError:
                     pass
                 except ValueError:
@@ -968,18 +1002,6 @@ class MainWindow(QtGui.QMainWindow):
                         item.setIcon(self.rec_icon_estado_act)
                     except TypeError:
                         item.setBackground(self.rec_color_estado_act)
-
-                # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
-                if camino_optimo is not None:
-                    seen = set()
-                    seen_add = seen.add
-                    camino_optimo_sin_repetidos = [x for x in camino_optimo
-                                                   if x not in seen and not seen_add(x)]
-
-                    self._logger.debug("Camino óptimo (con repetidos): {0}"
-                                       .format(camino_optimo))
-                    self._logger.debug("Camino óptimo (sin repetidos): {0}"
-                                       .format(camino_optimo_sin_repetidos))
         except Queue.Empty:
             pass
         except AttributeError:
@@ -1177,10 +1199,19 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.chkDecrementarParam.setChecked(True)
         self.WMainWindow.sbQLTau.setValue(0.5)
         self.WMainWindow.sbIntervaloDiffCalc.setSuffix(_tr(" episodios"))
-        self.WMainWindow.sbCantMaxIteraciones.setValue(1000)
+        self.WMainWindow.sbCantMaxIteraciones.setValue(200)
         self.WMainWindow.sbIntervaloDiffCalc.setMinimum(2)
-        self.WMainWindow.sbCantidadEpisodios.setValue(10)
+        self.WMainWindow.sbCantidadEpisodios.setValue(50)
         self.WMainWindow.sbValOptimoIncremento.setValue(500)
+        self.WMainWindow.optMQInitEnCero.setChecked(True)
+
+        self.WMainWindow.sbCOAnimDelay.setSuffix(_tr(" seg"))
+        self.WMainWindow.sbCOAnimDelay.setValue(1)
+
+        enable_controls = not self.WMainWindow.optMQInitValOptimistas.isEnabled()
+        self.WMainWindow.sbValOptimoIncremento.setEnabled(enable_controls)
+        self.WMainWindow.lblMQFormula.setEnabled(enable_controls)
+        self.set_minimo_incremento_opt()
 
     def show_matriz_dialog(self, matriz, titulo_corto, titulo_largo):
         ShowMatrizD = ShowMatrizDialog(matriz,
@@ -1208,3 +1239,105 @@ class MainWindow(QtGui.QMainWindow):
         ancho_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
         alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
         self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
+
+    def set_minimo_incremento_opt(self):
+        u"""
+        Establecer mínimo de incremento por sobre la máxima recompensa en el 
+        control de entrada.
+        """
+        minimo = self.window_config["tipos_estados"][TIPOESTADO.FINAL].recompensa
+
+        # El mínimo es la mitad de la máxima recompensa
+        self.WMainWindow.sbValOptimoIncremento.setMinimum(minimo / 2.0)
+
+    def mostrar_camino_optimo(self, caminoopt, delay=0, paintinicial=False, paintfinal=False, show_icon=False):
+        u"""
+        Muestra el camino óptimo obtenido del Recorrido (Play) sobre el GridWorld.
+
+        :param camino: Camino óptimo.
+        :param delay: Retraso (en segundos) entre estados al mostrar en pantalla.
+        :param paintinicial: Booleano que determina si se debe colorear el Estado Inicial.
+        :param paintfinal: Booleano que determina si se debe colorear el Estado Final.
+        :param show_icon: Booleano que determina si se debe mostrar el ícono del agente.
+        """
+        # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
+        if caminoopt is not None:
+            # Crear copia de la lista para no modificar la original
+            camino = caminoopt[:]
+
+            seen = set()
+            seen_add = seen.add
+            camino_optimo_sin_repetidos = [x for x in camino
+                                           if x not in seen and not seen_add(x)]
+
+            # FIXME
+            self._logger.debug("Camino óptimo (con repetidos): {0}".format(camino))
+            # FIXME
+            self._logger.debug("Camino óptimo (sin repetidos): {0}".format(camino_optimo_sin_repetidos))
+
+            # Determinar si se solicitó pintar el estado inicial
+            if not paintinicial:
+                del camino[0]
+
+            # Determinar si se solicitó pintar el estado inicial
+            if not paintfinal:
+                del camino[-1]
+
+            # Colorear items pertenecientes al camino optimo
+            item_color = QtGui.QColor(self.window_config["opt_path"]["color"])
+
+            for x, y in camino:
+                opt_item = self.WMainWindow.tblGridWorld.item(x - 1, y - 1)
+                opt_item.setBackgroundColor(item_color)
+                time.sleep(delay)
+
+    def animar_camino_optimo(self):
+        u"""
+        Muestra el camino óptimo en el GridWorld introduciendo un retraso de tiempo
+        entre los estados con el fin de visualizar el progreso.
+        """
+        logging.debug("Animar camino óptimo")
+
+        # Ocultar camino óptimo previamente a animar
+        self.ocultar_camino_optimo()
+
+        show_delay = self.WMainWindow.sbCOAnimDelay.value()
+        paint_inicial = self.window_config["opt_path"]["pintar_inicial"]
+        paint_final = self.window_config["opt_path"]["pintar_final"]
+
+        self.mostrar_camino_optimo(self.camino_optimo,
+                                   delay=show_delay,
+                                   paintinicial=paint_inicial,
+                                   paintfinal=paint_final)
+
+    def ocultar_camino_optimo(self):
+        logging.debug("Ocultar camino óptimo")
+
+        if self.camino_optimo is not None:
+            self.camino_optimo_active = False
+
+            for x, y in self.camino_optimo:
+                item = self.WMainWindow.tblGridWorld.item(x - 1, y - 1)
+                estado = self.gridworld.get_estado(x, y)
+                item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
+
+    def mostrar_camino_optimo_act(self):
+        logging.debug("Mostrar camino óptimo")
+
+        self.camino_optimo_active = True
+
+        show_delay = self.window_config["opt_path"]["delay"]
+        paint_inicial = self.window_config["opt_path"]["pintar_inicial"]
+        paint_final = self.window_config["opt_path"]["pintar_final"]
+        self.mostrar_camino_optimo(self.camino_optimo,
+                                   delay=show_delay,
+                                   paintinicial=paint_inicial,
+                                   paintfinal=paint_final)
+
+    def show_hide_camino_optimo(self):
+        if self.camino_optimo_active:
+            self.WMainWindow.btnCOShowHide.setText(_tr("Mostrar"))
+            self.ocultar_camino_optimo()
+        else:
+            self.WMainWindow.btnCOShowHide.setText(_tr("Ocultar"))
+            self.mostrar_camino_optimo_act()
