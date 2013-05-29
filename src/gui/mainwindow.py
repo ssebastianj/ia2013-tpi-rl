@@ -486,6 +486,8 @@ class MainWindow(QtGui.QMainWindow):
         self.window_config["item"]["menu_estado"]["enabled"] = False
         self.window_config["item"]["show_tooltip"] = False
 
+        # Ocultar camino antes óptimo antes de entrenar
+        self.ocultar_camino_optimo()
         self.camino_optimo = None
 
         # Parámetros para mostrar el estado actual en pantalla
@@ -604,6 +606,8 @@ class MainWindow(QtGui.QMainWindow):
                                       "Debe establecer un Estado Inicial antes de realizar el recorrido.")
             return None
 
+        # Ocultar camino óptimo antes de jugar
+        self.ocultar_camino_optimo()
         self.camino_optimo = None
 
         # Parámetros para mostrar el estado actual en pantalla
@@ -1173,6 +1177,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
 
     def inicializar_ql_vals(self):
+        u"""
+        Inicializa los valores de Q-Learning a valores predeterminados
+        """
         # Cargar técnicas posibles
         self.WMainWindow.cbQLTecnicas.clear()
         for key, value in self.tecnicas.items():
@@ -1214,6 +1221,13 @@ class MainWindow(QtGui.QMainWindow):
         self.set_minimo_incremento_opt()
 
     def show_matriz_dialog(self, matriz, titulo_corto, titulo_largo):
+        u"""
+        Muestra un cuadro de diálogo conteniendo una matriz dada.
+        
+        :param matriz: Matriz a representar en el cuadro de diálogo.
+        :param titulo_corto: Texto a mostrar en el título del cuadro.
+        :param titulo_largo: Texto a mostrar en el cuerpo del cuadro.
+        """
         ShowMatrizD = ShowMatrizDialog(matriz,
                                        titulo_corto,
                                        titulo_largo,
@@ -1221,10 +1235,16 @@ class MainWindow(QtGui.QMainWindow):
         ShowMatrizD.exec_()
 
     def show_matriz_r(self):
+        u"""
+        Muestra un cuadro de diálogo conteniendo la Matriz de Recompensas R.
+        """
         matriz_r = self.gridworld.get_matriz_r()
         self.show_matriz_dialog(matriz_r, "Matriz R", "Matriz de recompensas")
 
     def show_matriz_q(self):
+        u"""
+        Muestra un cuadro de diálogo conteniendo la Matriz Q.
+        """
         if self.matriz_q is not None:
             self.show_matriz_dialog(self.matriz_q, "Matriz Q", "Matriz Q")
 
@@ -1311,9 +1331,13 @@ class MainWindow(QtGui.QMainWindow):
                                    paintfinal=paint_final)
 
     def ocultar_camino_optimo(self):
+        u"""
+        Acción que invoca al método para mostrar el camino óptimo. Utilizada desde
+        un proceso o UI.
+        """
         logging.debug("Ocultar camino óptimo")
 
-        if self.camino_optimo is not None:
+        if self.camino_optimo is not None and self.camino_optimo_active:
             self.camino_optimo_active = False
 
             for x, y in self.camino_optimo:
@@ -1322,6 +1346,10 @@ class MainWindow(QtGui.QMainWindow):
                 item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
 
     def mostrar_camino_optimo_act(self):
+        u"""
+        Acción que invoca al método para mostrar el camino óptimo. Utilizada desde
+        un proceso o UI.
+        """
         logging.debug("Mostrar camino óptimo")
 
         self.camino_optimo_active = True
@@ -1335,6 +1363,9 @@ class MainWindow(QtGui.QMainWindow):
                                    paintfinal=paint_final)
 
     def show_hide_camino_optimo(self):
+        u"""
+        Alterna la visualización del camino óptimo sobre el GridWorld.
+        """
         if self.camino_optimo_active:
             self.WMainWindow.btnCOShowHide.setText(_tr("Mostrar"))
             self.ocultar_camino_optimo()
