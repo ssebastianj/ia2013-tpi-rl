@@ -623,6 +623,11 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             pass
 
     def _contar_ref(self, estado):
+        u"""
+        Contar referencia de acceso a estado.
+
+        :param estado: Estado que fue accedido.
+        """
         umbral = 1
 
         try:
