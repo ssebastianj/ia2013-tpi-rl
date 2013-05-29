@@ -423,8 +423,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             for j in xrange(0, self.ancho):
                 tipo_estado = matriz_r[i][j][0]
                 vecinos = matriz_r[i][j][1]
-                vecinos = dict([(key, self.q_init_value_fn.procesar_valor(value))
-                                for key, value in vecinos.iteritems()])
+                vecinos = dict([(key, self.q_init_value_fn)
+                                for key in vecinos.iterkeys()])
                 matriz_q[i][j] = (tipo_estado, vecinos)
         return matriz_q
 

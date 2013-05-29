@@ -21,10 +21,6 @@ from gui.matrizdialog import ShowMatrizDialog
 from core.estado.estado import TIPOESTADO, TipoEstado
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
-from core.qlearning.matrixinits import (QLMatrixInitEnCero,
-                                        QLMatrixInitEnRecompensa,
-                                        QLMatrixInitRandom,
-                                        QLMatrixInitOptimista)
 from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
@@ -515,11 +511,20 @@ class MainWindow(QtGui.QMainWindow):
             intervalo_decremento = 0
         # ----------- Fin de seteo de la técnica --------------
 
+        # Obtener parámetro Gamma
         gamma = self.WMainWindow.sbQLGamma.value()
+        # Obtener cantidad de episodios a ejecutar
         cant_episodios = int(self.WMainWindow.sbCantidadEpisodios.value())
-        # TODO: Se puede cambiar la función para inicializar la Matriz Q
-        # init_value_fn = QLMatrixInitEnCero()
-        init_value_fn = QLMatrixInitOptimista(1000)
+
+        # Establecer valor inicial a cargar en Matriz Q
+        if self.WMainWindow.optMQInitEnCero.isChecked():
+            init_value_fn = 0
+        elif self.WMainWindow.optMQInitValOptimistas.isChecked():
+            incremento = self.WMainWindow.sbValOptimoIncremento.value()
+            max_recomp = self.window_config["tipos_estados"][TIPOESTADO.FINAL].recompensa
+            init_value_fn = max_recomp + incremento
+        else:
+            init_value_fn = 0
 
         # Determina si utilizar el limitador de iteraciones o no
         limitar_nro_iteraciones = self.WMainWindow.chkLimitarCantIteraciones.isChecked()
@@ -531,7 +536,7 @@ class MainWindow(QtGui.QMainWindow):
         # Intervalo de episodios entre cálculos de diferencia entre matrices
         intervalo_diff_calc = self.WMainWindow.sbIntervaloDiffCalc.value()
 
-        # Crear nueva instancia de Q-Learning
+        # Crear una nueva instancia de Q-Learning
         self.qlearning = QLearning(self.gridworld,
                                    gamma,
                                    (tecnica, parametro, paso_decremento, intervalo_decremento),
@@ -1177,10 +1182,16 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.chkDecrementarParam.setChecked(True)
         self.WMainWindow.sbQLTau.setValue(0.5)
         self.WMainWindow.sbIntervaloDiffCalc.setSuffix(_tr(" episodios"))
-        self.WMainWindow.sbCantMaxIteraciones.setValue(1000)
+        self.WMainWindow.sbCantMaxIteraciones.setValue(200)
         self.WMainWindow.sbIntervaloDiffCalc.setMinimum(2)
-        self.WMainWindow.sbCantidadEpisodios.setValue(10)
+        self.WMainWindow.sbCantidadEpisodios.setValue(50)
         self.WMainWindow.sbValOptimoIncremento.setValue(500)
+        self.WMainWindow.optMQInitEnCero.setChecked(True)
+
+        enable_controls = not self.WMainWindow.optMQInitValOptimistas.isEnabled()
+        self.WMainWindow.sbValOptimoIncremento.setEnabled(enable_controls)
+        self.WMainWindow.lblMQFormula.setEnabled(enable_controls)
+        self.set_minimo_incremento_opt()
 
     def show_matriz_dialog(self, matriz, titulo_corto, titulo_largo):
         ShowMatrizD = ShowMatrizDialog(matriz,
@@ -1208,3 +1219,13 @@ class MainWindow(QtGui.QMainWindow):
         ancho_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
         alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
         self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
+
+    def set_minimo_incremento_opt(self):
+        u"""
+        Establecer mínimo de incremento por sobre la máxima recompensa en el 
+        control de entrada.
+        """
+        minimo = self.window_config["tipos_estados"][TIPOESTADO.FINAL].recompensa
+
+        # El mínimo es la mitad de la máxima recompensa
+        self.WMainWindow.sbValOptimoIncremento.setMinimum(minimo / 2.0)

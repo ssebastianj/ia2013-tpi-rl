@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>851</width>
-    <height>784</height>
+    <width>852</width>
+    <height>778</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,7 +64,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>851</width>
+     <width>852</width>
      <height>21</height>
     </rect>
    </property>
@@ -143,6 +143,12 @@
         <string>General</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_9">
+        <property name="topMargin">
+         <number>6</number>
+        </property>
+        <property name="bottomMargin">
+         <number>6</number>
+        </property>
         <item row="0" column="0">
          <widget class="QPushButton" name="btnInicializarTodo">
           <property name="maximumSize">
@@ -150,6 +156,9 @@
             <width>130</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="toolTip">
+           <string>Establece todos los valores de la aplicación a los predeterminados.</string>
           </property>
           <property name="locale">
            <locale language="Spanish" country="Argentina"/>
@@ -199,6 +208,9 @@
                  <height>22</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Establece todos los estados del Grid World al tipo de estado por defecto manteniendo la dimensión seleccionada.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
                <property name="locale">
                 <locale language="Spanish" country="Argentina"/>
                </property>
@@ -238,7 +250,7 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Configurar Grid World&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>Configurar Grid World.</string>
                </property>
                <property name="locale">
                 <locale language="Spanish" country="Argentina"/>
@@ -400,7 +412,7 @@
                <item row="1" column="0" colspan="3">
                 <widget class="QCheckBox" name="chkLimitarCantIteraciones">
                  <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Determina si se limitará la cantidad de iteraciones por cada episodio.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>Determina si se limitará la cantidad de iteraciones por cada episodio.</string>
                  </property>
                  <property name="text">
                   <string>Limitar cantidad de iteraciones por episodio</string>
@@ -422,7 +434,7 @@
              <item row="2" column="1">
               <widget class="QDoubleSpinBox" name="sbMatricesMinDiff">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Diferencia mínima entre matrices Q&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Establece la diferencia mínima que tiene que haber entre una Matriz Q (en t= i) y otra Matriz Q (en t= i+1) para que se detenga la ejecución del algoritmo.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Diferencia entre matrices Q&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Establece la diferencia mínima que tiene que haber entre una Matriz Q (en t= i) y otra Matriz Q (en t= i+1) para que se detenga la ejecución del algoritmo.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="decimals">
                 <number>4</number>
@@ -738,7 +750,7 @@
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Decrementar el parámetro que se esté utilizando.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>Decrementar el parámetro que se esté utilizando.</string>
                </property>
                <property name="text">
                 <string>Decrementar parámetro</string>
@@ -812,7 +824,7 @@
                  </spacer>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QLabel" name="label_18">
+                 <widget class="QLabel" name="lblMQFormula">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -841,16 +853,22 @@
                     <height>0</height>
                    </size>
                   </property>
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Incremento por sobre la máxima recompensa de los estados. Este valor será sumado a la recompensa máxima para obtener el valor óptimo con el cual se inicializará la Matriz Q.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
                   <property name="minimum">
                    <number>1</number>
                   </property>
                   <property name="maximum">
-                   <number>10000</number>
+                   <number>100000</number>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="0" colspan="3">
                  <widget class="QRadioButton" name="optMQInitValOptimistas">
+                  <property name="toolTip">
+                   <string>Inicializa la Matriz Q con valores optimistas.</string>
+                  </property>
                   <property name="text">
                    <string>Inicializar con valores optimistas</string>
                   </property>
@@ -858,6 +876,9 @@
                 </item>
                 <item row="0" column="0" colspan="3">
                  <widget class="QRadioButton" name="optMQInitEnCero">
+                  <property name="toolTip">
+                   <string>Inicializa la Matriz Q con valores igual a 0.</string>
+                  </property>
                   <property name="text">
                    <string>Inicializar en cero</string>
                   </property>
@@ -896,6 +917,9 @@
                <width>130</width>
                <height>22</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>Establece todos los valores de Q-Learning a los predeterminados.</string>
              </property>
              <property name="locale">
               <locale language="Spanish" country="Argentina"/>
@@ -1775,7 +1799,7 @@
   <connection>
    <sender>optMQInitValOptimistas</sender>
    <signal>toggled(bool)</signal>
-   <receiver>label_18</receiver>
+   <receiver>lblMQFormula</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
