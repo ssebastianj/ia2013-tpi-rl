@@ -880,10 +880,10 @@
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Tau (&lt;/span&gt;&lt;span style=&quot; font-size:9pt; font-weight:600; font-style:italic;&quot;&gt;τ&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Parámetro que establece la &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura&lt;/span&gt;. Una &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura alta&lt;/span&gt; causa que todas las acciones sean (casi) equiprobables. Una &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura baja&lt;/span&gt; causa una mayor diferencia en la probabilidad de selección para las acciones que difieran en las estimaciones de sus valores.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="maximum">
-                <double>0.990000000000000</double>
+                <double>1000000000.000000000000000</double>
                </property>
                <property name="singleStep">
-                <double>0.010000000000000</double>
+                <double>1.000000000000000</double>
                </property>
               </widget>
              </item>

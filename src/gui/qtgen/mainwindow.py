@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Wed May 29 14:15:34 2013
+# Created: Thu May 30 00:07:17 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -347,8 +347,8 @@ class Ui_MainWindow(object):
         self.sbQLEpsilon.setObjectName(_fromUtf8("sbQLEpsilon"))
         self.gridLayout_4.addWidget(self.sbQLEpsilon, 1, 2, 1, 2)
         self.sbQLTau = QtGui.QDoubleSpinBox(self.groupBox_6)
-        self.sbQLTau.setMaximum(0.99)
-        self.sbQLTau.setSingleStep(0.01)
+        self.sbQLTau.setMaximum(1000000000.0)
+        self.sbQLTau.setSingleStep(1.0)
         self.sbQLTau.setObjectName(_fromUtf8("sbQLTau"))
         self.gridLayout_4.addWidget(self.sbQLTau, 2, 2, 1, 2)
         self.gridLayout_12.addLayout(self.gridLayout_4, 0, 0, 1, 1)
