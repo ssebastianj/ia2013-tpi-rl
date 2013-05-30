@@ -798,7 +798,8 @@ class MainWindow(QtGui.QMainWindow):
             pass
 
         # Mostrar camino óptimo
-        self.mostrar_camino_optimo_act()
+        if self.camino_optimo is not None:
+            self.mostrar_camino_optimo_act()
 
         # Restaurar cursor normal
         QtGui.QApplication.restoreOverrideCursor()
