@@ -1204,7 +1204,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbCantEpisodiosDec.setValue(1)
         self.WMainWindow.sbCantEpisodiosDec.setSuffix(_tr(" episodios"))
         self.WMainWindow.chkDecrementarParam.setChecked(True)
-        self.WMainWindow.sbQLTau.setValue(0.5)
+        self.WMainWindow.sbQLTau.setValue(10)
         self.WMainWindow.sbIntervaloDiffCalc.setSuffix(_tr(" episodios"))
         self.WMainWindow.sbCantMaxIteraciones.setValue(200)
         self.WMainWindow.sbIntervaloDiffCalc.setMinimum(2)
@@ -1223,7 +1223,7 @@ class MainWindow(QtGui.QMainWindow):
     def show_matriz_dialog(self, matriz, titulo_corto, titulo_largo):
         u"""
         Muestra un cuadro de diálogo conteniendo una matriz dada.
-        
+
         :param matriz: Matriz a representar en el cuadro de diálogo.
         :param titulo_corto: Texto a mostrar en el título del cuadro.
         :param titulo_largo: Texto a mostrar en el cuerpo del cuadro.
