@@ -524,9 +524,13 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         x_act, y_act = estado_inicial
         estado_actual = matriz_q[x_act - 1][y_act - 1]
 
+        # Inicializar contador de iteraciones
+        cant_iteraciones = 1
+
         while (not self._stoprequest.is_set()) and (estado_actual[0] != TIPOESTADO.FINAL):
             self.encolar_salida({'EstadoActual': (x_act, y_act),
-                                 'ProcesoJoined': False})
+                                 'ProcesoJoined': False,
+                                 'NroIteracion': cant_iteraciones})
 
             vecinos = estado_actual[1]
 
@@ -563,6 +567,9 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             # Actualizar estado actual
             x_act, y_act = x_eleg, y_eleg
             estado_actual = matriz_q[x_act - 1][y_act - 1]
+
+            # Incrementar número de iteraciones
+            cant_iteraciones += 1
 
         # Registrar tiempo de finalización
         running_end_time = rec_end_time = wtimer()

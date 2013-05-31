@@ -967,6 +967,7 @@ class MainWindow(QtGui.QMainWindow):
                 running_exec_time_rec = ql_rec_info.get('RunningExecTime', 0.0)
                 worker_joined = ql_rec_info.get('ProcesoJoined', None)
                 rec_exec_time = ql_rec_info.get('RecorridoExecTime', 0.0)
+                nro_iteracion = ql_rec_info.get('NroIteracion', None)
 
                 self.camino_optimo = camino_optimo
                 x_actual, y_actual = estado_actual_rec
