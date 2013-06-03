@@ -147,6 +147,10 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbCantMaxIteraciones.setDisabled(True)
         self.WMainWindow.gbCOAcciones.setDisabled(True)
         self.WMainWindow.gbCOAnimacion.setDisabled(True)
+        self.WMainWindow.lblMatQDiff.setDisabled(True)
+        self.WMainWindow.lblMatQIntervalo.setDisabled(True)
+        self.WMainWindow.sbIntervaloDiffCalc.setDisabled(True)
+        self.WMainWindow.sbMatricesMinDiff.setDisabled(True)
 
         # Asignar shorcuts
         entrenar_shortcut = "F5"
@@ -551,6 +555,9 @@ class MainWindow(QtGui.QMainWindow):
         # Número máximo de iteraciones por episodio
         cant_max_iter = self.WMainWindow.sbCantMaxIteraciones.value()
 
+        # Determinar si la diferencia de matrices se encuentra activa
+        matdiff_status = self.WMainWindow.chkQLCalcularMatDiff.isChecked()
+
         # Diferencia mínima entre matrices para finalizar el entranamiento
         matriz_min_diff = self.WMainWindow.sbMatricesMinDiff.value()
         # Intervalo de episodios entre cálculos de diferencia entre matrices
@@ -563,7 +570,7 @@ class MainWindow(QtGui.QMainWindow):
                                    cant_episodios,
                                    (limitar_nro_iteraciones, cant_max_iter),
                                    init_value_fn,
-                                   (matriz_min_diff, intervalo_diff_calc),
+                                   (matdiff_status, matriz_min_diff, intervalo_diff_calc),
                                    None)
 
         # QLearningEntrenarWorker Management
@@ -897,8 +904,6 @@ class MainWindow(QtGui.QMainWindow):
                 corte_iteracion = ql_ent_info.get('CorteIteracion', None)
 
                 self.matriz_q = matriz_q
-
-                logging.debug("Diferencia: {0}".format(tmp_mat_diff))
 
                 if loop_alarm:
                     QtGui.QMessageBox.warning(self,

@@ -92,6 +92,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         suma_matriz_q_actual = None
         suma_matriz_q_anterior = None
 
+        # Bandera que determina si se calcula la diferencia de matrices
+        matdiff_active = self.matdiff_status
+
         min_diff_mat = self.min_diff_mat  # Diferencia mínima entre matrices
         # Diferencia mínima temporal entre matrices (calculada)
         # Se le suma 1 para que la condición para entrar en el bucle 'while'
@@ -104,7 +107,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         ep_start_time = wtimer()
 
         # Ejecutar una cantidad dada de episodios o detener antes si se considera necesario
-        while (not self._stoprequest.is_set()) and (epnum <= cantidad_episodios) and (tmp_diff_mat > min_diff_mat):
+        while (not self._stoprequest.is_set()) and (epnum <= cantidad_episodios):
 
             # Obtener coordenadas aleatorias y obtener Estado asociado
             x_act, y_act = self.generar_estado_aleatorio()
@@ -169,7 +172,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                      })
 
                 # Actualizar estado actual
-                x_act, y_act = (x_eleg, y_eleg)
+                x_act, y_act = x_eleg, y_eleg
                 estado_actual = self.matriz_r[x_act - 1][y_act - 1]
 
                 # Comprobar si se alcanzó el número máximo de iteraciones
@@ -197,44 +200,50 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 self.tecnica.decrementar_parametro()
                 decrementar_step = 0
 
-            if calc_mat_diff_cont == 0:
-                try:
+            if matdiff_active:
+                if calc_mat_diff_cont == 0:
+                    try:
+                        # Sumar todos los valores Q de la matriz actual
+                        suma_matriz_q_actual = sum([elto for fila in self.matriz_q
+                                                    for columna in fila
+                                                    for elto in columna[1].itervalues()])
+
+                        # Restar valores de ambas matrices
+                        resta_diff_mat = numpy.subtract(suma_matriz_q_anterior,
+                                                        suma_matriz_q_actual)
+
+                        # Calcular el error medio cuadrático
+                        # tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
+                        tmp_diff_mat = numpy.absolute(resta_diff_mat)
+
+                        # Comprobar si la diferencia entre matrices supera la establecida
+                        # por el usuario
+                        if tmp_diff_mat < min_diff_mat:
+                            self._stoprequest.set()
+
+                        # Volver a cargar valor inicial a contador
+                        calc_mat_diff_cont = self.interv_diff_calc
+                    except TypeError:
+                        pass
+                elif calc_mat_diff_cont == 1:
                     # Sumar todos los valores Q de la matriz actual
-                    suma_matriz_q_actual = sum([elto for fila in self.matriz_q
-                                                for columna in fila
-                                                for elto in columna[1].itervalues()])
+                    suma_matriz_q_anterior = sum([elto for fila in self.matriz_q
+                                                  for columna in fila
+                                                  for elto in columna[1].itervalues()])
 
-                    # Restar valores de ambas matrices
-                    resta_diff_mat = numpy.subtract(suma_matriz_q_anterior,
-                                                    suma_matriz_q_actual)
+                # Poner en la cola de salida los resultados
+                self.encolar_salida({'EstadoActual': (x_act, y_act),
+                                     'NroEpisodio': epnum,
+                                     'NroIteracion': cant_iteraciones,
+                                     'IteracionesExecTime': iter_exec_time,
+                                     'ValorParametro': self.tecnica.valor_param_parcial,
+                                     'ProcesoJoined': False,
+                                     'MatDiff': tmp_diff_mat
+                                     })
 
-                    # Calcular el error medio cuadrático
-                    # tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
-                    tmp_diff_mat = numpy.absolute(resta_diff_mat)
-
-                    # Volver a cargar valor inicial a contador
-                    calc_mat_diff_cont = self.interv_diff_calc
-                except TypeError:
-                    pass
-            elif calc_mat_diff_cont == 1:
-                # Sumar todos los valores Q de la matriz actual
-                suma_matriz_q_anterior = sum([elto for fila in self.matriz_q
-                                              for columna in fila
-                                              for elto in columna[1].itervalues()])
-
-            # Poner en la cola de salida los resultados
-            self.encolar_salida({'EstadoActual': (x_act, y_act),
-                                 'NroEpisodio': epnum,
-                                 'NroIteracion': cant_iteraciones,
-                                 'IteracionesExecTime': iter_exec_time,
-                                 'ValorParametro': self.tecnica.valor_param_parcial,
-                                 'ProcesoJoined': False,
-                                 'MatDiff': tmp_diff_mat
-                                 })
-
-            # Decrementar contador para saber si es necesario calcular
-            # la diferencia entre las matrices Q
-            calc_mat_diff_cont -= 1
+                # Decrementar contador para saber si es necesario calcular
+                # la diferencia entre las matrices Q
+                calc_mat_diff_cont -= 1
 
             # Avanzar un episodio
             epnum += 1
@@ -310,7 +319,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self.detector_bloqueo = self.input_data[7]
         self.tipos_vec_excluidos = self.input_data[8]
         self.q_init_value_fn = self.input_data[9]
-        self.min_diff_mat, self.interv_diff_calc = self.input_data[10]
+        self.matdiff_status, self.min_diff_mat, self.interv_diff_calc = self.input_data[10]
 
         self.matriz_r = self.get_matriz_r()
         self.matriz_q = self.get_matriz_q(self.matriz_r)

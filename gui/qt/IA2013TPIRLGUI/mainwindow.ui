@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>852</width>
-    <height>778</height>
+    <width>867</width>
+    <height>817</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,7 +64,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>852</width>
+     <width>867</width>
      <height>21</height>
     </rect>
    </property>
@@ -119,69 +119,41 @@
    <addaction name="menuAyuda"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QDockWidget" name="dwConfiguracion">
-   <property name="locale">
-    <locale language="Spanish" country="Argentina"/>
-   </property>
+  <widget class="QDockWidget" name="dwGridWorld">
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
-   <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
-   </property>
    <property name="windowTitle">
-    <string>Configuración</string>
+    <string>Grid World</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
-    <layout class="QGridLayout" name="gridLayout_5">
-     <item row="2" column="0">
-      <widget class="QGroupBox" name="gbGeneral">
-       <property name="title">
-        <string>General</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_9">
-        <property name="topMargin">
-         <number>6</number>
-        </property>
-        <property name="bottomMargin">
-         <number>6</number>
-        </property>
-        <item row="0" column="0">
-         <widget class="QPushButton" name="btnInicializarTodo">
-          <property name="maximumSize">
-           <size>
-            <width>130</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Establece todos los valores de la aplicación a los predeterminados.</string>
-          </property>
-          <property name="locale">
-           <locale language="Spanish" country="Argentina"/>
-          </property>
-          <property name="text">
-           <string>Inicializar valores</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
+   <widget class="QWidget" name="dockWidgetContents_5">
+    <layout class="QGridLayout" name="gridLayout_32">
+     <property name="leftMargin">
+      <number>4</number>
+     </property>
+     <property name="topMargin">
+      <number>2</number>
+     </property>
+     <property name="rightMargin">
+      <number>4</number>
+     </property>
+     <property name="bottomMargin">
+      <number>4</number>
+     </property>
      <item row="0" column="0">
       <widget class="QGroupBox" name="gbGridWorld">
        <property name="title">
         <string>Grid World</string>
        </property>
-       <layout class="QGridLayout" name="gridLayout">
+       <layout class="QGridLayout" name="gridLayout_29">
         <property name="bottomMargin">
          <number>6</number>
         </property>
         <item row="1" column="0">
-         <widget class="QGroupBox" name="groupBox_5">
+         <widget class="QGroupBox" name="groupBox_8">
           <property name="title">
            <string>Acciones</string>
           </property>
@@ -191,7 +163,7 @@
           <property name="flat">
            <bool>true</bool>
           </property>
-          <layout class="QGridLayout" name="gridLayout_11">
+          <layout class="QGridLayout" name="gridLayout_30">
            <property name="topMargin">
             <number>4</number>
            </property>
@@ -199,7 +171,7 @@
             <number>2</number>
            </property>
            <item row="0" column="0">
-            <layout class="QGridLayout" name="gridLayout_10">
+            <layout class="QGridLayout" name="gridLayout_31">
              <item row="0" column="0">
               <widget class="QPushButton" name="btnInicializarGW">
                <property name="maximumSize">
@@ -270,14 +242,11 @@
          </widget>
         </item>
         <item row="0" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout_9">
           <item>
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="label_18">
             <property name="text">
              <string>Dimensión:</string>
-            </property>
-            <property name="buddy">
-             <cstring>cbGWDimension</cstring>
             </property>
            </widget>
           </item>
@@ -290,681 +259,783 @@
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QGroupBox" name="gbQLearning">
-       <property name="title">
-        <string>Q-Learning</string>
+      <spacer name="verticalSpacer_7">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
        </property>
-       <layout class="QGridLayout" name="gridLayout_17">
-        <property name="verticalSpacing">
-         <number>4</number>
-        </property>
-        <item row="1" column="0" colspan="2">
-         <widget class="QGroupBox" name="gbCondicionParada">
-          <property name="title">
-           <string>Condición de parada</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_8">
-           <property name="leftMargin">
-            <number>2</number>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dwQLearning">
+   <property name="locale">
+    <locale language="Spanish" country="Argentina"/>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Q-Learning</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QGridLayout" name="gridLayout_5">
+     <property name="topMargin">
+      <number>4</number>
+     </property>
+     <property name="bottomMargin">
+      <number>4</number>
+     </property>
+     <item row="0" column="0">
+      <widget class="QStackedWidget" name="stackedWidget">
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="pgQLOpciones">
+        <layout class="QGridLayout" name="gridLayout_33">
+         <item row="0" column="0">
+          <widget class="QGroupBox" name="gbQLearning">
+           <property name="title">
+            <string>Q-Learning</string>
            </property>
-           <property name="topMargin">
-            <number>4</number>
-           </property>
-           <property name="rightMargin">
-            <number>2</number>
-           </property>
-           <property name="bottomMargin">
-            <number>4</number>
-           </property>
-           <item row="0" column="0">
-            <layout class="QGridLayout" name="gridLayout_6">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_2">
-               <property name="minimumSize">
-                <size>
-                 <width>115</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Cantidad de episodios:</string>
-               </property>
-               <property name="buddy">
-                <cstring>sbCantidadEpisodios</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QSpinBox" name="sbCantidadEpisodios">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Cantidad de Episodios&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Número de Episodios (Plays) a realizar durante la fase de aprendizaje (entrenamiento). Un episodio es un recorrido desde un estado dado hasta el estado &lt;span style=&quot; font-style:italic;&quot;&gt;final.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="minimum">
-                <number>1</number>
-               </property>
-               <property name="maximum">
-                <number>1000000000</number>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" colspan="2">
-              <layout class="QGridLayout" name="gridLayout_7">
-               <property name="verticalSpacing">
-                <number>3</number>
-               </property>
-               <item row="2" column="1">
-                <widget class="QLabel" name="lblCantMaxIteraciones">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>110</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Cantidad máxima:</string>
-                 </property>
-                 <property name="buddy">
-                  <cstring>sbCantMaxIteraciones</cstring>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="2">
-                <widget class="QSpinBox" name="sbCantMaxIteraciones">
-                 <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cantidad máxima de iteraciones&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Establece el número máximo de iteraciones a ejecutar por episodio. Cuando este valor es alcanzado la ejecución continúa en el episodio siguiente.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                 <property name="minimum">
-                  <number>1</number>
-                 </property>
-                 <property name="maximum">
-                  <number>1000000000</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <spacer name="horizontalSpacer_2">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Fixed</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>18</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="0" colspan="3">
-                <widget class="QCheckBox" name="chkLimitarCantIteraciones">
-                 <property name="toolTip">
-                  <string>Determina si se limitará la cantidad de iteraciones por cada episodio.</string>
-                 </property>
-                 <property name="text">
-                  <string>Limitar cantidad de iteraciones por episodio</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_8">
-               <property name="text">
-                <string>Diferencia entre matrices Q:</string>
-               </property>
-               <property name="buddy">
-                <cstring>sbMatricesMinDiff</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="sbMatricesMinDiff">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Diferencia entre matrices Q&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Establece la diferencia mínima que tiene que haber entre una Matriz Q (en t= i) y otra Matriz Q (en t= i+1) para que se detenga la ejecución del algoritmo.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="decimals">
+           <layout class="QGridLayout" name="gridLayout_17">
+            <property name="leftMargin">
+             <number>6</number>
+            </property>
+            <property name="verticalSpacing">
+             <number>4</number>
+            </property>
+            <item row="2" column="0" colspan="2">
+             <widget class="QGroupBox" name="groupBox_6">
+              <property name="title">
+               <string>Técnica</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignHCenter|Qt::AlignTop</set>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_12">
+               <property name="leftMargin">
                 <number>4</number>
                </property>
-               <property name="minimum">
-                <double>0.000100000000000</double>
+               <property name="rightMargin">
+                <number>2</number>
                </property>
-               <property name="maximum">
-                <double>1000.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.001000000000000</double>
-               </property>
-               <property name="value">
-                <double>0.000100000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="label_12">
-               <property name="text">
-                <string>Calcular diferencia cada:</string>
-               </property>
-               <property name="buddy">
-                <cstring>sbIntervaloDiffCalc</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QSpinBox" name="sbIntervaloDiffCalc">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Intervalo de cálculo de diferencia&lt;/span&gt;&lt;/p&gt;&lt;p&gt;La diferencia entre matrices se calculará cada un número dado de episodios establecidos por este valor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="suffix">
-                <string/>
-               </property>
-               <property name="minimum">
-                <number>1</number>
-               </property>
-               <property name="maximum">
-                <number>10000</number>
-               </property>
-               <property name="value">
+               <property name="bottomMargin">
                 <number>5</number>
                </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="2" column="0" colspan="2">
-         <widget class="QGroupBox" name="groupBox_6">
-          <property name="title">
-           <string>Técnica</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignHCenter|Qt::AlignTop</set>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_12">
-           <property name="leftMargin">
-            <number>4</number>
-           </property>
-           <property name="rightMargin">
-            <number>2</number>
-           </property>
-           <property name="bottomMargin">
-            <number>5</number>
-           </property>
-           <item row="2" column="0">
-            <widget class="QGroupBox" name="gbQLMatrizQ">
-             <property name="title">
-              <string>Matriz Q</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="flat">
-              <bool>true</bool>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_24">
-              <property name="leftMargin">
-               <number>2</number>
-              </property>
-              <property name="topMargin">
-               <number>2</number>
-              </property>
-              <property name="rightMargin">
-               <number>1</number>
-              </property>
-              <property name="bottomMargin">
-               <number>1</number>
-              </property>
-              <property name="verticalSpacing">
-               <number>4</number>
-              </property>
-              <item row="0" column="0">
-               <layout class="QGridLayout" name="gridLayout_23">
-                <property name="verticalSpacing">
-                 <number>4</number>
-                </property>
-                <item row="2" column="0">
-                 <spacer name="horizontalSpacer_3">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+               <item row="2" column="0">
+                <widget class="QGroupBox" name="gbQLMatrizQ">
+                 <property name="title">
+                  <string>Matriz Q</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="flat">
+                  <bool>true</bool>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_24">
+                  <property name="leftMargin">
+                   <number>2</number>
                   </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                  <property name="topMargin">
+                   <number>2</number>
                   </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QLabel" name="lblMQFormula">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>158</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>Valor ópt. = Rec. Estado Final +</string>
-                  </property>
-                  <property name="buddy">
-                   <cstring>sbValOptimoIncremento</cstring>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="2">
-                 <widget class="QSpinBox" name="sbValOptimoIncremento">
-                  <property name="minimumSize">
-                   <size>
-                    <width>60</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Incremento por sobre la máxima recompensa de los estados. Este valor será sumado a la recompensa máxima para obtener el valor óptimo con el cual se inicializará la Matriz Q.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                  <property name="minimum">
+                  <property name="rightMargin">
                    <number>1</number>
                   </property>
-                  <property name="maximum">
-                   <number>100000</number>
+                  <property name="bottomMargin">
+                   <number>1</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="1" column="0" colspan="3">
-                 <widget class="QRadioButton" name="optMQInitValOptimistas">
-                  <property name="toolTip">
-                   <string>Inicializa la Matriz Q con valores optimistas.</string>
+                  <property name="verticalSpacing">
+                   <number>4</number>
                   </property>
-                  <property name="text">
-                   <string>Inicializar con valores optimistas</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0" colspan="3">
-                 <widget class="QRadioButton" name="optMQInitEnCero">
-                  <property name="toolTip">
-                   <string>Inicializa la Matriz Q con valores igual a 0.</string>
-                  </property>
-                  <property name="text">
-                   <string>Inicializar en cero</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <layout class="QGridLayout" name="gridLayout_2">
-             <property name="topMargin">
-              <number>4</number>
-             </property>
-             <property name="rightMargin">
-              <number>2</number>
-             </property>
-             <item row="1" column="1">
-              <widget class="QLabel" name="label_3">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>98</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Cada:</string>
-               </property>
-               <property name="buddy">
-                <cstring>sbCantEpisodiosDec</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>12</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="1" column="2">
-              <widget class="QSpinBox" name="sbCantEpisodiosDec">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Intervalo de episodios entre las cuales el parámetro será decrementado.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="minimum">
-                <number>1</number>
-               </property>
-               <property name="maximum">
-                <number>1000000000</number>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLabel" name="label_5">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>98</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Decremento:</string>
-               </property>
-               <property name="buddy">
-                <cstring>sbDecrementoVal</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2">
-              <layout class="QHBoxLayout" name="horizontalLayout_3">
-               <item>
-                <widget class="QDoubleSpinBox" name="sbDecrementoVal">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>50</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Paso&lt;/span&gt; o valor de decremento. En cada intervalo el parámetro será decrementado en un &lt;span style=&quot; font-style:italic;&quot;&gt;paso.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                 <property name="minimum">
-                  <double>0.010000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>0.990000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.010000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>0.010000000000000</double>
-                 </property>
+                  <item row="0" column="0">
+                   <layout class="QGridLayout" name="gridLayout_23">
+                    <property name="verticalSpacing">
+                     <number>4</number>
+                    </property>
+                    <item row="2" column="0">
+                     <spacer name="horizontalSpacer_3">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QLabel" name="lblMQFormula">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>158</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string>Valor ópt. = Rec. Estado Final +</string>
+                      </property>
+                      <property name="buddy">
+                       <cstring>sbValOptimoIncremento</cstring>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="2">
+                     <widget class="QSpinBox" name="sbValOptimoIncremento">
+                      <property name="minimumSize">
+                       <size>
+                        <width>60</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="toolTip">
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Incremento por sobre la máxima recompensa de los estados. Este valor será sumado a la recompensa máxima para obtener el valor óptimo con el cual se inicializará la Matriz Q.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      </property>
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>100000</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0" colspan="3">
+                     <widget class="QRadioButton" name="optMQInitValOptimistas">
+                      <property name="toolTip">
+                       <string>Inicializa la Matriz Q con valores optimistas.</string>
+                      </property>
+                      <property name="text">
+                       <string>Inicializar con valores optimistas</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0" colspan="3">
+                     <widget class="QRadioButton" name="optMQInitEnCero">
+                      <property name="toolTip">
+                       <string>Inicializa la Matriz Q con valores igual a 0.</string>
+                      </property>
+                      <property name="text">
+                       <string>Inicializar en cero</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
                 </widget>
                </item>
+               <item row="1" column="0">
+                <layout class="QGridLayout" name="gridLayout_2">
+                 <property name="topMargin">
+                  <number>4</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>2</number>
+                 </property>
+                 <item row="1" column="1">
+                  <widget class="QLabel" name="label_3">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>98</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Cada:</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>sbCantEpisodiosDec</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <spacer name="horizontalSpacer">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Fixed</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>12</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QSpinBox" name="sbCantEpisodiosDec">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Intervalo de episodios entre las cuales el parámetro será decrementado.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="minimum">
+                    <number>1</number>
+                   </property>
+                   <property name="maximum">
+                    <number>1000000000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLabel" name="label_5">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>98</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Decremento:</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>sbDecrementoVal</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                   <item>
+                    <widget class="QDoubleSpinBox" name="sbDecrementoVal">
+                     <property name="minimumSize">
+                      <size>
+                       <width>50</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Paso&lt;/span&gt; o valor de decremento. En cada intervalo el parámetro será decrementado en un &lt;span style=&quot; font-style:italic;&quot;&gt;paso.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="minimum">
+                      <double>0.010000000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>0.990000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.010000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>0.010000000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="0" column="0" colspan="3">
+                  <widget class="QCheckBox" name="chkDecrementarParam">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Decrementar el parámetro que se esté utilizando.</string>
+                   </property>
+                   <property name="text">
+                    <string>Decrementar parámetro</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <spacer name="horizontalSpacer_6">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Fixed</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>12</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item row="0" column="0">
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="2" column="0" colspan="2">
+                  <widget class="QLabel" name="lblTau">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>116</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>125</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Tau (τ):</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>sbQLTau</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2" colspan="2">
+                  <widget class="QComboBox" name="cbQLTecnicas"/>
+                 </item>
+                 <item row="1" column="0" colspan="2">
+                  <widget class="QLabel" name="lblEpsilon">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>116</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>125</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Epsilon (ɛ):</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>sbQLEpsilon</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="2">
+                  <widget class="QLabel" name="lblTecnica">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>125</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Técnica de selección:</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>cbQLTecnicas</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2" colspan="2">
+                  <widget class="QDoubleSpinBox" name="sbQLEpsilon">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Epsilon (&lt;/span&gt;&lt;span style=&quot; font-size:9pt; font-weight:600; font-style:italic;&quot;&gt;ɛ&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Parámetro que establece la probabilidad de seleccionar una &lt;span style=&quot; font-style:italic;&quot;&gt;acción&lt;/span&gt; aleatoria por sobre la política óptima. Rango de valores: 0 ≤ &lt;span style=&quot; font-size:9pt;&quot;&gt;ɛ&lt;/span&gt; &amp;lt; 1.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="maximum">
+                    <double>0.990000000000000</double>
+                   </property>
+                   <property name="singleStep">
+                    <double>0.010000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2" colspan="2">
+                  <widget class="QDoubleSpinBox" name="sbQLTau">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Tau (&lt;/span&gt;&lt;span style=&quot; font-size:9pt; font-weight:600; font-style:italic;&quot;&gt;τ&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Parámetro que establece la &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura&lt;/span&gt;. Una &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura alta&lt;/span&gt; causa que todas las acciones sean (casi) equiprobables. Una &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura baja&lt;/span&gt; causa una mayor diferencia en la probabilidad de selección para las acciones que difieran en las estimaciones de sus valores.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="maximum">
+                    <double>1000000000.000000000000000</double>
+                   </property>
+                   <property name="singleStep">
+                    <double>1.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
               </layout>
-             </item>
-             <item row="0" column="0" colspan="3">
-              <widget class="QCheckBox" name="chkDecrementarParam">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+             </widget>
+            </item>
+            <item row="1" column="0" colspan="2">
+             <widget class="QGroupBox" name="gbCondicionParada">
+              <property name="title">
+               <string>Condición de parada</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_10">
+               <property name="leftMargin">
+                <number>2</number>
                </property>
-               <property name="toolTip">
-                <string>Decrementar el parámetro que se esté utilizando.</string>
+               <property name="topMargin">
+                <number>4</number>
                </property>
-               <property name="text">
-                <string>Decrementar parámetro</string>
+               <property name="rightMargin">
+                <number>2</number>
                </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <spacer name="horizontalSpacer_6">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+               <property name="bottomMargin">
+                <number>4</number>
                </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>12</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="0">
-            <layout class="QGridLayout" name="gridLayout_4">
-             <item row="2" column="0" colspan="2">
-              <widget class="QLabel" name="lblTau">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>116</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>125</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Tau (τ):</string>
-               </property>
-               <property name="buddy">
-                <cstring>sbQLTau</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2" colspan="2">
-              <widget class="QComboBox" name="cbQLTecnicas"/>
-             </item>
-             <item row="1" column="0" colspan="2">
-              <widget class="QLabel" name="lblEpsilon">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>116</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>125</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Epsilon (ɛ):</string>
-               </property>
-               <property name="buddy">
-                <cstring>sbQLEpsilon</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0" colspan="2">
-              <widget class="QLabel" name="lblTecnica">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>125</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Técnica de selección:</string>
-               </property>
-               <property name="buddy">
-                <cstring>cbQLTecnicas</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2" colspan="2">
-              <widget class="QDoubleSpinBox" name="sbQLEpsilon">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Epsilon (&lt;/span&gt;&lt;span style=&quot; font-size:9pt; font-weight:600; font-style:italic;&quot;&gt;ɛ&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Parámetro que establece la probabilidad de seleccionar una &lt;span style=&quot; font-style:italic;&quot;&gt;acción&lt;/span&gt; aleatoria por sobre la política óptima. Rango de valores: 0 ≤ &lt;span style=&quot; font-size:9pt;&quot;&gt;ɛ&lt;/span&gt; &amp;lt; 1.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="maximum">
-                <double>0.990000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.010000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2" colspan="2">
-              <widget class="QDoubleSpinBox" name="sbQLTau">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Tau (&lt;/span&gt;&lt;span style=&quot; font-size:9pt; font-weight:600; font-style:italic;&quot;&gt;τ&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Parámetro que establece la &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura&lt;/span&gt;. Una &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura alta&lt;/span&gt; causa que todas las acciones sean (casi) equiprobables. Una &lt;span style=&quot; font-style:italic;&quot;&gt;temperatura baja&lt;/span&gt; causa una mayor diferencia en la probabilidad de selección para las acciones que difieran en las estimaciones de sus valores.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="maximum">
-                <double>1000000000.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>1.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="4" column="0" colspan="2">
-         <widget class="QGroupBox" name="groupBox_7">
-          <property name="title">
-           <string>Acciones</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignHCenter|Qt::AlignTop</set>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_13">
-           <property name="topMargin">
-            <number>4</number>
+               <item row="0" column="0">
+                <layout class="QGridLayout" name="gridLayout_8">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_2">
+                   <property name="minimumSize">
+                    <size>
+                     <width>110</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Cantidad de episodios:</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>sbCantidadEpisodios</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QSpinBox" name="sbCantidadEpisodios">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Cantidad de Episodios&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Número de Episodios (Plays) a realizar durante la fase de aprendizaje (entrenamiento). Un episodio es un recorrido desde un estado dado hasta el estado &lt;span style=&quot; font-style:italic;&quot;&gt;final.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="minimum">
+                    <number>1</number>
+                   </property>
+                   <property name="maximum">
+                    <number>1000000000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="2">
+                  <layout class="QGridLayout" name="gridLayout_7">
+                   <property name="verticalSpacing">
+                    <number>3</number>
+                   </property>
+                   <item row="2" column="1">
+                    <widget class="QLabel" name="lblCantMaxIteraciones">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>102</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Cantidad máxima:</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>sbCantMaxIteraciones</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="2">
+                    <widget class="QSpinBox" name="sbCantMaxIteraciones">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cantidad máxima de iteraciones&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Establece el número máximo de iteraciones a ejecutar por episodio. Cuando este valor es alcanzado la ejecución continúa en el episodio siguiente.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>1000000000</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <spacer name="horizontalSpacer_2">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Fixed</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>12</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="1" column="0" colspan="3">
+                    <widget class="QCheckBox" name="chkLimitarCantIteraciones">
+                     <property name="toolTip">
+                      <string>Determina si se limitará la cantidad de iteraciones por cada episodio.</string>
+                     </property>
+                     <property name="text">
+                      <string>Limitar cantidad de iteraciones por episodio</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="2" column="0" colspan="2">
+                  <layout class="QGridLayout" name="gridLayout_6">
+                   <property name="spacing">
+                    <number>4</number>
+                   </property>
+                   <item row="1" column="1">
+                    <widget class="QLabel" name="lblMatQDiff">
+                     <property name="text">
+                      <string>Diferencia:</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>sbMatricesMinDiff</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QLabel" name="lblMatQIntervalo">
+                     <property name="text">
+                      <string>Calcular diferencia cada:</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>sbIntervaloDiffCalc</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="2">
+                    <widget class="QSpinBox" name="sbIntervaloDiffCalc">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Intervalo de cálculo de diferencia&lt;/span&gt;&lt;/p&gt;&lt;p&gt;La diferencia entre matrices se calculará cada un número dado de episodios establecidos por este valor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="suffix">
+                      <string/>
+                     </property>
+                     <property name="minimum">
+                      <number>1</number>
+                     </property>
+                     <property name="maximum">
+                      <number>10000</number>
+                     </property>
+                     <property name="value">
+                      <number>5</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="2">
+                    <widget class="QDoubleSpinBox" name="sbMatricesMinDiff">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Diferencia entre matrices Q&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Establece la diferencia mínima que tiene que haber entre una Matriz Q (en t= i) y otra Matriz Q (en t= i+1) para que se detenga la ejecución del algoritmo.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="decimals">
+                      <number>4</number>
+                     </property>
+                     <property name="minimum">
+                      <double>0.000100000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>1000.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.001000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>0.000100000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <spacer name="horizontalSpacer_8">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Fixed</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>14</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="2" column="0">
+                    <spacer name="horizontalSpacer_9">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Fixed</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>14</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="0" column="0" colspan="3">
+                    <widget class="QCheckBox" name="chkQLCalcularMatDiff">
+                     <property name="text">
+                      <string>Detener por diferencia entre matrices Q</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblGamma">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>122</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Gamma (Ɣ):</string>
+              </property>
+              <property name="buddy">
+               <cstring>sbQLGamma</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="sbQLGamma">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Factor de descuento&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Cuanto más cerca de 1 se encuentre este valor mayor será el &lt;span style=&quot; font-style:italic;&quot;&gt;peso&lt;/span&gt; asignado a los refuerzos futuros.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="maximum">
+               <double>0.990000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.010000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="pgQLAcciones">
+        <layout class="QGridLayout" name="gridLayout_34">
+         <item row="0" column="0">
+          <widget class="QGroupBox" name="groupBox_7">
+           <property name="title">
+            <string>Acciones</string>
            </property>
-           <property name="bottomMargin">
-            <number>2</number>
+           <layout class="QGridLayout" name="gridLayout_13">
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QPushButton" name="btnInicializarValoresQL">
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Establece todos los valores de Q-Learning a los predeterminados.</string>
+              </property>
+              <property name="locale">
+               <locale language="Spanish" country="Argentina"/>
+              </property>
+              <property name="text">
+               <string>Inicializar valores</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <spacer name="verticalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
            </property>
-           <item row="0" column="0">
-            <widget class="QPushButton" name="btnInicializarValoresQL">
-             <property name="maximumSize">
-              <size>
-               <width>130</width>
-               <height>22</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Establece todos los valores de Q-Learning a los predeterminados.</string>
-             </property>
-             <property name="locale">
-              <locale language="Spanish" country="Argentina"/>
-             </property>
-             <property name="text">
-              <string>Inicializar valores</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="lblGamma">
-          <property name="maximumSize">
-           <size>
-            <width>115</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Gamma (Ɣ):</string>
-          </property>
-          <property name="buddy">
-           <cstring>sbQLGamma</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QDoubleSpinBox" name="sbQLGamma">
-          <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Factor de descuento&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Cuanto más cerca de 1 se encuentre este valor mayor será el &lt;span style=&quot; font-style:italic;&quot;&gt;peso&lt;/span&gt; asignado a los refuerzos futuros.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="maximum">
-           <double>0.990000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.010000000000000</double>
-          </property>
-         </widget>
-        </item>
-       </layout>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="1" column="0">
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -1131,12 +1202,171 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dwMetricas">
+  <widget class="QDockWidget" name="dwCaminoOptimo">
    <property name="maximumSize">
     <size>
      <width>524287</width>
-     <height>430</height>
+     <height>150</height>
     </size>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Camino óptimo</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QGridLayout" name="gridLayout_25">
+     <property name="topMargin">
+      <number>2</number>
+     </property>
+     <property name="bottomMargin">
+      <number>4</number>
+     </property>
+     <item row="0" column="0">
+      <widget class="QGroupBox" name="gbCOAcciones">
+       <property name="title">
+        <string>Acciones</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_26">
+        <property name="topMargin">
+         <number>4</number>
+        </property>
+        <property name="bottomMargin">
+         <number>4</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="btnCOShowHide">
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Ocultar</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QGroupBox" name="gbCOAnimacion">
+       <property name="title">
+        <string>Animación</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_28">
+        <property name="topMargin">
+         <number>4</number>
+        </property>
+        <property name="bottomMargin">
+         <number>6</number>
+        </property>
+        <item row="0" column="1">
+         <layout class="QGridLayout" name="gridLayout_27">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="btnCOAnimCancel">
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Animar</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="lblCODelay">
+            <property name="text">
+             <string>Delay:</string>
+            </property>
+            <property name="buddy">
+             <cstring>sbCOAnimDelay</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="3">
+           <widget class="QDoubleSpinBox" name="sbCOAnimDelay">
+            <property name="suffix">
+             <string/>
+            </property>
+            <property name="maximum">
+             <double>30.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="0">
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dwMetricas">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="locale">
     <locale language="Spanish" country="Argentina"/>
@@ -1492,7 +1722,7 @@
           <item>
            <widget class="QLabel" name="lblRecEstadoActual">
             <property name="text">
-             <string/>
+             <string>-</string>
             </property>
            </widget>
           </item>
@@ -1623,8 +1853,8 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>20</width>
-         <height>40</height>
+         <width>0</width>
+         <height>0</height>
         </size>
        </property>
       </spacer>
@@ -1632,46 +1862,52 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dwCaminoOptimo">
-   <property name="maximumSize">
-    <size>
-     <width>524287</width>
-     <height>150</height>
-    </size>
-   </property>
+  <widget class="QDockWidget" name="dwConfigGeneral">
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
-    <string>Camino óptimo</string>
+    <string>Configuración general</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>2</number>
+    <number>1</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents_2">
-    <layout class="QGridLayout" name="gridLayout_25">
+   <widget class="QWidget" name="dockWidgetContents_6">
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="topMargin">
+      <number>2</number>
+     </property>
+     <property name="bottomMargin">
+      <number>3</number>
+     </property>
      <item row="0" column="0">
-      <widget class="QGroupBox" name="gbCOAcciones">
+      <widget class="QGroupBox" name="gbGeneral">
        <property name="title">
-        <string>Acciones</string>
+        <string>General</string>
        </property>
-       <layout class="QGridLayout" name="gridLayout_26">
+       <layout class="QGridLayout" name="gridLayout_9">
         <property name="topMargin">
-         <number>4</number>
+         <number>6</number>
         </property>
         <property name="bottomMargin">
-         <number>4</number>
+         <number>6</number>
         </property>
         <item row="0" column="0">
-         <widget class="QPushButton" name="btnCOShowHide">
+         <widget class="QPushButton" name="btnInicializarTodo">
           <property name="maximumSize">
            <size>
-            <width>100</width>
+            <width>130</width>
             <height>16777215</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>Establece todos los valores de la aplicación a los predeterminados.</string>
+          </property>
+          <property name="locale">
+           <locale language="Spanish" country="Argentina"/>
+          </property>
           <property name="text">
-           <string>Ocultar</string>
+           <string>Inicializar valores</string>
           </property>
          </widget>
         </item>
@@ -1679,98 +1915,7 @@
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QGroupBox" name="gbCOAnimacion">
-       <property name="title">
-        <string>Animación</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_28">
-        <property name="topMargin">
-         <number>4</number>
-        </property>
-        <property name="bottomMargin">
-         <number>6</number>
-        </property>
-        <item row="0" column="1">
-         <layout class="QGridLayout" name="gridLayout_27">
-          <item row="0" column="0">
-           <widget class="QPushButton" name="btnCOAnimCancel">
-            <property name="maximumSize">
-             <size>
-              <width>80</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Animar</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLabel" name="lblCODelay">
-            <property name="text">
-             <string>Delay:</string>
-            </property>
-            <property name="buddy">
-             <cstring>sbCOAnimDelay</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <spacer name="horizontalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="3">
-           <widget class="QDoubleSpinBox" name="sbCOAnimDelay">
-            <property name="suffix">
-             <string/>
-            </property>
-            <property name="maximum">
-             <double>30.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="0">
-         <spacer name="horizontalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="2">
-         <spacer name="horizontalSpacer_7">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <spacer name="verticalSpacer_2">
+      <spacer name="verticalSpacer_8">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -1838,6 +1983,7 @@
   <tabstop>sbCantidadEpisodios</tabstop>
   <tabstop>chkLimitarCantIteraciones</tabstop>
   <tabstop>sbCantMaxIteraciones</tabstop>
+  <tabstop>chkQLCalcularMatDiff</tabstop>
   <tabstop>sbMatricesMinDiff</tabstop>
   <tabstop>sbIntervaloDiffCalc</tabstop>
   <tabstop>cbQLTecnicas</tabstop>
@@ -1849,7 +1995,6 @@
   <tabstop>optMQInitEnCero</tabstop>
   <tabstop>optMQInitValOptimistas</tabstop>
   <tabstop>sbValOptimoIncremento</tabstop>
-  <tabstop>btnInicializarValoresQL</tabstop>
   <tabstop>btnInicializarTodo</tabstop>
   <tabstop>tblGridWorld</tabstop>
   <tabstop>btnEntrenar</tabstop>
@@ -1860,72 +2005,25 @@
   <tabstop>btnCOShowHide</tabstop>
   <tabstop>btnCOAnimCancel</tabstop>
   <tabstop>sbCOAnimDelay</tabstop>
+  <tabstop>btnInicializarValoresQL</tabstop>
  </tabstops>
  <resources>
   <include location="recursos.qrc"/>
  </resources>
  <connections>
   <connection>
-   <sender>chkDecrementarParam</sender>
+   <sender>chkLimitarCantIteraciones</sender>
    <signal>toggled(bool)</signal>
-   <receiver>label_3</receiver>
+   <receiver>lblCantMaxIteraciones</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>263</x>
-     <y>480</y>
+     <x>70</x>
+     <y>291</y>
     </hint>
     <hint type="destinationlabel">
-     <x>140</x>
-     <y>506</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkDecrementarParam</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_5</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>263</x>
-     <y>480</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>140</x>
-     <y>534</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkDecrementarParam</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>sbCantEpisodiosDec</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>263</x>
-     <y>480</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>279</x>
-     <y>506</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkDecrementarParam</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>sbDecrementoVal</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>263</x>
-     <y>480</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>278</x>
-     <y>533</y>
+     <x>96</x>
+     <y>312</y>
     </hint>
    </hints>
   </connection>
@@ -1936,28 +2034,140 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>84</x>
-     <y>270</y>
+     <x>61</x>
+     <y>291</y>
     </hint>
     <hint type="destinationlabel">
-     <x>279</x>
-     <y>293</y>
+     <x>218</x>
+     <y>313</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>chkLimitarCantIteraciones</sender>
+   <sender>chkQLCalcularMatDiff</sender>
    <signal>toggled(bool)</signal>
-   <receiver>lblCantMaxIteraciones</receiver>
+   <receiver>lblMatQDiff</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>103</x>
-     <y>270</y>
+     <x>64</x>
+     <y>339</y>
     </hint>
     <hint type="destinationlabel">
-     <x>127</x>
-     <y>293</y>
+     <x>73</x>
+     <y>365</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkQLCalcularMatDiff</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lblMatQIntervalo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>224</x>
+     <y>337</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>136</x>
+     <y>388</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkQLCalcularMatDiff</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sbMatricesMinDiff</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>54</x>
+     <y>340</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>247</x>
+     <y>360</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkQLCalcularMatDiff</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sbIntervaloDiffCalc</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>148</x>
+     <y>340</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>221</x>
+     <y>391</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkDecrementarParam</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sbCantEpisodiosDec</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>526</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>177</x>
+     <y>549</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkDecrementarParam</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sbDecrementoVal</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>87</x>
+     <y>528</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>206</x>
+     <y>579</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkDecrementarParam</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>62</x>
+     <y>525</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>65</x>
+     <y>554</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkDecrementarParam</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_5</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>196</x>
+     <y>526</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>94</x>
+     <y>577</y>
     </hint>
    </hints>
   </connection>
@@ -1968,12 +2178,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>57</x>
-     <y>589</y>
+     <x>84</x>
+     <y>640</y>
     </hint>
     <hint type="destinationlabel">
-     <x>142</x>
-     <y>610</y>
+     <x>120</x>
+     <y>662</y>
     </hint>
    </hints>
   </connection>
@@ -1984,12 +2194,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>104</x>
-     <y>585</y>
+     <x>161</x>
+     <y>642</y>
     </hint>
     <hint type="destinationlabel">
-     <x>257</x>
-     <y>614</y>
+     <x>261</x>
+     <y>671</y>
     </hint>
    </hints>
   </connection>
