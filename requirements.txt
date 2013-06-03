@@ -6,9 +6,6 @@ docutils
 nose
 numpy
 pep8
-pybrain
 pylint
 pywin32
 scipy
-simpleai
-unittest2
