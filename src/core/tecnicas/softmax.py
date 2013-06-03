@@ -3,11 +3,8 @@
 
 from __future__ import absolute_import
 
-import logging
-import math
 import random
-
-from decimal import Decimal
+import decimal
 from core.tecnicas.tecnica import QLTecnica
 
 
@@ -20,62 +17,65 @@ class Softmax(QLTecnica):
         :param tau: Parámetro Tau de la técnica.
         """
         super(Softmax, self).__init__(paso_decremento, intervalo_decremento)
-        self._val_param_general = tau
-        self._val_param_parcial = tau
+        self._val_param_general = decimal.Decimal(tau)
+        self._val_param_parcial = decimal.Decimal(tau)
         self._name = "Softmax"
+        self._paso_decremento = decimal.Decimal(paso_decremento)
+        self._intervalo_decremento = decimal.Decimal(intervalo_decremento)
+
+        # Establecer cantidad de ranuras
+        self.cant_ranuras = 100
+
+        # Establecer precisión de decimales a 5 dígitos
+        decimal.getcontext().prec = 4
 
     def obtener_accion(self, vecinos):
-        rnd_valor = random.uniform(0, 1)
+        rnd_valor = random.randint(0, self.cant_ranuras - 1)
 
-        probabilidades_vecinos = self.obtener_probabilidades(vecinos)
+        intervalos_probabilidad = self.obtener_probabilidades(vecinos)
 
-        for key, value in probabilidades_vecinos.iteritems():
-            if rnd_valor <= value:
-                estado = key
+        for key, intervalo in intervalos_probabilidad.iteritems():
+            if intervalo[0] <= rnd_valor <= intervalo[1]:
+                return key
 
-        logging.debug("Estado Elegido: {0}".format(estado))
-        return estado
+        return None
 
     def obtener_probabilidades(self, vecinos):
         probabilidades_vecinos = {}
+        sigma = 0
 
         # Calcula las probabilidades de cada vecino
         for key, q_valor in vecinos.iteritems():
-            exponente = Decimal(float(q_valor) / self._val_param_parcial)
-            probabilidad_vecino = math.exp(exponente.adjusted())
-            probabilidades_vecinos[key] = probabilidad_vecino
-
-        logging.debug("Probabilidades de vecinos: {0}"
-                      .format(probabilidades_vecinos))
+            try:
+                exponente = decimal.Decimal(q_valor) / self._val_param_parcial
+                probabilidad_vecino = exponente.exp()
+            except OverflowError:
+                pass
+            else:
+                probabilidades_vecinos[key] = probabilidad_vecino
+                sigma += probabilidad_vecino
 
         # N = constante de Normalización
-        # Convertirlo a un número flotante para solucionar problema al dividir
-        n = float(sum(probabilidades_vecinos.values()))
+        # n = sum(probabilidades_vecinos.itervalues())
 
-        logging.debug("Valor de constante de normalización N: {0}".format(n))
-
-        probabilidades_vecinos_normalizadas = {}
         # Calcula las probabilidades de cada vecino normalizadas
-        for key, value in probabilidades_vecinos.iteritems():
-            probabilidades_vecinos_normalizadas[key] = value / n
+        for key, prob in probabilidades_vecinos.iteritems():
+            probabilidades_vecinos[key] = prob / sigma
 
-        # Si éste cálculo está bien deberia dar 1
-        logging.debug("Sumatoria de las Probabilidades Normalizadas: {0}"
-                      .format(sum(probabilidades_vecinos_normalizadas.values())))
+        sumatoria = 0
+        intervalos = {}
+        cant_ranuras = self.cant_ranuras
 
-        # Realiza la Sumatoria Ponderada de las probabilidades de los vecinos
-        probabilidades_vecinos_ponderadas = {}
-        prob_vec_norm_aux = list(probabilidades_vecinos_normalizadas.iteritems())
-        for i in xrange(len(prob_vec_norm_aux)):
-            sumatoria = 0
-            for j in xrange(i + 1):
-                sumatoria += prob_vec_norm_aux[j][1]
-            probabilidades_vecinos_ponderadas[prob_vec_norm_aux[j][0]] = sumatoria
+        for key, prob in probabilidades_vecinos.iteritems():
+            aux = sumatoria
+            calculo = round(prob * cant_ranuras)
+            sumatoria += calculo
+            ext_sup = sumatoria - 1
 
-        logging.debug("Probabilidades ponderadas: {0}"
-                      .format(probabilidades_vecinos_ponderadas))
+            if cant_ranuras > aux <= ext_sup:
+                intervalos[key] = (aux, ext_sup)
 
-        return probabilidades_vecinos_ponderadas
+        return intervalos
 
     def decrementar_parametro(self):
         decremento = self._val_param_parcial - self._paso_decremento

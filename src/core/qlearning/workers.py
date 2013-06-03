@@ -134,7 +134,11 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Invocar a la técnica para que seleccione uno de los vecinos
                 estado_elegido = self.tecnica.obtener_accion(vecinos)
                 # Asignar coordenadas X,Y
-                x_eleg, y_eleg = estado_elegido
+                try:
+                    x_eleg, y_eleg = estado_elegido
+                except TypeError:
+                    cant_iteraciones += 1
+                    continue
 
                 # Obtener recompensa inmediata del estado actual
                 recompensa_estado = vecinos[(x_eleg, y_eleg)]

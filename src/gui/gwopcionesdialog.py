@@ -89,7 +89,7 @@ class GWOpcionesDialog(QtGui.QDialog):
 
         self.GWOpcionesD.txtAgenteNombre.setText(_tr("Agente"))
         self.GWOpcionesD.txtAgenteLetra.setText(_tr("A"))
-        self.GWOpcionesD.txtAgenteColor.setText("#FEFEFE")
+        self.GWOpcionesD.txtAgenteColor.setText("#474747")
 
         self.GWOpcionesD.txtFinalNombre.setText(_tr("Final"))
         self.GWOpcionesD.txtFinalLetra.setText(_tr("F"))
@@ -137,7 +137,7 @@ class GWOpcionesDialog(QtGui.QDialog):
 
     def set_color_estado(self, widget):
         qcolordiag = QtGui.QColorDialog(self)
-        qcolordiag.setOption(qcolordiag.ShowAlphaChannel)
+        qcolordiag.setOption(QtGui.QColorDialog.ShowAlphaChannel)
         state_color = qcolordiag.getColor()
 
         if state_color.isValid():
