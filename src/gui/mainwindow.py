@@ -105,7 +105,7 @@ class MainWindow(QtGui.QMainWindow):
                               "tipos_estados":
                                {0: TipoEstado(0, None, _tr("Inicial"), _tr("I"), "#FF5500", None),
                                 1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#0071A6", None),
-                                2: TipoEstado(2, None, _tr("Agente"), _tr("A"), "#FEFEFE",
+                                2: TipoEstado(2, None, _tr("Agente"), _tr("A"), "#474747",
                                               QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))),
                                 3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
                                 4: TipoEstado(4, 100, _tr("Excelente"), _tr("E"), "#BB0011", None),
@@ -145,6 +145,12 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMostrarMatrizR.setDisabled(True)
         self.WMainWindow.lblCantMaxIteraciones.setDisabled(True)
         self.WMainWindow.sbCantMaxIteraciones.setDisabled(True)
+        self.WMainWindow.gbCOAcciones.setDisabled(True)
+        self.WMainWindow.gbCOAnimacion.setDisabled(True)
+        self.WMainWindow.lblMatQDiff.setDisabled(True)
+        self.WMainWindow.lblMatQIntervalo.setDisabled(True)
+        self.WMainWindow.sbIntervaloDiffCalc.setDisabled(True)
+        self.WMainWindow.sbMatricesMinDiff.setDisabled(True)
 
         # Asignar shorcuts
         entrenar_shortcut = "F5"
@@ -219,8 +225,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnRecorrer.setDisabled(True)
 
         # Desactivar controles para mostrar camino optimo
-        self.WMainWindow.btnCOAnimCancel.setDisabled(True)
-        self.WMainWindow.btnCOShowHide.setDisabled(True)
+        self.WMainWindow.gbCOAcciones.setDisabled(True)
+        self.WMainWindow.gbCOAnimacion.setDisabled(True)
 
         # Obtener ancho y alto del GridWorld
         self._logger.debug("Dimensión: {0}".format(dimension))
@@ -549,6 +555,9 @@ class MainWindow(QtGui.QMainWindow):
         # Número máximo de iteraciones por episodio
         cant_max_iter = self.WMainWindow.sbCantMaxIteraciones.value()
 
+        # Determinar si la diferencia de matrices se encuentra activa
+        matdiff_status = self.WMainWindow.chkQLCalcularMatDiff.isChecked()
+
         # Diferencia mínima entre matrices para finalizar el entranamiento
         matriz_min_diff = self.WMainWindow.sbMatricesMinDiff.value()
         # Intervalo de episodios entre cálculos de diferencia entre matrices
@@ -561,7 +570,7 @@ class MainWindow(QtGui.QMainWindow):
                                    cant_episodios,
                                    (limitar_nro_iteraciones, cant_max_iter),
                                    init_value_fn,
-                                   (matriz_min_diff, intervalo_diff_calc),
+                                   (matdiff_status, matriz_min_diff, intervalo_diff_calc),
                                    None)
 
         # QLearningEntrenarWorker Management
@@ -704,6 +713,11 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.lblEntNroEpisodio.setText("-")
             self.WMainWindow.lblEntNroIteracion.setText("-")
             self.WMainWindow.lblEntValParametro.setText("-")
+            self.WMainWindow.lblEntDiffMatrices.setText("-")
+
+            self.WMainWindow.lblRecEstadoActual.setText("-")
+            self.WMainWindow.lblRecExecTimeRecorrido.setText("-")
+            self.WMainWindow.lblRecExecTimeTotal.setText("-")
 
         if self.recorrer_is_running:
             self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
@@ -719,6 +733,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.gbQLearning.setDisabled(True)
         self.WMainWindow.gbGeneral.setDisabled(True)
         self.WMainWindow.gbMatrices.setDisabled(True)
+        self.WMainWindow.gbCOAcciones.setDisabled(True)
+        self.WMainWindow.gbCOAnimacion.setDisabled(True)
 
         try:
             self.wnd_taskbar = taskbar.WindowsTaskBar()
@@ -764,8 +780,8 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.actionAgenteEntrenar.setEnabled(True)
             self.WMainWindow.btnRecorrer.setEnabled(True)
             self.WMainWindow.actionAgenteRecorrer.setEnabled(True)
-            self.WMainWindow.btnCOAnimCancel.setEnabled(True)
-            self.WMainWindow.btnCOShowHide.setEnabled(True)
+            self.WMainWindow.gbCOAcciones.setEnabled(True)
+            self.WMainWindow.gbCOAnimacion.setEnabled(True)
             self.WMainWindow.statusBar.showMessage(_tr("Ha finalizado la búsqueda del camino óptimo."), 2000)
 
         self.WMainWindow.btnTerminarProceso.setEnabled(False)
@@ -798,7 +814,8 @@ class MainWindow(QtGui.QMainWindow):
             pass
 
         # Mostrar camino óptimo
-        self.mostrar_camino_optimo_act()
+        if self.camino_optimo is not None:
+            self.mostrar_camino_optimo_act()
 
         # Restaurar cursor normal
         QtGui.QApplication.restoreOverrideCursor()
@@ -812,7 +829,7 @@ class MainWindow(QtGui.QMainWindow):
         for proceso in multiprocessing.active_children():
             try:
                 # Darle una oportunidad más al proceso de terminar
-                proceso.join(0.1)
+                proceso.join(0.01)
                 # Esperar a que termine
                 time.sleep(0.1)
                 # Forzar terminación de proceso
@@ -873,8 +890,6 @@ class MainWindow(QtGui.QMainWindow):
             data_entrenar = self.get_all_from_queue(self.ql_entrenar_out_q)
 
             for ql_ent_info in data_entrenar:
-                _getv = dict.get
-
                 estado_actual_ent = ql_ent_info.get('EstadoActual', None)
                 nro_episodio = ql_ent_info.get('NroEpisodio', None)
                 cant_iteraciones = ql_ent_info.get('NroIteracion', None)
@@ -889,8 +904,6 @@ class MainWindow(QtGui.QMainWindow):
                 corte_iteracion = ql_ent_info.get('CorteIteracion', None)
 
                 self.matriz_q = matriz_q
-                x_actual, y_actual = estado_actual_ent
-                logging.debug("Diferencia: {0}".format(tmp_mat_diff))
 
                 if loop_alarm:
                     QtGui.QMessageBox.warning(self,
@@ -903,6 +916,9 @@ class MainWindow(QtGui.QMainWindow):
                     self.ql_entrenar_out_q = None
 
                 try:
+                    # Descomponen coordenadas de estado actual
+                    x_actual, y_actual = estado_actual_ent
+
                     # Mostrar información de entrenamiento en etiquetas
                     main_wnd.lblEntEstadoActual.setText("X:{0}  Y:{1}".format(x_actual,  # @IgnorePep8
                                                                               y_actual))  # @IgnorePep8
@@ -966,12 +982,15 @@ class MainWindow(QtGui.QMainWindow):
                 running_exec_time_rec = ql_rec_info.get('RunningExecTime', 0.0)
                 worker_joined = ql_rec_info.get('ProcesoJoined', None)
                 rec_exec_time = ql_rec_info.get('RecorridoExecTime', 0.0)
+                nro_iteracion = ql_rec_info.get('NroIteracion', None)
 
                 self.camino_optimo = camino_optimo
-                x_actual, y_actual = estado_actual_rec
-                self._logger.debug("Estado actual: {0}".format(estado_actual_rec))
 
                 try:
+                    # Descomponer coordenadas de estado actual
+                    x_actual, y_actual = estado_actual_rec
+                    self._logger.debug("Estado actual: {0}".format(estado_actual_rec))
+
                     main_wnd.lblRecEstadoActual.setText("X:{0}  Y:{1}".format(x_actual, y_actual))  # @IgnorePep8
                     main_wnd.lblRecExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)".format(running_exec_time_rec,  # @IgnorePep8
                                                                                             running_exec_time_rec * 1000))  # @IgnorePep8
@@ -1262,7 +1281,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def set_minimo_incremento_opt(self):
         u"""
-        Establecer mínimo de incremento por sobre la máxima recompensa en el 
+        Establecer mínimo de incremento por sobre la máxima recompensa en el
         control de entrada.
         """
         minimo = self.window_config["tipos_estados"][TIPOESTADO.FINAL].recompensa
