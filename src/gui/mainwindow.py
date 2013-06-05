@@ -905,6 +905,8 @@ class MainWindow(QtGui.QMainWindow):
 
                 self.matriz_q = matriz_q
 
+                logging.debug(corte_iteracion)
+
                 if loop_alarm:
                     QtGui.QMessageBox.warning(self,
                                               _tr('QLearning - Entrenamiento'),
@@ -943,6 +945,8 @@ class MainWindow(QtGui.QMainWindow):
                         item = main_wnd.tblGridWorld.item(x_actual - 1,
                                                           y_actual - 1)
                     except TypeError:
+                        pass
+                    except UnboundLocalError:
                         pass
 
                     try:
