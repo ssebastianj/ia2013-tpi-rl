@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import logging
 import numpy
+import random
 import threading
 
 from core.estado.estado import Estado, TIPOESTADO
@@ -59,6 +60,7 @@ class GridWorld(object):
 
         self._estados = numpy.empty((self.alto, self.ancho), Estado)
         self._coordenadas = []
+
         # Crear una lista de listas
         for i in xrange(1, self._alto + 1):
             fila = numpy.empty((1, self.ancho), Estado)
@@ -80,6 +82,7 @@ class GridWorld(object):
         # Crear una lista de listas
         for i in xrange(1, self._alto + 1):
             fila = []
+
             for j in xrange(1, self._ancho + 1):
                 # Obtener estado actual y su ID de tipo
                 estado = self.get_estado(i, j)
@@ -182,6 +185,72 @@ class GridWorld(object):
 
     def __len__(self):
         return len(self._estados)
+
+    def generar_estados_aleatorios(self, incluir_final=False):
+        if isinstance(self._tipos_estados, dict):
+            gen_estados_random_worker = threading.Thread(None,
+                                                         self._generar_estados_aleatorios_worker,
+                                                         "GWGenerarEstadosAleatoriosWorker",
+                                                         (incluir_final,),
+                                                         None,
+                                                         None)
+            gen_estados_random_worker.start()
+            gen_estados_random_worker.join(0.05)
+            self._logger.debug(gen_estados_random_worker)
+        else:
+            return None
+
+    def _generar_estados_aleatorios_worker(self, incluir_final=False):
+        u"""
+        Crea la matriz de estados tipos de estados aleatorios.
+        """
+        excluir_estados_random = [TIPOESTADO.AGENTE,
+                                  TIPOESTADO.INICIAL,
+                                  TIPOESTADO.FINAL]
+
+        if self._estados is None:
+            self._estados = numpy.empty((self.alto, self.ancho), Estado)
+            self._coordenadas = []
+
+            # Crear una lista de listas
+            for i in xrange(1, self._alto + 1):
+                fila = numpy.empty((1, self.ancho), Estado)
+                for j in xrange(1, self._ancho + 1):
+                    # Generar tipo de estado aleatorio
+                    rnd_tipo = random.choice(self._tipos_estados.values())
+
+                    # Generar hasta que no coincida con un tipo de estado prohibido
+                    while rnd_tipo.ide in excluir_estados_random:
+                        rnd_tipo = random.choice(self._tipos_estados.values())
+
+                    fila[0][j - 1] = Estado(i, j, rnd_tipo)
+                    self._coordenadas.append((i, j))
+                self._estados[i - 1] = fila
+
+                # Generar Estado Final aleatorio si es necesario
+                if incluir_final:
+                    coord_x = random.randint(0, self.ancho - 1)
+                    coord_y = random.randint(0, self.alto - 1)
+                    estado = self.get_estado(coord_x, coord_y)
+                    estado.tipo = self._tipos_estados[TIPOESTADO.FINAL]
+        else:
+            for fila in self._estados:
+                for estado in fila:
+                    # Generar tipo de estado aleatorio
+                    rnd_tipo = random.choice(self._tipos_estados.values())
+
+                    # Generar hasta que no coincida con un tipo de estado prohibido
+                    while rnd_tipo.ide in excluir_estados_random:
+                        rnd_tipo = random.choice(self._tipos_estados.values())
+
+                    estado.tipo = rnd_tipo
+
+            # Generar Estado Final aleatorio si es necesario
+            if incluir_final:
+                coord_x = random.randint(0, self.ancho - 1)
+                coord_y = random.randint(0, self.alto - 1)
+                estado = self.get_estado(coord_x, coord_y)
+                estado.tipo = self._tipos_estados[TIPOESTADO.FINAL]
 
     # Propiedades (atributos) de la clase
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")

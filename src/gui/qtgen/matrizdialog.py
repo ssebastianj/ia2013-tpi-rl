@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\matrizdialog.ui'
 #
-# Created: Mon Jun 03 01:07:57 2013
+# Created: Thu Jun 06 15:22:22 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!

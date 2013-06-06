@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import logging
 import multiprocessing
 import Queue
+import random
 import time
 
 from PyQt4 import QtCore, QtGui
@@ -193,6 +194,22 @@ class MainWindow(QtGui.QMainWindow):
                                                 {0}</span></p></body></html>"
                                                 .format(mostrar_mat_q_sc))
 
+        generar_estados_rnd_sc = "Ctrl+G"
+        generar_estados_rnd_fast_sc = "Ctrl+Shift+G"
+        self.WMainWindow.btnGWGenerarEstados.setShortcut(QtGui.QKeySequence(generar_estados_rnd_sc))
+        self.WMainWindow.btnGenEstRndRapida.setShortcut(QtGui.QKeySequence(generar_estados_rnd_fast_sc))
+
+        self.WMainWindow.btnGWGenerarEstados.setToolTip(u"<html><head/><body><p>\
+                                                Generar estados aleatorios \
+                                                <span style='font-size:7pt;'>\
+                                                {0}</span></p></body></html>"
+                                                .format(generar_estados_rnd_sc))
+        self.WMainWindow.btnGenEstRndRapida.setToolTip(u"<html><head/><body><p>\
+                                                Generar estados y dimensión aleatorios (incluyendo al Estado Final) \
+                                                <span style='font-size:7pt;'>\
+                                                {0}</span></p></body></html>"
+                                                .format(generar_estados_rnd_fast_sc))
+
         self.setMouseTracking(True)
 
         self.inicializar_todo()
@@ -255,34 +272,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
         # self.WMainWindow.tblGridWorld.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
 
-        # Desactivar actualización de la tabla para optimizar la carga
-        self.WMainWindow.tblGridWorld.setUpdatesEnabled(False)
-        # Rellenar tabla con items
-        for fila in xrange(0, self.gridworld.alto):
-            for columna in xrange(0, self.gridworld.ancho):
-                estado = self.gridworld.get_estado(fila + 1, columna + 1)
-                letra_estado = estado.tipo.letra
-                # Cada item muestra la letra asignada al estado
-                item = QtGui.QTableWidgetItem(str(letra_estado))
-                item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
-                item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
-                item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
-
-                if self.window_config["item"]["show_tooltip"]:
-                    item.setToolTip("Fila: {0} Columna: {1}\nTipo: {2}\nRecompensa: {3}"
-                                    .format(fila + 1, columna + 1,
-                                    estado.tipo.nombre,
-                                    estado.tipo.recompensa))
-
-                self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
-        # Reactivar la actualización de la tabla
-        self.WMainWindow.tblGridWorld.setUpdatesEnabled(True)
-
-        self.estado_inicial = None
-        self.estado_final = None
-
-        # Activar la visualización de la Matriz R
-        self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
+        # Recargar estados del GridWorld en pantalla
+        self.recargar_estados()
 
     def _set_window_signals(self):
         u"""
@@ -322,6 +313,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMostrarMatrizR.clicked.connect(self.show_matriz_r)
         self.WMainWindow.btnCOAnimCancel.clicked.connect(self.animar_camino_optimo)
         self.WMainWindow.btnCOShowHide.clicked.connect(self.show_hide_camino_optimo)
+        self.WMainWindow.btnGenEstRndRapida.clicked.connect(lambda: self.refresh_gw_random(True, True))
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -1179,7 +1171,7 @@ class MainWindow(QtGui.QMainWindow):
             pass
 
     def inicializar_gw(self):
-        # Cargar dimensiones posibles del tblGridWorld
+        # Cargar dimensiones posibles del GridWorld
         try:
             self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect()
         except Exception:
@@ -1193,7 +1185,6 @@ class MainWindow(QtGui.QMainWindow):
         self.refresh_gw()
 
     def refresh_gw(self):
-        # Establece la dimensión por defecto del tblGridWorld en 6x6
         indice = self.WMainWindow.cbGWDimension.currentIndex()
         self.set_gw_dimension(self.WMainWindow.cbGWDimension.itemData(indice).toString())
         self.WMainWindow.btnRecorrer.setDisabled(True)
@@ -1395,3 +1386,39 @@ class MainWindow(QtGui.QMainWindow):
         else:
             self.WMainWindow.btnCOShowHide.setText(_tr("Ocultar"))
             self.mostrar_camino_optimo_act()
+
+    def recargar_estados(self):
+        # Desactivar actualización de la tabla para optimizar la carga
+        self.WMainWindow.tblGridWorld.setUpdatesEnabled(False)
+        # Rellenar tabla con items
+        for fila in xrange(0, self.gridworld.alto):
+            for columna in xrange(0, self.gridworld.ancho):
+                estado = self.gridworld.get_estado(fila + 1, columna + 1)
+                letra_estado = estado.tipo.letra
+                # Cada item muestra la letra asignada al estado
+                item = QtGui.QTableWidgetItem(str(letra_estado))
+                item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
+                item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
+                item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
+
+                if self.window_config["item"]["show_tooltip"]:
+                    item.setToolTip("Fila: {0} Columna: {1}\nTipo: {2}\nRecompensa: {3}"
+                                    .format(fila + 1, columna + 1,
+                                    estado.tipo.nombre,
+                                    estado.tipo.recompensa))
+
+                self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
+        # Reactivar la actualización de la tabla
+        self.WMainWindow.tblGridWorld.setUpdatesEnabled(True)
+
+    def refresh_gw_random(self, rnd_dim=False, incluir_final=False):
+        self.WMainWindow.btnRecorrer.setDisabled(True)
+        self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
+
+        if rnd_dim:
+            indice = random.randint(0, self.WMainWindow.cbGWDimension.count() - 1)
+            self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
+            self.set_gw_dimension(self.WMainWindow.cbGWDimension.itemData(indice).toString())
+
+        self.gridworld.generar_estados_aleatorios(incluir_final)
+        self.recargar_estados()
