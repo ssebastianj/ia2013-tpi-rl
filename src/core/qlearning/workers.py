@@ -96,13 +96,16 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Bandera que determina si se calcula la diferencia de matrices
         matdiff_active = self.matdiff_status
 
+        # Inicializar variable auxiliar de cálculo de diferencia
+        tmp_diff_mat = 0
+
         min_diff_mat = self.min_diff_mat  # Diferencia mínima entre matrices
         # Diferencia mínima temporal entre matrices (calculada)
         # Se le suma 1 para que la condición para entrar en el bucle 'while'
         # se cumpla al comenzar
-        tmp_diff_mat = min_diff_mat + 1
         cantidad_episodios = self.cant_episodios  # Cantidad de episodios a ejecutar
         epnum = 1  # Inicializar número de episodio
+        cant_cortes_iteraciones = 0
 
         # Registrar tiempo de comienzo de los episodios
         ep_start_time = wtimer()
@@ -178,8 +181,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
                 # Comprobar si se alcanzó el número máximo de iteraciones
                 if self.limitar_iteraciones and (self.cant_max_iter == cant_iteraciones):
+                    self.encolar_salida({'CorteIteracion': True})
+                    cant_cortes_iteraciones += 1
                     # Terminar y comenzar en un episodio nuevo
-                    self.encolar_salida({'CorteIteracion': epnum})
                     break
 
                 # Incrementar cantidad de iteraciones realizadas
