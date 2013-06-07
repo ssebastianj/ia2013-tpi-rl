@@ -272,6 +272,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
         # self.WMainWindow.tblGridWorld.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
 
+        self.estado_final = None
+        self.estado_inicial = None
+
         # Recargar estados del GridWorld en pantalla
         self.recargar_estados()
 
@@ -897,8 +900,6 @@ class MainWindow(QtGui.QMainWindow):
 
                 self.matriz_q = matriz_q
 
-                logging.debug(corte_iteracion)
-
                 if loop_alarm:
                     QtGui.QMessageBox.warning(self,
                                               _tr('QLearning - Entrenamiento'),
@@ -1182,6 +1183,10 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.cbGWDimension.addItem(_tr(dimension), dimension)
 
         self.WMainWindow.cbGWDimension.currentIndexChanged.connect(self.set_gw_dimension_cb)
+
+        self.estado_final = None
+        self.estado_inicial = None
+
         self.refresh_gw()
 
     def refresh_gw(self):
@@ -1420,5 +1425,5 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
             self.set_gw_dimension(self.WMainWindow.cbGWDimension.itemData(indice).toString())
 
-        self.gridworld.generar_estados_aleatorios(incluir_final)
+        self.estado_final = self.gridworld.generar_estados_aleatorios(incluir_final)
         self.recargar_estados()

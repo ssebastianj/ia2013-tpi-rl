@@ -34,11 +34,14 @@ class GridWorld(object):
         self._estados = None
         self._coordenadas = None
         self._excluir_tipos_vecinos = excluir_tipos_vecinos
+        self._estado_final = None
 
         self._inicializar_estados()
 
     def _inicializar_estados(self, default=TIPOESTADO.NEUTRO):
         if isinstance(self._tipos_estados, dict):
+            self._estado_final = None
+
             inicializar_estados_worker = threading.Thread(None,
                                                           self._inicializar_estados_worker,
                                                           "GWInicializarEstadosWorker",
@@ -197,6 +200,7 @@ class GridWorld(object):
             gen_estados_random_worker.start()
             gen_estados_random_worker.join(0.05)
             self._logger.debug(gen_estados_random_worker)
+            return self._estado_final
         else:
             return None
 
@@ -207,6 +211,8 @@ class GridWorld(object):
         excluir_estados_random = [TIPOESTADO.AGENTE,
                                   TIPOESTADO.INICIAL,
                                   TIPOESTADO.FINAL]
+
+        estado_final = None
 
         if self._estados is None:
             self._estados = numpy.empty((self.alto, self.ancho), Estado)
@@ -229,10 +235,11 @@ class GridWorld(object):
 
                 # Generar Estado Final aleatorio si es necesario
                 if incluir_final:
-                    coord_x = random.randint(0, self.ancho - 1)
-                    coord_y = random.randint(0, self.alto - 1)
+                    coord_x = random.randint(1, self.ancho - 1)
+                    coord_y = random.randint(1, self.alto - 1)
                     estado = self.get_estado(coord_x, coord_y)
                     estado.tipo = self._tipos_estados[TIPOESTADO.FINAL]
+                    estado_final = estado
         else:
             for fila in self._estados:
                 for estado in fila:
@@ -247,10 +254,14 @@ class GridWorld(object):
 
             # Generar Estado Final aleatorio si es necesario
             if incluir_final:
-                coord_x = random.randint(0, self.ancho - 1)
-                coord_y = random.randint(0, self.alto - 1)
+                coord_x = random.randint(1, self.ancho - 1)
+                coord_y = random.randint(1, self.alto - 1)
                 estado = self.get_estado(coord_x, coord_y)
                 estado.tipo = self._tipos_estados[TIPOESTADO.FINAL]
+                estado_final = estado
+
+        # Guardar referencia al estado final generado
+        self._estado_final = estado_final
 
     # Propiedades (atributos) de la clase
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")

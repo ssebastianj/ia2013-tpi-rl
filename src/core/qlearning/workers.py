@@ -95,6 +95,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Bandera que determina si se calcula la diferencia de matrices
         matdiff_active = self.matdiff_status
 
+        # Inicializar variable auxiliar de cálculo de diferencia
+        tmp_diff_mat = 0
+
         min_diff_mat = self.min_diff_mat  # Diferencia mínima entre matrices
         # Diferencia mínima temporal entre matrices (calculada)
         # Se le suma 1 para que la condición para entrar en el bucle 'while'
