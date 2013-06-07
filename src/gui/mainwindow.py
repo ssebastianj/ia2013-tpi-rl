@@ -85,6 +85,10 @@ class MainWindow(QtGui.QMainWindow):
         self.camino_optimo = None
         self.camino_optimo_active = None
 
+        # Variables necesarias para los gráficos
+        self.graph_recompensas_promedio = None
+        self.graph_episodios_finalizados = None
+
         self.tecnicas = {  # 0: "Greedy",
                            1: "ε-Greedy",
                            2: "Softmax",
@@ -507,6 +511,10 @@ class MainWindow(QtGui.QMainWindow):
         self.ocultar_camino_optimo()
         self.camino_optimo = None
 
+        # Inicializar variables de gráficos
+        self.graph_episodios_finalizados = None
+        self.graph_recompensas_promedio = None
+
         # Parámetros para mostrar el estado actual en pantalla
         self.ent_show_estado_act = self.window_config["gw"]["entrenamiento"]["actual_state"]["show"]
         self.ent_color_estado_act = QtGui.QColor(self.window_config["gw"]["entrenamiento"]["actual_state"]["color"])
@@ -733,6 +741,7 @@ class MainWindow(QtGui.QMainWindow):
             self._ent_progress_bar.setVisible(True)
             cant_episodios = self.WMainWindow.sbCantidadEpisodios.value()
             self._ent_progress_bar.setMaximum(cant_episodios)
+            self._ent_progress_bar.setValue(0)
 
         if self.recorrer_is_running:
             self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
@@ -838,6 +847,10 @@ class MainWindow(QtGui.QMainWindow):
         # Restaurar cursor normal
         QtGui.QApplication.restoreOverrideCursor()
 
+        # FIXME: Eliminar
+        logging.debug("Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
+        logging.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
+
     def _reintentar_detener_hilos(self):
         u"""
         Solicita la finalización de todos los threads utilizados en la
@@ -920,8 +933,12 @@ class MainWindow(QtGui.QMainWindow):
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
                 tmp_mat_diff = ql_ent_info.get('MatDiff', None)
                 corte_iteracion = ql_ent_info.get('CorteIteracion', None)
+                recompensas_promedio = ql_ent_info.get('RecompProm', None)
+                episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
 
                 self.matriz_q = matriz_q
+                self.graph_recompensas_promedio = recompensas_promedio
+                self.graph_episodios_finalizados = episodios_finalizados
 
                 try:
                     # Descomponen coordenadas de estado actual

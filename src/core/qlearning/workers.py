@@ -106,6 +106,19 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         epnum = 1  # Inicializar número de episodio
         cant_cortes_iteraciones = 0
 
+        # Acumular recompensas de los estados elegidos
+        acum_recomp_elegidas = 0
+        # Lista de recompensas promedio
+        recompensas_promedio = []
+
+        # Cantidad de veces que se llegó al Estado Final
+        cant_lleg_final = 0
+        # Cantidad de episodios entre cálculos
+        inter_muestreo = 10
+        cont_interv_muestreo = 0
+        # Lista con episodios finalizados
+        episodios_finalizados = []
+
         # Registrar tiempo de comienzo de los episodios
         ep_start_time = wtimer()
 
@@ -149,6 +162,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Obtener recompensa inmediata del estado actual
                 recompensa_estado = vecinos[(x_eleg, y_eleg)]
 
+                # Sumar recompensa elegida al total
+                acum_recomp_elegidas += recompensa_estado
+
                 # Obtener vecinos del estado elegido por la acción
                 vecinos_est_elegido = self.matriz_q[x_eleg - 1][y_eleg - 1][1]
 
@@ -182,6 +198,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 if self.limitar_iteraciones and (self.cant_max_iter == cant_iteraciones):
                     self.encolar_salida({'CorteIteracion': True})
                     cant_cortes_iteraciones += 1
+                    cant_lleg_final -= 1
                     # Terminar y comenzar en un episodio nuevo
                     break
 
@@ -196,6 +213,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 iter_exec_time = iter_end_time - iter_start_time
             except UnboundLocalError:
                 iter_exec_time = 0
+
+            # Calcular recompensa promedio
+            recompensa_promedio = acum_recomp_elegidas / float(cant_iteraciones)
+            recompensas_promedio.append((epnum, recompensa_promedio))
 
             decrementar_step += 1
             # Comprobar si es necesario decrementar el valor del parámetro
@@ -242,12 +263,23 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                      'IteracionesExecTime': iter_exec_time,
                                      'ValorParametro': self.tecnica.valor_param_parcial,
                                      'ProcesoJoined': False,
-                                     'MatDiff': tmp_diff_mat
+                                     'MatDiff': tmp_diff_mat,
                                      })
 
                 # Decrementar contador para saber si es necesario calcular
                 # la diferencia entre las matrices Q
                 calc_mat_diff_cont -= 1
+
+            # Incrementar cantidad de accesos al Estado Final
+            cant_lleg_final += 1
+
+            # Incrementar contador de muestreo
+            cont_interv_muestreo += 1
+
+            if cont_interv_muestreo == inter_muestreo:
+                episodios_finalizados.append((epnum, cant_lleg_final))
+                # Reiniciar contador
+                cont_interv_muestreo = 0
 
             # Avanzar un episodio
             epnum += 1
@@ -273,7 +305,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                              'ProcesoJoined': False,
                              'ValorParametro': self.tecnica.valor_param_parcial,
                              'RunningExecTime': running_exec_time,
-                             'MatDiff': tmp_diff_mat
+                             'MatDiff': tmp_diff_mat,
+                             'RecompProm': recompensas_promedio,
+                             'EpFinalizados': episodios_finalizados
                              })
 
         # Realizar tareas al finalizar
