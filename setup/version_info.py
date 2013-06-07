@@ -7,12 +7,13 @@ import sys, os
 
 # Agregar paquete info a PYTHONPATH
 sys.path.insert(0, os.path.abspath(os.path.join('..', 'src')))
+
 from info import app_info
 
 app_version = app_info.__version__
 app_version_sep = app_version.split('.')
 
-for i in range(0, 4 - len(app_version_sep)):
+for i in xrange(0, 4 - len(app_version_sep)):
         app_version_sep.append('0')
 
 prod_vers_final = '({0})'.format(', '.join(app_version_sep))
