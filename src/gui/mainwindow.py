@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -85,42 +85,48 @@ class MainWindow(QtGui.QMainWindow):
         self.camino_optimo = None
         self.camino_optimo_active = None
 
+        # Variables necesarias para los gráficos
+        self.graph_recompensas_promedio = None
+        self.graph_episodios_finalizados = None
+
         self.tecnicas = {  # 0: "Greedy",
-                         1: "ε-Greedy",
-                         2: "Softmax",
-                         # 3: "Aleatorio"
+                           1: "ε-Greedy",
+                           2: "Softmax",
+                           # 3: "Aleatorio"
                          }
         self.gw_dimensiones = ["3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.window_config = {"item":
                               {"show_tooltip": True,
                                "menu_estado":
-                                    {"ocultar_tipos":
-                                     [TIPOESTADO.AGENTE],
-                                     "enabled": True},
+                               {"ocultar_tipos":
+                                [TIPOESTADO.AGENTE],
+                                "enabled": True
+                                },
                                "size": 40},
                               "gw":
-                               {"entrenamiento": {"actual_state": {"show": True, "color": "#000000", "icono": None}},
-                                "recorrido": {"actual_state": {"show": True, "color": "#000000", "icono": None}}
-                               },
+                             {"entrenamiento": {"actual_state": {"show": True, "color": "#000000", "icono": None}},
+                              "recorrido": {"actual_state": {"show": True, "color": "#000000", "icono": None}}
+                              },
                               "tipos_estados":
-                               {0: TipoEstado(0, None, _tr("Inicial"), _tr("I"), "#FF5500", None),
-                                1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#0071A6", None),
-                                2: TipoEstado(2, None, _tr("Agente"), _tr("A"), "#474747",
-                                              QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))),
-                                3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
-                                4: TipoEstado(4, 100, _tr("Excelente"), _tr("E"), "#BB0011", None),
-                                5: TipoEstado(5, 50, _tr("Bueno"), _tr("B"), "#4F0ACC", None),
-                                6: TipoEstado(6, -10, _tr("Malo"), _tr("M"), "#EB00A1", None),
-                                7: TipoEstado(7, None, _tr("Pared"), _tr("P"), "#000000", None),
-                                },
+                              {0: TipoEstado(0, None, _tr("Inicial"), _tr("I"), "#FF5500", None),
+                               1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#0071A6", None),
+                               2: TipoEstado(2, None, _tr("Agente"), _tr("A"), "#474747",
+                                             QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))),
+                               3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
+                               4: TipoEstado(4, 100, _tr("Excelente"), _tr("E"), "#BB0011", None),
+                               5: TipoEstado(5, 50, _tr("Bueno"), _tr("B"), "#4F0ACC", None),
+                               6: TipoEstado(6, -10, _tr("Malo"), _tr("M"), "#EB00A1", None),
+                               7: TipoEstado(7, None, _tr("Pared"), _tr("P"), "#000000", None),
+                               },
                               "opt_path":
-                                {"color": "#70DC4C",
+                             {"color": "#70DC4C",
                                  "pintar_inicial": False,
                                  "pintar_final": False,
                                  "delay": 0,
-                                 "show_icon": False}
-                             }
+                                 "show_icon": False
+                              }
+                              }
 
     def _initialize_window(self):
         # Aspectos de la ventana principal
@@ -132,7 +138,17 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setWindowFlags(QtCore.Qt.WindowSoftkeysVisibleHint)
 
+        # Configurar statusbar
+        # Agregar barra de progreso
+        self._ent_progress_bar = QtGui.QProgressBar()
+        self.WMainWindow.statusBar.addPermanentWidget(self._ent_progress_bar)
+        self._ent_progress_bar.setFixedSize(350, 14)
+        self._ent_progress_bar.setFormat(" %p% / %m episodios")
+        self._ent_progress_bar.setVisible(False)
+
+        # Agregar etiqueta para mostrar coordenadas actuales
         self.lbl_item_actual = QtGui.QLabel()
+        self.lbl_item_actual.setFixedWidth(120)
         self.WMainWindow.statusBar.addPermanentWidget(self.lbl_item_actual)
 
         self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -350,6 +366,8 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.chkDecrementarParam.setEnabled(True)
             self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
             self.WMainWindow.sbDecrementoVal.setEnabled(True)
+            self.WMainWindow.sbDecrementoVal.setMaximum(0.99)
+            self.WMainWindow.sbDecrementoVal.setValue(0.01)
         elif key == 2:
             # Softmax
             self.WMainWindow.lblEpsilon.hide()
@@ -359,6 +377,8 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.chkDecrementarParam.setEnabled(True)
             self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
             self.WMainWindow.sbDecrementoVal.setEnabled(True)
+            self.WMainWindow.sbDecrementoVal.setMaximum(1000000000)
+            self.WMainWindow.sbDecrementoVal.setValue(20)
         elif key == 3:
             # Aleatorio
             self.WMainWindow.lblTau.hide()
@@ -490,6 +510,10 @@ class MainWindow(QtGui.QMainWindow):
         # Ocultar camino antes óptimo antes de entrenar
         self.ocultar_camino_optimo()
         self.camino_optimo = None
+
+        # Inicializar variables de gráficos
+        self.graph_episodios_finalizados = None
+        self.graph_recompensas_promedio = None
 
         # Parámetros para mostrar el estado actual en pantalla
         self.ent_show_estado_act = self.window_config["gw"]["entrenamiento"]["actual_state"]["show"]
@@ -714,6 +738,11 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.lblRecExecTimeRecorrido.setText("-")
             self.WMainWindow.lblRecExecTimeTotal.setText("-")
 
+            self._ent_progress_bar.setVisible(True)
+            cant_episodios = self.WMainWindow.sbCantidadEpisodios.value()
+            self._ent_progress_bar.setMaximum(cant_episodios)
+            self._ent_progress_bar.setValue(0)
+
         if self.recorrer_is_running:
             self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
             self.WMainWindow.btnEntrenar.setDisabled(self.recorrer_is_running)
@@ -812,8 +841,15 @@ class MainWindow(QtGui.QMainWindow):
         if self.camino_optimo is not None:
             self.mostrar_camino_optimo_act()
 
+        # Ocultar barra de progreso
+        self._ent_progress_bar.setVisible(False)
+
         # Restaurar cursor normal
         QtGui.QApplication.restoreOverrideCursor()
+
+        # FIXME: Eliminar
+        logging.debug("Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
+        logging.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
 
     def _reintentar_detener_hilos(self):
         u"""
@@ -897,18 +933,12 @@ class MainWindow(QtGui.QMainWindow):
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
                 tmp_mat_diff = ql_ent_info.get('MatDiff', None)
                 corte_iteracion = ql_ent_info.get('CorteIteracion', None)
+                recompensas_promedio = ql_ent_info.get('RecompProm', None)
+                episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
 
                 self.matriz_q = matriz_q
-
-                if loop_alarm:
-                    QtGui.QMessageBox.warning(self,
-                                              _tr('QLearning - Entrenamiento'),
-                    u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
-                    self.working_process.join(0.05)
-                    self.qlearning_entrenar_worker = None
-                    self.working_process = None
-                    self.ql_entrenar_error_q = None
-                    self.ql_entrenar_out_q = None
+                self.graph_recompensas_promedio = recompensas_promedio
+                self.graph_episodios_finalizados = episodios_finalizados
 
                 try:
                     # Descomponen coordenadas de estado actual
@@ -927,6 +957,8 @@ class MainWindow(QtGui.QMainWindow):
                     main_wnd.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)".format(running_exec_time_ent,  # @IgnorePep8
                                                                                             running_exec_time_ent * 1000))  # @IgnorePep8
                     main_wnd.lblEntDiffMatrices.setText(str(tmp_mat_diff))
+
+                    self._ent_progress_bar.setValue(nro_episodio)
                 except TypeError:
                     pass
                 except ValueError:
@@ -958,6 +990,16 @@ class MainWindow(QtGui.QMainWindow):
                         item.setIcon(self.ent_icon_estado_act)
                     except TypeError:
                         item.setBackground(self.ent_color_estado_act)
+
+                if loop_alarm:
+                    QtGui.QMessageBox.warning(self,
+                                              _tr('QLearning - Entrenamiento'),
+                    u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
+                    self.working_process.join(0.05)
+                    self.qlearning_entrenar_worker = None
+                    self.working_process = None
+                    self.ql_entrenar_error_q = None
+                    self.ql_entrenar_out_q = None
         except Queue.Empty:
             pass
         except AttributeError:
@@ -1163,7 +1205,10 @@ class MainWindow(QtGui.QMainWindow):
 
             new_tipos_estados = self.GWOpcionesD.tipos_estados
 
+            # Actualizar tipos de estados
+            self.gridworld.tipos_estados = new_tipos_estados
             self.window_config["tipos_estados"] = new_tipos_estados
+
             self.refresh_gw()
 
     def mostrar_gen_rnd_estados_dialog(self):
