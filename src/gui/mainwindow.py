@@ -362,6 +362,8 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.chkDecrementarParam.setEnabled(True)
             self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
             self.WMainWindow.sbDecrementoVal.setEnabled(True)
+            self.WMainWindow.sbDecrementoVal.setMaximum(0.99)
+            self.WMainWindow.sbDecrementoVal.setValue(0.01)
         elif key == 2:
             # Softmax
             self.WMainWindow.lblEpsilon.hide()
@@ -371,6 +373,8 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.chkDecrementarParam.setEnabled(True)
             self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
             self.WMainWindow.sbDecrementoVal.setEnabled(True)
+            self.WMainWindow.sbDecrementoVal.setMaximum(1000000000)
+            self.WMainWindow.sbDecrementoVal.setValue(20)
         elif key == 3:
             # Aleatorio
             self.WMainWindow.lblTau.hide()
