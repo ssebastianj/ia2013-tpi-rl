@@ -7,6 +7,7 @@ import logging
 import multiprocessing
 import Queue
 import random
+import threading
 import time
 
 from PyQt4 import QtCore, QtGui
@@ -293,6 +294,8 @@ class MainWindow(QtGui.QMainWindow):
 
         # Recargar estados del GridWorld en pantalla
         self.recargar_estados()
+
+        self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
 
     def _set_window_signals(self):
         u"""
