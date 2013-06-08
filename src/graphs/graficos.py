@@ -35,7 +35,6 @@ class GraphEpsExitososWorker(threading.Thread):
 
         try:
             run_values = input_data[0]
-            logging.debug(run_values)
             gamma = run_values[0]
             id_tecnica, parametro, paso_decrem, interv_decrem = run_values[1]
             cant_episodios = run_values[2]
@@ -77,8 +76,6 @@ class GraphEpsExitososWorker(threading.Thread):
             else:
                 str_limit_iter = ""
 
-            logging.debug(str_limit_iter)
-
             # Mostrar parámetros de entrenamiento
             plt.text(plt.axis()[0] + 5,
                      plt.axis()[1] - 10,
@@ -108,7 +105,7 @@ class GraphEpsExitososWorker(threading.Thread):
         u"""
         Ejecuta tareas al finalizar el thread.
         """
-        pass
+        self.alive.clear()
 
     def procesar_entrada(self):
         u"""

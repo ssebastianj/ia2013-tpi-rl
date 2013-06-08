@@ -337,7 +337,6 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnCOAnimCancel.clicked.connect(self.animar_camino_optimo)
         self.WMainWindow.btnCOShowHide.clicked.connect(self.show_hide_camino_optimo)
         self.WMainWindow.btnGenEstRndRapida.clicked.connect(lambda: self.refresh_gw_random(True, True))
-        self.WMainWindow.sbCantidadEpisodios.valueChanged.connect(self.probar_matplotlib)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -1484,13 +1483,3 @@ class MainWindow(QtGui.QMainWindow):
 
         self.estado_final = self.gridworld.generar_estados_aleatorios(incluir_final)
         self.recargar_estados()
-
-    # FIXME
-    def probar_matplotlib(self):
-        inp_queue = Queue.Queue()
-
-        inp_queue.put((self._parametros, self.graph_episodios_finalizados))
-
-        grafico_worker = GraphEpsExitososWorker(inp_queue)
-        grafico_worker.start()
-        logging.debug(grafico_worker)
