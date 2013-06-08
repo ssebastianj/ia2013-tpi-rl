@@ -71,7 +71,7 @@ class GWOpcionesDialog(QtGui.QDialog):
 
         self.GWOpcionesD.sbMaloRecompensa.setMinimum(-1000000000)
         self.GWOpcionesD.sbMaloRecompensa.setMaximum(1000000000)
-        self.GWOpcionesD.sbMaloRecompensa.setValue(-10)
+        self.GWOpcionesD.sbMaloRecompensa.setValue(-50)
         self.GWOpcionesD.txtMaloNombre.setText(_tr("Malo"))
         self.GWOpcionesD.txtMaloLetra.setText(_tr("M"))
         self.GWOpcionesD.txtMaloColor.setText("#EB00A1")

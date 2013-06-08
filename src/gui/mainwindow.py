@@ -119,7 +119,7 @@ class MainWindow(QtGui.QMainWindow):
                                3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
                                4: TipoEstado(4, 100, _tr("Excelente"), _tr("E"), "#BB0011", None),
                                5: TipoEstado(5, 50, _tr("Bueno"), _tr("B"), "#4F0ACC", None),
-                               6: TipoEstado(6, -10, _tr("Malo"), _tr("M"), "#EB00A1", None),
+                               6: TipoEstado(6, -50, _tr("Malo"), _tr("M"), "#EB00A1", None),
                                7: TipoEstado(7, None, _tr("Pared"), _tr("P"), "#000000", None),
                                },
                               "opt_path":
@@ -1514,7 +1514,3 @@ class MainWindow(QtGui.QMainWindow):
 
             estado_final_gw = self.gridworld.tipos_estados[TIPOESTADO.FINAL]
             estado_final_gw.recompensa = calc_recomp_final
-
-            logging.debug("Recompensa Final Cálculo: {0:.2f}".format(calc_recomp_final))
-            logging.debug("Recompensa Final Config: {0:.2f}".format(self.window_config["tipos_estados"][TIPOESTADO.FINAL].recompensa))
-            logging.debug("Recompensa Final GW: {0:.2f}".format(self.gridworld.tipos_estados[TIPOESTADO.FINAL].recompensa))
