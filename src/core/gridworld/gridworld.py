@@ -162,6 +162,12 @@ class GridWorld(object):
     def get_coordenadas(self):
         return self._coordenadas
 
+    def get_dimension(self):
+        return (self._ancho, self._alto)
+
+    def set_dimension(self, dimension):
+        self._ancho, self._alto = dimension
+
     def get_vecinos_estado(self, x, y):
         u"""
         Devuelve los estados adyacentes en función de un estado dado.
@@ -274,3 +280,4 @@ class GridWorld(object):
                                        set_tipos_vecinos_excluidos, None,
                                        "Tipos de vecinos excluidos al calcular los vecinos adyacentes")
     coordenadas = property(get_coordenadas, None, None, "Coordenadas")
+    dimension = property(get_dimension, set_dimension, None, "Dimensión del GridWorld")

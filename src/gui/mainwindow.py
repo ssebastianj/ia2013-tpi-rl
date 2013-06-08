@@ -96,7 +96,7 @@ class MainWindow(QtGui.QMainWindow):
                            2: "Softmax",
                            # 3: "Aleatorio"
                          }
-        self.gw_dimensiones = ["3 x 3", "4 x 4", "5 x 5",
+        self.gw_dimensiones = [  # "3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.window_config = {"item":
                               {"show_tooltip": True,
@@ -107,12 +107,13 @@ class MainWindow(QtGui.QMainWindow):
                                 },
                                "size": 40},
                               "gw":
-                             {"entrenamiento": {"actual_state": {"show": True, "color": "#000000", "icono": None}},
+                             {"entrenamiento": {"actual_state": {"show": True, "color": "#000000", "icono": None},
+                                                "recompfinalauto": True},
                               "recorrido": {"actual_state": {"show": True, "color": "#000000", "icono": None}}
                               },
                               "tipos_estados":
                               {0: TipoEstado(0, None, _tr("Inicial"), _tr("I"), "#FF5500", None),
-                               1: TipoEstado(1, 1455, _tr("Final"), _tr("F"), "#0071A6", None),
+                               1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#0071A6", None),
                                2: TipoEstado(2, None, _tr("Agente"), _tr("A"), "#474747",
                                              QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))),
                                3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
@@ -127,7 +128,13 @@ class MainWindow(QtGui.QMainWindow):
                                  "pintar_final": False,
                                  "delay": 0,
                                  "show_icon": False
-                              }
+                              },
+                              "exponentes_final": {6: 12,
+                                                   7: 17,
+                                                   8: 18,
+                                                   9: 28,
+                                                   10: 31
+                                                   }
                               }
 
     def _initialize_window(self):
@@ -145,7 +152,7 @@ class MainWindow(QtGui.QMainWindow):
         self._ent_progress_bar = QtGui.QProgressBar()
         self.WMainWindow.statusBar.addPermanentWidget(self._ent_progress_bar)
         self._ent_progress_bar.setFixedSize(350, 14)
-        self._ent_progress_bar.setFormat(" %p% / %m episodios")
+        self._ent_progress_bar.setFormat(_tr(" %p% / %m episodios"))
         self._ent_progress_bar.setVisible(False)
 
         # Agregar etiqueta para mostrar coordenadas actuales
@@ -274,6 +281,9 @@ class MainWindow(QtGui.QMainWindow):
                                    None,
                                    [TIPOESTADO.PARED])
 
+        # FIXME
+        self.calcular_recompensa_final()
+
         ancho_estado_px = self.window_config["item"]["size"]
         ancho_gw_px = ancho_estado_px * ancho_gw
 
@@ -337,6 +347,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnCOAnimCancel.clicked.connect(self.animar_camino_optimo)
         self.WMainWindow.btnCOShowHide.clicked.connect(self.show_hide_camino_optimo)
         self.WMainWindow.btnGenEstRndRapida.clicked.connect(lambda: self.refresh_gw_random(True, True))
+        self.WMainWindow.sbQLGamma.valueChanged.connect(self.calcular_recompensa_final)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -888,8 +899,8 @@ class MainWindow(QtGui.QMainWindow):
         """
         # self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect(self.set_gw_dimension_cb)
         self._init_vars()
-        self.inicializar_gw()
         self.inicializar_ql_vals()
+        self.inicializar_gw()
 
     def mostrar_dialogo_acerca(self):
         u"""
@@ -1483,3 +1494,27 @@ class MainWindow(QtGui.QMainWindow):
 
         self.estado_final = self.gridworld.generar_estados_aleatorios(incluir_final)
         self.recargar_estados()
+
+    def calcular_recompensa_final(self):
+        u"""
+        Calcula de manera dinámica la recompensa del Estado Final.
+        """
+        if self.window_config["gw"]["entrenamiento"]["recompfinalauto"]:
+            gamma = self.WMainWindow.sbQLGamma.value()
+            estado_excelente = self.window_config["tipos_estados"][TIPOESTADO.EXCELENTE]
+            recomp_excelente = estado_excelente.recompensa
+            ancho = self.gridworld.ancho
+
+            exponente = self.window_config["exponentes_final"][ancho]
+
+            calc_recomp_final = int(recomp_excelente / (gamma ** exponente))
+
+            estado_final_cfg = self.window_config["tipos_estados"][TIPOESTADO.FINAL]
+            estado_final_cfg.recompensa = calc_recomp_final
+
+            estado_final_gw = self.gridworld.tipos_estados[TIPOESTADO.FINAL]
+            estado_final_gw.recompensa = calc_recomp_final
+
+            logging.debug("Recompensa Final Cálculo: {0:.2f}".format(calc_recomp_final))
+            logging.debug("Recompensa Final Config: {0:.2f}".format(self.window_config["tipos_estados"][TIPOESTADO.FINAL].recompensa))
+            logging.debug("Recompensa Final GW: {0:.2f}".format(self.gridworld.tipos_estados[TIPOESTADO.FINAL].recompensa))
