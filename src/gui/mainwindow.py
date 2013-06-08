@@ -110,7 +110,7 @@ class MainWindow(QtGui.QMainWindow):
                               },
                               "tipos_estados":
                               {0: TipoEstado(0, None, _tr("Inicial"), _tr("I"), "#FF5500", None),
-                               1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#0071A6", None),
+                               1: TipoEstado(1, 1455, _tr("Final"), _tr("F"), "#0071A6", None),
                                2: TipoEstado(2, None, _tr("Agente"), _tr("A"), "#474747",
                                              QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))),
                                3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
@@ -1256,10 +1256,10 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbQLTau.hide()
 
         # Establecer por defecto 1 episodio
-        self.WMainWindow.sbCantidadEpisodios.setValue(1)
+        self.WMainWindow.sbCantidadEpisodios.setValue(1000)
 
-        # Establecer por defecto un Epsilon = 0.5
-        self.WMainWindow.sbQLEpsilon.setValue(0.5)
+        # Establecer por defecto un Epsilon = 0.1
+        self.WMainWindow.sbQLEpsilon.setValue(0.1)
 
         # Establecer por defecto un Gamma = 0.8
         self.WMainWindow.sbQLGamma.setValue(0.8)
@@ -1267,8 +1267,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbDecrementoVal.setValue(0.01)
         self.WMainWindow.sbCantEpisodiosDec.setValue(1)
         self.WMainWindow.sbCantEpisodiosDec.setSuffix(_tr(" episodios"))
-        self.WMainWindow.chkDecrementarParam.setChecked(True)
-        self.WMainWindow.sbQLTau.setValue(10)
+        self.WMainWindow.chkDecrementarParam.setChecked(False)
+        self.WMainWindow.sbQLTau.setValue(500)
         self.WMainWindow.sbIntervaloDiffCalc.setSuffix(_tr(" episodios"))
         self.WMainWindow.sbCantMaxIteraciones.setValue(200)
         self.WMainWindow.sbIntervaloDiffCalc.setMinimum(2)
