@@ -26,6 +26,8 @@ from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
+from graphs.graficos import GraphEpsExitososWorker, GraphRecompPromedioWorker
+
 from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
 
@@ -293,6 +295,8 @@ class MainWindow(QtGui.QMainWindow):
 
         # Recargar estados del GridWorld en pantalla
         self.recargar_estados()
+
+        self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
 
     def _set_window_signals(self):
         u"""
@@ -614,6 +618,13 @@ class MainWindow(QtGui.QMainWindow):
         if self.qlearning_entrenar_worker is not None:
             self.working_process = self.qlearning_entrenar_worker
             self.entrenar_is_running = True
+
+            self._parametros = (gamma,
+                                (id_tecnica, parametro, paso_decremento, intervalo_decremento),
+                                cant_episodios,
+                                (limitar_nro_iteraciones, cant_max_iter),
+                                init_value_fn
+                                )
 
             self.on_comienzo_proceso()
 

@@ -106,18 +106,23 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         epnum = 1  # Inicializar número de episodio
         cant_cortes_iteraciones = 0
 
+        # --- Estadísticas para gráficos ---
         # Acumular recompensas de los estados elegidos
         acum_recomp_elegidas = 0
         # Lista de recompensas promedio
-        recompensas_promedio = []
+        recompensas_promedio = numpy.empty((cantidad_episodios, 1), dtype=object)
 
         # Cantidad de veces que se llegó al Estado Final
         cant_lleg_final = 0
-        # Cantidad de episodios entre cálculos
-        inter_muestreo = 10
+        # Cantidad de episodios entre muestreo
+        inter_muestreo = int(cantidad_episodios / (cantidad_episodios ** 0.5))
+        # Contador para determinar cuando hacer el muestreo
         cont_interv_muestreo = 0
+        # Contador para indexar el arreglo de Numpy
+        contador_idx_arr = 0
         # Lista con episodios finalizados
-        episodios_finalizados = []
+        episodios_finalizados = numpy.empty((inter_muestreo + 1, 1), object)
+        # ---------------------------------
 
         # Registrar tiempo de comienzo de los episodios
         ep_start_time = wtimer()
@@ -195,6 +200,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 estado_actual = self.matriz_r[x_act - 1][y_act - 1]
 
                 # Comprobar si se alcanzó el número máximo de iteraciones
+                # FIXME
                 if self.limitar_iteraciones and (self.cant_max_iter == cant_iteraciones):
                     self.encolar_salida({'CorteIteracion': True})
                     cant_cortes_iteraciones += 1
@@ -215,8 +221,11 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 iter_exec_time = 0
 
             # Calcular recompensa promedio
+            # FIXME
             recompensa_promedio = acum_recomp_elegidas / float(cant_iteraciones)
-            recompensas_promedio.append((epnum, recompensa_promedio))
+            # Agregar resultado al arreglo
+            # FIXME
+            recompensas_promedio[epnum - 1][0] = ((epnum, recompensa_promedio))
 
             decrementar_step += 1
             # Comprobar si es necesario decrementar el valor del parámetro
@@ -271,19 +280,27 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 calc_mat_diff_cont -= 1
 
             # Incrementar cantidad de accesos al Estado Final
+            # FIXME
             cant_lleg_final += 1
 
             # Incrementar contador de muestreo
+            # FIXME
             cont_interv_muestreo += 1
 
+            # Registrar cuantas veces se llegó al Estado Final
+            # FIXME
             if cont_interv_muestreo == inter_muestreo:
-                episodios_finalizados.append((epnum, cant_lleg_final))
+                episodios_finalizados[contador_idx_arr][0] = (epnum, cant_lleg_final)
+                contador_idx_arr += 1
                 # Reiniciar contador
                 cont_interv_muestreo = 0
 
             # Avanzar un episodio
             epnum += 1
             # ======================= Fin de episodios =======================
+
+        # Incluir estadísticas del último episodio
+        episodios_finalizados[contador_idx_arr][0] = (epnum - 1, cant_lleg_final)
 
         # Calcular tiempos de finalización
         running_end_time = ep_end_time = wtimer()
