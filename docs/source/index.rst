@@ -9,16 +9,16 @@ Inteligencia Artificial 2013: Aprendizaje por Refuerzo
 *Grupo Nº 1*
 ------------
 
-* **Levin, Fabián A.** <*fabito_levin [at] yahoo.com.ar*>
+* **Levin, Fabián Andrés** <*fabianlevin60@gmail.com*>
 
   * *Bitbucket*: https://bitbucket.org/fabitolevin88
   
-* **Seba, Sebastián J.** <*ssebastianj [at] gmail.com*> 
+* **Seba, Sebastián José** <*ssebastianj@gmail.com*> 
   
   * *Github*: https://github.com/ssebastianj
   * *Bitbucket*: https://bitbucket.org/ssebastianj
   
-* **Vallejos, Lucía B.** <*luvallejos [at] hotmail.com*>
+* **Vallejos, Lucía Belén** <*luvallejos89@gmail.com*>
   
   * *Bitbucket*: https://bitbucket.org/luvallejos
 
@@ -139,6 +139,17 @@ Contents:
    :special-members:
    
 .. autoclass:: QLMatrixInitEnRecompensa
+   :members:
+   :private-members:
+   :special-members:
+   
+.. automodule:: graphs.graficos
+.. autoclass:: GraphEpsExitososWorker
+   :members:
+   :private-members:
+   :special-members:
+   
+.. autoclass:: GraphRecompPromedioWorker
    :members:
    :private-members:
    :special-members:
