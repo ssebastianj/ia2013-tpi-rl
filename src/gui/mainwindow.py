@@ -96,8 +96,10 @@ class MainWindow(QtGui.QMainWindow):
                            2: "Softmax",
                            # 3: "Aleatorio"
                          }
+
         self.gw_dimensiones = [  # "3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
+
         self.window_config = {"item":
                               {"show_tooltip": True,
                                "menu_estado":
@@ -113,7 +115,7 @@ class MainWindow(QtGui.QMainWindow):
                               },
                               "tipos_estados":
                               {0: TipoEstado(0, None, _tr("Inicial"), _tr("I"), "#FF5500", None),
-                               1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#0071A6", None),
+                               1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#00AB00", None),
                                2: TipoEstado(2, None, _tr("Agente"), _tr("A"), "#474747",
                                              QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))),
                                3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
@@ -123,7 +125,7 @@ class MainWindow(QtGui.QMainWindow):
                                7: TipoEstado(7, None, _tr("Pared"), _tr("P"), "#000000", None),
                                },
                               "opt_path":
-                             {"color": "#70DC4C",
+                             {"color": "#55FF00",
                                  "pintar_inicial": False,
                                  "pintar_final": False,
                                  "delay": 0,
@@ -281,7 +283,8 @@ class MainWindow(QtGui.QMainWindow):
                                    alto_gw,
                                    self.window_config["tipos_estados"],
                                    None,
-                                   [TIPOESTADO.PARED])
+                                   [TIPOESTADO.PARED]
+                                   )
 
         # FIXME
         self.calcular_recompensa_final()
@@ -1203,7 +1206,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def mostrar_opciones_gw(self):
         # Inicializar cuadros de diálogo
-        self.GWOpcionesD = GWOpcionesDialog(self)
+        self.GWOpcionesD = GWOpcionesDialog(self, self.window_config)
 
         if self.GWOpcionesD.exec_():
             if self.GWOpcionesD.ent_show_state:
@@ -1228,13 +1231,11 @@ class MainWindow(QtGui.QMainWindow):
 
             self.window_config["item"]["size"] = self.GWOpcionesD.estado_size
 
-            new_tipos_estados = self.GWOpcionesD.tipos_estados
-
             # Actualizar tipos de estados
-            self.gridworld.tipos_estados = new_tipos_estados
-            self.window_config["tipos_estados"] = new_tipos_estados
+            self.gridworld.tipos_estados = self.GWOpcionesD.tipos_estados
+            self.window_config["tipos_estados"] = self.GWOpcionesD.tipos_estados
 
-            self.refresh_gw()
+            self.recargar_estados()
 
     def mostrar_gen_rnd_estados_dialog(self):
         self.GWGenRndEstValsD = GWGenRndEstadosDialog(self)
@@ -1424,8 +1425,6 @@ class MainWindow(QtGui.QMainWindow):
         Acción que invoca al método para mostrar el camino óptimo. Utilizada desde
         un proceso o UI.
         """
-        logging.debug("Ocultar camino óptimo")
-
         if self.camino_optimo is not None and self.camino_optimo_active:
             self.camino_optimo_active = False
 
@@ -1539,8 +1538,6 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuEstadisticas.addMenu(submenu2)
 
     def show_estadisticas(self, action):
-        logging.debug(action)
-
         data = action.data().toInt()[0]
 
         if data == 0:
