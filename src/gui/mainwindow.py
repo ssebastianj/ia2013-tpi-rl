@@ -237,6 +237,8 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setMouseTracking(True)
 
+        self.generar_menu_estadisticas()
+
         self.inicializar_todo()
 
         # Conexión de señales
@@ -348,6 +350,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnCOShowHide.clicked.connect(self.show_hide_camino_optimo)
         self.WMainWindow.btnGenEstRndRapida.clicked.connect(lambda: self.refresh_gw_random(True, True))
         self.WMainWindow.sbQLGamma.valueChanged.connect(self.calcular_recompensa_final)
+        self.WMainWindow.menuEstadisticas.triggered.connect(self.show_estadisticas)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -1514,3 +1517,57 @@ class MainWindow(QtGui.QMainWindow):
 
             estado_final_gw = self.gridworld.tipos_estados[TIPOESTADO.FINAL]
             estado_final_gw.recompensa = calc_recomp_final
+
+    def generar_menu_estadisticas(self):
+        submenu1 = QtGui.QMenu(_tr("Recompensas promedio"), self)
+        action = QtGui.QAction(_tr("Ver gráfico..."), self)
+        action.setData(0)
+        submenu1.addAction(action)
+        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action.setData(1)
+        submenu1.addAction(action)
+
+        submenu2 = QtGui.QMenu(_tr("Episodios finalizados"), self)
+        action = QtGui.QAction(_tr("Ver gráfico..."), self)
+        action.setData(2)
+        submenu2.addAction(action)
+        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action.setData(3)
+        submenu2.addAction(action)
+
+        self.WMainWindow.menuEstadisticas.addMenu(submenu1)
+        self.WMainWindow.menuEstadisticas.addMenu(submenu2)
+
+    def show_estadisticas(self, action):
+        logging.debug(action)
+
+        data = action.data().toInt()[0]
+
+        if data == 0:
+            # Recompensas promedio
+            # Mostrar gráfico
+            inp_queue = Queue.Queue()
+            inp_queue.put((self._parametros, self.graph_recompensas_promedio))
+
+            rec_prom_worker = GraphRecompPromedioWorker(inp_queue)
+            rec_prom_worker.start()
+
+            logging.debug(rec_prom_worker)
+        elif data == 1:
+            # Recompensas promedio
+            # Mostrar tabla
+            pass
+        elif data == 2:
+            # Episodios finalizados
+            # Mostrar gráfico
+            inp_queue = Queue.Queue()
+            inp_queue.put((self._parametros, self.graph_episodios_finalizados))
+
+            eps_fin_worker = GraphEpsExitososWorker(inp_queue)
+            eps_fin_worker.start()
+
+            logging.debug(eps_fin_worker)
+        elif data == 3:
+            # Episodios finalizados
+            # Mostrar tabla
+            pass

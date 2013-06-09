@@ -43,12 +43,12 @@ class GraphEpsExitososWorker(threading.Thread):
 
             xy_values = input_data[1]
             x_values = [pair[0][0] for pair in xy_values]
-            y_values = [pair[0][1] for pair in xy_values]
+            y_porc = [(val[0][0] * 100) / float(val[0][1]) for val in xy_values]
 
             figure = plt.gcf()
             figure.canvas.set_window_title(u"Definir título de la ventana")
 
-            plt.plot(x_values, y_values)
+            plt.plot(x_values, y_porc)
             plt.grid(True)
             plt.title(u"Definir título del gráfico")
             plt.xlabel(u"Episodios")

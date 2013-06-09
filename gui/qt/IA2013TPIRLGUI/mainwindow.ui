@@ -112,10 +112,16 @@
     <addaction name="separator"/>
     <addaction name="actionInicializarTodo"/>
    </widget>
+   <widget class="QMenu" name="menuEstadisticas">
+    <property name="title">
+     <string>Estadísticas</string>
+    </property>
+   </widget>
    <addaction name="menuArchivo"/>
    <addaction name="menuEdicion"/>
    <addaction name="menuConfiguracion"/>
    <addaction name="menuOperaciones"/>
+   <addaction name="menuEstadisticas"/>
    <addaction name="menuAyuda"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -2002,6 +2008,11 @@
   <action name="actionInicializarTodo">
    <property name="text">
     <string>Inicializar todo</string>
+   </property>
+  </action>
+  <action name="actionEre">
+   <property name="text">
+    <string>ere</string>
    </property>
   </action>
  </widget>

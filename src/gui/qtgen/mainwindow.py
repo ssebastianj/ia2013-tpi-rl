@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\Users\Lucia\workspace\TP-IA\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Sat Jun 08 16:40:55 2013
+# Created: Sat Jun 08 20:18:15 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -71,6 +71,8 @@ class Ui_MainWindow(object):
         self.menuGridWorld.setObjectName(_fromUtf8("menuGridWorld"))
         self.menuQLearning = QtGui.QMenu(self.menuConfiguracion)
         self.menuQLearning.setObjectName(_fromUtf8("menuQLearning"))
+        self.menuEstadisticas = QtGui.QMenu(self.menuBar)
+        self.menuEstadisticas.setObjectName(_fromUtf8("menuEstadisticas"))
         MainWindow.setMenuBar(self.menuBar)
         self.statusBar = QtGui.QStatusBar(MainWindow)
         self.statusBar.setObjectName(_fromUtf8("statusBar"))
@@ -810,6 +812,8 @@ class Ui_MainWindow(object):
         self.actionAgenteCancelar.setObjectName(_fromUtf8("actionAgenteCancelar"))
         self.actionInicializarTodo = QtGui.QAction(MainWindow)
         self.actionInicializarTodo.setObjectName(_fromUtf8("actionInicializarTodo"))
+        self.actionEre = QtGui.QAction(MainWindow)
+        self.actionEre.setObjectName(_fromUtf8("actionEre"))
         self.menuArchivo.addAction(self.actionAppSalir)
         self.menuAyuda.addAction(self.actionAcercaDe)
         self.menuOperaciones.addAction(self.actionAgenteEntrenar)
@@ -823,6 +827,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuEdicion.menuAction())
         self.menuBar.addAction(self.menuConfiguracion.menuAction())
         self.menuBar.addAction(self.menuOperaciones.menuAction())
+        self.menuBar.addAction(self.menuEstadisticas.menuAction())
         self.menuBar.addAction(self.menuAyuda.menuAction())
         self.lblMQFormula.setBuddy(self.sbValOptimoIncremento)
         self.label_3.setBuddy(self.sbCantEpisodiosDec)
@@ -892,6 +897,7 @@ class Ui_MainWindow(object):
         self.menuConfiguracion.setTitle(_translate("MainWindow", "&Configuración", None))
         self.menuGridWorld.setTitle(_translate("MainWindow", "Grid World", None))
         self.menuQLearning.setTitle(_translate("MainWindow", "Q-Learning", None))
+        self.menuEstadisticas.setTitle(_translate("MainWindow", "Estadísticas", None))
         self.dwGridWorld.setWindowTitle(_translate("MainWindow", "Grid World", None))
         self.gbGridWorld.setTitle(_translate("MainWindow", "Grid World", None))
         self.groupBox_8.setTitle(_translate("MainWindow", "Acciones", None))
@@ -990,5 +996,6 @@ class Ui_MainWindow(object):
         self.actionAgenteRecorrer.setText(_translate("MainWindow", "Recorrer", None))
         self.actionAgenteCancelar.setText(_translate("MainWindow", "Cancelar", None))
         self.actionInicializarTodo.setText(_translate("MainWindow", "Inicializar todo", None))
+        self.actionEre.setText(_translate("MainWindow", "ere", None))
 
 import recursos_rc
