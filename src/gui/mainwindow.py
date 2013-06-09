@@ -26,6 +26,8 @@ from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
+from graphs.graficos import GraphEpsExitososWorker, GraphRecompPromedioWorker
+
 from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
 
@@ -94,7 +96,7 @@ class MainWindow(QtGui.QMainWindow):
                            2: "Softmax",
                            # 3: "Aleatorio"
                          }
-        self.gw_dimensiones = ["3 x 3", "4 x 4", "5 x 5",
+        self.gw_dimensiones = [  # "3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
         self.window_config = {"item":
                               {"show_tooltip": True,
@@ -105,7 +107,8 @@ class MainWindow(QtGui.QMainWindow):
                                 },
                                "size": 40},
                               "gw":
-                             {"entrenamiento": {"actual_state": {"show": True, "color": "#000000", "icono": None}},
+                             {"entrenamiento": {"actual_state": {"show": True, "color": "#000000", "icono": None},
+                                                "recompfinalauto": True},
                               "recorrido": {"actual_state": {"show": True, "color": "#000000", "icono": None}}
                               },
                               "tipos_estados":
@@ -116,7 +119,7 @@ class MainWindow(QtGui.QMainWindow):
                                3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
                                4: TipoEstado(4, 100, _tr("Excelente"), _tr("E"), "#BB0011", None),
                                5: TipoEstado(5, 50, _tr("Bueno"), _tr("B"), "#4F0ACC", None),
-                               6: TipoEstado(6, -10, _tr("Malo"), _tr("M"), "#EB00A1", None),
+                               6: TipoEstado(6, -50, _tr("Malo"), _tr("M"), "#EB00A1", None),
                                7: TipoEstado(7, None, _tr("Pared"), _tr("P"), "#000000", None),
                                },
                               "opt_path":
@@ -125,7 +128,13 @@ class MainWindow(QtGui.QMainWindow):
                                  "pintar_final": False,
                                  "delay": 0,
                                  "show_icon": False
-                              }
+                              },
+                              "exponentes_final": {6: 12,
+                                                   7: 17,
+                                                   8: 19,
+                                                   9: 28,
+                                                   10: 31
+                                                   }
                               }
 
     def _initialize_window(self):
@@ -143,7 +152,7 @@ class MainWindow(QtGui.QMainWindow):
         self._ent_progress_bar = QtGui.QProgressBar()
         self.WMainWindow.statusBar.addPermanentWidget(self._ent_progress_bar)
         self._ent_progress_bar.setFixedSize(350, 14)
-        self._ent_progress_bar.setFormat(" %p% / %m episodios")
+        self._ent_progress_bar.setFormat(_tr(" %p% / %m episodios"))
         self._ent_progress_bar.setVisible(False)
 
         # Agregar etiqueta para mostrar coordenadas actuales
@@ -228,6 +237,8 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setMouseTracking(True)
 
+        self.generar_menu_estadisticas()
+
         self.inicializar_todo()
 
         # Conexión de señales
@@ -272,6 +283,9 @@ class MainWindow(QtGui.QMainWindow):
                                    None,
                                    [TIPOESTADO.PARED])
 
+        # FIXME
+        self.calcular_recompensa_final()
+
         ancho_estado_px = self.window_config["item"]["size"]
         ancho_gw_px = ancho_estado_px * ancho_gw
 
@@ -293,6 +307,8 @@ class MainWindow(QtGui.QMainWindow):
 
         # Recargar estados del GridWorld en pantalla
         self.recargar_estados()
+
+        self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
 
     def _set_window_signals(self):
         u"""
@@ -333,6 +349,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnCOAnimCancel.clicked.connect(self.animar_camino_optimo)
         self.WMainWindow.btnCOShowHide.clicked.connect(self.show_hide_camino_optimo)
         self.WMainWindow.btnGenEstRndRapida.clicked.connect(lambda: self.refresh_gw_random(True, True))
+        self.WMainWindow.sbQLGamma.valueChanged.connect(self.calcular_recompensa_final)
+        self.WMainWindow.menuEstadisticas.triggered.connect(self.show_estadisticas)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -615,6 +633,13 @@ class MainWindow(QtGui.QMainWindow):
             self.working_process = self.qlearning_entrenar_worker
             self.entrenar_is_running = True
 
+            self._parametros = (gamma,
+                                (id_tecnica, parametro, paso_decremento, intervalo_decremento),
+                                cant_episodios,
+                                (limitar_nro_iteraciones, cant_max_iter),
+                                init_value_fn
+                                )
+
             self.on_comienzo_proceso()
 
     def recorrer_gw(self):
@@ -877,8 +902,8 @@ class MainWindow(QtGui.QMainWindow):
         """
         # self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect(self.set_gw_dimension_cb)
         self._init_vars()
-        self.inicializar_gw()
         self.inicializar_ql_vals()
+        self.inicializar_gw()
 
     def mostrar_dialogo_acerca(self):
         u"""
@@ -1256,10 +1281,10 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbQLTau.hide()
 
         # Establecer por defecto 1 episodio
-        self.WMainWindow.sbCantidadEpisodios.setValue(1)
+        self.WMainWindow.sbCantidadEpisodios.setValue(1000)
 
-        # Establecer por defecto un Epsilon = 0.5
-        self.WMainWindow.sbQLEpsilon.setValue(0.5)
+        # Establecer por defecto un Epsilon = 0.1
+        self.WMainWindow.sbQLEpsilon.setValue(0.1)
 
         # Establecer por defecto un Gamma = 0.8
         self.WMainWindow.sbQLGamma.setValue(0.8)
@@ -1267,8 +1292,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbDecrementoVal.setValue(0.01)
         self.WMainWindow.sbCantEpisodiosDec.setValue(1)
         self.WMainWindow.sbCantEpisodiosDec.setSuffix(_tr(" episodios"))
-        self.WMainWindow.chkDecrementarParam.setChecked(True)
-        self.WMainWindow.sbQLTau.setValue(10)
+        self.WMainWindow.chkDecrementarParam.setChecked(False)
+        self.WMainWindow.sbQLTau.setValue(500)
         self.WMainWindow.sbIntervaloDiffCalc.setSuffix(_tr(" episodios"))
         self.WMainWindow.sbCantMaxIteraciones.setValue(200)
         self.WMainWindow.sbIntervaloDiffCalc.setMinimum(2)
@@ -1472,3 +1497,77 @@ class MainWindow(QtGui.QMainWindow):
 
         self.estado_final = self.gridworld.generar_estados_aleatorios(incluir_final)
         self.recargar_estados()
+
+    def calcular_recompensa_final(self):
+        u"""
+        Calcula de manera dinámica la recompensa del Estado Final.
+        """
+        if self.window_config["gw"]["entrenamiento"]["recompfinalauto"]:
+            gamma = self.WMainWindow.sbQLGamma.value()
+            estado_excelente = self.window_config["tipos_estados"][TIPOESTADO.EXCELENTE]
+            recomp_excelente = estado_excelente.recompensa
+            ancho = self.gridworld.ancho
+
+            exponente = self.window_config["exponentes_final"][ancho]
+
+            calc_recomp_final = int(recomp_excelente / (gamma ** exponente))
+
+            estado_final_cfg = self.window_config["tipos_estados"][TIPOESTADO.FINAL]
+            estado_final_cfg.recompensa = calc_recomp_final
+
+            estado_final_gw = self.gridworld.tipos_estados[TIPOESTADO.FINAL]
+            estado_final_gw.recompensa = calc_recomp_final
+
+    def generar_menu_estadisticas(self):
+        submenu1 = QtGui.QMenu(_tr("Recompensas promedio"), self)
+        action = QtGui.QAction(_tr("Ver gráfico..."), self)
+        action.setData(0)
+        submenu1.addAction(action)
+        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action.setData(1)
+        submenu1.addAction(action)
+
+        submenu2 = QtGui.QMenu(_tr("Episodios finalizados"), self)
+        action = QtGui.QAction(_tr("Ver gráfico..."), self)
+        action.setData(2)
+        submenu2.addAction(action)
+        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action.setData(3)
+        submenu2.addAction(action)
+
+        self.WMainWindow.menuEstadisticas.addMenu(submenu1)
+        self.WMainWindow.menuEstadisticas.addMenu(submenu2)
+
+    def show_estadisticas(self, action):
+        logging.debug(action)
+
+        data = action.data().toInt()[0]
+
+        if data == 0:
+            # Recompensas promedio
+            # Mostrar gráfico
+            inp_queue = Queue.Queue()
+            inp_queue.put((self._parametros, self.graph_recompensas_promedio))
+
+            rec_prom_worker = GraphRecompPromedioWorker(inp_queue)
+            rec_prom_worker.start()
+
+            logging.debug(rec_prom_worker)
+        elif data == 1:
+            # Recompensas promedio
+            # Mostrar tabla
+            pass
+        elif data == 2:
+            # Episodios finalizados
+            # Mostrar gráfico
+            inp_queue = Queue.Queue()
+            inp_queue.put((self._parametros, self.graph_episodios_finalizados))
+
+            eps_fin_worker = GraphEpsExitososWorker(inp_queue)
+            eps_fin_worker.start()
+
+            logging.debug(eps_fin_worker)
+        elif data == 3:
+            # Episodios finalizados
+            # Mostrar tabla
+            pass
