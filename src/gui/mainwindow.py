@@ -131,7 +131,7 @@ class MainWindow(QtGui.QMainWindow):
                               },
                               "exponentes_final": {6: 12,
                                                    7: 17,
-                                                   8: 18,
+                                                   8: 19,
                                                    9: 28,
                                                    10: 31
                                                    }
