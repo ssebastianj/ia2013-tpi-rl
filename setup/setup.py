@@ -4,9 +4,12 @@
 from __future__ import absolute_import
 
 import os
+import platform
 import subprocess
 import sys
 
+sys.path.insert(0, os.path.abspath(os.path.join('..', 'src')))
+from info import app_info
 
 def main():
     # Build documentation
@@ -45,7 +48,9 @@ def main():
     main_path = os.path.abspath(os.path.join(os.path.pardir, 'src', 'ia.pyw'))
     spec_path = os.path.abspath(os.path.join(os.path.curdir, 'spec'))
     icon_path = os.path.abspath(os.path.join(os.path.pardir, 'src', 'img', 'UTN.ico'))
-    dist_path = os.path.abspath(os.path.join(os.path.curdir, 'dist'))
+
+    folder_name = "IA-{0}-{1}".format(app_info.__version__, platform.machine())
+    dist_path = os.path.abspath(os.path.join(os.path.curdir, 'dist', folder_name))
     hooks_dir = os.path.abspath(os.path.join(os.path.curdir, 'hooks'))
 
     # Build EXE
