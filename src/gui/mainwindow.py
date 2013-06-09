@@ -965,6 +965,7 @@ class MainWindow(QtGui.QMainWindow):
                 episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
 
                 self.matriz_q = matriz_q
+                # Información estadística
                 self.graph_recompensas_promedio = recompensas_promedio
                 self.graph_episodios_finalizados = episodios_finalizados
 

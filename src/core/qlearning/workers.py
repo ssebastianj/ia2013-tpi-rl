@@ -300,7 +300,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             # ======================= Fin de episodios =======================
 
         # Incluir estadísticas del último episodio
-        episodios_finalizados[contador_idx_arr][0] = (epnum - 1, cant_lleg_final)
+        try:
+            episodios_finalizados[contador_idx_arr - 1][0] = (epnum - 1, cant_lleg_final)
+        except IndexError:
+            pass
 
         # Calcular tiempos de finalización
         running_end_time = ep_end_time = wtimer()
