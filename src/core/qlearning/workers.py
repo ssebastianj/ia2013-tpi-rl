@@ -322,7 +322,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                              'MatrizQ': self.matriz_q,
                              'EpisodiosExecTime': ep_exec_time,
                              'IteracionesExecTime': iter_exec_time,
-                             'ProcesoJoined': False,
+                             'ProcesoJoined': True,
                              'ValorParametro': self.tecnica.valor_param_parcial,
                              'RunningExecTime': running_exec_time,
                              'MatDiff': tmp_diff_mat,

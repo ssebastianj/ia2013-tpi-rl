@@ -31,7 +31,7 @@ class GridWorld(object):
         self._ancho = ancho
         self._alto = alto
         self._tipos_estados = tipos_estados
-        self._estados = None
+        self._estados = estados
         self._coordenadas = None
         self._excluir_tipos_vecinos = excluir_tipos_vecinos
         self._estado_final = None
@@ -63,19 +63,25 @@ class GridWorld(object):
         u"""
         Crea la matriz de estados con un tipo de estado predeterminado.
         """
-        # Tipo de estado con el que se inicializará cada estado
-        default_tipo = self._tipos_estados[default]
+        if self._estados is None:
+            # Tipo de estado con el que se inicializará cada estado
+            default_tipo = self._tipos_estados[default]
 
-        self._estados = numpy.empty((self.alto, self.ancho), Estado)
-        self._coordenadas = []
+            self._estados = numpy.empty((self.alto, self.ancho), Estado)
+            self._coordenadas = []
 
-        # Crear una lista de listas
-        for i in xrange(1, self._alto + 1):
-            fila = numpy.empty((1, self.ancho), Estado)
-            for j in xrange(1, self._ancho + 1):
-                fila[0][j - 1] = Estado(i, j, default_tipo)
-                self._coordenadas.append((i, j))
-            self._estados[i - 1] = fila
+            # Crear una lista de listas
+            for i in xrange(1, self._alto + 1):
+                fila = numpy.empty((1, self.ancho), Estado)
+                for j in xrange(1, self._ancho + 1):
+                    fila[0][j - 1] = Estado(i, j, default_tipo)
+                    self._coordenadas.append((i, j))
+                self._estados[i - 1] = fila
+        else:
+            self._coordenadas = []
+            for i in xrange(1, self._alto + 1):
+                for j in xrange(1, self._ancho + 1):
+                    self._coordenadas.append((i, j))
 
     def get_matriz_r(self):
         u"""
