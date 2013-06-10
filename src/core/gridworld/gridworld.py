@@ -296,6 +296,12 @@ class GridWorld(object):
                 for estado in fila:
                     estado.tipo = self._tipos_estados[estado.tipo.ide]
 
+    def get_matriz_tipos_estados(self):
+        if self._estados is not None:
+            return [[j.tipo.ide for j in i] for i in self._estados]
+        else:
+            return None
+
     # Propiedades (atributos) de la clase
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")

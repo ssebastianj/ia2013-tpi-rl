@@ -114,10 +114,10 @@ class EGreedy(QLTecnica):
 
 class Greedy(EGreedy):
     u"""Técnica Greedy"""
-    def __init__(self):
+    def __init__(self, epsilon=0, paso_decremento=0, intervalo_decremento=0):
         u"""
         Inicializador
         """
-        super(Greedy, self).__init__(0)
+        super(Greedy, self).__init__(0, 0, 0)
         self._epsilon = 0
         self._name = "Greedy"

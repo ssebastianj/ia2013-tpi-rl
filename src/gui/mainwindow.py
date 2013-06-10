@@ -239,6 +239,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setMouseTracking(True)
 
+        self.generar_menu_edicion()
         self.generar_menu_estadisticas()
 
         self.inicializar_todo()
@@ -1569,3 +1570,50 @@ class MainWindow(QtGui.QMainWindow):
             # Episodios finalizados
             # Mostrar tabla
             pass
+
+    def generar_menu_edicion(self):
+        action = QtGui.QAction("Copiar datos de pruebas al portapapeles", self)
+        action.setShortcut(QtGui.QKeySequence("Ctrl+Shift+C"))
+        action.triggered.connect(self.copiar_prueba_toclipboard)
+        self.WMainWindow.menuEdicion.addAction(action)
+
+    def copiar_prueba_toclipboard(self):
+        linea_prueba_items = []
+        linea_prueba_items.append(self.gridworld.get_matriz_tipos_estados())
+        linea_prueba_items.append(self.WMainWindow.sbQLGamma.value())
+
+        indice = self.WMainWindow.cbQLTecnicas.currentIndex()
+        tecnica = self.WMainWindow.cbQLTecnicas.itemData(indice).toInt()[0]
+
+        if tecnica == 0:
+            parametro = 0
+        elif tecnica == 1:
+            parametro = self.WMainWindow.sbQLEpsilon.value()
+        elif tecnica == 2:
+            parametro = self.WMainWindow.sbQLTau.value()
+        elif tecnica == 3:
+            parametro = 1
+
+        linea_prueba_items.append(tecnica)
+        linea_prueba_items.append(parametro)
+        linea_prueba_items.append(self.WMainWindow.sbCantidadEpisodios.value())
+        linea_prueba_items.append(self.WMainWindow.sbDecrementoVal.value())
+        linea_prueba_items.append(self.WMainWindow.sbCantEpisodiosDec.value())
+        linea_prueba_items.append(self.WMainWindow.chkLimitarCantIteraciones.isChecked())
+        linea_prueba_items.append(self.WMainWindow.sbCantMaxIteraciones.value())
+
+        if self.WMainWindow.optMQInitEnCero.isChecked():
+            valor_inicial = 0
+        elif self.WMainWindow.optMQInitValOptimistas.isChecked():
+            incremento = self.WMainWindow.sbValOptimoIncremento.value()
+            valor_inicial = incremento + self.window_config["tipos_estados"][TIPOESTADO.EXCELENTE].recompensa
+
+        linea_prueba_items.append(valor_inicial)
+        linea_prueba_items.append(self.WMainWindow.chkQLCalcularMatDiff.isChecked())
+        linea_prueba_items.append(self.WMainWindow.sbMatricesMinDiff.value())
+        linea_prueba_items.append(self.WMainWindow.sbIntervaloDiffCalc.value())
+
+        linea_prueba = ";".join([str(item) for item in linea_prueba_items])
+
+        clipboard = QtGui.QApplication.clipboard()
+        clipboard.setText(linea_prueba)

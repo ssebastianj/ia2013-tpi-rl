@@ -55,6 +55,12 @@ class QLTecnica(object):
     def set_name(self, nombre):
         self._name = nombre
 
+    def __repr__(self, *args, **kwargs):
+        return self.__class__.__name__
+
+    def __str__(self, *args, **kwargs):
+        return self.__class__.__name__
+
     paso_decremento = property(get_paso_decremento,
                                set_paso_decremento,
                                None,

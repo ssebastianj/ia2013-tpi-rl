@@ -65,34 +65,68 @@ window_config = {"item":
                   }
 
 
-def test1():
+def main(estados, gamma, tecnica_idx, parametro, cant_episodios, paso_decremento,
+         intervalo_decremento, limitar_iteraciones, cant_max_iteraciones,
+         valor_inicial, detener_por_diff, diff_minima, interv_calculo_diff):
+
     # Logging Config
     logging.basicConfig(level=logging.DEBUG,
                         format="[%(levelname)s] – %(threadName)-10s : %(message)s")
 
-    gamma = 0.8
-    tecnica = EGreedy
-    cant_episodios = 10
-    parametro = 0.1
-    paso_decremento = 0.01
-    intervalo_decremento = 1
-    limitar_nro_iteraciones = False
-    cant_max_iter = 200
-    init_value_fn = 0
-    matdiff_status = False
-    matriz_min_diff = 0.0001
-    intervalo_diff_calc = 10
+    gamma = float(gamma)
 
-    estados_num = [[3, 3, 3, 3, 3, 3],
-                   [3, 3, 3, 3, 3, 3],
-                   [3, 3, 3, 3, 3, 3],
-                   [3, 3, 3, 3, 3, 3],
-                   [3, 3, 3, 3, 3, 3],
-                   [3, 3, 3, 3, 3, 1]]
+    tecnica_idx = int(tecnica_idx)
+    if tecnica_idx == 0:
+        tecnica = Greedy
+    elif tecnica_idx == 1:
+        tecnica = EGreedy
+    elif tecnica_idx == 2:
+        tecnica = Softmax
+    elif tecnica_idx == 3:
+        tecnica = Aleatorio
+
+    cant_episodios = int(cant_episodios)
+    parametro = float(parametro)
+    paso_decremento = float(paso_decremento)
+    intervalo_decremento = int(intervalo_decremento)
+
+    if isinstance(limitar_iteraciones, bool):
+        limitar_nro_iteraciones = limitar_iteraciones
+    else:
+        if limitar_iteraciones.strip().lower() == 'false':
+            limitar_nro_iteraciones = False
+        elif limitar_iteraciones.strip().lower() == 'true':
+            limitar_nro_iteraciones = True
+
+    cant_max_iter = int(cant_max_iteraciones)
+
+    estado_excelente = window_config["tipos_estados"][TIPOESTADO.EXCELENTE]
+
+    #===========================================================================
+    # if valor_inicial == 0:
+    #     init_value_fn = 0
+    # elif valor_inicial > 0:
+    #     init_value_fn = estado_excelente.recompensa + valor_inicial
+    # else:
+    #     init_value_fn = 0
+    #===========================================================================
+    init_value_fn = valor_inicial
+
+    if isinstance(detener_por_diff, bool):
+        matdiff_status = detener_por_diff
+    else:
+        if detener_por_diff.strip().lower() == 'false':
+            matdiff_status = False
+        elif detener_por_diff.strip().lower() == 'true':
+            matdiff_status = True
+
+    matriz_min_diff = float(diff_minima)
+    intervalo_diff_calc = int(interv_calculo_diff)
+
+    estados_num = estados
 
     ancho, alto = len(estados_num), len(estados_num[0])
 
-    estado_excelente = window_config["tipos_estados"][TIPOESTADO.EXCELENTE]
     recomp_excelente = estado_excelente.recompensa
     exponente = window_config["exponentes_final"][ancho]
 
@@ -172,7 +206,7 @@ def test1():
                 logging.debug(tmp_mat_diff)
                 logging.debug(corte_iteracion)
 
-                time.sleep(0.05)
+                time.sleep(0.01)
         except Queue.Empty:
             pass
         except AttributeError:
@@ -200,4 +234,10 @@ def get_all_from_queue(cola):
 
 
 if __name__ == '__main__':
-    test1()
+    main([[3, 3, 3, 3, 3, 3],
+         [3, 3, 3, 3, 3, 3],
+         [3, 3, 3, 3, 3, 3],
+         [3, 3, 3, 3, 3, 3],
+         [3, 3, 3, 3, 3, 3],
+         [3, 3, 3, 3, 3, 1]],
+         0.8, 1, 0.1, 10, 0.01, 1, False, 200, 0, False, 0.0001, 10)
