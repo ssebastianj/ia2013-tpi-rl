@@ -7,6 +7,8 @@ import Queue
 import logging
 import multiprocessing
 import numpy
+import os
+import sys
 import time
 
 from core.qlearning.qlearning import QLearning
@@ -65,9 +67,39 @@ window_config = {"item":
                   }
 
 
-def main(estados, gamma, tecnica_idx, parametro, cant_episodios, paso_decremento,
-         intervalo_decremento, limitar_iteraciones, cant_max_iteraciones,
-         valor_inicial, detener_por_diff, diff_minima, interv_calculo_diff):
+def main(args):
+    archivo_pruebas = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas', 'pruebas.txt'))
+
+    with open(archivo_pruebas, 'r') as apf:
+        for linea_prueba in apf:
+            if (linea_prueba.strip() != '') and (not linea_prueba.startswith('#')):
+                items = linea_prueba.split(';')
+
+                try:
+                    ejecutar_prueba(items[0],
+                                    items[1],
+                                    items[2],
+                                    items[3],
+                                    items[4],
+                                    items[5],
+                                    items[6],
+                                    items[7],
+                                    items[8],
+                                    items[9],
+                                    items[10],
+                                    items[11],
+                                    items[12])
+                except TypeError:
+                    continue
+                except ValueError:
+                    continue
+                except AttributeError:
+                    continue
+
+
+def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios, paso_decremento,
+                    intervalo_decremento, limitar_iteraciones, cant_max_iteraciones,
+                    valor_inicial, detener_por_diff, diff_minima, interv_calculo_diff):
 
     # Logging Config
     logging.basicConfig(level=logging.DEBUG,
@@ -123,7 +155,7 @@ def main(estados, gamma, tecnica_idx, parametro, cant_episodios, paso_decremento
     matriz_min_diff = float(diff_minima)
     intervalo_diff_calc = int(interv_calculo_diff)
 
-    estados_num = estados
+    estados_num = eval(estados)
 
     ancho, alto = len(estados_num), len(estados_num[0])
 
@@ -195,18 +227,30 @@ def main(estados, gamma, tecnica_idx, parametro, cant_episodios, paso_decremento
                 graph_recompensas_promedio = recompensas_promedio
                 graph_episodios_finalizados = episodios_finalizados
 
-                logging.debug(estado_actual_ent)
-                logging.debug(nro_episodio)
-                logging.debug(cant_iteraciones)
-                logging.debug(episode_exec_time)
-                logging.debug(iter_exec_time)
-                logging.debug(loop_alarm)
-                logging.debug(valor_parametro)
-                logging.debug(running_exec_time_ent)
-                logging.debug(tmp_mat_diff)
-                logging.debug(corte_iteracion)
+                sys.stdout.write("Estado actual: {0}\n \
+                                  Número episodio: {1}\n \
+                                  Iteración: {2}\n \
+                                  Tiempo ejecución episodio: {3}\n \
+                                  Tiempo ejecución iteración: {4}\n \
+                                  Loop Alarm: {5}\n \
+                                  Parámetro: {6}\n \
+                                  Tiempo de ejecución entrenamiento: {7}\n \
+                                  Diferencia entre matrices: {8}\n \
+                                  Corte por iteraciones: {9}\n\r".format(estado_actual_ent,
+                                                                    nro_episodio,
+                                                                    cant_iteraciones,
+                                                                    episode_exec_time,
+                                                                    iter_exec_time,
+                                                                    loop_alarm,
+                                                                    valor_parametro,
+                                                                    running_exec_time_ent,
+                                                                    tmp_mat_diff,
+                                                                    corte_iteracion
+                                                                    )
+                                  )
+                sys.stdout.flush()
 
-                time.sleep(0.01)
+                # time.sleep(0.01)
         except Queue.Empty:
             pass
         except AttributeError:
@@ -218,6 +262,7 @@ def main(estados, gamma, tecnica_idx, parametro, cant_episodios, paso_decremento
                 proceso.join(0.01)
 
         if not active_children:
+            entrenar_worker.join(0.01)
             break
 
     logging.debug(graph_episodios_finalizados)
@@ -234,10 +279,4 @@ def get_all_from_queue(cola):
 
 
 if __name__ == '__main__':
-    main([[3, 3, 3, 3, 3, 3],
-         [3, 3, 3, 3, 3, 3],
-         [3, 3, 3, 3, 3, 3],
-         [3, 3, 3, 3, 3, 3],
-         [3, 3, 3, 3, 3, 3],
-         [3, 3, 3, 3, 3, 1]],
-         0.8, 1, 0.1, 10, 0.01, 1, False, 200, 0, False, 0.0001, 10)
+    sys.exit(main(sys.argv))

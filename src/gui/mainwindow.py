@@ -1578,6 +1578,12 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuEdicion.addAction(action)
 
     def copiar_prueba_toclipboard(self):
+        if self.estado_final is None:
+            QtGui.QMessageBox.warning(self,
+                                      _tr('QLearning - Entrenamiento'),
+                                      "Debe establecer un Estado Final antes de realizar el entrenamiento.")
+            return None
+
         linea_prueba_items = []
         linea_prueba_items.append(self.gridworld.get_matriz_tipos_estados())
         linea_prueba_items.append(self.WMainWindow.sbQLGamma.value())
