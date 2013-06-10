@@ -23,7 +23,7 @@ tecnicas = {0: "Greedy",
             3: "Aleatorio"
             }
 
-gw_dimensiones = [  # "3 x 3", "4 x 4", "5 x 5",
+gw_dimensiones = ["3 x 3", "4 x 4", "5 x 5",
                   "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
 
 window_config = {"item":
@@ -70,9 +70,36 @@ def test1():
     logging.basicConfig(level=logging.DEBUG,
                         format="[%(levelname)s] – %(threadName)-10s : %(message)s")
 
-    ancho, alto = (3, 3)
+    gamma = 0.8
+    tecnica = EGreedy
+    cant_episodios = 10
+    parametro = 0.1
+    paso_decremento = 0.01
+    intervalo_decremento = 1
+    limitar_nro_iteraciones = False
+    cant_max_iter = 200
+    init_value_fn = 0
+    matdiff_status = False
+    matriz_min_diff = 0.0001
+    intervalo_diff_calc = 10
 
-    estados_num = [[3, 3, 3], [3, 3, 3], [3, 3, 1]]
+    estados_num = [[3, 3, 3, 3, 3, 3],
+                   [3, 3, 3, 3, 3, 3],
+                   [3, 3, 3, 3, 3, 3],
+                   [3, 3, 3, 3, 3, 3],
+                   [3, 3, 3, 3, 3, 3],
+                   [3, 3, 3, 3, 3, 1]]
+
+    ancho, alto = len(estados_num), len(estados_num[0])
+
+    estado_excelente = window_config["tipos_estados"][TIPOESTADO.EXCELENTE]
+    recomp_excelente = estado_excelente.recompensa
+    exponente = window_config["exponentes_final"][ancho]
+
+    calc_recomp_final = int(recomp_excelente / (gamma ** exponente))
+
+    estado_final_cfg = window_config["tipos_estados"][TIPOESTADO.FINAL]
+    estado_final_cfg.recompensa = calc_recomp_final
 
     estados = numpy.empty((alto, ancho), Estado)
     coordenadas = []
@@ -87,18 +114,8 @@ def test1():
 
     gridworld = GridWorld(ancho, alto, window_config["tipos_estados"], estados, [TIPOESTADO.PARED])
 
-    gamma = 0.8
-    tecnica = EGreedy
-    cant_episodios = 10
-    parametro = 0.1
-    paso_decremento = 0.01
-    intervalo_decremento = 1
-    limitar_nro_iteraciones = False
-    cant_max_iter = 200
-    init_value_fn = 0
-    matdiff_status = False
-    matriz_min_diff = 0.0001
-    intervalo_diff_calc = 10
+    estado_final_gw = gridworld.tipos_estados[TIPOESTADO.FINAL]
+    estado_final_gw.recompensa = calc_recomp_final
 
     # Crear una nueva instancia de Q-Learning
     qlearning = QLearning(gridworld,
@@ -155,7 +172,7 @@ def test1():
                 logging.debug(tmp_mat_diff)
                 logging.debug(corte_iteracion)
 
-                time.sleep(0.1)
+                time.sleep(0.05)
         except Queue.Empty:
             pass
         except AttributeError:
