@@ -885,8 +885,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setMouseTracking(True)
 
         # FIXME: Eliminar
-        logging.debug("Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
-        logging.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
+        self._logger.debug("Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
+        self._logger.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
 
     def _reintentar_detener_hilos(self):
         u"""
@@ -1416,7 +1416,7 @@ class MainWindow(QtGui.QMainWindow):
         Muestra el camino óptimo en el GridWorld introduciendo un retraso de tiempo
         entre los estados con el fin de visualizar el progreso.
         """
-        logging.debug("Animar camino óptimo")
+        self._logger.debug("Animar camino óptimo")
 
         # Ocultar camino óptimo previamente a animar
         self.ocultar_camino_optimo()
@@ -1448,7 +1448,7 @@ class MainWindow(QtGui.QMainWindow):
         Acción que invoca al método para mostrar el camino óptimo. Utilizada desde
         un proceso o UI.
         """
-        logging.debug("Mostrar camino óptimo")
+        self._logger.debug("Mostrar camino óptimo")
 
         self.camino_optimo_active = True
 
@@ -1559,7 +1559,7 @@ class MainWindow(QtGui.QMainWindow):
             rec_prom_worker = GraphRecompPromedioWorker(inp_queue)
             rec_prom_worker.start()
 
-            logging.debug(rec_prom_worker)
+            self._logger.debug(rec_prom_worker)
         elif data == 1:
             # Recompensas promedio
             # Mostrar tabla
@@ -1573,7 +1573,7 @@ class MainWindow(QtGui.QMainWindow):
             eps_fin_worker = GraphEpsExitososWorker(inp_queue)
             eps_fin_worker.start()
 
-            logging.debug(eps_fin_worker)
+            self._logger.debug(eps_fin_worker)
         elif data == 3:
             # Episodios finalizados
             # Mostrar tabla
