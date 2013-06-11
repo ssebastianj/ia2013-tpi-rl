@@ -746,6 +746,10 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer.timeout.connect(self._on_window_timer)
         self.wnd_timer.start(15)
 
+        # Desactivar seguimiento del mouse antes de comenzar
+        self.setMouseTracking(False)
+        self.WMainWindow.tblGridWorld.setMouseTracking(False)
+
         # Mostrar cursor de ocupado indicando que se está procesando
         QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BusyCursor))
 
@@ -875,6 +879,10 @@ class MainWindow(QtGui.QMainWindow):
 
         # Restaurar cursor normal
         QtGui.QApplication.restoreOverrideCursor()
+
+        # Reactivar seguimiento del mouse en widgets
+        self.setMouseTracking(True)
+        self.WMainWindow.tblGridWorld.setMouseTracking(True)
 
         # FIXME: Eliminar
         logging.debug("Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))

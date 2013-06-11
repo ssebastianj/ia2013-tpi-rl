@@ -51,8 +51,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         """
         # Cerrar Queues
         self._inp_queue.close()
+        self._inp_queue.join_thread()
+
         self._error_queue.close()
+        self._error_queue.join_thread()
+
         self._out_queue.close()
+        self._out_queue.join_thread()
 
     def run(self):
         u"""
@@ -138,7 +143,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             estado_actual = self.matriz_r[x_act - 1][y_act - 1]
             tipo_estado = estado_actual[0]
 
-            while tipo_estado in self.tipos_vec_excluidos:
+            while (not self._stoprequest.is_set()) and (tipo_estado in self.tipos_vec_excluidos):
                 x_act, y_act = self.generar_estado_aleatorio()
                 estado_actual = self.matriz_r[x_act - 1][y_act - 1]
                 tipo_estado = estado_actual[0]
