@@ -21,8 +21,6 @@ from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
 
-TEST_PATH = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas'))
-
 tecnicas = {0: "Greedy",
             1: "ε-Greedy",
             2: "Softmax",
@@ -69,49 +67,6 @@ window_config = {"item":
                                        10: 31
                                        }
                   }
-
-
-def main(args):
-    archivo_pruebas = os.path.join(TEST_PATH, 'pruebas.csv')
-
-    with open(archivo_pruebas, 'r') as apf:
-        contador_pruebas = 1
-
-        for linea_prueba in apf:
-            if (linea_prueba.strip() != '') and (not linea_prueba.startswith('#')):
-                items = linea_prueba.split(';')
-
-                sys.stdout.write("Ejecutando prueba {0}\n".format(contador_pruebas))
-                # try:
-                ejecutar_prueba(items[0],
-                                items[1],
-                                items[2],
-                                items[3],
-                                items[4],
-                                items[5],
-                                items[6],
-                                items[7],
-                                items[8],
-                                items[9],
-                                items[10],
-                                items[11],
-                                items[12],
-                                contador_pruebas)
-                sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
-                #===============================================================
-                # except TypeError:
-                #     sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
-                #     continue
-                # except ValueError:
-                #     sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
-                #     continue
-                # except AttributeError:
-                #     sys.stdout.write("Prueba {0} ERROR".format(contador_pruebas))
-                #     continue
-                #===============================================================
-
-                contador_pruebas += 1
-        sys.stdout.write("Fin de pruebas")
 
 
 def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
@@ -450,4 +405,43 @@ def graficar_recompensas_promedio(tupla):
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+    TEST_PATH = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas'))
+
+    archivo_pruebas = os.path.join(TEST_PATH, 'pruebas.csv')
+
+    with open(archivo_pruebas, 'r') as apf:
+        contador_pruebas = 1
+
+        for linea_prueba in apf:
+            if (linea_prueba.strip() != '') and (not linea_prueba.startswith('#')):
+                items = linea_prueba.split(';')
+
+                sys.stdout.write("Ejecutando prueba {0}\n".format(contador_pruebas))
+                try:
+                    ejecutar_prueba(items[0],
+                                    items[1],
+                                    items[2],
+                                    items[3],
+                                    items[4],
+                                    items[5],
+                                    items[6],
+                                    items[7],
+                                    items[8],
+                                    items[9],
+                                    items[10],
+                                    items[11],
+                                    items[12],
+                                    contador_pruebas)
+                    sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
+                except TypeError:
+                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    continue
+                except ValueError:
+                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    continue
+                except AttributeError:
+                    sys.stdout.write("Prueba {0} ERROR".format(contador_pruebas))
+                #===============================================================
+
+                contador_pruebas += 1
+        sys.stdout.write("Fin de pruebas")

@@ -424,7 +424,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 if columna[0] not in tipos_vec_exc:
                     contador_ref[(i + 1, j + 1)] = 0
 
-        return contador_ref
+        return numpy.array(contador_ref)
 
     def _contar_ref(self, estado):
         u"""
