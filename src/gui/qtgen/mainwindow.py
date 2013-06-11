@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\Lucia\workspace\TP-IA\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
+# Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Sat Jun 08 20:18:15 2013
+# Created: Tue Jun 11 13:01:10 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -246,6 +246,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
         self.sbDecrementoVal = QtGui.QDoubleSpinBox(self.groupBox_6)
         self.sbDecrementoVal.setMinimumSize(QtCore.QSize(50, 0))
+        self.sbDecrementoVal.setDecimals(3)
         self.sbDecrementoVal.setMinimum(0.01)
         self.sbDecrementoVal.setMaximum(0.99)
         self.sbDecrementoVal.setSingleStep(0.01)

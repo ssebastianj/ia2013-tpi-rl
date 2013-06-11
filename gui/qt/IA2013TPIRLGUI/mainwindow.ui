@@ -584,6 +584,9 @@
                      <property name="toolTip">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Paso&lt;/span&gt; o valor de decremento. En cada intervalo el parámetro será decrementado en un &lt;span style=&quot; font-style:italic;&quot;&gt;paso.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
+                     <property name="decimals">
+                      <number>3</number>
+                     </property>
                      <property name="minimum">
                       <double>0.010000000000000</double>
                      </property>

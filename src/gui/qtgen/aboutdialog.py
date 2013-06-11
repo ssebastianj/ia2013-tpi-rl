@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\Lucia\workspace\TP-IA\gui\qt\IA2013TPIRLGUI\aboutdialog.ui'
+# Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\aboutdialog.ui'
 #
-# Created: Sat Jun 08 20:18:15 2013
+# Created: Tue Jun 11 13:01:09 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
