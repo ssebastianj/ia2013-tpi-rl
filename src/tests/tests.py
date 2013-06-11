@@ -20,6 +20,7 @@ from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
+TEST_PATH = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas'))
 
 tecnicas = {0: "Greedy",
             1: "ε-Greedy",
@@ -321,17 +322,21 @@ def graficar_episodios_exitosos(tupla):
              )
 
     fecha = datetime.datetime.now()
-    output_dir = os.path.abspath(os.path.join(TEST_PATH, fecha.strftime("%d-%m-%Y")))
+    output_dir = os.path.abspath(os.path.join(TEST_PATH,
+                                              'resultados',
+                                              fecha.strftime("%d-%m-%Y")))
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
-    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba {0}".format(nro_prueba)))
+    test_dir = os.path.abspath(os.path.join(output_dir,
+                                            "Prueba {0}".format(nro_prueba)))
 
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
 
-    plt.savefig(os.path.abspath(os.path.join(test_dir, 'episodios_exitosos.png')))
+    plt.savefig(os.path.abspath(os.path.join(test_dir,
+                                             'episodios_exitosos.png')))
     plt.close()
 
 
@@ -390,24 +395,31 @@ def graficar_recompensas_promedio(tupla):
              )
 
     fecha = datetime.datetime.now()
-    output_dir = os.path.abspath(os.path.join(TEST_PATH, fecha.strftime("%d-%m-%Y")))
+    output_dir = os.path.abspath(os.path.join(TEST_PATH,
+                                              'resultados',
+                                              fecha.strftime("%d-%m-%Y")))
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
-    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba {0}".format(nro_prueba)))
+    test_dir = os.path.abspath(os.path.join(output_dir,
+                                            "Prueba {0}".format(nro_prueba)))
 
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
 
-    plt.savefig(os.path.abspath(os.path.join(test_dir, 'recompensas_promedio.png')))
+    plt.savefig(os.path.abspath(os.path.join(test_dir,
+                                             'recompensas_promedio.png')))
     plt.close()
 
 
 if __name__ == '__main__':
-    TEST_PATH = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas'))
-
     archivo_pruebas = os.path.join(TEST_PATH, 'pruebas.csv')
+
+    output_dir = os.path.abspath(os.path.join(TEST_PATH, 'resultados'))
+
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
 
     with open(archivo_pruebas, 'r') as apf:
         contador_pruebas = 1
