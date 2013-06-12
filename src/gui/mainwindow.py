@@ -7,6 +7,7 @@ import logging
 import multiprocessing
 import Queue
 import random
+import threading
 import time
 
 from PyQt4 import QtCore, QtGui
@@ -26,7 +27,7 @@ from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
-from graphs.graficos import GraphEpsExitososWorker, GraphRecompPromedioWorker
+from graphs.avgrwds.worker import GraphRecompensasPromedioWorker
 
 from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
@@ -1553,13 +1554,13 @@ class MainWindow(QtGui.QMainWindow):
         if data == 0:
             # Recompensas promedio
             # Mostrar gráfico
-            inp_queue = Queue.Queue()
-            inp_queue.put((self._parametros, self.graph_recompensas_promedio))
-
-            rec_prom_worker = GraphRecompPromedioWorker(inp_queue)
-            rec_prom_worker.start()
-
-            self._logger.debug(rec_prom_worker)
+            avg_rwds_thread = QtCore.QThread(self)
+            avg_rwds_worker = GraphRecompensasPromedioWorker((self._parametros,
+                                                              self.graph_recompensas_promedio))
+            avg_rwds_worker.mostrar_figura()
+            avg_rwds_worker.moveToThread(avg_rwds_thread)
+            avg_rwds_thread.finished.connect(lambda: avg_rwds_thread.wait(100))
+            avg_rwds_thread.start()
         elif data == 1:
             # Recompensas promedio
             # Mostrar tabla
@@ -1567,13 +1568,7 @@ class MainWindow(QtGui.QMainWindow):
         elif data == 2:
             # Episodios finalizados
             # Mostrar gráfico
-            inp_queue = Queue.Queue()
-            inp_queue.put((self._parametros, self.graph_episodios_finalizados))
-
-            eps_fin_worker = GraphEpsExitososWorker(inp_queue)
-            eps_fin_worker.start()
-
-            self._logger.debug(eps_fin_worker)
+            pass
         elif data == 3:
             # Episodios finalizados
             # Mostrar tabla
@@ -1631,3 +1626,11 @@ class MainWindow(QtGui.QMainWindow):
 
         clipboard = QtGui.QApplication.clipboard()
         clipboard.setText(linea_prueba)
+
+    def _join_graph_thread(self, threadp):
+        try:
+            logging.debug("Join Thread: {0}".format(threadp))
+            threadp.terminate()
+            threadp.wait(500)
+        except threading.ThreadError:
+            pass
