@@ -21,6 +21,8 @@ from core.tecnicas.softmax import Softmax
 
 from graphs.avgrwds.worker import GraphRecompensasPromedioWorker
 from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
+from graphs.matdiffs.worker import GraphMatrizDiffsWorker
+from graphs.itersep.worker import GraphIteracionesXEpisodioWorker
 
 TEST_PATH = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas'))
 
@@ -194,17 +196,15 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                 iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
                 worker_joined = ql_ent_info.get('ProcesoJoined', False)
                 loop_alarm = ql_ent_info.get('LoopAlarm', False)
-                matriz_q = ql_ent_info.get('MatrizQ', None)
+                matriz_q_inp = ql_ent_info.get('MatrizQ', None)
                 valor_parametro = ql_ent_info.get('ValorParametro', None)
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
                 tmp_mat_diff = ql_ent_info.get('MatDiff', None)
                 corte_iteracion = ql_ent_info.get('CorteIteracion', None)
-                recompensas_promedio = ql_ent_info.get('MatRecompProm', None)
-                episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
-
-                matriz_q_inp = matriz_q
-                graph_recompensas_promedio = recompensas_promedio
-                graph_episodios_finalizados = episodios_finalizados
+                graph_recompensas_promedio = ql_ent_info.get('MatRecompProm', None)
+                graph_episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
+                graph_mat_diff = ql_ent_info.get('MatDiffStat', None)
+                graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio', None)
 
                 #===============================================================
                 # sys.stdout.write("Estado actual: {0}\n \
@@ -259,6 +259,8 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
 
     graficar_recompensas_promedio((parametros, graph_recompensas_promedio), nro_prueba, output_dir)
     graficar_episodios_exitosos((parametros, graph_episodios_finalizados), nro_prueba, output_dir)
+    graficar_iters_por_episodio((parametros, graph_iters_por_episodio), nro_prueba, output_dir)
+    graficar_diferencias_matrizq((parametros, graph_mat_diff), nro_prueba, output_dir)
 
 
 def get_all_from_queue(cola):
@@ -290,6 +292,30 @@ def graficar_recompensas_promedio(tupla, nro_prueba, output_dir):
         os.mkdir(test_dir)
 
     image_path = os.path.abspath(os.path.join(test_dir, 'recompensas_promedio.png'))
+    worker.guardar_dibujo(image_path)
+
+
+def graficar_iters_por_episodio(tupla, nro_prueba, output_dir):
+    worker = GraphIteracionesXEpisodioWorker(tupla)
+
+    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{0}".format(nro_prueba)))
+
+    if not os.path.exists(test_dir):
+        os.mkdir(test_dir)
+
+    image_path = os.path.abspath(os.path.join(test_dir, 'iters_por_ep.png'))
+    worker.guardar_dibujo(image_path)
+
+
+def graficar_diferencias_matrizq(tupla, nro_prueba, output_dir):
+    worker = GraphMatrizDiffsWorker(tupla)
+
+    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{0}".format(nro_prueba)))
+
+    if not os.path.exists(test_dir):
+        os.mkdir(test_dir)
+
+    image_path = os.path.abspath(os.path.join(test_dir, 'difs_mat_q.png'))
     worker.guardar_dibujo(image_path)
 
 

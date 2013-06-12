@@ -143,13 +143,26 @@ Contents:
    :private-members:
    :special-members:
    
-.. automodule:: graphs.graficos
-.. autoclass:: GraphEpsExitososWorker
+.. automodule:: graphs.avgrwds.worker
+.. autoclass:: GraphRecompensasPromedioWorker
    :members:
    :private-members:
    :special-members:
    
-.. autoclass:: GraphRecompPromedioWorker
+.. automodule:: graphs.itersep.worker
+.. autoclass:: GraphIteracionesXEpisodioWorker
+   :members:
+   :private-members:
+   :special-members:
+   
+.. automodule:: graphs.matdiffs.worker
+.. autoclass:: GraphMatrizDiffsWorker
+   :members:
+   :private-members:
+   :special-members:
+   
+.. automodule:: graphs.sucessfuleps.worker
+.. autoclass:: GraphSucessfulEpisodesWorker
    :members:
    :private-members:
    :special-members:
