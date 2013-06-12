@@ -4,13 +4,14 @@
 from __future__ import absolute_import
 
 import matplotlib.pyplot as plt
+import numpy
 
 from PyQt4 import QtCore
 
 
-class GraphRecompensasPromedioWorker(QtCore.QObject):
+class GraphSucessfulEpisodesWorker(QtCore.QObject):
     def __init__(self, input_data):
-        super(GraphRecompensasPromedioWorker, self).__init__()
+        super(GraphSucessfulEpisodesWorker, self).__init__()
 
         self.input_data = input_data
         self._init_plt()
@@ -24,16 +25,19 @@ class GraphRecompensasPromedioWorker(QtCore.QObject):
         init_value = run_values[4]
 
         try:
-            y_values = self.input_data[1]
+            xy_values = self.input_data[1]
+
+            x_values = [pair[0][0] for pair in xy_values if not numpy.equal(pair, None)]
+            y_values = [pair[0][1] for pair in xy_values if not numpy.equal(pair, None)]
 
             figure = plt.gcf()
-            figure.canvas.set_window_title(u"Recompensas promedio")
+            figure.canvas.set_window_title(u"Porcentaje de episodios finalizados")
 
-            plt.plot(range(1, len(y_values) + 1), y_values)
+            plt.plot(x_values, y_values)
             plt.grid(True)
-            plt.title(u"Recompensas promedio")
+            plt.title(u"Porcentaje de episodios finalizados")
             plt.xlabel(u"Episodios")
-            plt.ylabel(u"Recompensa promedio")
+            plt.ylabel(u"% episodios finalizados")
 
             str_gamma = r"$\gamma={0}$".format(gamma)
 
@@ -78,8 +82,8 @@ class GraphRecompensasPromedioWorker(QtCore.QObject):
         # Liberar memoria
         plt.close()
 
-    def guardar_dibujo(self, filepath):
+    def guardar_dibujo(self, filename):
         # Renderizar gráfico y guardar a archivo
-        plt.savefig(filepath)
+        plt.savefig(filename)
         # Liberar memoria
         plt.close()

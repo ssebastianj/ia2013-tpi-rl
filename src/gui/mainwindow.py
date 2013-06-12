@@ -28,6 +28,7 @@ from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
 from graphs.avgrwds.worker import GraphRecompensasPromedioWorker
+from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
 
 from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
@@ -241,7 +242,7 @@ class MainWindow(QtGui.QMainWindow):
         self.setMouseTracking(True)
 
         self.generar_menu_edicion()
-        self.generar_menu_estadisticas()
+        # self.generar_menu_estadisticas()
 
         self.inicializar_todo()
 
@@ -356,6 +357,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnGenEstRndRapida.clicked.connect(lambda: self.refresh_gw_random(True, True))
         self.WMainWindow.sbQLGamma.valueChanged.connect(self.calcular_recompensa_final)
         self.WMainWindow.menuEstadisticas.triggered.connect(self.show_estadisticas)
+        self.WMainWindow.menuEstadisticas.aboutToShow.connect(self.generar_menu_estadisticas)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -1529,6 +1531,8 @@ class MainWindow(QtGui.QMainWindow):
             estado_final_gw.recompensa = calc_recomp_final
 
     def generar_menu_estadisticas(self):
+        self.WMainWindow.menuEstadisticas.clear()
+
         submenu1 = QtGui.QMenu(_tr("Recompensas promedio"), self)
         action = QtGui.QAction(_tr("Ver gráfico..."), self)
         action.setData(0)
@@ -1547,6 +1551,9 @@ class MainWindow(QtGui.QMainWindow):
 
         self.WMainWindow.menuEstadisticas.addMenu(submenu1)
         self.WMainWindow.menuEstadisticas.addMenu(submenu2)
+
+        submenu1.setEnabled(self.graph_recompensas_promedio is not None)
+        submenu2.setEnabled(self.graph_episodios_finalizados is not None)
 
     def show_estadisticas(self, action):
         data = action.data().toInt()[0]
@@ -1568,7 +1575,13 @@ class MainWindow(QtGui.QMainWindow):
         elif data == 2:
             # Episodios finalizados
             # Mostrar gráfico
-            pass
+            suces_eps_thread = QtCore.QThread(self)
+            suces_eps_worker = GraphSucessfulEpisodesWorker((self._parametros,
+                                                               self.graph_episodios_finalizados))
+            suces_eps_worker.mostrar_figura()
+            suces_eps_worker.moveToThread(suces_eps_thread)
+            suces_eps_thread.finished.connect(lambda: suces_eps_thread.wait(100))
+            suces_eps_thread.start()
         elif data == 3:
             # Episodios finalizados
             # Mostrar tabla

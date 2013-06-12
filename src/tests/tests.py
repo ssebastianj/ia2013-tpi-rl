@@ -11,7 +11,6 @@ import numpy
 import os
 import sys
 import time
-import matplotlib.pyplot as plt
 
 from core.qlearning.qlearning import QLearning
 from core.gridworld.gridworld import GridWorld
@@ -19,6 +18,9 @@ from core.estado.estado import Estado, TipoEstado, TIPOESTADO
 from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
+
+from graphs.avgrwds.worker import GraphRecompensasPromedioWorker
+from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
 
 TEST_PATH = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas'))
 
@@ -201,9 +203,6 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                 graph_recompensas_promedio = recompensas_promedio
                 graph_episodios_finalizados = episodios_finalizados
 
-                sys.stdout.write("Estado actual: {0}\n".format(estado_actual_ent))
-                sys.stdout.write("Número episodio: {0}\n".format(nro_episodio))
-                sys.stdout.write("Iteración: {0}\n".format(cant_iteraciones))
                 #===============================================================
                 # sys.stdout.write("Estado actual: {0}\n \
                 #                   Número episodio: {1}\n \
@@ -255,14 +254,8 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                  init_value_fn
                  )
 
-    graficar_recompensas_promedio((nro_prueba,
-                                   parametros,
-                                   graph_recompensas_promedio,
-                                   output_dir))
-    graficar_episodios_exitosos((nro_prueba,
-                                 parametros,
-                                 graph_episodios_finalizados,
-                                 output_dir))
+    graficar_recompensas_promedio((parametros, graph_recompensas_promedio), nro_prueba, output_dir)
+    graficar_episodios_exitosos((parametros, graph_episodios_finalizados), nro_prueba, output_dir)
 
 
 def get_all_from_queue(cola):
@@ -273,134 +266,28 @@ def get_all_from_queue(cola):
         raise StopIteration
 
 
-def graficar_episodios_exitosos(tupla):
-    nro_prueba = tupla[0]
-    run_values = tupla[1]
-    gamma = run_values[0]
-    id_tecnica, parametro, paso_decrem, interv_decrem = run_values[1]
-    cant_episodios = run_values[2]
-    limitar_nro_iter, cant_max_iter = run_values[3]
-    init_value = run_values[4]
+def graficar_episodios_exitosos(tupla, nro_prueba, output_dir):
+    worker = GraphSucessfulEpisodesWorker(tupla)
 
-    output_dir = tupla[3]
-    xy_values = tupla[2]
-    x_values = [pair[0][0] for pair in xy_values if not numpy.equal(pair, None)]
-    y_values = [pair[0][1] for pair in xy_values if not numpy.equal(pair, None)]
-
-    figure = plt.gcf()
-    figure.canvas.set_window_title(u"Definir título de la ventana")
-
-    plt.plot(x_values, y_values)
-    plt.grid(True)
-    plt.title(u"Definir título del gráfico")
-    plt.xlabel(u"Episodios")
-    plt.ylabel(u"%")
-
-    str_gamma = r"$\gamma={0}$".format(gamma)
-
-    if id_tecnica == 0:
-        str_tecnica = "Greedy"
-        str_parametro = ""
-    elif id_tecnica == 1:
-        str_tecnica = r"$\epsilon$-Greedy"
-        str_parametro = r"$\epsilon={0}$".format(parametro)
-    elif id_tecnica == 2:
-        str_tecnica = "Softmax"
-        str_parametro = r"$\tau={0}$".format(parametro)
-    elif id_tecnica == 3:
-        str_tecnica = "Aleatorio"
-        str_parametro = ""
-    else:
-        pass
-
-    if limitar_nro_iter:
-        str_limit_iter = "Limitar a {0} iteraciones".format(cant_max_iter)
-    else:
-        str_limit_iter = ""
-
-    # Mostrar parámetros de entrenamiento
-    plt.text(plt.axis()[0] + 5,
-             plt.axis()[1] - 10,
-             "{0}\n{1} ({2})\n".format(str_gamma,
-                                       str_tecnica,
-                                       str_parametro
-                                      ),
-             fontdict={'fontsize': 12}
-             )
-
-    test_dir = os.path.abspath(os.path.join(output_dir,
-                                            "Prueba_{0}".format(nro_prueba)))
+    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{0}".format(nro_prueba)))
 
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
 
-    plt.savefig(os.path.abspath(os.path.join(test_dir,
-                                             'episodios_exitosos.png')))
-    plt.close()
+    image_path = os.path.abspath(os.path.join(test_dir, 'episodios_exitosos.png'))
+    worker.guardar_dibujo(image_path)
 
 
-def graficar_recompensas_promedio(tupla):
-    nro_prueba = tupla[0]
-    run_values = tupla[1]
-    gamma = run_values[0]
-    id_tecnica, parametro, paso_decrem, interv_decrem = run_values[1]
-    cant_episodios = run_values[2]
-    limitar_nro_iter, cant_max_iter = run_values[3]
-    init_value = run_values[4]
+def graficar_recompensas_promedio(tupla, nro_prueba, output_dir):
+    worker = GraphRecompensasPromedioWorker(tupla)
 
-    y_values = tupla[2]
-    output_dir = tupla[3]
-
-    figure = plt.gcf()
-    figure.canvas.set_window_title(u"Definir título de la ventana")
-
-    plt.plot(range(1, len(y_values) + 1), y_values)
-    plt.grid(True)
-    plt.title(u"Definir título del gráfico")
-    plt.xlabel(u"Episodios")
-    plt.ylabel(u"%")
-
-    str_gamma = r"$\gamma={0}$".format(gamma)
-
-    if id_tecnica == 0:
-        str_tecnica = "Greedy"
-        str_parametro = ""
-    elif id_tecnica == 1:
-        str_tecnica = r"$\epsilon$-Greedy"
-        str_parametro = r"$\epsilon={0}$".format(parametro)
-    elif id_tecnica == 2:
-        str_tecnica = "Softmax"
-        str_parametro = r"$\tau={0}$".format(parametro)
-    elif id_tecnica == 3:
-        str_tecnica = "Aleatorio"
-        str_parametro = ""
-    else:
-        pass
-
-    if limitar_nro_iter:
-        str_limit_iter = "Limitar a {0} iteraciones".format(cant_max_iter)
-    else:
-        str_limit_iter = ""
-
-    # Mostrar parámetros de entrenamiento
-    plt.text(plt.axis()[0] + 5,
-             plt.axis()[1] - 10,
-             "{0}\n{1} ({2})\n".format(str_gamma,
-                                       str_tecnica,
-                                       str_parametro
-                                      ),
-             fontdict={'fontsize': 12}
-             )
-
-    test_dir = os.path.abspath(os.path.join(output_dir,
-                                            "Prueba_{0}".format(nro_prueba)))
+    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{0}".format(nro_prueba)))
 
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
 
-    plt.savefig(os.path.abspath(os.path.join(test_dir,
-                                             'recompensas_promedio.png')))
-    plt.close()
+    image_path = os.path.abspath(os.path.join(test_dir, 'recompensas_promedio.png'))
+    worker.guardar_dibujo(image_path)
 
 
 if __name__ == '__main__':
@@ -424,7 +311,7 @@ if __name__ == '__main__':
             if (linea_prueba.strip() != '') and (not linea_prueba.startswith('#')):
                 items = linea_prueba.split(';')
 
-                sys.stdout.write("Ejecutando prueba {0}\n".format(contador_pruebas))
+                sys.stdout.write("Ejecutando prueba {0}... ".format(contador_pruebas))
 
                 try:
                     ejecutar_prueba(items[0],
@@ -451,7 +338,11 @@ if __name__ == '__main__':
                     sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
                     continue
                 except AttributeError:
-                    sys.stdout.write("Prueba {0} ERROR".format(contador_pruebas))
+                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    continue
+                except multiprocessing.ProcessError:
+                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    continue
 
                 contador_pruebas += 1
         sys.stdout.write("Fin de pruebas")
