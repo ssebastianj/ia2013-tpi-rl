@@ -143,18 +143,21 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
     estado_final_cfg = window_config["tipos_estados"][TIPOESTADO.FINAL]
     estado_final_cfg.recompensa = calc_recomp_final
 
+    # Crear GridWorld de estados
     estados = numpy.empty((alto, ancho), Estado)
     coordenadas = []
+
+    tipos_estados = window_config["tipos_estados"]
 
     # Crear una lista de listas
     for i in xrange(1, alto + 1):
         fila = numpy.empty((1, ancho), Estado)
         for j in xrange(1, ancho + 1):
-            fila[0][j - 1] = Estado(i, j, window_config["tipos_estados"][estados_num[i - 1][j - 1]])
+            fila[0][j - 1] = Estado(i, j, tipos_estados[estados_num[i - 1][j - 1]])
             coordenadas.append((i, j))
         estados[i - 1] = fila
 
-    gridworld = GridWorld(ancho, alto, window_config["tipos_estados"], estados, [TIPOESTADO.PARED])
+    gridworld = GridWorld(ancho, alto, tipos_estados, estados, [TIPOESTADO.PARED])
 
     estado_final_gw = gridworld.tipos_estados[TIPOESTADO.FINAL]
     estado_final_gw.recompensa = calc_recomp_final
