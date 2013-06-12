@@ -73,7 +73,7 @@ window_config = {"item":
 def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                     paso_decremento, intervalo_decremento, limitar_iteraciones,
                     cant_max_iteraciones, valor_inicial, detener_por_diff,
-                    diff_minima, interv_calculo_diff, nro_prueba):
+                    diff_minima, interv_calculo_diff, nro_prueba, output_dir):
 
     # Logging Config
     logging.basicConfig(level=logging.DEBUG,
@@ -194,7 +194,7 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
                 tmp_mat_diff = ql_ent_info.get('MatDiff', None)
                 corte_iteracion = ql_ent_info.get('CorteIteracion', None)
-                recompensas_promedio = ql_ent_info.get('RecompProm', None)
+                recompensas_promedio = ql_ent_info.get('MatRecompProm', None)
                 episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
 
                 matriz_q_inp = matriz_q
@@ -255,8 +255,14 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                  init_value_fn
                  )
 
-    graficar_recompensas_promedio((nro_prueba, parametros, graph_recompensas_promedio))
-    graficar_episodios_exitosos((nro_prueba, parametros, graph_episodios_finalizados))
+    graficar_recompensas_promedio((nro_prueba,
+                                   parametros,
+                                   graph_recompensas_promedio,
+                                   output_dir))
+    graficar_episodios_exitosos((nro_prueba,
+                                 parametros,
+                                 graph_episodios_finalizados,
+                                 output_dir))
 
 
 def get_all_from_queue(cola):
@@ -276,6 +282,7 @@ def graficar_episodios_exitosos(tupla):
     limitar_nro_iter, cant_max_iter = run_values[3]
     init_value = run_values[4]
 
+    output_dir = tupla[3]
     xy_values = tupla[2]
     x_values = [pair[0][0] for pair in xy_values if not numpy.equal(pair, None)]
     y_values = [pair[0][1] for pair in xy_values if not numpy.equal(pair, None)]
@@ -321,16 +328,8 @@ def graficar_episodios_exitosos(tupla):
              fontdict={'fontsize': 12}
              )
 
-    fecha = datetime.datetime.now()
-    output_dir = os.path.abspath(os.path.join(TEST_PATH,
-                                              'resultados',
-                                              fecha.strftime("%d-%m-%Y")))
-
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-
     test_dir = os.path.abspath(os.path.join(output_dir,
-                                            "Prueba {0}".format(nro_prueba)))
+                                            "Prueba_{0}".format(nro_prueba)))
 
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
@@ -349,14 +348,13 @@ def graficar_recompensas_promedio(tupla):
     limitar_nro_iter, cant_max_iter = run_values[3]
     init_value = run_values[4]
 
-    xy_values = tupla[2]
-    x_values = [pair[0][0] for pair in xy_values if not numpy.equal(pair, None)]
-    y_porc = [(val[0][0] * 100) / float(val[0][1]) for val in xy_values if not numpy.equal(pair, None)]
+    y_values = tupla[2]
+    output_dir = tupla[3]
 
     figure = plt.gcf()
     figure.canvas.set_window_title(u"Definir título de la ventana")
 
-    plt.plot(x_values, y_porc)
+    plt.plot(range(1, len(y_values) + 1), y_values)
     plt.grid(True)
     plt.title(u"Definir título del gráfico")
     plt.xlabel(u"Episodios")
@@ -394,16 +392,8 @@ def graficar_recompensas_promedio(tupla):
              fontdict={'fontsize': 12}
              )
 
-    fecha = datetime.datetime.now()
-    output_dir = os.path.abspath(os.path.join(TEST_PATH,
-                                              'resultados',
-                                              fecha.strftime("%d-%m-%Y")))
-
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-
     test_dir = os.path.abspath(os.path.join(output_dir,
-                                            "Prueba {0}".format(nro_prueba)))
+                                            "Prueba_{0}".format(nro_prueba)))
 
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
@@ -421,6 +411,12 @@ if __name__ == '__main__':
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
+    fecha = datetime.datetime.now()
+    date_dir = os.path.abspath(os.path.join(output_dir, fecha.strftime("%d-%m-%Y")))
+
+    if not os.path.exists(date_dir):
+        os.mkdir(date_dir)
+
     with open(archivo_pruebas, 'r') as apf:
         contador_pruebas = 1
 
@@ -429,6 +425,7 @@ if __name__ == '__main__':
                 items = linea_prueba.split(';')
 
                 sys.stdout.write("Ejecutando prueba {0}\n".format(contador_pruebas))
+
                 try:
                     ejecutar_prueba(items[0],
                                     items[1],
@@ -443,7 +440,9 @@ if __name__ == '__main__':
                                     items[10],
                                     items[11],
                                     items[12],
-                                    contador_pruebas)
+                                    contador_pruebas,
+                                    date_dir)
+
                     sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
                 except TypeError:
                     sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
@@ -453,7 +452,6 @@ if __name__ == '__main__':
                     continue
                 except AttributeError:
                     sys.stdout.write("Prueba {0} ERROR".format(contador_pruebas))
-                #===============================================================
 
                 contador_pruebas += 1
         sys.stdout.write("Fin de pruebas")

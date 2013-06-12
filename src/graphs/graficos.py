@@ -162,14 +162,12 @@ class GraphRecompPromedioWorker(threading.Thread):
             limitar_nro_iter, cant_max_iter = run_values[3]
             init_value = run_values[4]
 
-            xy_values = input_data[1]
-            x_values = [pair[0][0] for pair in xy_values]
-            y_values = [pair[0][1] for pair in xy_values]
+            y_values = input_data[1]
 
             figure = plt.gcf()
             figure.canvas.set_window_title(u"Definir título de la ventana")
 
-            plt.plot(x_values, y_values)
+            plt.plot(range(1, len(y_values) + 1), y_values)
             plt.grid(True)
             plt.title(u"Definir título del gráfico")
             plt.xlabel(u"Episodios")

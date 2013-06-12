@@ -885,7 +885,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setMouseTracking(True)
 
         # FIXME: Eliminar
-        self._logger.debug("Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
+        self._logger.debug("Matriz Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
         self._logger.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
 
     def _reintentar_detener_hilos(self):
@@ -970,12 +970,12 @@ class MainWindow(QtGui.QMainWindow):
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
                 tmp_mat_diff = ql_ent_info.get('MatDiff', None)
                 corte_iteracion = ql_ent_info.get('CorteIteracion', None)
-                recompensas_promedio = ql_ent_info.get('RecompProm', None)
+                matriz_avg_rwd = ql_ent_info.get('MatRecompProm', None)
                 episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
 
                 self.matriz_q = matriz_q
                 # Información estadística
-                self.graph_recompensas_promedio = recompensas_promedio
+                self.graph_recompensas_promedio = matriz_avg_rwd
                 self.graph_episodios_finalizados = episodios_finalizados
 
                 try:
