@@ -130,6 +130,12 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         contador_idx_arr = 0
         # Lista con episodios finalizados
         episodios_finalizados = numpy.empty((inter_muestreo + 1, 1), object)
+
+        # Cantidad de iteraciones por episodio
+        iters_por_episodio = numpy.empty((cantidad_episodios, 1), object)
+
+        # Evolución de la diferencia entre matrices Q
+        mat_diff_array = [self.interv_diff_calc, []]
         # ---------------------------------
 
         # Registrar tiempo de comienzo de los episodios
@@ -222,6 +228,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 cant_iteraciones += 1
                 # ==================== Fin de iteraciones ====================
 
+                iters_por_episodio[epnum - 1] = cant_iteraciones
+
             iter_end_time = wtimer()
 
             try:
@@ -252,6 +260,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                         # Calcular el error medio cuadrático
                         # tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
                         tmp_diff_mat = numpy.absolute(resta_diff_mat)
+
+                        # Almacenar para estadística
+                        mat_diff_array[1].append(tmp_diff_mat)
 
                         # Comprobar si la diferencia entre matrices supera la establecida
                         # por el usuario
@@ -337,7 +348,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                              'RunningExecTime': running_exec_time,
                              'MatDiff': tmp_diff_mat,
                              'MatRecompProm': recompensas_promedio,
-                             'EpFinalizados': episodios_finalizados
+                             'EpFinalizados': episodios_finalizados,
+                             'ItersXEpisodio': iters_por_episodio,
+                             'MatDiffStat': mat_diff_array
                              })
 
         # Realizar tareas al finalizar

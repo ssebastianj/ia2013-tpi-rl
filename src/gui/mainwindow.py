@@ -29,6 +29,8 @@ from core.tecnicas.softmax import Softmax
 
 from graphs.avgrwds.worker import GraphRecompensasPromedioWorker
 from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
+from graphs.itersep.worker import GraphIteracionesXEpisodioWorker
+from graphs.matdiffs.worker import GraphMatrizDiffsWorker
 
 from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
@@ -92,6 +94,8 @@ class MainWindow(QtGui.QMainWindow):
         # Variables necesarias para los gráficos
         self.graph_recompensas_promedio = None
         self.graph_episodios_finalizados = None
+        self.graph_iters_por_episodio = None
+        self.graph_mat_diff = None
 
         self.tecnicas = {  # 0: "Greedy",
                            1: "ε-Greedy",
@@ -890,6 +894,8 @@ class MainWindow(QtGui.QMainWindow):
         # FIXME: Eliminar
         self._logger.debug("Matriz Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
         self._logger.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
+        self._logger.debug("Iteraciones Por Episodio: {0}".format(self.graph_iters_por_episodio))
+        self._logger.debug("Diferencia entre matrices: {0}".format(self.graph_mat_diff))
 
     def _reintentar_detener_hilos(self):
         u"""
@@ -968,18 +974,17 @@ class MainWindow(QtGui.QMainWindow):
                 iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
                 worker_joined = ql_ent_info.get('ProcesoJoined', None)
                 loop_alarm = ql_ent_info.get('LoopAlarm', False)
-                matriz_q = ql_ent_info.get('MatrizQ', None)
+                self.matriz_q = ql_ent_info.get('MatrizQ', None)
                 valor_parametro = ql_ent_info.get('ValorParametro', None)
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
                 tmp_mat_diff = ql_ent_info.get('MatDiff', None)
                 corte_iteracion = ql_ent_info.get('CorteIteracion', None)
-                matriz_avg_rwd = ql_ent_info.get('MatRecompProm', None)
-                episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
 
-                self.matriz_q = matriz_q
                 # Información estadística
-                self.graph_recompensas_promedio = matriz_avg_rwd
-                self.graph_episodios_finalizados = episodios_finalizados
+                self.graph_recompensas_promedio = ql_ent_info.get('MatRecompProm', None)
+                self.graph_episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
+                self.graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio', None)
+                self.graph_mat_diff = ql_ent_info.get('MatDiffStat', None)
 
                 try:
                     # Descomponen coordenadas de estado actual
@@ -1549,11 +1554,31 @@ class MainWindow(QtGui.QMainWindow):
         action.setData(3)
         submenu2.addAction(action)
 
+        submenu3 = QtGui.QMenu(_tr("Iteraciones por episodio"), self)
+        action = QtGui.QAction(_tr("Ver gráfico..."), self)
+        action.setData(4)
+        submenu3.addAction(action)
+        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action.setData(5)
+        submenu3.addAction(action)
+
+        submenu4 = QtGui.QMenu(_tr("Diferencia entre matrices"), self)
+        action = QtGui.QAction(_tr("Ver gráfico..."), self)
+        action.setData(6)
+        submenu4.addAction(action)
+        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action.setData(7)
+        submenu4.addAction(action)
+
         self.WMainWindow.menuEstadisticas.addMenu(submenu1)
         self.WMainWindow.menuEstadisticas.addMenu(submenu2)
+        self.WMainWindow.menuEstadisticas.addMenu(submenu3)
+        self.WMainWindow.menuEstadisticas.addMenu(submenu4)
 
         submenu1.setEnabled(self.graph_recompensas_promedio is not None)
         submenu2.setEnabled(self.graph_episodios_finalizados is not None)
+        submenu3.setEnabled(self.graph_iters_por_episodio is not None)
+        submenu4.setEnabled(self.graph_mat_diff is not None)
 
     def show_estadisticas(self, action):
         data = action.data().toInt()[0]
@@ -1585,6 +1610,30 @@ class MainWindow(QtGui.QMainWindow):
         elif data == 3:
             # Episodios finalizados
             # Mostrar tabla
+            pass
+        elif data == 4:
+            # Iteraciones por episodio
+            # Mostrar gráfico
+            iters_por_ep_thread = QtCore.QThread(self)
+            iters_por_ep_worker = GraphIteracionesXEpisodioWorker((self._parametros,
+                                                                   self.graph_iters_por_episodio))
+            iters_por_ep_worker.mostrar_figura()
+            iters_por_ep_worker.moveToThread(iters_por_ep_thread)
+            iters_por_ep_thread.finished.connect(lambda: iters_por_ep_thread.wait(100))
+            iters_por_ep_thread.start()
+        elif data == 5:
+            pass
+        elif data == 6:
+            # Diferencia entre matrices Q
+            # Mostrar gráfico
+            mat_diffs_thread = QtCore.QThread(self)
+            mat_diffs_worker = GraphMatrizDiffsWorker((self._parametros,
+                                                          self.graph_mat_diff))
+            mat_diffs_worker.mostrar_figura()
+            mat_diffs_worker.moveToThread(mat_diffs_thread)
+            mat_diffs_thread.finished.connect(lambda: mat_diffs_thread.wait(100))
+            mat_diffs_thread.start()
+        elif data == 7:
             pass
 
     def generar_menu_edicion(self):
