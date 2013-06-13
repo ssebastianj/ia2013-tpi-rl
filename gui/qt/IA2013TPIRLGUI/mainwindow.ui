@@ -921,22 +921,22 @@
                    <item row="1" column="2">
                     <widget class="QDoubleSpinBox" name="sbMatricesMinDiff">
                      <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Diferencia entre matrices Q&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Establece la diferencia mínima que tiene que haber entre una Matriz Q (en t= i) y otra Matriz Q (en t= i+1) para que se detenga la ejecución del algoritmo.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Diferencia entre matrices Q&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Establece la diferencia mínima que tiene que haber entre una Matriz Q (en t = i) y otra Matriz Q (en t = i + 1) para que se detenga la ejecución del algoritmo.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="decimals">
-                      <number>4</number>
+                      <number>20</number>
                      </property>
                      <property name="minimum">
-                      <double>0.000100000000000</double>
+                      <double>0.000010000000000</double>
                      </property>
                      <property name="maximum">
-                      <double>1000.000000000000000</double>
+                      <double>1000000000.000000000000000</double>
                      </property>
                      <property name="singleStep">
-                      <double>0.001000000000000</double>
+                      <double>0.000001000000000</double>
                      </property>
                      <property name="value">
-                      <double>0.000100000000000</double>
+                      <double>0.000010000000000</double>
                      </property>
                     </widget>
                    </item>
