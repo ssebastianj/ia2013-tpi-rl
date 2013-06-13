@@ -124,7 +124,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Acumular recompensas de los estados elegidos
         recompensas_promedio = numpy.empty((cantidad_episodios, 1), object)
         # Lista de recompensas promedio
-        matriz_avg_rwd = self.get_matriz_avg_rwd(self.matriz_r)
+        matriz_avg_rwd = compiled_entrenar.get_matriz_avg_rwd((self.ancho,
+                                                              self.alto),
+                                                              self.matriz_r)
 
         # Cantidad de veces que se llegó al Estado Final
         cant_lleg_final = 0
@@ -149,15 +151,11 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # Ejecutar una cantidad dada de episodios o detener antes si se considera necesario
         while (not self._stoprequest.is_set()) and (epnum <= cantidad_episodios):
-
             # Obtener coordenadas aleatorias y obtener Estado asociado
-            x_act, y_act = self.generar_estado_aleatorio()
-
-            # Generar estados aleatorios hasta que las coordenadas no
-            # coincidan con las de un tipo excluido
-            estado_actual = compiled_entrenar.get_estado_inicial_random((self.ancho, self.alto),
+            estado_inicial = compiled_entrenar.get_estado_inicial_random((self.ancho, self.alto),
                                                                         self.matriz_r,
                                                                         self.tipos_vec_excluidos)
+            x_act, y_act, estado_actual = estado_inicial
             tipo_estado = estado_actual[0]
 
             # Recorrer hasta encontrar el estado final
@@ -252,7 +250,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 if calc_mat_diff_cont == 0:
                     try:
                         # Sumar todos los valores Q de la matriz actual
-                        suma_matriz_q_actual = sumar_elementos(self.matriz_q)
+                        suma_matriz_q_actual = compiled_entrenar.sumar_eltos_matriz(self.matriz_q)
 
                         # Restar valores de ambas matrices
                         resta_diff_mat = numpy.subtract(suma_matriz_q_anterior,
@@ -276,7 +274,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                         pass
                 elif calc_mat_diff_cont == 1:
                     # Sumar todos los valores Q de la matriz actual
-                    suma_matriz_q_anterior = sumar_elementos(self.matriz_q)
+                    suma_matriz_q_anterior = compiled_entrenar.sumar_eltos_matriz(self.matriz_q)
 
                 # Poner en la cola de salida los resultados
                 self.encolar_salida({'EstadoActual': (x_act, y_act),
@@ -399,7 +397,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self.matdiff_status, self.min_diff_mat, self.interv_diff_calc = self.input_data[10]
 
         self.matriz_r = self.get_matriz_r()
+
         self.matriz_q = self.get_matriz_q(self.matriz_r)
+
         self.tecnica = self.tecnica_pack[0](self.tecnica_pack[1],
                                             self.tecnica_pack[2],
                                             self.tecnica_pack[3])
@@ -475,31 +475,39 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         Crea y devuelve la matriz R de recompensa en en función de la ubicación de los estados
         y sus vecinos. Representa las transiciones posibles.
         """
-        # Verificar si hay tipos de vecinos a excluir de la matriz R
-        if self.tipos_vec_excluidos is None:
-            self.tipos_vec_excluidos = []
+        matriz_r_aux = numpy.empty((self.alto, self.ancho), object)
 
-        matriz_r = numpy.empty((self.alto, self.ancho), object)
-        # Crear una lista de listas
-        for i in xrange(1, self.alto + 1):
-            fila = []
-            for j in xrange(1, self.ancho + 1):
-                # Obtener estado actual y su ID de tipo
-                estado = self.get_estado(i, j)
-                estado_ide = estado.tipo.ide
-                # Obtener los estados vecinos del estado actual (i, j)
-                vecinos = self.get_vecinos_estado(i, j)
-                # Agregar vecinos y su recompensa al estado
-                # excluyendo los prohibidos
-                recomp_and_vec = {}
+        return compiled_entrenar.get_matriz_r((self.ancho, self.alto),
+                                              matriz_r_aux,
+                                              self.estados,
+                                              self.coordenadas,
+                                              self.tipos_vec_excluidos)
 
-                for vecino in vecinos:
-                    if vecino.tipo.ide not in self.tipos_vec_excluidos:
-                        recomp_and_vec[(vecino.fila, vecino.columna)] = vecino.tipo.recompensa
+        # # Verificar si hay tipos de vecinos a excluir de la matriz R
+        # if self.tipos_vec_excluidos is None:
+        #     self.tipos_vec_excluidos = []
 
-                fila.append((estado_ide, recomp_and_vec))
-            matriz_r[i - 1] = fila
-        return matriz_r
+        # matriz_r = numpy.empty((self.alto, self.ancho), object)
+        # # Crear una lista de listas
+        # for i in xrange(1, self.alto + 1):
+        #     fila = []
+        #     for j in xrange(1, self.ancho + 1):
+        #         # Obtener estado actual y su ID de tipo
+        #         estado = self.get_estado(i, j)
+        #         estado_ide = estado.tipo.ide
+        #         # Obtener los estados vecinos del estado actual (i, j)
+        #         vecinos = self.get_vecinos_estado(i, j)
+        #         # Agregar vecinos y su recompensa al estado
+        #         # excluyendo los prohibidos
+        #         recomp_and_vec = {}
+
+        #         for vecino in vecinos:
+        #             if vecino.tipo.ide not in self.tipos_vec_excluidos:
+        #                 recomp_and_vec[(vecino.fila, vecino.columna)] = vecino.tipo.recompensa
+
+        #         fila.append((estado_ide, recomp_and_vec))
+        #     matriz_r[i - 1] = fila
+        # return matriz_r
 
     def get_matriz_q(self, matriz_r):
         u"""
@@ -507,16 +515,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         :param default: Valor con que se inicializa cada estado de la matriz.
         """
-        matriz_q = numpy.empty((self.ancho, self.alto), object)
+        matriz_q_aux = numpy.empty((self.ancho, self.alto), object)
 
-        for i in xrange(0, self.alto):
-            for j in xrange(0, self.ancho):
-                tipo_estado = matriz_r[i][j][0]
-                vecinos = matriz_r[i][j][1]
-                vecinos = dict([(key, self.q_init_value_fn)
-                                for key in vecinos.iterkeys()])
-                matriz_q[i][j] = (tipo_estado, vecinos)
-        return matriz_q
+        return compiled_entrenar.get_matriz_q((self.ancho,
+                                              self.alto),
+                                              matriz_q_aux,
+                                              matriz_r,
+                                              self.q_init_value_fn)
 
     def get_vecinos_estado(self, x, y):
         u"""
@@ -526,13 +531,15 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         :param x: Fila del estado
         :param y: Columna del estado
         """
-        vecinos = []
-        for fila, columna in ((x + i, y + j)
-                              for i in (-1, 0, 1) for j in (-1, 0, 1)
-                              if i != 0 or j != 0):
-            if (fila, columna) in self.coordenadas:
-                vecinos.append(self.get_estado(fila, columna))
-        return numpy.array(vecinos, object)
+        return compiled_entrenar.get_vecinos_estado(x, y, self.estados, self.coordenadas)
+
+        # vecinos = []
+        # for fila, columna in ((x + i, y + j)
+        #                       for i in (-1, 0, 1) for j in (-1, 0, 1)
+        #                       if i != 0 or j != 0):
+        #     if (fila, columna) in self.coordenadas:
+        #         vecinos.append(self.get_estado(fila, columna))
+        # return numpy.array(vecinos, object)
 
     def get_estado(self, x, y):
         u"""
@@ -542,16 +549,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         :param y: Columna del estado
         """
         return self.estados[x - 1][y - 1]
-
-    def get_matriz_avg_rwd(self, matriz_r):
-        matriz_avg_rwd = numpy.empty((self.ancho, self.alto), object)
-
-        for i in xrange(0, self.alto):
-            for j in xrange(0, self.ancho):
-                vecinos = matriz_r[i][j][1]
-                vecinos = {key: 0 for key in vecinos.iterkeys()}
-                matriz_avg_rwd[i][j] = [0, 0]
-        return matriz_avg_rwd
 
 
 # ----------------------------------------------------------------------------
