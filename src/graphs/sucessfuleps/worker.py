@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+import csv
 import matplotlib.pyplot as plt
 import numpy
 
@@ -27,13 +28,15 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
         try:
             xy_values = self.input_data[1]
 
-            x_values = [pair[0][0] for pair in xy_values if not numpy.equal(pair, None)]
-            y_values = [pair[0][1] for pair in xy_values if not numpy.equal(pair, None)]
+            self.x_values = [pair[0][0] for pair in xy_values
+                             if not numpy.equal(pair, None)]
+            self.y_values = [pair[0][1] for pair in xy_values
+                             if not numpy.equal(pair, None)]
 
             figure = plt.gcf()
             figure.canvas.set_window_title(u"Porcentaje de episodios finalizados")
 
-            plt.plot(x_values, y_values)
+            plt.plot(self.x_values, self.y_values)
             plt.grid(True)
             plt.title(u"Porcentaje de episodios finalizados")
             plt.xlabel(u"Episodios")
@@ -87,3 +90,16 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
         plt.savefig(filename)
         # Liberar memoria
         plt.close()
+
+
+    def exportar_info(self, filepath, append=False):
+        mode = 'ab' if append else 'wb'
+
+        with open(filepath, mode) as csvf:
+            csv_writer = csv.writer(csvf, dialect='excel', delimiter=';')
+
+            csv_writer.writerow(['Episodios', 'Episodios Exitosos'])
+            for x, y in zip(self.x_values, self.y_values):
+                csv_writer.writerow([x, y])
+
+            csv_writer.writerow([])

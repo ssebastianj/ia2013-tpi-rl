@@ -258,10 +258,28 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                  init_value_fn
                  )
 
+    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{0}".format(nro_prueba)))
+    if not os.path.exists(test_dir):
+        os.mkdir(test_dir)
+    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+
+    with open(csv_path, 'wb') as csvf:
+        csv_writer = csv.writer(csvf, dialect='excel', delimiter=';')
+        csv_writer.writerow(['Gamma', gamma])
+        csv_writer.writerow(['Tecnica', tecnicas[tecnica_idx]])
+        csv_writer.writerow(['Parametro', parametro])
+        csv_writer.writerow(['Paso decremento', paso_decremento])
+        csv_writer.writerow(['Intervalo decremento', intervalo_decremento])
+        csv_writer.writerow(['Episodios', cant_episodios])
+        csv_writer.writerow(['Limitar iteraciones', limitar_iteraciones])
+        csv_writer.writerow(['Cant. Max. Iteraciones', cant_max_iter])
+        csv_writer.writerow(['Valor Inicial', init_value_fn])
+        csv_writer.writerow([])
+
     graficar_recompensas_promedio((parametros, graph_recompensas_promedio), nro_prueba, output_dir)
-    graficar_episodios_exitosos((parametros, graph_episodios_finalizados), nro_prueba, output_dir)
-    graficar_iters_por_episodio((parametros, graph_iters_por_episodio), nro_prueba, output_dir)
-    graficar_diferencias_matrizq((parametros, graph_mat_diff), nro_prueba, output_dir)
+    # graficar_episodios_exitosos((parametros, graph_episodios_finalizados), nro_prueba, output_dir)
+    # graficar_iters_por_episodio((parametros, graph_iters_por_episodio), nro_prueba, output_dir)
+    # graficar_diferencias_matrizq((parametros, graph_mat_diff), nro_prueba, output_dir)
 
 
 def get_all_from_queue(cola):
@@ -283,6 +301,9 @@ def graficar_episodios_exitosos(tupla, nro_prueba, output_dir):
     image_path = os.path.abspath(os.path.join(test_dir, 'episodios_exitosos.png'))
     worker.guardar_dibujo(image_path)
 
+    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    worker.exportar_info(csv_path, True)
+
 
 def graficar_recompensas_promedio(tupla, nro_prueba, output_dir):
     worker = GraphRecompensasPromedioWorker(tupla)
@@ -294,6 +315,9 @@ def graficar_recompensas_promedio(tupla, nro_prueba, output_dir):
 
     image_path = os.path.abspath(os.path.join(test_dir, 'recompensas_promedio.png'))
     worker.guardar_dibujo(image_path)
+
+    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    worker.exportar_info(csv_path, True)
 
 
 def graficar_iters_por_episodio(tupla, nro_prueba, output_dir):
@@ -307,6 +331,9 @@ def graficar_iters_por_episodio(tupla, nro_prueba, output_dir):
     image_path = os.path.abspath(os.path.join(test_dir, 'iters_por_ep.png'))
     worker.guardar_dibujo(image_path)
 
+    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    worker.exportar_info(csv_path, True)
+
 
 def graficar_diferencias_matrizq(tupla, nro_prueba, output_dir):
     worker = GraphMatrizDiffsWorker(tupla)
@@ -318,6 +345,9 @@ def graficar_diferencias_matrizq(tupla, nro_prueba, output_dir):
 
     image_path = os.path.abspath(os.path.join(test_dir, 'difs_mat_q.png'))
     worker.guardar_dibujo(image_path)
+
+    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    worker.exportar_info(csv_path, True)
 
 
 if __name__ == '__main__':
