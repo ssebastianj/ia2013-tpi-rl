@@ -3,6 +3,10 @@
 
 from __future__ import absolute_import
 
+import pyximport
+pyximport.install(setup_args={"script_args": ["--compiler=mingw32"]},
+                  reload_support=True)
+
 import Queue
 import multiprocessing
 import numpy
@@ -11,7 +15,8 @@ import sys
 import random
 
 from core.estado.estado import TIPOESTADO
-from tools.sumamatriz import sumar_elementos
+from core.qlearning import compiled_entrenar
+
 
 # ----------------------------------------------------------------------------
 #                         QLearningEntrenarWorker
@@ -150,13 +155,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
             # Generar estados aleatorios hasta que las coordenadas no
             # coincidan con las de un tipo excluido
-            estado_actual = self.matriz_r[x_act - 1][y_act - 1]
+            estado_actual = compiled_entrenar.get_estado_inicial_random((self.ancho, self.alto),
+                                                                        self.matriz_r,
+                                                                        self.tipos_vec_excluidos)
             tipo_estado = estado_actual[0]
-
-            while (not self._stoprequest.is_set()) and (tipo_estado in self.tipos_vec_excluidos):
-                x_act, y_act = self.generar_estado_aleatorio()
-                estado_actual = self.matriz_r[x_act - 1][y_act - 1]
-                tipo_estado = estado_actual[0]
 
             # Recorrer hasta encontrar el estado final
             cant_iteraciones = 1
@@ -191,7 +193,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 vecinos_est_elegido = self.matriz_q[x_eleg - 1][y_eleg - 1][1]
 
                 # Calcular el máximo valor Q de todos los vecinos
-                max_q = max([q_val for q_val in vecinos_est_elegido.values()])
+                max_q = compiled_entrenar.obtener_q_maximo(vecinos_est_elegido)
 
                 # -------------------------------------------------------------
                 # Fórmula principal de Q-Learning
@@ -307,10 +309,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 cont_interv_muestreo = 0
 
             # FIXME: Estadística
-            recompensas_promedio[epnum - 1][0] = sum([datos[1] / float(datos[0])
-                                                             for fila in matriz_avg_rwd
-                                                             for datos in fila
-                                                             if datos[0] != 0]) / float(len(matriz_avg_rwd))
+            recompensas_promedio[epnum - 1][0] = compiled_entrenar.sumar_avg_rwds(matriz_avg_rwd)
 
             # Avanzar un episodio
             epnum += 1
