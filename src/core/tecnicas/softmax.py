@@ -27,7 +27,7 @@ class Softmax(QLTecnica):
         self.cant_ranuras = 100
 
         # Establecer precisión de decimales a 5 dígitos
-        decimal.getcontext().prec = 4
+        decimal.getcontext().prec = 2
 
     def obtener_accion(self, vecinos):
         rnd_valor = random.randint(0, self.cant_ranuras - 1)
@@ -51,6 +51,8 @@ class Softmax(QLTecnica):
                 probabilidad_vecino = exponente.exp()
             except OverflowError:
                 pass
+            except decimal.Overflow:
+                probabilidad_vecino = decimal.Decimal(q_valor).exp()
             else:
                 probabilidades_vecinos[key] = probabilidad_vecino
                 sigma += probabilidad_vecino

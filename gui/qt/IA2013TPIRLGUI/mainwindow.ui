@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>867</width>
+    <width>876</width>
     <height>817</height>
    </rect>
   </property>
@@ -64,7 +64,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>867</width>
+     <width>876</width>
      <height>21</height>
     </rect>
    </property>
@@ -1012,6 +1012,9 @@
              <widget class="QDoubleSpinBox" name="sbQLGamma">
               <property name="toolTip">
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Factor de descuento&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Cuanto más cerca de 1 se encuentre este valor mayor será el &lt;span style=&quot; font-style:italic;&quot;&gt;peso&lt;/span&gt; asignado a los refuerzos futuros.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="minimum">
+               <double>0.010000000000000</double>
               </property>
               <property name="maximum">
                <double>0.990000000000000</double>

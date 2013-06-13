@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+import decimal
 import logging
 import multiprocessing
 import Queue
@@ -295,6 +296,10 @@ class MainWindow(QtGui.QMainWindow):
 
         # FIXME
         self.calcular_recompensa_final()
+        # FIXME: Actualizar gamma sólo si se encuentra seleccionado Softmax
+        idx_tecnica = self.WMainWindow.cbQLTecnicas.currentIndex()
+        if self.WMainWindow.cbQLTecnicas.itemData(idx_tecnica).toInt()[0] == 2:
+            self.calcular_gamma_minimo()
 
         ancho_estado_px = self.window_config["item"]["size"]
         ancho_gw_px = ancho_estado_px * ancho_gw
@@ -362,6 +367,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbQLGamma.valueChanged.connect(self.calcular_recompensa_final)
         self.WMainWindow.menuEstadisticas.triggered.connect(self.show_estadisticas)
         self.WMainWindow.menuEstadisticas.aboutToShow.connect(self.generar_menu_estadisticas)
+        self.WMainWindow.sbQLTau.editingFinished.connect(self.calcular_gamma_minimo)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -408,6 +414,9 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbDecrementoVal.setEnabled(True)
             self.WMainWindow.sbDecrementoVal.setMaximum(1000000000)
             self.WMainWindow.sbDecrementoVal.setValue(20)
+
+            # Hack para calcular el gamma mínimo de acuerdo al hardware
+            self.calcular_gamma_minimo()
         elif key == 3:
             # Aleatorio
             self.WMainWindow.lblTau.hide()
@@ -1528,13 +1537,16 @@ class MainWindow(QtGui.QMainWindow):
 
             exponente = self.window_config["exponentes_final"][ancho]
 
-            calc_recomp_final = int(recomp_excelente / (gamma ** exponente))
+            try:
+                calc_recomp_final = int(recomp_excelente / (gamma ** exponente))
 
-            estado_final_cfg = self.window_config["tipos_estados"][TIPOESTADO.FINAL]
-            estado_final_cfg.recompensa = calc_recomp_final
+                estado_final_cfg = self.window_config["tipos_estados"][TIPOESTADO.FINAL]
+                estado_final_cfg.recompensa = calc_recomp_final
 
-            estado_final_gw = self.gridworld.tipos_estados[TIPOESTADO.FINAL]
-            estado_final_gw.recompensa = calc_recomp_final
+                estado_final_gw = self.gridworld.tipos_estados[TIPOESTADO.FINAL]
+                estado_final_gw.recompensa = calc_recomp_final
+            except ZeroDivisionError:
+                pass
 
     def generar_menu_estadisticas(self):
         self.WMainWindow.menuEstadisticas.clear()
@@ -1697,3 +1709,24 @@ class MainWindow(QtGui.QMainWindow):
             threadp.wait(500)
         except threading.ThreadError:
             pass
+
+    def calcular_gamma_minimo(self):
+        estado_excelente = self.window_config["tipos_estados"][TIPOESTADO.EXCELENTE]
+        recomp_excelente = estado_excelente.recompensa
+        ancho = self.gridworld.ancho
+        exponente = self.window_config["exponentes_final"][ancho]
+
+        tau = decimal.Decimal(self.WMainWindow.sbQLTau.value())
+        gamma = 0.01
+        incremento = 0.01
+
+        while 1:
+            try:
+                calc_recomp_final = int(recomp_excelente / (gamma ** exponente))
+                expo = decimal.Decimal(calc_recomp_final) / tau
+                expo.exp()
+                break
+            except decimal.Overflow:
+                gamma += incremento
+
+        self.WMainWindow.sbQLGamma.setMinimum(gamma)

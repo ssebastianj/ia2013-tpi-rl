@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\Users\Lucia\workspace\TP-IA\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Thu Jun 13 16:42:38 2013
+# Created: Thu Jun 13 20:43:17 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(867, 817)
+        MainWindow.resize(876, 817)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/UTN.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -55,7 +55,7 @@ class Ui_MainWindow(object):
         self.gridLayout_14.addWidget(self.tblGridWorld, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtGui.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 867, 21))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 876, 21))
         self.menuBar.setObjectName(_fromUtf8("menuBar"))
         self.menuArchivo = QtGui.QMenu(self.menuBar)
         self.menuArchivo.setObjectName(_fromUtf8("menuArchivo"))
@@ -396,6 +396,7 @@ class Ui_MainWindow(object):
         self.lblGamma.setObjectName(_fromUtf8("lblGamma"))
         self.gridLayout_17.addWidget(self.lblGamma, 0, 0, 1, 1)
         self.sbQLGamma = QtGui.QDoubleSpinBox(self.gbQLearning)
+        self.sbQLGamma.setMinimum(0.01)
         self.sbQLGamma.setMaximum(0.99)
         self.sbQLGamma.setSingleStep(0.01)
         self.sbQLGamma.setObjectName(_fromUtf8("sbQLGamma"))

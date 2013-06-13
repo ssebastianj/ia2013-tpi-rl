@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\Users\Lucia\workspace\TP-IA\gui\qt\IA2013TPIRLGUI\gwopcionesdialog.ui'
 #
-# Created: Thu Jun 13 16:42:38 2013
+# Created: Thu Jun 13 20:43:17 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
