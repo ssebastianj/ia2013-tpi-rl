@@ -35,3 +35,9 @@ def get_estado_inicial_random(dimension, matriz_r, tipos_vecinos_excluidos):
 def generar_estado_aleatorio(dimension):
     # Devolver un estado seleccionado aleatoriamente del conjunto de vecinos
     return (random.randint(1, dimension[0]), random.randint(1, dimension[1]))
+
+
+def calcular_valor_q(matriz_q, gamma, recompensa_estado):
+    nuevo_q = recompensa_estado + (gamma * max_q)
+    # Actualizar valor de Q en matriz Q
+    matriz_q[x_act - 1][y_act - 1][1][(x_eleg, y_eleg)] = nuevo_q
