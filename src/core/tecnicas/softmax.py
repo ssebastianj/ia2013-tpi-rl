@@ -49,13 +49,12 @@ class Softmax(QLTecnica):
             try:
                 exponente = decimal.Decimal(q_valor) / self._val_param_parcial
                 probabilidad_vecino = exponente.exp()
+                probabilidades_vecinos[key] = probabilidad_vecino
+                sigma += probabilidad_vecino
             except OverflowError:
                 pass
             except decimal.Overflow:
-                probabilidad_vecino = decimal.Decimal(q_valor).exp()
-            else:
-                probabilidades_vecinos[key] = probabilidad_vecino
-                sigma += probabilidad_vecino
+                pass
 
         # N = constante de Normalización
         # n = sum(probabilidades_vecinos.itervalues())

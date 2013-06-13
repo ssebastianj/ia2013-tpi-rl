@@ -403,6 +403,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbDecrementoVal.setEnabled(True)
             self.WMainWindow.sbDecrementoVal.setMaximum(0.99)
             self.WMainWindow.sbDecrementoVal.setValue(0.01)
+            self.WMainWindow.sbQLGamma.setMinimum(0.01)
         elif key == 2:
             # Softmax
             self.WMainWindow.lblEpsilon.hide()
