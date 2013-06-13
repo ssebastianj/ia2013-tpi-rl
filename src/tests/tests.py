@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+import csv
 import datetime
 import Queue
 import logging
@@ -333,45 +334,45 @@ if __name__ == '__main__':
     if not os.path.exists(date_dir):
         os.mkdir(date_dir)
 
-    with open(archivo_pruebas, 'r') as apf:
+    with open(archivo_pruebas, 'rb') as apf:
+        # dialecto = csv.Sniffer().sniff(apf.read(), delimiters=';')
+        inp_csv = csv.reader(apf, dialect='excel', delimiter=';')
+
         contador_pruebas = 1
 
-        for linea_prueba in apf:
-            if (linea_prueba.strip() != '') and (not linea_prueba.startswith('#')):
-                items = linea_prueba.split(';')
+        for linea_prueba in inp_csv:
+            sys.stdout.write("Ejecutando prueba {0}... ".format(contador_pruebas))
 
-                sys.stdout.write("Ejecutando prueba {0}... ".format(contador_pruebas))
+            try:
+                ejecutar_prueba(linea_prueba[0],
+                                linea_prueba[1],
+                                linea_prueba[2],
+                                linea_prueba[3],
+                                linea_prueba[4],
+                                linea_prueba[5],
+                                linea_prueba[6],
+                                linea_prueba[7],
+                                linea_prueba[8],
+                                linea_prueba[9],
+                                linea_prueba[10],
+                                linea_prueba[11],
+                                linea_prueba[12],
+                                contador_pruebas,
+                                date_dir)
 
-                try:
-                    ejecutar_prueba(items[0],
-                                    items[1],
-                                    items[2],
-                                    items[3],
-                                    items[4],
-                                    items[5],
-                                    items[6],
-                                    items[7],
-                                    items[8],
-                                    items[9],
-                                    items[10],
-                                    items[11],
-                                    items[12],
-                                    contador_pruebas,
-                                    date_dir)
+                sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
+            except TypeError:
+                sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                continue
+            except ValueError:
+                sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                continue
+            except AttributeError:
+                sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                continue
+            except multiprocessing.ProcessError:
+                sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                continue
 
-                    sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
-                except TypeError:
-                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
-                    continue
-                except ValueError:
-                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
-                    continue
-                except AttributeError:
-                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
-                    continue
-                except multiprocessing.ProcessError:
-                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
-                    continue
-
-                contador_pruebas += 1
+            contador_pruebas += 1
         sys.stdout.write("Fin de pruebas")
