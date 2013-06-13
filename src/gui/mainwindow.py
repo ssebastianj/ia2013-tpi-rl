@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -7,6 +7,7 @@ import logging
 import multiprocessing
 import Queue
 import random
+import threading
 import time
 
 from PyQt4 import QtCore, QtGui
@@ -26,7 +27,10 @@ from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
-from graphs.graficos import GraphEpsExitososWorker, GraphRecompPromedioWorker
+from graphs.avgrwds.worker import GraphRecompensasPromedioWorker
+from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
+from graphs.itersep.worker import GraphIteracionesXEpisodioWorker
+from graphs.matdiffs.worker import GraphMatrizDiffsWorker
 
 from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
@@ -90,14 +94,18 @@ class MainWindow(QtGui.QMainWindow):
         # Variables necesarias para los gráficos
         self.graph_recompensas_promedio = None
         self.graph_episodios_finalizados = None
+        self.graph_iters_por_episodio = None
+        self.graph_mat_diff = None
 
         self.tecnicas = {  # 0: "Greedy",
                            1: "ε-Greedy",
                            2: "Softmax",
                            # 3: "Aleatorio"
                          }
+
         self.gw_dimensiones = [  # "3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
+
         self.window_config = {"item":
                               {"show_tooltip": True,
                                "menu_estado":
@@ -113,7 +121,7 @@ class MainWindow(QtGui.QMainWindow):
                               },
                               "tipos_estados":
                               {0: TipoEstado(0, None, _tr("Inicial"), _tr("I"), "#FF5500", None),
-                               1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#0071A6", None),
+                               1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#00AB00", None),
                                2: TipoEstado(2, None, _tr("Agente"), _tr("A"), "#474747",
                                              QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))),
                                3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
@@ -123,7 +131,7 @@ class MainWindow(QtGui.QMainWindow):
                                7: TipoEstado(7, None, _tr("Pared"), _tr("P"), "#000000", None),
                                },
                               "opt_path":
-                             {"color": "#70DC4C",
+                             {"color": "#55FF00",
                                  "pintar_inicial": False,
                                  "pintar_final": False,
                                  "delay": 0,
@@ -237,7 +245,8 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setMouseTracking(True)
 
-        self.generar_menu_estadisticas()
+        self.generar_menu_edicion()
+        # self.generar_menu_estadisticas()
 
         self.inicializar_todo()
 
@@ -281,7 +290,8 @@ class MainWindow(QtGui.QMainWindow):
                                    alto_gw,
                                    self.window_config["tipos_estados"],
                                    None,
-                                   [TIPOESTADO.PARED])
+                                   [TIPOESTADO.PARED]
+                                   )
 
         # FIXME
         self.calcular_recompensa_final()
@@ -351,6 +361,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnGenEstRndRapida.clicked.connect(lambda: self.refresh_gw_random(True, True))
         self.WMainWindow.sbQLGamma.valueChanged.connect(self.calcular_recompensa_final)
         self.WMainWindow.menuEstadisticas.triggered.connect(self.show_estadisticas)
+        self.WMainWindow.menuEstadisticas.aboutToShow.connect(self.generar_menu_estadisticas)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -742,6 +753,10 @@ class MainWindow(QtGui.QMainWindow):
         self.wnd_timer.timeout.connect(self._on_window_timer)
         self.wnd_timer.start(15)
 
+        # Desactivar seguimiento del mouse antes de comenzar
+        self.setMouseTracking(False)
+        self.WMainWindow.tblGridWorld.setMouseTracking(False)
+
         # Mostrar cursor de ocupado indicando que se está procesando
         QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BusyCursor))
 
@@ -872,9 +887,15 @@ class MainWindow(QtGui.QMainWindow):
         # Restaurar cursor normal
         QtGui.QApplication.restoreOverrideCursor()
 
+        # Reactivar seguimiento del mouse en widgets
+        self.setMouseTracking(True)
+        self.WMainWindow.tblGridWorld.setMouseTracking(True)
+
         # FIXME: Eliminar
-        logging.debug("Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
-        logging.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
+        self._logger.debug("Matriz Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
+        self._logger.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
+        self._logger.debug("Iteraciones Por Episodio: {0}".format(self.graph_iters_por_episodio))
+        self._logger.debug("Diferencia entre matrices: {0}".format(self.graph_mat_diff))
 
     def _reintentar_detener_hilos(self):
         u"""
@@ -953,17 +974,17 @@ class MainWindow(QtGui.QMainWindow):
                 iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
                 worker_joined = ql_ent_info.get('ProcesoJoined', None)
                 loop_alarm = ql_ent_info.get('LoopAlarm', False)
-                matriz_q = ql_ent_info.get('MatrizQ', None)
+                self.matriz_q = ql_ent_info.get('MatrizQ', None)
                 valor_parametro = ql_ent_info.get('ValorParametro', None)
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
                 tmp_mat_diff = ql_ent_info.get('MatDiff', None)
                 corte_iteracion = ql_ent_info.get('CorteIteracion', None)
-                recompensas_promedio = ql_ent_info.get('RecompProm', None)
-                episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
 
-                self.matriz_q = matriz_q
-                self.graph_recompensas_promedio = recompensas_promedio
-                self.graph_episodios_finalizados = episodios_finalizados
+                # Información estadística
+                self.graph_recompensas_promedio = ql_ent_info.get('MatRecompProm', None)
+                self.graph_episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
+                self.graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio', None)
+                self.graph_mat_diff = ql_ent_info.get('MatDiffStat', None)
 
                 try:
                     # Descomponen coordenadas de estado actual
@@ -1203,7 +1224,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def mostrar_opciones_gw(self):
         # Inicializar cuadros de diálogo
-        self.GWOpcionesD = GWOpcionesDialog(self)
+        self.GWOpcionesD = GWOpcionesDialog(self, self.window_config)
 
         if self.GWOpcionesD.exec_():
             if self.GWOpcionesD.ent_show_state:
@@ -1228,13 +1249,11 @@ class MainWindow(QtGui.QMainWindow):
 
             self.window_config["item"]["size"] = self.GWOpcionesD.estado_size
 
-            new_tipos_estados = self.GWOpcionesD.tipos_estados
-
             # Actualizar tipos de estados
-            self.gridworld.tipos_estados = new_tipos_estados
-            self.window_config["tipos_estados"] = new_tipos_estados
+            self.gridworld.tipos_estados = self.GWOpcionesD.tipos_estados
+            self.window_config["tipos_estados"] = self.GWOpcionesD.tipos_estados
 
-            self.refresh_gw()
+            self.recargar_estados()
 
     def mostrar_gen_rnd_estados_dialog(self):
         self.GWGenRndEstValsD = GWGenRndEstadosDialog(self)
@@ -1405,7 +1424,7 @@ class MainWindow(QtGui.QMainWindow):
         Muestra el camino óptimo en el GridWorld introduciendo un retraso de tiempo
         entre los estados con el fin de visualizar el progreso.
         """
-        logging.debug("Animar camino óptimo")
+        self._logger.debug("Animar camino óptimo")
 
         # Ocultar camino óptimo previamente a animar
         self.ocultar_camino_optimo()
@@ -1424,8 +1443,6 @@ class MainWindow(QtGui.QMainWindow):
         Acción que invoca al método para mostrar el camino óptimo. Utilizada desde
         un proceso o UI.
         """
-        logging.debug("Ocultar camino óptimo")
-
         if self.camino_optimo is not None and self.camino_optimo_active:
             self.camino_optimo_active = False
 
@@ -1439,7 +1456,7 @@ class MainWindow(QtGui.QMainWindow):
         Acción que invoca al método para mostrar el camino óptimo. Utilizada desde
         un proceso o UI.
         """
-        logging.debug("Mostrar camino óptimo")
+        self._logger.debug("Mostrar camino óptimo")
 
         self.camino_optimo_active = True
 
@@ -1519,6 +1536,8 @@ class MainWindow(QtGui.QMainWindow):
             estado_final_gw.recompensa = calc_recomp_final
 
     def generar_menu_estadisticas(self):
+        self.WMainWindow.menuEstadisticas.clear()
+
         submenu1 = QtGui.QMenu(_tr("Recompensas promedio"), self)
         action = QtGui.QAction(_tr("Ver gráfico..."), self)
         action.setData(0)
@@ -1535,24 +1554,45 @@ class MainWindow(QtGui.QMainWindow):
         action.setData(3)
         submenu2.addAction(action)
 
+        submenu3 = QtGui.QMenu(_tr("Iteraciones por episodio"), self)
+        action = QtGui.QAction(_tr("Ver gráfico..."), self)
+        action.setData(4)
+        submenu3.addAction(action)
+        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action.setData(5)
+        submenu3.addAction(action)
+
+        submenu4 = QtGui.QMenu(_tr("Diferencia entre matrices"), self)
+        action = QtGui.QAction(_tr("Ver gráfico..."), self)
+        action.setData(6)
+        submenu4.addAction(action)
+        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action.setData(7)
+        submenu4.addAction(action)
+
         self.WMainWindow.menuEstadisticas.addMenu(submenu1)
         self.WMainWindow.menuEstadisticas.addMenu(submenu2)
+        self.WMainWindow.menuEstadisticas.addMenu(submenu3)
+        self.WMainWindow.menuEstadisticas.addMenu(submenu4)
+
+        submenu1.setEnabled(self.graph_recompensas_promedio is not None)
+        submenu2.setEnabled(self.graph_episodios_finalizados is not None)
+        submenu3.setEnabled(self.graph_iters_por_episodio is not None)
+        submenu4.setEnabled(self.graph_mat_diff is not None)
 
     def show_estadisticas(self, action):
-        logging.debug(action)
-
         data = action.data().toInt()[0]
 
         if data == 0:
             # Recompensas promedio
             # Mostrar gráfico
-            inp_queue = Queue.Queue()
-            inp_queue.put((self._parametros, self.graph_recompensas_promedio))
-
-            rec_prom_worker = GraphRecompPromedioWorker(inp_queue)
-            rec_prom_worker.start()
-
-            logging.debug(rec_prom_worker)
+            avg_rwds_thread = QtCore.QThread(self)
+            avg_rwds_worker = GraphRecompensasPromedioWorker((self._parametros,
+                                                              self.graph_recompensas_promedio))
+            avg_rwds_worker.mostrar_figura()
+            avg_rwds_worker.moveToThread(avg_rwds_thread)
+            avg_rwds_thread.finished.connect(lambda: avg_rwds_thread.wait(100))
+            avg_rwds_thread.start()
         elif data == 1:
             # Recompensas promedio
             # Mostrar tabla
@@ -1560,14 +1600,99 @@ class MainWindow(QtGui.QMainWindow):
         elif data == 2:
             # Episodios finalizados
             # Mostrar gráfico
-            inp_queue = Queue.Queue()
-            inp_queue.put((self._parametros, self.graph_episodios_finalizados))
-
-            eps_fin_worker = GraphEpsExitososWorker(inp_queue)
-            eps_fin_worker.start()
-
-            logging.debug(eps_fin_worker)
+            suces_eps_thread = QtCore.QThread(self)
+            suces_eps_worker = GraphSucessfulEpisodesWorker((self._parametros,
+                                                               self.graph_episodios_finalizados))
+            suces_eps_worker.mostrar_figura()
+            suces_eps_worker.moveToThread(suces_eps_thread)
+            suces_eps_thread.finished.connect(lambda: suces_eps_thread.wait(100))
+            suces_eps_thread.start()
         elif data == 3:
             # Episodios finalizados
             # Mostrar tabla
+            pass
+        elif data == 4:
+            # Iteraciones por episodio
+            # Mostrar gráfico
+            iters_por_ep_thread = QtCore.QThread(self)
+            iters_por_ep_worker = GraphIteracionesXEpisodioWorker((self._parametros,
+                                                                   self.graph_iters_por_episodio))
+            iters_por_ep_worker.mostrar_figura()
+            iters_por_ep_worker.moveToThread(iters_por_ep_thread)
+            iters_por_ep_thread.finished.connect(lambda: iters_por_ep_thread.wait(100))
+            iters_por_ep_thread.start()
+        elif data == 5:
+            pass
+        elif data == 6:
+            # Diferencia entre matrices Q
+            # Mostrar gráfico
+            mat_diffs_thread = QtCore.QThread(self)
+            mat_diffs_worker = GraphMatrizDiffsWorker((self._parametros,
+                                                          self.graph_mat_diff))
+            mat_diffs_worker.mostrar_figura()
+            mat_diffs_worker.moveToThread(mat_diffs_thread)
+            mat_diffs_thread.finished.connect(lambda: mat_diffs_thread.wait(100))
+            mat_diffs_thread.start()
+        elif data == 7:
+            pass
+
+    def generar_menu_edicion(self):
+        action = QtGui.QAction("Copiar datos de pruebas al portapapeles", self)
+        action.setShortcut(QtGui.QKeySequence("Ctrl+Shift+C"))
+        action.triggered.connect(self.copiar_prueba_toclipboard)
+        self.WMainWindow.menuEdicion.addAction(action)
+
+    def copiar_prueba_toclipboard(self):
+        if self.estado_final is None:
+            QtGui.QMessageBox.warning(self,
+                                      _tr('QLearning - Entrenamiento'),
+                                      "Debe establecer un Estado Final antes de realizar el entrenamiento.")
+            return None
+
+        linea_prueba_items = []
+        linea_prueba_items.append(self.gridworld.get_matriz_tipos_estados())
+        linea_prueba_items.append(self.WMainWindow.sbQLGamma.value())
+
+        indice = self.WMainWindow.cbQLTecnicas.currentIndex()
+        tecnica = self.WMainWindow.cbQLTecnicas.itemData(indice).toInt()[0]
+
+        if tecnica == 0:
+            parametro = 0
+        elif tecnica == 1:
+            parametro = self.WMainWindow.sbQLEpsilon.value()
+        elif tecnica == 2:
+            parametro = self.WMainWindow.sbQLTau.value()
+        elif tecnica == 3:
+            parametro = 1
+
+        linea_prueba_items.append(tecnica)
+        linea_prueba_items.append(parametro)
+        linea_prueba_items.append(self.WMainWindow.sbCantidadEpisodios.value())
+        linea_prueba_items.append(self.WMainWindow.sbDecrementoVal.value())
+        linea_prueba_items.append(self.WMainWindow.sbCantEpisodiosDec.value())
+        linea_prueba_items.append(self.WMainWindow.chkLimitarCantIteraciones.isChecked())
+        linea_prueba_items.append(self.WMainWindow.sbCantMaxIteraciones.value())
+
+        if self.WMainWindow.optMQInitEnCero.isChecked():
+            valor_inicial = 0
+        elif self.WMainWindow.optMQInitValOptimistas.isChecked():
+            incremento = self.WMainWindow.sbValOptimoIncremento.value()
+            valor_inicial = incremento + self.window_config["tipos_estados"][TIPOESTADO.EXCELENTE].recompensa
+
+        linea_prueba_items.append(valor_inicial)
+        linea_prueba_items.append(self.WMainWindow.chkQLCalcularMatDiff.isChecked())
+        linea_prueba_items.append(self.WMainWindow.sbMatricesMinDiff.value())
+        linea_prueba_items.append(self.WMainWindow.sbIntervaloDiffCalc.value())
+
+        linea_prueba = ";".join([str(item) for item in linea_prueba_items])
+
+        clipboard = QtGui.QApplication.clipboard()
+        clipboard.setText(linea_prueba)
+
+    def _join_graph_thread(self, threadp):
+        try:
+            logging.debug("Join Thread: {0}".format(threadp))
+            threadp.terminate()
+            threadp.wait(500)
+        except threading.ThreadError:
             pass

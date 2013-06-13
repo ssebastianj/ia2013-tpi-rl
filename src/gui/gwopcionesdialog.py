@@ -18,7 +18,7 @@ class GWOpcionesDialog(QtGui.QDialog):
     u"""
     Clase de diálogo 'Opciones' heredada de QDialog.
     """
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, opciones=None):
         u"""
         Constructor de la clase.
 
@@ -33,10 +33,14 @@ class GWOpcionesDialog(QtGui.QDialog):
                             QtCore.Qt.WindowSystemMenuHint |
                             QtCore.Qt.WindowTitleHint)
 
+        self._opciones = opciones
         self._init_vars()
         self.initialize_dialog()
 
     def _init_vars(self):
+        u"""
+        Inicializa atributos de la instancia.
+        """
         self.estado_size = None
         self.pared_bloqueante = None
         self.recomp_final = None
@@ -55,55 +59,107 @@ class GWOpcionesDialog(QtGui.QDialog):
         """
         self._set_dialog_signals()
 
+        # Estado Excelente
         self.GWOpcionesD.sbExcelenteRecompensa.setMinimum(-1000000000)
         self.GWOpcionesD.sbExcelenteRecompensa.setMaximum(1000000000)
-        self.GWOpcionesD.sbExcelenteRecompensa.setValue(100)
-        self.GWOpcionesD.txtExcelenteNombre.setText(_tr("Excelente"))
-        self.GWOpcionesD.txtExcelenteLetra.setText(_tr("E"))
-        self.GWOpcionesD.txtExcelenteColor.setText("#BB0011")
 
+        estado_excelente = self._opciones["tipos_estados"][TIPOESTADO.EXCELENTE]
+        self.GWOpcionesD.sbExcelenteRecompensa.setValue(estado_excelente.recompensa)
+        self.GWOpcionesD.txtExcelenteNombre.setText(_tr(estado_excelente.nombre))
+        self.GWOpcionesD.txtExcelenteLetra.setText(_tr(estado_excelente.letra))
+        self.GWOpcionesD.txtExcelenteColor.setText(estado_excelente.color)
+        # --------------------------------------------------------------------
+
+        # Estado Bueno
         self.GWOpcionesD.sbBuenoRecompensa.setMinimum(-1000000000)
         self.GWOpcionesD.sbBuenoRecompensa.setMaximum(1000000000)
-        self.GWOpcionesD.sbBuenoRecompensa.setValue(50)
-        self.GWOpcionesD.txtBuenoNombre.setText(_tr("Bueno"))
-        self.GWOpcionesD.txtBuenoLetra.setText(_tr("B"))
-        self.GWOpcionesD.txtBuenoColor.setText("#4F0ACC")
 
+        estado_bueno = self._opciones["tipos_estados"][TIPOESTADO.BUENO]
+        self.GWOpcionesD.sbBuenoRecompensa.setValue(estado_bueno.recompensa)
+        self.GWOpcionesD.txtBuenoNombre.setText(_tr(estado_bueno.nombre))
+        self.GWOpcionesD.txtBuenoLetra.setText(_tr(estado_bueno.letra))
+        self.GWOpcionesD.txtBuenoColor.setText(estado_bueno.color)
+        # --------------------------------------------------------------------
+
+        # Estado Malo
         self.GWOpcionesD.sbMaloRecompensa.setMinimum(-1000000000)
         self.GWOpcionesD.sbMaloRecompensa.setMaximum(1000000000)
-        self.GWOpcionesD.sbMaloRecompensa.setValue(-50)
-        self.GWOpcionesD.txtMaloNombre.setText(_tr("Malo"))
-        self.GWOpcionesD.txtMaloLetra.setText(_tr("M"))
-        self.GWOpcionesD.txtMaloColor.setText("#EB00A1")
 
+        estado_malo = self._opciones["tipos_estados"][TIPOESTADO.MALO]
+        self.GWOpcionesD.sbMaloRecompensa.setValue(estado_malo.recompensa)
+        self.GWOpcionesD.txtMaloNombre.setText(_tr(estado_malo.nombre))
+        self.GWOpcionesD.txtMaloLetra.setText(_tr(estado_malo.letra))
+        self.GWOpcionesD.txtMaloColor.setText(estado_malo.color)
+        # --------------------------------------------------------------------
+
+        # Estado Neutro
         self.GWOpcionesD.sbNeutroRecompensa.setMinimum(-1000000000)
         self.GWOpcionesD.sbNeutroRecompensa.setMaximum(1000000000)
-        self.GWOpcionesD.sbNeutroRecompensa.setValue(0)
-        self.GWOpcionesD.txtNeutroNombre.setText(_tr("Neutro"))
-        self.GWOpcionesD.txtNeutroLetra.setText(_tr("N"))
-        self.GWOpcionesD.txtNeutroColor.setText("#FFFFFF")
 
-        self.GWOpcionesD.txtParedNombre.setText(_tr("Pared"))
-        self.GWOpcionesD.txtParedLetra.setText(_tr("P"))
-        self.GWOpcionesD.txtParedColor.setText("#000000")
+        estado_neutro = self._opciones["tipos_estados"][TIPOESTADO.NEUTRO]
+        self.GWOpcionesD.sbNeutroRecompensa.setValue(estado_neutro.recompensa)
+        self.GWOpcionesD.txtNeutroNombre.setText(_tr(estado_neutro.nombre))
+        self.GWOpcionesD.txtNeutroLetra.setText(_tr(estado_neutro.letra))
+        self.GWOpcionesD.txtNeutroColor.setText(estado_neutro.color)
+        # --------------------------------------------------------------------
 
-        self.GWOpcionesD.txtAgenteNombre.setText(_tr("Agente"))
-        self.GWOpcionesD.txtAgenteLetra.setText(_tr("A"))
-        self.GWOpcionesD.txtAgenteColor.setText("#474747")
+        # Estado Pared
+        estado_pared = self._opciones["tipos_estados"][TIPOESTADO.PARED]
+        self.GWOpcionesD.txtParedNombre.setText(_tr(estado_pared.nombre))
+        self.GWOpcionesD.txtParedLetra.setText(_tr(estado_pared.letra))
+        self.GWOpcionesD.txtParedColor.setText(estado_pared.color)
+        # --------------------------------------------------------------------
 
-        self.GWOpcionesD.txtFinalNombre.setText(_tr("Final"))
-        self.GWOpcionesD.txtFinalLetra.setText(_tr("F"))
-        self.GWOpcionesD.txtFinalColor.setText("#0071A6")
+        # Estado Agente
+        estado_agente = self._opciones["tipos_estados"][TIPOESTADO.AGENTE]
+        self.GWOpcionesD.txtAgenteNombre.setText(_tr(estado_agente.nombre))
+        self.GWOpcionesD.txtAgenteLetra.setText(_tr(estado_agente.letra))
+        self.GWOpcionesD.txtAgenteColor.setText(estado_agente.color)
+        # --------------------------------------------------------------------
 
-        self.GWOpcionesD.txtInicialNombre.setText(_tr("Inicial"))
-        self.GWOpcionesD.txtInicialLetra.setText(_tr("I"))
-        self.GWOpcionesD.txtInicialColor.setText("#FF5500")
+        # Estado Final
+        estado_final = self._opciones["tipos_estados"][TIPOESTADO.FINAL]
+        self.GWOpcionesD.txtFinalNombre.setText(_tr(estado_final.nombre))
+        self.GWOpcionesD.txtFinalLetra.setText(_tr(estado_final.letra))
+        self.GWOpcionesD.txtFinalColor.setText(estado_final.color)
+        # --------------------------------------------------------------------
+
+        # Estado Inicial
+        estado_inicial = self._opciones["tipos_estados"][TIPOESTADO.INICIAL]
+        self.GWOpcionesD.txtInicialNombre.setText(_tr(estado_inicial.nombre))
+        self.GWOpcionesD.txtInicialLetra.setText(_tr(estado_inicial.letra))
+        self.GWOpcionesD.txtInicialColor.setText(estado_inicial.color)
+        # --------------------------------------------------------------------
 
         self.update_recom_final()
 
-        self.GWOpcionesD.sbFinalRecompensa.setValue(1000)
+        self.GWOpcionesD.sbFinalRecompensa.setValue(estado_final.recompensa)
+
+        estado_size = self._opciones["item"]["size"]
+        self.GWOpcionesD.sbGWEstadoSize.setValue(estado_size)
+
+        ent_show_state = self._opciones["gw"]["entrenamiento"]["actual_state"]["show"]
+        rec_show_state = self._opciones["gw"]["recorrido"]["actual_state"]["show"]
+        self.GWOpcionesD.gbEntShowActualState.setChecked(ent_show_state)
+        self.GWOpcionesD.gbRecShowActualState.setChecked(rec_show_state)
+
+        ent_icono = self._opciones["gw"]["entrenamiento"]["actual_state"]["icono"]
+        rec_icono = self._opciones["gw"]["recorrido"]["actual_state"]["icono"]
+
+        if ent_icono is None:
+            self.GWOpcionesD.optEntMostrarColorFondo.setChecked(True)
+        else:
+            self.GWOpcionesD.optEntMostrarIcono.setChecked(True)
+
+        if rec_icono is None:
+            self.GWOpcionesD.optRecMostrarColorFondo.setChecked(True)
+        else:
+            self.GWOpcionesD.optRecMostrarIcono.setChecked(True)
 
     def _set_dialog_signals(self):
+        u"""
+        Establece y conecta las señales de Qt entre los diversos widgets.
+        """
         self.GWOpcionesD.sbExcelenteRecompensa.valueChanged.connect(self.update_recom_final)
         self.GWOpcionesD.sbBuenoRecompensa.valueChanged.connect(self.update_recom_final)
         self.GWOpcionesD.sbMaloRecompensa.valueChanged.connect(self.update_recom_final)
@@ -128,14 +184,30 @@ class GWOpcionesDialog(QtGui.QDialog):
         self.GWOpcionesD.btnElegirColorPared.clicked.connect(clr_pared)
 
     def update_recom_final(self, valor=None):
+        u"""
+        Calcula la recompensa del Estado Final en función de las recompensas
+        del resto de los tipos de estados.
+
+        :param valor: Valor númerico del control seleccionado.
+        """
         self.recomp_max = max([self.GWOpcionesD.sbExcelenteRecompensa.value(),
                                self.GWOpcionesD.sbBuenoRecompensa.value(),
                                self.GWOpcionesD.sbMaloRecompensa.value(),
                                self.GWOpcionesD.sbNeutroRecompensa.value()])
-        self.recomp_max += 1
-        self.GWOpcionesD.sbFinalRecompensa.setMinimum(self.recomp_max)
+        self.recomp_max += 100
+
+        if self._opciones["gw"]["entrenamiento"]["recompfinalauto"]:
+            estado = self._opciones["tipos_estados"][TIPOESTADO.FINAL]
+            self.GWOpcionesD.sbFinalRecompensa.setMinimum(estado.recompensa)
+        else:
+            self.GWOpcionesD.sbFinalRecompensa.setMinimum(self.recomp_max)
 
     def set_color_estado(self, widget):
+        u"""
+        Selecciona y establece el nombre del color para un tipo de estado dado.
+
+        :param widget: Widget en el cual se mostrará el nombre del color.
+        """
         qcolordiag = QtGui.QColorDialog(self)
         qcolordiag.setOption(QtGui.QColorDialog.ShowAlphaChannel)
         state_color = qcolordiag.getColor()
@@ -147,6 +219,9 @@ class GWOpcionesDialog(QtGui.QDialog):
                 pass
 
     def accept(self):
+        u"""
+        Aceptar y enviar los cambios producidos en el diálogo.
+        """
         self.estado_size = self.GWOpcionesD.sbGWEstadoSize.value()
         self.recomp_final = self.GWOpcionesD.sbFinalRecompensa.value()
         self.recomp_excelente = self.GWOpcionesD.sbExcelenteRecompensa.value()
@@ -280,4 +355,15 @@ class GWOpcionesDialog(QtGui.QDialog):
         super(GWOpcionesDialog, self).accept()
 
     def reject(self):
+        u"""
+        Cancelar cambios del diálogo.
+        """
         super(GWOpcionesDialog, self).reject()
+
+    def get_opciones(self):
+        return self._opciones
+
+    def set_opciones(self, opciones):
+        self._opciones = opciones
+
+    opciones = property(get_opciones, set_opciones, None, "Opciones de la aplicación")

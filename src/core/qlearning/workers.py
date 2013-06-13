@@ -13,6 +13,9 @@ import random
 from core.estado.estado import TIPOESTADO
 from tools.sumamatriz import sumar_elementos
 
+# ----------------------------------------------------------------------------
+#                         QLearningEntrenarWorker
+#-----------------------------------------------------------------------------
 class QLearningEntrenarWorker(multiprocessing.Process):
     u"""
     Worker encargado de realizar el aprendizaje de Q-Learning.
@@ -52,8 +55,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         """
         # Cerrar Queues
         self._inp_queue.close()
+        self._inp_queue.join_thread()
+
         self._error_queue.close()
+        self._error_queue.join_thread()
+
         self._out_queue.close()
+        self._out_queue.join_thread()
 
     def run(self):
         u"""
@@ -109,9 +117,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # --- Estadísticas para gráficos ---
         # Acumular recompensas de los estados elegidos
-        acum_recomp_elegidas = 0
+        recompensas_promedio = numpy.empty((cantidad_episodios, 1), object)
         # Lista de recompensas promedio
-        recompensas_promedio = numpy.empty((cantidad_episodios, 1), dtype=object)
+        matriz_avg_rwd = self.get_matriz_avg_rwd(self.matriz_r)
 
         # Cantidad de veces que se llegó al Estado Final
         cant_lleg_final = 0
@@ -123,6 +131,12 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         contador_idx_arr = 0
         # Lista con episodios finalizados
         episodios_finalizados = numpy.empty((inter_muestreo + 1, 1), object)
+
+        # Cantidad de iteraciones por episodio
+        iters_por_episodio = numpy.empty((cantidad_episodios, 1), object)
+
+        # Evolución de la diferencia entre matrices Q
+        mat_diff_array = [self.interv_diff_calc, []]
         # ---------------------------------
 
         # Registrar tiempo de comienzo de los episodios
@@ -139,7 +153,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             estado_actual = self.matriz_r[x_act - 1][y_act - 1]
             tipo_estado = estado_actual[0]
 
-            while tipo_estado in self.tipos_vec_excluidos:
+            while (not self._stoprequest.is_set()) and (tipo_estado in self.tipos_vec_excluidos):
                 x_act, y_act = self.generar_estado_aleatorio()
                 estado_actual = self.matriz_r[x_act - 1][y_act - 1]
                 tipo_estado = estado_actual[0]
@@ -168,8 +182,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Obtener recompensa inmediata del estado actual
                 recompensa_estado = vecinos[(x_eleg, y_eleg)]
 
-                # Sumar recompensa elegida al total
-                acum_recomp_elegidas += recompensa_estado
+                # Incrementar acceso y guardar recompensa inmediata para estadística
+                accion_stat = matriz_avg_rwd[x_act - 1][y_act - 1]
+                accion_stat[0] += 1
+                accion_stat[1] += recompensa_estado
 
                 # Obtener vecinos del estado elegido por la acción
                 vecinos_est_elegido = self.matriz_q[x_eleg - 1][y_eleg - 1][1]
@@ -213,6 +229,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 cant_iteraciones += 1
                 # ==================== Fin de iteraciones ====================
 
+                iters_por_episodio[epnum - 1] = cant_iteraciones
+
             iter_end_time = wtimer()
 
             try:
@@ -220,13 +238,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 iter_exec_time = iter_end_time - iter_start_time
             except UnboundLocalError:
                 iter_exec_time = 0
-
-            # Calcular recompensa promedio
-            # FIXME
-            recompensa_promedio = acum_recomp_elegidas / float(cant_iteraciones)
-            # Agregar resultado al arreglo
-            # FIXME
-            recompensas_promedio[epnum - 1][0] = ((epnum, recompensa_promedio))
 
             decrementar_step += 1
             # Comprobar si es necesario decrementar el valor del parámetro
@@ -248,6 +259,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                         # Calcular el error medio cuadrático
                         # tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
                         tmp_diff_mat = numpy.absolute(resta_diff_mat)
+
+                        # Almacenar para estadística
+                        mat_diff_array[1].append(tmp_diff_mat)
 
                         # Comprobar si la diferencia entre matrices supera la establecida
                         # por el usuario
@@ -285,19 +299,29 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             cont_interv_muestreo += 1
 
             # Registrar cuantas veces se llegó al Estado Final
-            # FIXME
+            # FIXME: Estadística
             if cont_interv_muestreo == inter_muestreo:
                 episodios_finalizados[contador_idx_arr][0] = (epnum, cant_lleg_final)
                 contador_idx_arr += 1
                 # Reiniciar contador
                 cont_interv_muestreo = 0
 
+            # FIXME: Estadística
+            recompensas_promedio[epnum - 1][0] = sum([datos[1] / float(datos[0])
+                                                             for fila in matriz_avg_rwd
+                                                             for datos in fila
+                                                             if datos[0] != 0]) / float(len(matriz_avg_rwd))
+
             # Avanzar un episodio
             epnum += 1
             # ======================= Fin de episodios =======================
 
+        # FIXME: Estadística
         # Incluir estadísticas del último episodio
-        episodios_finalizados[contador_idx_arr][0] = (epnum - 1, cant_lleg_final)
+        try:
+            episodios_finalizados[contador_idx_arr - 1][0] = (epnum - 1, cant_lleg_final)
+        except IndexError:
+            pass
 
         # Calcular tiempos de finalización
         running_end_time = ep_end_time = wtimer()
@@ -316,12 +340,14 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                              'MatrizQ': self.matriz_q,
                              'EpisodiosExecTime': ep_exec_time,
                              'IteracionesExecTime': iter_exec_time,
-                             'ProcesoJoined': False,
+                             'ProcesoJoined': True,
                              'ValorParametro': self.tecnica.valor_param_parcial,
                              'RunningExecTime': running_exec_time,
                              'MatDiff': tmp_diff_mat,
-                             'RecompProm': recompensas_promedio,
-                             'EpFinalizados': episodios_finalizados
+                             'MatRecompProm': recompensas_promedio,
+                             'EpFinalizados': episodios_finalizados,
+                             'ItersXEpisodio': iters_por_episodio,
+                             'MatDiffStat': mat_diff_array
                              })
 
         # Realizar tareas al finalizar
@@ -413,7 +439,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 if columna[0] not in tipos_vec_exc:
                     contador_ref[(i + 1, j + 1)] = 0
 
-        return contador_ref
+        return numpy.array(contador_ref)
 
     def _contar_ref(self, estado):
         u"""
@@ -518,7 +544,20 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         """
         return self.estados[x - 1][y - 1]
 
+    def get_matriz_avg_rwd(self, matriz_r):
+        matriz_avg_rwd = numpy.empty((self.ancho, self.alto), object)
 
+        for i in xrange(0, self.alto):
+            for j in xrange(0, self.ancho):
+                vecinos = matriz_r[i][j][1]
+                vecinos = {key: 0 for key in vecinos.iterkeys()}
+                matriz_avg_rwd[i][j] = [0, 0]
+        return matriz_avg_rwd
+
+
+# ----------------------------------------------------------------------------
+#                         QLearningRecorrerWorker
+#-----------------------------------------------------------------------------
 class QLearningRecorrerWorker(multiprocessing.Process):
     u"""
     Worker encargado de recorrer el GridWorld utilizando la matriz Q para seguir

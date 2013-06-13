@@ -31,7 +31,7 @@ class GridWorld(object):
         self._ancho = ancho
         self._alto = alto
         self._tipos_estados = tipos_estados
-        self._estados = None
+        self._estados = estados
         self._coordenadas = None
         self._excluir_tipos_vecinos = excluir_tipos_vecinos
         self._estado_final = None
@@ -39,6 +39,11 @@ class GridWorld(object):
         self._inicializar_estados()
 
     def _inicializar_estados(self, default=TIPOESTADO.NEUTRO):
+        u"""
+        Inicializa los estados del GridWorld a un tipo de estado predeterminado.
+
+        :param default: Tipo de estado predeterminado para cada Estado del GridWorld.
+        """
         if isinstance(self._tipos_estados, dict):
             self._estado_final = None
 
@@ -58,19 +63,25 @@ class GridWorld(object):
         u"""
         Crea la matriz de estados con un tipo de estado predeterminado.
         """
-        # Tipo de estado con el que se inicializará cada estado
-        default_tipo = self._tipos_estados[default]
+        if self._estados is None:
+            # Tipo de estado con el que se inicializará cada estado
+            default_tipo = self._tipos_estados[default]
 
-        self._estados = numpy.empty((self.alto, self.ancho), Estado)
-        self._coordenadas = []
+            self._estados = numpy.empty((self.alto, self.ancho), Estado)
+            self._coordenadas = []
 
-        # Crear una lista de listas
-        for i in xrange(1, self._alto + 1):
-            fila = numpy.empty((1, self.ancho), Estado)
-            for j in xrange(1, self._ancho + 1):
-                fila[0][j - 1] = Estado(i, j, default_tipo)
-                self._coordenadas.append((i, j))
-            self._estados[i - 1] = fila
+            # Crear una lista de listas
+            for i in xrange(1, self._alto + 1):
+                fila = numpy.empty((1, self.ancho), Estado)
+                for j in xrange(1, self._ancho + 1):
+                    fila[0][j - 1] = Estado(i, j, default_tipo)
+                    self._coordenadas.append((i, j))
+                self._estados[i - 1] = fila
+        else:
+            self._coordenadas = []
+            for i in xrange(1, self._alto + 1):
+                for j in xrange(1, self._ancho + 1):
+                    self._coordenadas.append((i, j))
 
     def get_matriz_r(self):
         u"""
@@ -147,8 +158,10 @@ class GridWorld(object):
     def get_tipos_estados(self):
         return self._tipos_estados
 
-    def set_tipos_estados(self, valor):
-        self._tipos_estados = valor
+    def set_tipos_estados(self, tipos_estados):
+        if isinstance(tipos_estados, dict):
+            self._tipos_estados = tipos_estados
+            self.actualizar_info_estados()
 
     def get_tipos_vecinos_excluidos(self):
         return self._excluir_tipos_vecinos
@@ -196,6 +209,11 @@ class GridWorld(object):
         return len(self._estados)
 
     def generar_estados_aleatorios(self, incluir_final=False):
+        u"""
+        Genera estados aleatorios en el GridWorld utilizando número pseudo-aleatorios.
+
+        :param incluir_final: Boooleano que determina si se generará de manera aleatoria al Estado Final.
+        """
         if isinstance(self._tipos_estados, dict):
             gen_estados_random_worker = threading.Thread(None,
                                                          self._generar_estados_aleatorios_worker,
@@ -268,6 +286,21 @@ class GridWorld(object):
 
         # Guardar referencia al estado final generado
         self._estado_final = estado_final
+
+    def actualizar_info_estados(self):
+        u"""
+        Actualiza la información de los Estados acerca del tipo de dato modificado.
+        """
+        if self._estados is not None:
+            for fila in self._estados:
+                for estado in fila:
+                    estado.tipo = self._tipos_estados[estado.tipo.ide]
+
+    def get_matriz_tipos_estados(self):
+        if self._estados is not None:
+            return [[j.tipo.ide for j in i] for i in self._estados]
+        else:
+            return None
 
     # Propiedades (atributos) de la clase
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
