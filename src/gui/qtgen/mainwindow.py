@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
+# Form implementation generated from reading ui file 'C:\Users\Lucia\workspace\TP-IA\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Tue Jun 11 13:01:10 2013
+# Created: Thu Jun 13 16:33:34 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -369,11 +369,11 @@ class Ui_MainWindow(object):
         self.sbIntervaloDiffCalc.setObjectName(_fromUtf8("sbIntervaloDiffCalc"))
         self.gridLayout_6.addWidget(self.sbIntervaloDiffCalc, 2, 2, 1, 1)
         self.sbMatricesMinDiff = QtGui.QDoubleSpinBox(self.gbCondicionParada)
-        self.sbMatricesMinDiff.setDecimals(4)
-        self.sbMatricesMinDiff.setMinimum(0.0001)
-        self.sbMatricesMinDiff.setMaximum(1000.0)
-        self.sbMatricesMinDiff.setSingleStep(0.001)
-        self.sbMatricesMinDiff.setProperty("value", 0.0001)
+        self.sbMatricesMinDiff.setDecimals(323)
+        self.sbMatricesMinDiff.setMinimum(1e-05)
+        self.sbMatricesMinDiff.setMaximum(1000000000.0)
+        self.sbMatricesMinDiff.setSingleStep(1e-06)
+        self.sbMatricesMinDiff.setProperty("value", 1e-05)
         self.sbMatricesMinDiff.setObjectName(_fromUtf8("sbMatricesMinDiff"))
         self.gridLayout_6.addWidget(self.sbMatricesMinDiff, 1, 2, 1, 1)
         spacerItem5 = QtGui.QSpacerItem(14, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
@@ -939,7 +939,7 @@ class Ui_MainWindow(object):
         self.lblMatQDiff.setText(_translate("MainWindow", "Diferencia:", None))
         self.lblMatQIntervalo.setText(_translate("MainWindow", "Calcular diferencia cada:", None))
         self.sbIntervaloDiffCalc.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Intervalo de cálculo de diferencia</span></p><p>La diferencia entre matrices se calculará cada un número dado de episodios establecidos por este valor.</p></body></html>", None))
-        self.sbMatricesMinDiff.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Diferencia entre matrices Q</span></p><p align=\"center\">Establece la diferencia mínima que tiene que haber entre una Matriz Q (en t= i) y otra Matriz Q (en t= i+1) para que se detenga la ejecución del algoritmo.</p></body></html>", None))
+        self.sbMatricesMinDiff.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Diferencia entre matrices Q</span></p><p align=\"center\">Establece la diferencia mínima que tiene que haber entre una Matriz Q (en t = i) y otra Matriz Q (en t = i + 1) para que se detenga la ejecución del algoritmo.</p></body></html>", None))
         self.chkQLCalcularMatDiff.setText(_translate("MainWindow", "Detener por diferencia entre matrices Q", None))
         self.lblGamma.setText(_translate("MainWindow", "Gamma (Ɣ):", None))
         self.sbQLGamma.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600; font-style:italic;\">Factor de descuento</span></p><p>Cuanto más cerca de 1 se encuentre este valor mayor será el <span style=\" font-style:italic;\">peso</span> asignado a los refuerzos futuros.</p></body></html>", None))

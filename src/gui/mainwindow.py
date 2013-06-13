@@ -1319,6 +1319,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbCantidadEpisodios.setValue(50)
         self.WMainWindow.sbValOptimoIncremento.setValue(500)
         self.WMainWindow.optMQInitEnCero.setChecked(True)
+        self.WMainWindow.sbMatricesMinDiff.setValue(0.000001)
 
         self.WMainWindow.sbCOAnimDelay.setSuffix(_tr(" seg"))
         self.WMainWindow.sbCOAnimDelay.setValue(1)
