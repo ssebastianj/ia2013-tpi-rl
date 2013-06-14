@@ -116,9 +116,9 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
     estado_excelente = window_config["tipos_estados"][TIPOESTADO.EXCELENTE]
     estado_final = window_config["tipos_estados"][TIPOESTADO.FINAL]
 
-    if valor_inicial == 0:
+    if float(valor_inicial) == 0:
         init_value_fn = 0
-    elif valor_inicial > 0:
+    elif float(valor_inicial) > 0:
         init_value_fn = estado_final.recompensa + valor_inicial
     else:
         init_value_fn = 0
@@ -391,6 +391,8 @@ if __name__ == '__main__':
 
             for linea_prueba in inp_csv:
                 sys.stdout.write("Ejecutando prueba {0}... ".format(contador_pruebas))
+
+                sys.stdout.write(str(linea_prueba))
 
                 try:
                     ejecutar_prueba(linea_prueba[0],
