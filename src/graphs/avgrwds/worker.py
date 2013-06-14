@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+import csv
 import matplotlib.pyplot as plt
 
 from PyQt4 import QtCore
@@ -24,12 +25,13 @@ class GraphRecompensasPromedioWorker(QtCore.QObject):
         init_value = run_values[4]
 
         try:
-            y_values = self.input_data[1]
+            self.y_values = self.input_data[1]
+            self.x_values = xrange(1, len(self.y_values) + 1)
 
             figure = plt.gcf()
             figure.canvas.set_window_title(u"Recompensas promedio")
 
-            plt.plot(range(1, len(y_values) + 1), y_values)
+            plt.plot(self.x_values, self.y_values)
             plt.grid(True)
             plt.title(u"Recompensas promedio")
             plt.xlabel(u"Episodios")
@@ -83,3 +85,15 @@ class GraphRecompensasPromedioWorker(QtCore.QObject):
         plt.savefig(filepath)
         # Liberar memoria
         plt.close()
+
+    def exportar_info(self, filepath, append=False):
+        mode = 'ab' if append else 'wb'
+
+        with open(filepath, mode) as csvf:
+            csv_writer = csv.writer(csvf, dialect='excel', delimiter=';')
+
+            csv_writer.writerow(['Episodio', 'Recompensa Promedio'])
+            for x, y in zip(self.x_values, self.y_values):
+                csv_writer.writerow([x, y[0]])
+
+            csv_writer.writerow([])

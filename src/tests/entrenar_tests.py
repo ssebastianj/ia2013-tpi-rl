@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 
 import csv
-import datetime
+import decimal
 import Queue
 import logging
 import multiprocessing
@@ -12,6 +12,8 @@ import numpy
 import os
 import sys
 import time
+
+sys.path.append(os.path.abspath(os.path.join(os.pardir)))
 
 from core.qlearning.qlearning import QLearning
 from core.gridworld.gridworld import GridWorld
@@ -25,7 +27,7 @@ from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
 from graphs.matdiffs.worker import GraphMatrizDiffsWorker
 from graphs.itersep.worker import GraphIteracionesXEpisodioWorker
 
-TEST_PATH = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas'))
+TESTS_DIR = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas'))
 
 tecnicas = {0: "Greedy",
             1: "ε-Greedy",
@@ -177,7 +179,16 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
 
     out_queue = multiprocessing.Queue()
     error_queue = multiprocessing.Queue()
-    entrenar_worker = qlearning.entrenar(out_queue, error_queue)
+    try:
+        entrenar_worker = qlearning.entrenar(out_queue, error_queue)
+    except TypeError:
+        return
+    except ValueError:
+        return
+    except AttributeError:
+        return
+    except decimal.Overflow:
+        return
 
     # logging.debug(entrenar_worker)
 
@@ -258,9 +269,27 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                  init_value_fn
                  )
 
+    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{0}".format(nro_prueba)))
+    if not os.path.exists(test_dir):
+        os.mkdir(test_dir)
+    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+
+    with open(csv_path, 'wb') as csvf:
+        csv_writer = csv.writer(csvf, dialect='excel', delimiter=';')
+        csv_writer.writerow(['Gamma', gamma])
+        csv_writer.writerow(['Tecnica', tecnicas[tecnica_idx]])
+        csv_writer.writerow(['Parametro', parametro])
+        csv_writer.writerow(['Paso decremento', paso_decremento])
+        csv_writer.writerow(['Intervalo decremento', intervalo_decremento])
+        csv_writer.writerow(['Episodios', cant_episodios])
+        csv_writer.writerow(['Limitar iteraciones', limitar_iteraciones])
+        csv_writer.writerow(['Cant. Max. Iteraciones', cant_max_iter])
+        csv_writer.writerow(['Valor Inicial', init_value_fn])
+        csv_writer.writerow([])
+
     graficar_recompensas_promedio((parametros, graph_recompensas_promedio), nro_prueba, output_dir)
-    graficar_episodios_exitosos((parametros, graph_episodios_finalizados), nro_prueba, output_dir)
-    graficar_iters_por_episodio((parametros, graph_iters_por_episodio), nro_prueba, output_dir)
+    # graficar_episodios_exitosos((parametros, graph_episodios_finalizados), nro_prueba, output_dir)
+    # graficar_iters_por_episodio((parametros, graph_iters_por_episodio), nro_prueba, output_dir)
     graficar_diferencias_matrizq((parametros, graph_mat_diff), nro_prueba, output_dir)
 
 
@@ -283,6 +312,9 @@ def graficar_episodios_exitosos(tupla, nro_prueba, output_dir):
     image_path = os.path.abspath(os.path.join(test_dir, 'episodios_exitosos.png'))
     worker.guardar_dibujo(image_path)
 
+    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    worker.exportar_info(csv_path, True)
+
 
 def graficar_recompensas_promedio(tupla, nro_prueba, output_dir):
     worker = GraphRecompensasPromedioWorker(tupla)
@@ -294,6 +326,9 @@ def graficar_recompensas_promedio(tupla, nro_prueba, output_dir):
 
     image_path = os.path.abspath(os.path.join(test_dir, 'recompensas_promedio.png'))
     worker.guardar_dibujo(image_path)
+
+    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    worker.exportar_info(csv_path, True)
 
 
 def graficar_iters_por_episodio(tupla, nro_prueba, output_dir):
@@ -307,6 +342,9 @@ def graficar_iters_por_episodio(tupla, nro_prueba, output_dir):
     image_path = os.path.abspath(os.path.join(test_dir, 'iters_por_ep.png'))
     worker.guardar_dibujo(image_path)
 
+    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    worker.exportar_info(csv_path, True)
+
 
 def graficar_diferencias_matrizq(tupla, nro_prueba, output_dir):
     worker = GraphMatrizDiffsWorker(tupla)
@@ -319,59 +357,81 @@ def graficar_diferencias_matrizq(tupla, nro_prueba, output_dir):
     image_path = os.path.abspath(os.path.join(test_dir, 'difs_mat_q.png'))
     worker.guardar_dibujo(image_path)
 
+    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    worker.exportar_info(csv_path, True)
+
 
 if __name__ == '__main__':
-    archivo_pruebas = os.path.join(TEST_PATH, 'pruebas.csv')
+    lista_archivos_pruebas = []
 
-    output_dir = os.path.abspath(os.path.join(TEST_PATH, 'resultados'))
+    sys.stdout.write("Indexando archivos de pruebas...\n")
+    for root, folder, archivos in os.walk(TESTS_DIR):
+        for archivo in archivos:
+            if archivo.endswith(".csv") and archivo != "info.csv":
+                lista_archivos_pruebas.append(os.path.join(root, archivo))
 
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+    for archivo_pruebas in lista_archivos_pruebas:
+        sys.stdout.write("Usando archivo '{0}'...\n".format(archivo_pruebas))
 
-    fecha = datetime.datetime.now()
-    date_dir = os.path.abspath(os.path.join(output_dir, fecha.strftime("%d-%m-%Y")))
+        nombre_archivo = os.path.splitext(os.path.basename(archivo_pruebas))[0]
+        test1_dir = os.path.abspath(os.path.join(os.path.dirname(archivo_pruebas),
+                                                'resultados'))
 
-    if not os.path.exists(date_dir):
-        os.mkdir(date_dir)
+        if not os.path.exists(test1_dir):
+            os.mkdir(test1_dir)
 
-    with open(archivo_pruebas, 'rb') as apf:
-        reader = csv.reader(apf)
+        test2_dir = os.path.abspath(os.path.join(test1_dir, nombre_archivo))
 
-        contador_pruebas = 1
+        if not os.path.exists(test2_dir):
+            os.mkdir(test2_dir)
 
-        for linea_prueba in reader:
-            sys.stdout.write("Ejecutando prueba {0}... ".format(contador_pruebas))
+        with open(archivo_pruebas, 'rb') as apf:
+            # dialecto = csv.Sniffer().sniff(apf.read(), delimiters=';')
+            inp_csv = csv.reader(apf, dialect='excel', delimiter=';')
 
-            try:
-                ejecutar_prueba(linea_prueba[0],
-                                linea_prueba[1],
-                                linea_prueba[2],
-                                linea_prueba[3],
-                                linea_prueba[4],
-                                linea_prueba[5],
-                                linea_prueba[6],
-                                linea_prueba[7],
-                                linea_prueba[8],
-                                linea_prueba[9],
-                                linea_prueba[10],
-                                linea_prueba[11],
-                                linea_prueba[12],
-                                contador_pruebas,
-                                date_dir)
+            contador_pruebas = 1
 
-                sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
-            except TypeError:
-                sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
-                continue
-            except ValueError:
-                sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
-                continue
-            except AttributeError:
-                sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
-                continue
-            except multiprocessing.ProcessError:
-                sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
-                continue
+            for linea_prueba in inp_csv:
+                sys.stdout.write("Ejecutando prueba {0}... ".format(contador_pruebas))
 
-            contador_pruebas += 1
-        sys.stdout.write("Fin de pruebas")
+                try:
+                    ejecutar_prueba(linea_prueba[0],
+                                    linea_prueba[1],
+                                    linea_prueba[2],
+                                    linea_prueba[3],
+                                    linea_prueba[4],
+                                    linea_prueba[5],
+                                    linea_prueba[6],
+                                    linea_prueba[7],
+                                    linea_prueba[8],
+                                    linea_prueba[9],
+                                    linea_prueba[10],
+                                    linea_prueba[11],
+                                    linea_prueba[12],
+                                    contador_pruebas,
+                                    test2_dir)
+
+                    sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                except decimal.Overflow:
+                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                    continue
+                except TypeError:
+                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                    continue
+                except ValueError:
+                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                    continue
+                except AttributeError:
+                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                    continue
+                except multiprocessing.ProcessError:
+                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                    continue
+
+            sys.stdout.write("Fin de pruebas\n\n")

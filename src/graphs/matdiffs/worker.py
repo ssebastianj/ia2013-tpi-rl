@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+import csv
 import matplotlib.pyplot as plt
 
 from PyQt4 import QtCore
@@ -24,14 +25,14 @@ class GraphMatrizDiffsWorker(QtCore.QObject):
         init_value = run_values[4]
 
         try:
-            y_values = self.input_data[1][1]
+            self.y_values = self.input_data[1][1]
             step = self.input_data[1][0]
-            x_values = range(step, (step * len(y_values)) + 1, step)
+            self.x_values = xrange(step, (step * len(self.y_values)) + 1, step)
 
             figure = plt.gcf()
             figure.canvas.set_window_title(u"Diferencia de matrices Q")
 
-            plt.plot(x_values, y_values)
+            plt.plot(self.x_values, self.y_values)
             plt.grid(True)
             plt.title(u"Diferencia de matrices Q")
             plt.xlabel(u"Episodios")
@@ -85,3 +86,15 @@ class GraphMatrizDiffsWorker(QtCore.QObject):
         plt.savefig(filepath)
         # Liberar memoria
         plt.close()
+
+    def exportar_info(self, filepath, append=False):
+        mode = 'ab' if append else 'wb'
+
+        with open(filepath, mode) as csvf:
+            csv_writer = csv.writer(csvf, dialect='excel', delimiter=';')
+
+            csv_writer.writerow(['Episodio', 'Diferencia Matrices'])
+            for x, y in zip(self.x_values, self.y_values):
+                csv_writer.writerow([x, y])
+
+            csv_writer.writerow([])
