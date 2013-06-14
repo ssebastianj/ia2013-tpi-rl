@@ -175,5 +175,4 @@ setup/version_info.txt
 
 gui/qt/build*
 
-pruebas/resultados
-pruebas/Resultados
+pruebas/

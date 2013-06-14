@@ -26,7 +26,7 @@ from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
 from graphs.matdiffs.worker import GraphMatrizDiffsWorker
 from graphs.itersep.worker import GraphIteracionesXEpisodioWorker
 
-TEST_PATH = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas'))
+TESTS_DIR = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas'))
 
 tecnicas = {0: "Greedy",
             1: "ε-Greedy",
@@ -361,32 +361,30 @@ def graficar_diferencias_matrizq(tupla, nro_prueba, output_dir):
 
 
 if __name__ == '__main__':
-    archivos_pruebas = []
+    lista_archivos_pruebas = []
 
-    os.chdir(TEST_PATH)
-    for f in os.listdir("."):
-        for files in f:
-            archivos_pruebas.append(files)
+    sys.stdout.write("Indexando archivos de pruebas...\n")
+    for root, folder, archivos in os.walk(TESTS_DIR):
+        for archivo in archivos:
+            if archivo.endswith(".csv") and archivo != "info.csv":
+                lista_archivos_pruebas.append(os.path.join(root, archivo))
 
-    print archivos_pruebas
-
-    for archivo_pruebas in archivos_pruebas:
+    for archivo_pruebas in lista_archivos_pruebas:
         sys.stdout.write("Usando archivo '{0}'...\n".format(archivo_pruebas))
 
-        output_dir = os.path.abspath(os.path.join(TEST_PATH, archivo_pruebas.split('.')[0]))
+        nombre_archivo = os.path.splitext(os.path.basename(archivo_pruebas))[0]
+        test1_dir = os.path.abspath(os.path.join(os.path.dirname(archivo_pruebas),
+                                                'resultados'))
 
-        if not os.path.exists(output_dir):
-            os.mkdir(output_dir)
+        if not os.path.exists(test1_dir):
+            os.mkdir(test1_dir)
 
-        fecha = datetime.datetime.now()
-        date_dir = os.path.abspath(os.path.join(output_dir, fecha.strftime("%d-%m-%Y")))
+        test2_dir = os.path.abspath(os.path.join(test1_dir, nombre_archivo))
 
-        if not os.path.exists(date_dir):
-            os.mkdir(date_dir)
+        if not os.path.exists(test2_dir):
+            os.mkdir(test2_dir)
 
-        sys.stdout.write(str(archivos_pruebas))
-
-        with open(os.path.abspath(os.path.join(TEST_PATH, archivo_pruebas)), 'rb') as apf:
+        with open(archivo_pruebas, 'rb') as apf:
             # dialecto = csv.Sniffer().sniff(apf.read(), delimiters=';')
             inp_csv = csv.reader(apf, dialect='excel', delimiter=';')
 
@@ -410,7 +408,7 @@ if __name__ == '__main__':
                                     linea_prueba[11],
                                     linea_prueba[12],
                                     contador_pruebas,
-                                    date_dir)
+                                    test2_dir)
 
                     sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
                     contador_pruebas += 1
