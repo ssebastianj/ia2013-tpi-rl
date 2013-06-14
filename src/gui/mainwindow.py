@@ -1691,7 +1691,7 @@ class MainWindow(QtGui.QMainWindow):
             valor_inicial = 0
         elif self.WMainWindow.optMQInitValOptimistas.isChecked():
             incremento = self.WMainWindow.sbValOptimoIncremento.value()
-            valor_inicial = incremento + self.window_config["tipos_estados"][TIPOESTADO.EXCELENTE].recompensa
+            valor_inicial = incremento
 
         linea_prueba_items.append(valor_inicial)
         linea_prueba_items.append(self.WMainWindow.chkQLCalcularMatDiff.isChecked())
