@@ -114,16 +114,14 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
     cant_max_iter = int(cant_max_iteraciones)
 
     estado_excelente = window_config["tipos_estados"][TIPOESTADO.EXCELENTE]
+    estado_final = window_config["tipos_estados"][TIPOESTADO.FINAL]
 
-    #===========================================================================
-    # if valor_inicial == 0:
-    #     init_value_fn = 0
-    # elif valor_inicial > 0:
-    #     init_value_fn = estado_excelente.recompensa + valor_inicial
-    # else:
-    #     init_value_fn = 0
-    #===========================================================================
-    init_value_fn = valor_inicial
+    if valor_inicial == 0:
+        init_value_fn = 0
+    elif valor_inicial > 0:
+        init_value_fn = estado_final.recompensa + valor_inicial
+    else:
+        init_value_fn = 0
 
     if isinstance(detener_por_diff, bool):
         matdiff_status = detener_por_diff
@@ -148,11 +146,11 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
     estado_final_cfg = window_config["tipos_estados"][TIPOESTADO.FINAL]
     estado_final_cfg.recompensa = calc_recomp_final
 
-    # Crear GridWorld de estados
-    estados = numpy.empty((alto, ancho), Estado)
-    coordenadas = []
-
     tipos_estados = window_config["tipos_estados"]
+
+    # Crear GridWorld de estados
+    estados = numpy.empty((ancho, alto), Estado)
+    coordenadas = []
 
     # Crear una lista de listas
     for i in xrange(1, alto + 1):
