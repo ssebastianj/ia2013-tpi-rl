@@ -5,7 +5,6 @@ from __future__ import absolute_import
 
 import csv
 import decimal
-import datetime
 import Queue
 import logging
 import multiprocessing
@@ -13,6 +12,9 @@ import numpy
 import os
 import sys
 import time
+
+sys.path.append(os.path.abspath(os.path.join(os.pardir)))
+
 
 from core.qlearning.qlearning import QLearning
 from core.gridworld.gridworld import GridWorld
