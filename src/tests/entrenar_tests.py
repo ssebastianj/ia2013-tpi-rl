@@ -15,7 +15,6 @@ import time
 
 sys.path.append(os.path.abspath(os.path.join(os.pardir)))
 
-
 from core.qlearning.qlearning import QLearning
 from core.gridworld.gridworld import GridWorld
 from core.estado.estado import Estado, TipoEstado, TIPOESTADO
