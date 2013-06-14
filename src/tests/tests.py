@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 
 import csv
+import decimal
 import datetime
 import Queue
 import logging
@@ -177,7 +178,16 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
 
     out_queue = multiprocessing.Queue()
     error_queue = multiprocessing.Queue()
-    entrenar_worker = qlearning.entrenar(out_queue, error_queue)
+    try:
+        entrenar_worker = qlearning.entrenar(out_queue, error_queue)
+    except TypeError:
+        return
+    except ValueError:
+        return
+    except AttributeError:
+        return
+    except decimal.Overflow:
+        return
 
     # logging.debug(entrenar_worker)
 
@@ -353,13 +363,15 @@ def graficar_diferencias_matrizq(tupla, nro_prueba, output_dir):
 if __name__ == '__main__':
     archivos_pruebas = []
 
-    for r, d, f in os.walk(TEST_PATH):
+    os.chdir(TEST_PATH)
+    for f in os.listdir("."):
         for files in f:
-            if files.endswith(".csv"):
-                archivos_pruebas.append(files)
+            archivos_pruebas.append(files)
+
+    print archivos_pruebas
 
     for archivo_pruebas in archivos_pruebas:
-        sys.stdout.write("{0}\n".format(archivo_pruebas))
+        sys.stdout.write("Usando archivo '{0}'...\n".format(archivo_pruebas))
 
         output_dir = os.path.abspath(os.path.join(TEST_PATH, archivo_pruebas.split('.')[0]))
 
@@ -371,6 +383,8 @@ if __name__ == '__main__':
 
         if not os.path.exists(date_dir):
             os.mkdir(date_dir)
+
+        sys.stdout.write(str(archivos_pruebas))
 
         with open(os.path.abspath(os.path.join(TEST_PATH, archivo_pruebas)), 'rb') as apf:
             # dialecto = csv.Sniffer().sniff(apf.read(), delimiters=';')
@@ -399,18 +413,26 @@ if __name__ == '__main__':
                                     date_dir)
 
                     sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                except decimal.Overflow:
+                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                    continue
                 except TypeError:
                     sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    contador_pruebas += 1
                     continue
                 except ValueError:
                     sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    contador_pruebas += 1
                     continue
                 except AttributeError:
                     sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    contador_pruebas += 1
                     continue
                 except multiprocessing.ProcessError:
                     sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    contador_pruebas += 1
                     continue
 
-                contador_pruebas += 1
-            sys.stdout.write("Fin de pruebas")
+            sys.stdout.write("Fin de pruebas\n\n")

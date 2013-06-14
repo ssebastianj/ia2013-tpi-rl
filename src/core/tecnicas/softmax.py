@@ -54,7 +54,7 @@ class Softmax(QLTecnica):
             except OverflowError:
                 pass
             except decimal.Overflow:
-                pass
+                raise decimal.Overflow
 
         # N = constante de Normalización
         # n = sum(probabilidades_vecinos.itervalues())
