@@ -6,11 +6,11 @@ from __future__ import absolute_import
 import csv
 import decimal
 import Queue
-import logging
 import multiprocessing
 import numpy
 import os
 import sys
+import threading
 import time
 
 sys.path.append(os.path.abspath(os.path.join(os.pardir)))
@@ -81,10 +81,6 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                     paso_decremento, intervalo_decremento, limitar_iteraciones,
                     cant_max_iteraciones, valor_inicial, detener_por_diff,
                     diff_minima, interv_calculo_diff, nro_prueba, output_dir):
-
-    # Logging Config
-    logging.basicConfig(level=logging.DEBUG,
-                        format="[%(levelname)s] – %(threadName)-10s : %(message)s")
 
     gamma = float(gamma)
 
@@ -193,53 +189,30 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
     matriz_q_inp = None
     graph_recompensas_promedio = None
     graph_episodios_finalizados = None
+    graph_mat_diff = None
+    graph_iters_por_episodio = None
 
-    while True:
+    while 1:
         try:
             data_entrenar = get_all_from_queue(out_queue)
 
             for ql_ent_info in data_entrenar:
-                estado_actual_ent = ql_ent_info.get('EstadoActual', None)
-                nro_episodio = ql_ent_info.get('NroEpisodio', None)
-                cant_iteraciones = ql_ent_info.get('NroIteracion', None)
-                episode_exec_time = ql_ent_info.get('EpisodiosExecTime', 0.0)
-                iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
+                # estado_actual_ent = ql_ent_info.get('EstadoActual', None)
+                # nro_episodio = ql_ent_info.get('NroEpisodio', None)
+                # cant_iteraciones = ql_ent_info.get('NroIteracion', None)
+                # episode_exec_time = ql_ent_info.get('EpisodiosExecTime', 0.0)
+                # iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
                 worker_joined = ql_ent_info.get('ProcesoJoined', False)
-                loop_alarm = ql_ent_info.get('LoopAlarm', False)
+                # loop_alarm = ql_ent_info.get('LoopAlarm', False)
                 matriz_q_inp = ql_ent_info.get('MatrizQ', None)
-                valor_parametro = ql_ent_info.get('ValorParametro', None)
-                running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
-                tmp_mat_diff = ql_ent_info.get('MatDiff', None)
-                corte_iteracion = ql_ent_info.get('CorteIteracion', None)
+                # valor_parametro = ql_ent_info.get('ValorParametro', None)
+                # running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
+                # tmp_mat_diff = ql_ent_info.get('MatDiff', None)
+                # corte_iteracion = ql_ent_info.get('CorteIteracion', None)
                 graph_recompensas_promedio = ql_ent_info.get('MatRecompProm', None)
                 graph_episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
                 graph_mat_diff = ql_ent_info.get('MatDiffStat', None)
                 graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio', None)
-
-                #===============================================================
-                # sys.stdout.write("Estado actual: {0}\n \
-                #                   Número episodio: {1}\n \
-                #                   Iteración: {2}\n \
-                #                   Tiempo ejecución episodio: {3}\n \
-                #                   Tiempo ejecución iteración: {4}\n \
-                #                   Loop Alarm: {5}\n \
-                #                   Parámetro: {6}\n \
-                #                   Tiempo de ejecución entrenamiento: {7}\n \
-                #                   Diferencia entre matrices: {8}\n \
-                #                   Corte por iteraciones: {9}\n\r".format(estado_actual_ent,
-                #                                                     nro_episodio,
-                #                                                     cant_iteraciones,
-                #                                                     episode_exec_time,
-                #                                                     iter_exec_time,
-                #                                                     loop_alarm,
-                #                                                     valor_parametro,
-                #                                                     running_exec_time_ent,
-                #                                                     tmp_mat_diff,
-                #                                                     corte_iteracion
-                #                                                     )
-                #                   )
-                # sys.stdout.flush()
-                #===============================================================
 
                 time.sleep(0.01)
         except Queue.Empty:
@@ -285,10 +258,60 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
         csv_writer.writerow(['Valor Inicial', init_value_fn])
         csv_writer.writerow([])
 
-    graficar_recompensas_promedio((parametros, graph_recompensas_promedio), nro_prueba, output_dir)
+    q_1 = multiprocessing.Queue()
+    q_1.put(((parametros, graph_recompensas_promedio), nro_prueba, output_dir))
+    worker_1 = multiprocessing.Process(None,
+                                       g_r_p_w,
+                                       "GraficarRecompensasPromedio",
+                                        (q_1,),
+                                        {}
+                                        )
+
+    q_2 = multiprocessing.Queue()
+    q_2.put(((parametros, graph_mat_diff), nro_prueba, output_dir))
+    worker_2 = multiprocessing.Process(None,
+                                g_d_m_w,
+                                "GraficarDiferenciaMatrices",
+                                (q_2,),
+                                {}
+                                )
+
+#===============================================================================
+#     worker_3 = threading.Thread(None,
+#                                 graficar_episodios_exitosos,
+#                                 "GraficarRecompensasPromedio",
+#                                 ((parametros, graph_episodios_finalizados), nro_prueba, output_dir),
+#                                 {},
+#                                 None)
+#
+#     worker_4 = threading.Thread(None,
+#                                 graficar_iters_por_episodio,
+#                                 "GraficarRecompensasPromedio",
+#                                 ((parametros, graph_iters_por_episodio), nro_prueba, output_dir),
+#                                 {},
+#                                 None)
+#===============================================================================
+
+    worker_1.start()
+    worker_2.start()
+    # worker_3.start()
+    # worker_4.start()
+
+    worker_1.join(0.1)
+    worker_2.join(0.1)
+
+    time.sleep(0.1)
+
+    if not worker_1.is_alive():
+        worker_1.terminate()
+
+    if not worker_2.is_alive():
+        worker_2.terminate()
+
+    # graficar_recompensas_promedio((parametros, graph_recompensas_promedio), nro_prueba, output_dir)
     # graficar_episodios_exitosos((parametros, graph_episodios_finalizados), nro_prueba, output_dir)
     # graficar_iters_por_episodio((parametros, graph_iters_por_episodio), nro_prueba, output_dir)
-    graficar_diferencias_matrizq((parametros, graph_mat_diff), nro_prueba, output_dir)
+    # graficar_diferencias_matrizq((parametros, graph_mat_diff), nro_prueba, output_dir)
 
 
 def get_all_from_queue(cola):
@@ -297,6 +320,22 @@ def get_all_from_queue(cola):
             yield cola.get_nowait()
     except Queue.Empty:
         raise StopIteration
+
+
+def g_r_p_w(inp_queue):
+    try:
+        datos = inp_queue.get()
+        graficar_recompensas_promedio(datos[0], datos[1], datos[2])
+    except Queue.Empty:
+        pass
+
+
+def g_d_m_w(inp_queue):
+    try:
+        datos = inp_queue.get()
+        graficar_diferencias_matrizq(datos[0], datos[1], datos[2])
+    except Queue.Empty:
+        pass
 
 
 def graficar_episodios_exitosos(tupla, nro_prueba, output_dir):
@@ -392,8 +431,6 @@ if __name__ == '__main__':
             for linea_prueba in inp_csv:
                 sys.stdout.write("Ejecutando prueba {0}... ".format(contador_pruebas))
 
-                sys.stdout.write(str(linea_prueba))
-
                 try:
                     ejecutar_prueba(linea_prueba[0],
                                     linea_prueba[1],
@@ -414,23 +451,24 @@ if __name__ == '__main__':
                     sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
                     contador_pruebas += 1
                 except decimal.Overflow:
-                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    sys.stdout.write("Prueba {0} ERROR: Overflow\n".format(contador_pruebas))
                     contador_pruebas += 1
                     continue
-                except TypeError:
-                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                except TypeError as te:
+                    sys.stdout.write("Prueba {0} ERROR: TypeError\n".format(contador_pruebas))
+                    sys.stdout.write(str(te))
                     contador_pruebas += 1
                     continue
                 except ValueError:
-                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    sys.stdout.write("Prueba {0} ERROR: ValueError\n".format(contador_pruebas))
                     contador_pruebas += 1
                     continue
                 except AttributeError:
-                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    sys.stdout.write("Prueba {0} ERROR: AttributeError\n".format(contador_pruebas))
                     contador_pruebas += 1
                     continue
                 except multiprocessing.ProcessError:
-                    sys.stdout.write("Prueba {0} ERROR\n".format(contador_pruebas))
+                    sys.stdout.write("Prueba {0} ERROR: ProcessError\n".format(contador_pruebas))
                     contador_pruebas += 1
                     continue
 
