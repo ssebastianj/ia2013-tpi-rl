@@ -1619,7 +1619,7 @@ class MainWindow(QtGui.QMainWindow):
             if filename:
                 avg_rwds_worker = GraphRecompensasPromedioWorker((self._parametros,
                                                                   self.graph_recompensas_promedio))
-                avg_rwds_worker.guardar_dibujo(filename)
+                avg_rwds_worker.exportar_info(filename)
         elif data == 2:
             # Episodios finalizados
             # Mostrar gráfico
@@ -1640,7 +1640,7 @@ class MainWindow(QtGui.QMainWindow):
             if filename:
                 suces_eps_worker = GraphSucessfulEpisodesWorker((self._parametros,
                                                                   self.graph_episodios_finalizados))
-                suces_eps_worker.guardar_dibujo(filename)
+                suces_eps_worker.exportar_info(filename)
         elif data == 4:
             # Iteraciones por episodio
             # Mostrar gráfico
@@ -1660,7 +1660,7 @@ class MainWindow(QtGui.QMainWindow):
             if filename:
                 iters_por_ep_worker = GraphIteracionesXEpisodioWorker((self._parametros,
                                                                        self.graph_iters_por_episodio))
-                iters_por_ep_worker.guardar_dibujo(filename)
+                iters_por_ep_worker.exportar_info(filename)
         elif data == 6:
             # Diferencia entre matrices Q
             # Mostrar gráfico
@@ -1680,7 +1680,7 @@ class MainWindow(QtGui.QMainWindow):
             if filename:
                 mat_diffs_worker = GraphMatrizDiffsWorker((self._parametros,
                                                            self.graph_mat_diff))
-                mat_diffs_worker.guardar_dibujo(filename)
+                mat_diffs_worker.exportar_info(filename)
 
     def generar_menu_edicion(self):
         action = QtGui.QAction("Copiar datos de pruebas al portapapeles", self)
