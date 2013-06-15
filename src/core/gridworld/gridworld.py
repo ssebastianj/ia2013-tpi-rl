@@ -312,10 +312,18 @@ class GridWorld(object):
         for i in xrange(1, alto + 1):
             fila = numpy.empty((1, ancho), Estado)
             for j in xrange(1, ancho + 1):
-                fila[0][j - 1] = Estado(i, j, self.tipos_estados[estados_num[i - 1][j - 1]])
+                tipo_estado = self.tipos_estados[estados_num[i - 1][j - 1]]
+                estado = Estado(i, j, tipo_estado)
+
+                if tipo_estado.ide == TIPOESTADO.FINAL:
+                    self._estado_final = estado
+
+                fila[0][j - 1] = estado
                 self.coordenadas.append((i, j))
             estados[i - 1] = fila
         self.estados = estados
+
+        return self._estado_final
 
     # Propiedades (atributos) de la clase
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
