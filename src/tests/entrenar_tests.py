@@ -112,10 +112,11 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
     estado_excelente = window_config["tipos_estados"][TIPOESTADO.EXCELENTE]
     estado_final = window_config["tipos_estados"][TIPOESTADO.FINAL]
 
-    if float(valor_inicial) == 0:
+    val_inicial = float(valor_inicial)
+    if val_inicial == 0:
         init_value_fn = 0
-    elif float(valor_inicial) > 0:
-        init_value_fn = estado_final.recompensa + valor_inicial
+    elif val_inicial > 0:
+        init_value_fn = estado_final.recompensa + val_inicial
     else:
         init_value_fn = 0
 
