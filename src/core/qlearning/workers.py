@@ -218,7 +218,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Comprobar si se alcanzó el número máximo de iteraciones
                 # FIXME
                 if self.limitar_iteraciones and (self.cant_max_iter == cant_iteraciones):
-                    self.encolar_salida({'CorteIteracion': True})
+                    # self.encolar_salida({'CorteIteracion': True})
                     cant_cortes_iteraciones += 1
                     cant_lleg_final -= 1
                     # Terminar y comenzar en un episodio nuevo
