@@ -77,6 +77,82 @@ window_config = {"item":
                   }
 
 
+def main():
+    lista_archivos_pruebas = []
+
+    sys.stdout.write("Indexando archivos de pruebas...\n")
+    for root, folder, archivos in os.walk(TESTS_DIR):
+        for archivo in archivos:
+            if archivo.endswith(".csv") and archivo != "info.csv":
+                lista_archivos_pruebas.append(os.path.join(root, archivo))
+
+    for archivo_pruebas in lista_archivos_pruebas:
+        sys.stdout.write("Usando archivo '{0}'...\n".format(archivo_pruebas))
+
+        nombre_archivo = os.path.splitext(os.path.basename(archivo_pruebas))[0]
+        test1_dir = os.path.abspath(os.path.join(os.path.dirname(archivo_pruebas),
+                                                'resultados'))
+
+        if not os.path.exists(test1_dir):
+            os.mkdir(test1_dir)
+
+        test2_dir = os.path.abspath(os.path.join(test1_dir, nombre_archivo))
+
+        if not os.path.exists(test2_dir):
+            os.mkdir(test2_dir)
+
+        with open(archivo_pruebas, 'rb') as apf:
+            # dialecto = csv.Sniffer().sniff(apf.read(), delimiters=';')
+            inp_csv = csv.reader(apf, dialect='excel', delimiter=';')
+
+            contador_pruebas = 1
+
+            for linea_prueba in inp_csv:
+                sys.stdout.write("Ejecutando prueba {0}... ".format(contador_pruebas))
+
+                try:
+                    ejecutar_prueba(linea_prueba[0],
+                                    linea_prueba[1],
+                                    linea_prueba[2],
+                                    linea_prueba[3],
+                                    linea_prueba[4],
+                                    linea_prueba[5],
+                                    linea_prueba[6],
+                                    linea_prueba[7],
+                                    linea_prueba[8],
+                                    linea_prueba[9],
+                                    linea_prueba[10],
+                                    linea_prueba[11],
+                                    linea_prueba[12],
+                                    contador_pruebas,
+                                    test2_dir)
+
+                    sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                except decimal.Overflow:
+                    sys.stdout.write("Prueba {0} ERROR: Overflow\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                    continue
+                except TypeError as te:
+                    sys.stdout.write("Prueba {0} ERROR: TypeError\n".format(contador_pruebas))
+                    sys.stdout.write(str(te))
+                    contador_pruebas += 1
+                    continue
+                except ValueError:
+                    sys.stdout.write("Prueba {0} ERROR: ValueError\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                    continue
+                except AttributeError:
+                    sys.stdout.write("Prueba {0} ERROR: AttributeError\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                    continue
+                except multiprocessing.ProcessError:
+                    sys.stdout.write("Prueba {0} ERROR: ProcessError\n".format(contador_pruebas))
+                    contador_pruebas += 1
+                    continue
+
+            sys.stdout.write("Fin de pruebas\n\n")
+
 def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                     paso_decremento, intervalo_decremento, limitar_iteraciones,
                     cant_max_iteraciones, valor_inicial, detener_por_diff,
@@ -140,7 +216,7 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
 
     calc_recomp_final = int(recomp_excelente / (gamma ** exponente))
 
-    estado_final_cfg = window_config["tipos_estados"][TIPOESTADO.FINAL]
+    estado_final_cfg = estado_final
     estado_final_cfg.recompensa = calc_recomp_final
 
     # Crear GridWorld de estados
@@ -400,77 +476,4 @@ def graficar_diferencias_matrizq(tupla, nro_prueba, output_dir):
 
 
 if __name__ == '__main__':
-    lista_archivos_pruebas = []
-
-    sys.stdout.write("Indexando archivos de pruebas...\n")
-    for root, folder, archivos in os.walk(TESTS_DIR):
-        for archivo in archivos:
-            if archivo.endswith(".csv") and archivo != "info.csv":
-                lista_archivos_pruebas.append(os.path.join(root, archivo))
-
-    for archivo_pruebas in lista_archivos_pruebas:
-        sys.stdout.write("Usando archivo '{0}'...\n".format(archivo_pruebas))
-
-        nombre_archivo = os.path.splitext(os.path.basename(archivo_pruebas))[0]
-        test1_dir = os.path.abspath(os.path.join(os.path.dirname(archivo_pruebas),
-                                                'resultados'))
-
-        if not os.path.exists(test1_dir):
-            os.mkdir(test1_dir)
-
-        test2_dir = os.path.abspath(os.path.join(test1_dir, nombre_archivo))
-
-        if not os.path.exists(test2_dir):
-            os.mkdir(test2_dir)
-
-        with open(archivo_pruebas, 'rb') as apf:
-            # dialecto = csv.Sniffer().sniff(apf.read(), delimiters=';')
-            inp_csv = csv.reader(apf, dialect='excel', delimiter=';')
-
-            contador_pruebas = 1
-
-            for linea_prueba in inp_csv:
-                sys.stdout.write("Ejecutando prueba {0}... ".format(contador_pruebas))
-
-                try:
-                    ejecutar_prueba(linea_prueba[0],
-                                    linea_prueba[1],
-                                    linea_prueba[2],
-                                    linea_prueba[3],
-                                    linea_prueba[4],
-                                    linea_prueba[5],
-                                    linea_prueba[6],
-                                    linea_prueba[7],
-                                    linea_prueba[8],
-                                    linea_prueba[9],
-                                    linea_prueba[10],
-                                    linea_prueba[11],
-                                    linea_prueba[12],
-                                    contador_pruebas,
-                                    test2_dir)
-
-                    sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
-                    contador_pruebas += 1
-                except decimal.Overflow:
-                    sys.stdout.write("Prueba {0} ERROR: Overflow\n".format(contador_pruebas))
-                    contador_pruebas += 1
-                    continue
-                except TypeError as te:
-                    sys.stdout.write("Prueba {0} ERROR: TypeError\n".format(contador_pruebas))
-                    sys.stdout.write(str(te))
-                    contador_pruebas += 1
-                    continue
-                except ValueError:
-                    sys.stdout.write("Prueba {0} ERROR: ValueError\n".format(contador_pruebas))
-                    contador_pruebas += 1
-                    continue
-                except AttributeError:
-                    sys.stdout.write("Prueba {0} ERROR: AttributeError\n".format(contador_pruebas))
-                    contador_pruebas += 1
-                    continue
-                except multiprocessing.ProcessError:
-                    sys.stdout.write("Prueba {0} ERROR: ProcessError\n".format(contador_pruebas))
-                    contador_pruebas += 1
-                    continue
-
-            sys.stdout.write("Fin de pruebas\n\n")
+    main()
