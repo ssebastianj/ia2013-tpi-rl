@@ -1786,7 +1786,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuPruebas.addAction(action)
 
         action = QtGui.QAction("Guardar prueba...", self)
-        action.setShortcut(QtGui.QKeySequence("Ctrl+Shift+G"))
+        action.setShortcut(QtGui.QKeySequence("Ctrl+Shift+S"))
         action.triggered.connect(self.guardar_prueba)
         self.WMainWindow.menuPruebas.addAction(action)
 
@@ -1876,7 +1876,7 @@ class MainWindow(QtGui.QMainWindow):
                     self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
 
                     self.set_gw_dimension(dimension)
-                    self.gridworld.from_matriz_tipos_estados(estados_num)
+                    self.estado_final = self.gridworld.from_matriz_tipos_estados(estados_num)
                     self.recargar_estados()
 
     def guardar_prueba(self):
