@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 
 import csv
+import decimal
 import matplotlib.pyplot as plt
 
 from PyQt4 import QtCore
@@ -17,6 +18,7 @@ class GraphIteracionesXEpisodioWorker(QtCore.QObject):
         self._init_plt()
 
     def _init_plt(self):
+        decimal.getcontext().prec = 6
         run_values = self.input_data[0]
         gamma = run_values[0]
         id_tecnica, parametro, paso_decrem, interv_decrem = run_values[1]
@@ -94,6 +96,10 @@ class GraphIteracionesXEpisodioWorker(QtCore.QObject):
 
             csv_writer.writerow(['Episodio', 'Iteraciones'])
             for x, y in zip(self.x_values, self.y_values):
-                csv_writer.writerow([x, y[0]])
+                x = "{0}".format(decimal.Decimal(x))
+                y = "{0}".format(decimal.Decimal(y[0]))
+                x = x.replace('.', ',')
+                y = y.replace('.', ',')
+                csv_writer.writerow([x, y])
 
             csv_writer.writerow([])
