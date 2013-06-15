@@ -1820,18 +1820,21 @@ class MainWindow(QtGui.QMainWindow):
 
                 if len(prueba) == 13:
                     estados_num = eval(prueba[0])
-                    gamma = float(prueba[1])
+                    gamma = float(prueba[1].replace(',', '.'))
                     tecnica_idx = int(prueba[2])
-                    parametro = float(prueba[3])
+                    parametro = float(prueba[3].replace(',', '.'))
                     cant_episodios = int(prueba[4])
-                    decremento = float(prueba[5])
+                    decremento = float(prueba[5].replace(',', '.'))
                     interv_dec = int(prueba[6])
                     limitar_iter = prueba[7].strip().lower()
                     cant_max_iter = int(prueba[8])
-                    valor_inicial = float(prueba[9])
+                    valor_inicial = float(prueba[9].replace(',', '.'))
                     calcular_mat_diff = prueba[10].strip().lower()
-                    mat_diff_min = float(prueba[11])
+                    mat_diff_min = float(prueba[11].replace(',', '.'))
                     interv_calc_diff = int(prueba[12])
+
+                    indice = self.WMainWindow.cbQLTecnicas.findData(tecnica_idx)
+                    self.WMainWindow.cbQLTecnicas.setCurrentIndex(indice)
 
                     self.WMainWindow.sbQLGamma.setValue(gamma)
 
@@ -1867,8 +1870,7 @@ class MainWindow(QtGui.QMainWindow):
                     elif calcular_mat_diff == 'false':
                         self.WMainWindow.chkQLCalcularMatDiff.setChecked(False)
 
-                    indice = self.WMainWindow.cbQLTecnicas.findData(tecnica_idx)
-                    self.WMainWindow.cbQLTecnicas.setCurrentIndex(indice)
+
 
                     self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect()
 
