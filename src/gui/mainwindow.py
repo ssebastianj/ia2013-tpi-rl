@@ -1870,10 +1870,13 @@ class MainWindow(QtGui.QMainWindow):
                     indice = self.WMainWindow.cbQLTecnicas.findData(tecnica_idx)
                     self.WMainWindow.cbQLTecnicas.setCurrentIndex(indice)
 
+                    self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect()
+
                     ancho, alto = len(estados_num), len(estados_num[0])
-                    dimension = "{0}x{1}".format(ancho, alto)
+                    dimension = "{0} x {1}".format(ancho, alto)
                     indice = self.WMainWindow.cbGWDimension.findData(dimension)
                     self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
+                    self.WMainWindow.cbGWDimension.currentIndexChanged.connect(self.set_gw_dimension_cb)
 
                     self.set_gw_dimension(dimension)
                     self.estado_final = self.gridworld.from_matriz_tipos_estados(estados_num)
