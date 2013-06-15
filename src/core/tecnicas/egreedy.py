@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 import pyximport
 pyximport.install(setup_args={"script_args": ["--inplace", "--compiler=mingw32"]},
-                  reload_support=True, pyimport=False)
+                  reload_support=False, pyimport=False)
 
 import logging
 import random
