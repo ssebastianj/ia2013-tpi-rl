@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\Lucia\workspace\TP-IA\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
+# Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Thu Jun 13 20:43:17 2013
+# Created: Fri Jun 14 23:03:42 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -73,6 +73,8 @@ class Ui_MainWindow(object):
         self.menuQLearning.setObjectName(_fromUtf8("menuQLearning"))
         self.menuEstadisticas = QtGui.QMenu(self.menuBar)
         self.menuEstadisticas.setObjectName(_fromUtf8("menuEstadisticas"))
+        self.menuPruebas = QtGui.QMenu(self.menuBar)
+        self.menuPruebas.setObjectName(_fromUtf8("menuPruebas"))
         MainWindow.setMenuBar(self.menuBar)
         self.statusBar = QtGui.QStatusBar(MainWindow)
         self.statusBar.setObjectName(_fromUtf8("statusBar"))
@@ -830,6 +832,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuConfiguracion.menuAction())
         self.menuBar.addAction(self.menuOperaciones.menuAction())
         self.menuBar.addAction(self.menuEstadisticas.menuAction())
+        self.menuBar.addAction(self.menuPruebas.menuAction())
         self.menuBar.addAction(self.menuAyuda.menuAction())
         self.lblMQFormula.setBuddy(self.sbValOptimoIncremento)
         self.label_3.setBuddy(self.sbCantEpisodiosDec)
@@ -900,6 +903,7 @@ class Ui_MainWindow(object):
         self.menuGridWorld.setTitle(_translate("MainWindow", "Grid World", None))
         self.menuQLearning.setTitle(_translate("MainWindow", "Q-Learning", None))
         self.menuEstadisticas.setTitle(_translate("MainWindow", "Estadísticas", None))
+        self.menuPruebas.setTitle(_translate("MainWindow", "Pruebas", None))
         self.dwGridWorld.setWindowTitle(_translate("MainWindow", "Grid World", None))
         self.gbGridWorld.setTitle(_translate("MainWindow", "Grid World", None))
         self.groupBox_8.setTitle(_translate("MainWindow", "Acciones", None))

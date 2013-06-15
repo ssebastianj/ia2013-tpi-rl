@@ -302,6 +302,21 @@ class GridWorld(object):
         else:
             return None
 
+    def from_matriz_tipos_estados(self, estados_num):
+        # Crear una lista de listas
+        ancho, alto = len(estados_num), len(estados_num[0])
+        self.ancho = ancho
+        self.alto = alto
+        estados = numpy.empty((ancho, alto), Estado)
+
+        for i in xrange(1, alto + 1):
+            fila = numpy.empty((1, ancho), Estado)
+            for j in xrange(1, ancho + 1):
+                fila[0][j - 1] = Estado(i, j, self.tipos_estados[estados_num[i - 1][j - 1]])
+                self.coordenadas.append((i, j))
+            estados[i - 1] = fila
+        self.estados = estados
+
     # Propiedades (atributos) de la clase
     ancho = property(get_ancho, set_ancho, None, "Ancho del GridWorld")
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")

@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+import csv
 import decimal
 import logging
 import multiprocessing
@@ -246,7 +247,8 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setMouseTracking(True)
 
-        self.generar_menu_edicion()
+        self.generar_menu_pruebas()
+        # self.generar_menu_edicion()
         # self.generar_menu_estadisticas()
 
         self.inicializar_todo()
@@ -1556,7 +1558,7 @@ class MainWindow(QtGui.QMainWindow):
         action = QtGui.QAction(_tr("Ver gráfico..."), self)
         action.setData(0)
         submenu1.addAction(action)
-        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action = QtGui.QAction(_tr("Exportar datos..."), self)
         action.setData(1)
         submenu1.addAction(action)
 
@@ -1564,7 +1566,7 @@ class MainWindow(QtGui.QMainWindow):
         action = QtGui.QAction(_tr("Ver gráfico..."), self)
         action.setData(2)
         submenu2.addAction(action)
-        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action = QtGui.QAction(_tr("Exportar datos..."), self)
         action.setData(3)
         submenu2.addAction(action)
 
@@ -1572,7 +1574,7 @@ class MainWindow(QtGui.QMainWindow):
         action = QtGui.QAction(_tr("Ver gráfico..."), self)
         action.setData(4)
         submenu3.addAction(action)
-        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action = QtGui.QAction(_tr("Exportar datos..."), self)
         action.setData(5)
         submenu3.addAction(action)
 
@@ -1580,7 +1582,7 @@ class MainWindow(QtGui.QMainWindow):
         action = QtGui.QAction(_tr("Ver gráfico..."), self)
         action.setData(6)
         submenu4.addAction(action)
-        action = QtGui.QAction(_tr("Ver tabla..."), self)
+        action = QtGui.QAction(_tr("Exportar datos..."), self)
         action.setData(7)
         submenu4.addAction(action)
 
@@ -1609,8 +1611,15 @@ class MainWindow(QtGui.QMainWindow):
             avg_rwds_thread.start()
         elif data == 1:
             # Recompensas promedio
-            # Mostrar tabla
-            pass
+            extfilter = "Datos estadísticos de gráfico (*.csv)"
+            filename = QtGui.QFileDialog.getSaveFileName(parent=self,
+                                                         caption=_tr('Exportar datos'),
+                                                         filter=_tr(extfilter))
+
+            if filename:
+                avg_rwds_worker = GraphRecompensasPromedioWorker((self._parametros,
+                                                                  self.graph_recompensas_promedio))
+                avg_rwds_worker.guardar_dibujo(filename)
         elif data == 2:
             # Episodios finalizados
             # Mostrar gráfico
@@ -1623,8 +1632,15 @@ class MainWindow(QtGui.QMainWindow):
             suces_eps_thread.start()
         elif data == 3:
             # Episodios finalizados
-            # Mostrar tabla
-            pass
+            extfilter = "Datos estadísticos de gráfico (*.csv)"
+            filename = QtGui.QFileDialog.getSaveFileName(parent=self,
+                                                         caption=_tr('Exportar datos'),
+                                                         filter=_tr(extfilter))
+
+            if filename:
+                suces_eps_worker = GraphSucessfulEpisodesWorker((self._parametros,
+                                                                  self.graph_episodios_finalizados))
+                suces_eps_worker.guardar_dibujo(filename)
         elif data == 4:
             # Iteraciones por episodio
             # Mostrar gráfico
@@ -1636,19 +1652,35 @@ class MainWindow(QtGui.QMainWindow):
             iters_por_ep_thread.finished.connect(lambda: iters_por_ep_thread.wait(100))
             iters_por_ep_thread.start()
         elif data == 5:
-            pass
+            extfilter = "Datos estadísticos de gráfico (*.csv)"
+            filename = QtGui.QFileDialog.getSaveFileName(parent=self,
+                                                         caption=_tr('Exportar datos'),
+                                                         filter=_tr(extfilter))
+
+            if filename:
+                iters_por_ep_worker = GraphIteracionesXEpisodioWorker((self._parametros,
+                                                                       self.graph_iters_por_episodio))
+                iters_por_ep_worker.guardar_dibujo(filename)
         elif data == 6:
             # Diferencia entre matrices Q
             # Mostrar gráfico
             mat_diffs_thread = QtCore.QThread(self)
             mat_diffs_worker = GraphMatrizDiffsWorker((self._parametros,
-                                                          self.graph_mat_diff))
+                                                       self.graph_mat_diff))
             mat_diffs_worker.mostrar_figura()
             mat_diffs_worker.moveToThread(mat_diffs_thread)
             mat_diffs_thread.finished.connect(lambda: mat_diffs_thread.wait(100))
             mat_diffs_thread.start()
         elif data == 7:
-            pass
+            extfilter = "Datos estadísticos de gráfico (*.csv)"
+            filename = QtGui.QFileDialog.getSaveFileName(parent=self,
+                                                         caption=_tr('Exportar datos'),
+                                                         filter=_tr(extfilter))
+
+            if filename:
+                mat_diffs_worker = GraphMatrizDiffsWorker((self._parametros,
+                                                           self.graph_mat_diff))
+                mat_diffs_worker.guardar_dibujo(filename)
 
     def generar_menu_edicion(self):
         action = QtGui.QAction("Copiar datos de pruebas al portapapeles", self)
@@ -1657,10 +1689,13 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuEdicion.addAction(action)
 
     def copiar_prueba_toclipboard(self):
+        u"""
+        Copiar datos de prueba al portapapeles.
+        """
         if self.estado_final is None:
             QtGui.QMessageBox.warning(self,
                                       _tr('QLearning - Entrenamiento'),
-                                      "Debe establecer un Estado Final antes de realizar el entrenamiento.")
+                                      "Debe establecer un Estado Final antes de copiar la prueba.")
             return None
 
         linea_prueba_items = []
@@ -1704,14 +1739,23 @@ class MainWindow(QtGui.QMainWindow):
         clipboard.setText(linea_prueba)
 
     def _join_graph_thread(self, threadp):
+        u"""
+        Hacer join del thread dedicado a gráficar.
+
+        :param threadp: Hilo al cual se le hará join.
+        """
         try:
-            logging.debug("Join Thread: {0}".format(threadp))
+            self._logger.debug("Join Thread: {0}".format(threadp))
             threadp.terminate()
             threadp.wait(500)
         except threading.ThreadError:
             pass
 
     def calcular_gamma_minimo(self):
+        u"""
+        Calcula el mínimo gamma permitido de acuerdo al máximo Emax admitido
+        por el sistema.
+        """
         estado_excelente = self.window_config["tipos_estados"][TIPOESTADO.EXCELENTE]
         recomp_excelente = estado_excelente.recompensa
         ancho = self.gridworld.ancho
@@ -1731,3 +1775,156 @@ class MainWindow(QtGui.QMainWindow):
                 gamma += incremento
 
         self.WMainWindow.sbQLGamma.setMinimum(gamma)
+
+    def generar_menu_pruebas(self):
+        u"""
+        Crear submenúes y acciones para el menú Pruebas.
+        """
+        action = QtGui.QAction("Cargar prueba...", self)
+        action.setShortcut(QtGui.QKeySequence("Ctrl+Shift+L"))
+        action.triggered.connect(self.cargar_prueba)
+        self.WMainWindow.menuPruebas.addAction(action)
+
+        action = QtGui.QAction("Guardar prueba...", self)
+        action.setShortcut(QtGui.QKeySequence("Ctrl+Shift+G"))
+        action.triggered.connect(self.guardar_prueba)
+        self.WMainWindow.menuPruebas.addAction(action)
+
+        self.WMainWindow.menuPruebas.addSeparator()
+
+        action = QtGui.QAction("Copiar datos al portapapeles", self)
+        action.setShortcut(QtGui.QKeySequence("Ctrl+Shift+C"))
+        action.triggered.connect(self.copiar_prueba_toclipboard)
+        self.WMainWindow.menuPruebas.addAction(action)
+
+    def cargar_prueba(self):
+        u"""
+        Cargar escenario de prueba desde archivo.
+        """
+        extfilter = "Prueba de Q-Learning (*.csv)"
+        filename = QtGui.QFileDialog.getOpenFileName(parent=self,
+                                                     caption=_tr('Cargar prueba'),
+                                                     filter=_tr(extfilter)
+                                                     )
+
+        if filename:
+            with open(filename, 'rb') as csvf:
+                prueba_reader = csv.reader(csvf, dialect='excel', delimiter=';')
+
+                prueba = prueba_reader.next()
+                while prueba == '':
+                    try:
+                        prueba = prueba_reader.next()
+                    except StopIteration:
+                        break
+
+                if len(prueba) == 13:
+                    estados_num = eval(prueba[0])
+                    gamma = float(prueba[1])
+                    tecnica_idx = int(prueba[2])
+                    parametro = float(prueba[3])
+                    cant_episodios = int(prueba[4])
+                    decremento = float(prueba[5])
+                    interv_dec = int(prueba[6])
+                    limitar_iter = prueba[7].strip().lower()
+                    cant_max_iter = int(prueba[8])
+                    valor_inicial = float(prueba[9])
+                    calcular_mat_diff = prueba[10].strip().lower()
+                    mat_diff_min = float(prueba[11])
+                    interv_calc_diff = int(prueba[12])
+
+                    self.WMainWindow.sbQLGamma.setValue(gamma)
+
+                    if tecnica_idx == 0:
+                        self.WMainWindow.sbQLEpsilon.setValue(0)
+                    elif tecnica_idx == 1:
+                        self.WMainWindow.sbQLEpsilon.setValue(parametro)
+                    elif tecnica_idx == 2:
+                        self.WMainWindow.sbQLTau.setValue(parametro)
+                    elif tecnica_idx == 3:
+                        self.WMainWindow.sbQLEpsilon.setValue(parametro)
+
+                    self.WMainWindow.sbCantidadEpisodios.setValue(cant_episodios)
+                    self.WMainWindow.sbDecrementoVal.setValue(decremento)
+                    self.WMainWindow.sbCantMaxIteraciones.setValue(cant_max_iter)
+                    self.WMainWindow.sbMatricesMinDiff.setValue(mat_diff_min)
+                    self.WMainWindow.sbIntervaloDiffCalc.setValue(interv_calc_diff)
+                    self.WMainWindow.sbCantEpisodiosDec.setValue(interv_dec)
+
+                    if valor_inicial == 0:
+                        self.WMainWindow.optMQInitEnCero.setChecked(True)
+                    elif valor_inicial > 0:
+                        self.WMainWindow.optMQInitValOptimistas.setChecked(True)
+                        self.WMainWindow.sbValOptimoIncremento.setValue(valor_inicial)
+
+                    if limitar_iter == 'true':
+                        self.WMainWindow.chkLimitarCantIteraciones.setChecked(True)
+                    elif limitar_iter == 'false':
+                        self.WMainWindow.chkLimitarCantIteraciones.setChecked(False)
+
+                    if calcular_mat_diff == 'true':
+                        self.WMainWindow.chkQLCalcularMatDiff.setChecked(True)
+                    elif calcular_mat_diff == 'false':
+                        self.WMainWindow.chkQLCalcularMatDiff.setChecked(False)
+
+                    indice = self.WMainWindow.cbQLTecnicas.findData(tecnica_idx)
+                    self.WMainWindow.cbQLTecnicas.setCurrentIndex(indice)
+
+                    ancho, alto = len(estados_num), len(estados_num[0])
+                    dimension = "{0}x{1}".format(ancho, alto)
+                    indice = self.WMainWindow.cbGWDimension.findData(dimension)
+                    self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
+
+                    self.set_gw_dimension(dimension)
+                    self.gridworld.from_matriz_tipos_estados(estados_num)
+                    self.recargar_estados()
+
+    def guardar_prueba(self):
+        u"""
+        Guardar datos de prueba a archivo.
+        """
+        if self.estado_final is None:
+            QtGui.QMessageBox.warning(self,
+                                      _tr('QLearning - Entrenamiento'),
+                                      "Debe establecer un Estado Final antes guardar la prueba.")
+            return None
+
+        extfilter = "Prueba de Q-Learning (*.csv)"
+        filename = QtGui.QFileDialog.getSaveFileName(parent=self,
+                                                     caption=_tr('Guardar prueba'),
+                                                     filter=_tr(extfilter))
+
+        if filename:
+            with open(filename, 'wb') as csvf:
+                csv_writer = csv.writer(csvf, dialect='excel', delimiter=';')
+
+                indice = self.WMainWindow.cbQLTecnicas.currentIndex()
+                tecnica = self.WMainWindow.cbQLTecnicas.itemData(indice).toInt()[0]
+
+                if tecnica == 0:
+                    parametro = 0
+                elif tecnica == 1:
+                    parametro = self.WMainWindow.sbQLEpsilon.value()
+                elif tecnica == 2:
+                    parametro = self.WMainWindow.sbQLTau.value()
+                elif tecnica == 3:
+                    parametro = 1
+
+                if self.WMainWindow.optMQInitEnCero.isChecked():
+                    valor_inicial = 0
+                elif self.WMainWindow.optMQInitValOptimistas.isChecked():
+                    valor_inicial = self.WMainWindow.sbValOptimoIncremento.value()
+
+                csv_writer.writerow([self.gridworld.get_matriz_tipos_estados(),
+                self.WMainWindow.sbQLGamma.value(),
+                tecnica,
+                parametro,
+                self.WMainWindow.sbCantidadEpisodios.value(),
+                self.WMainWindow.sbDecrementoVal.value(),
+                self.WMainWindow.sbCantEpisodiosDec.value(),
+                self.WMainWindow.chkLimitarCantIteraciones.isChecked(),
+                self.WMainWindow.sbCantMaxIteraciones.value(),
+                valor_inicial,
+                self.WMainWindow.chkQLCalcularMatDiff.isChecked(),
+                self.WMainWindow.sbMatricesMinDiff.value(),
+                self.WMainWindow.sbIntervaloDiffCalc.value()])

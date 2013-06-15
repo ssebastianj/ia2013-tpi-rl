@@ -117,11 +117,17 @@
      <string>Estadísticas</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuPruebas">
+    <property name="title">
+     <string>Pruebas</string>
+    </property>
+   </widget>
    <addaction name="menuArchivo"/>
    <addaction name="menuEdicion"/>
    <addaction name="menuConfiguracion"/>
    <addaction name="menuOperaciones"/>
    <addaction name="menuEstadisticas"/>
+   <addaction name="menuPruebas"/>
    <addaction name="menuAyuda"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
