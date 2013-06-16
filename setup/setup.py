@@ -11,6 +11,7 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join('..', 'src')))
 from info import app_info
 
+
 def main():
     # Build documentation
     msg_1 = u'\n---------------------- Generar Documentación ---------------------'
@@ -24,7 +25,7 @@ def main():
     process = subprocess.Popen(args, cwd=doc_build_path, shell=True)
     process.communicate()
     # Build
-    args = [full_path, "html"]
+    args = [full_path, "singlehtml"]
     process = subprocess.Popen(args, cwd=doc_build_path, shell=True)
     process.communicate()
 
@@ -80,6 +81,7 @@ def main():
 
     msg_6 = u'\n---------------------- Crear archivo comprimido ----------------------'
     print msg_6.encode('ascii', 'ignore')
+
 
 if __name__ == '__main__':
     main()
