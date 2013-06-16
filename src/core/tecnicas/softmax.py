@@ -4,7 +4,12 @@
 from __future__ import absolute_import
 
 import random
-import decimal
+
+try:
+    import cdecimal as decimal
+except ImportError:
+    import decimal
+
 from core.tecnicas.tecnica import QLTecnica
 
 
@@ -55,9 +60,6 @@ class Softmax(QLTecnica):
                 pass
             except decimal.Overflow:
                 raise decimal.Overflow
-
-        # N = constante de Normalización
-        # n = sum(probabilidades_vecinos.itervalues())
 
         # Calcula las probabilidades de cada vecino normalizadas
         for key, prob in probabilidades_vecinos.iteritems():

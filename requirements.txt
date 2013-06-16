@@ -3,9 +3,7 @@ Pygments
 Sphinx
 distribute
 docutils
-nose
 numpy
-pep8
-pylint
 pywin32
 scipy
+cdecimal
