@@ -96,10 +96,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # entre dos matrices Q
         calc_mat_diff_cont = self.interv_diff_calc - 1
 
-        # Variables auxiliar para resguardar los resultados de las sumas
-        suma_matriz_q_actual = None
-        suma_matriz_q_anterior = None
-
         # Bandera que determina si se calcula la diferencia de matrices
         matdiff_active = self.matdiff_status
 
@@ -114,12 +110,20 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         epnum = 1  # Inicializar número de episodio
         cant_cortes_iteraciones = 0
 
-        # --- Estadísticas para gráficos ---
-        # Acumular recompensas de los estados elegidos
-        recompensas_promedio = numpy.empty((cantidad_episodios, 1), object)
-        # Lista de recompensas promedio
-        matriz_avg_rwd = self.get_matriz_avg_rwd(self.matriz_r)
+        suma_matriz_q_anterior = 0
+        suma_matriz_q_actual = 0
 
+        # --- Estadísticas para gráficos -------------------------------------
+        # --------------------------------------------------------------------
+        # Contador de accesos a acción
+        rp_cont_acc_accion = numpy.zeros((self.ancho, self.alto), numpy.int)
+        # Sumatoria de recompensas inmediatas
+        rp_sum_recomp_accion = numpy.zeros((self.ancho, self.alto), numpy.float)
+        # Resultado de recompensas promedio de los estados elegidos
+        rp_res_promedio = numpy.empty((cantidad_episodios, 1), numpy.float)
+        # --------------------------------------------------------------------
+
+        # --------------------------------------------------------------------
         # Cantidad de veces que se llegó al Estado Final
         cant_lleg_final = 0
         # Cantidad de episodios entre muestreo
@@ -131,8 +135,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Lista con episodios finalizados
         episodios_finalizados = numpy.empty((inter_muestreo + 1, 1), object)
 
+        # --------------------------------------------------------------------
         # Cantidad de iteraciones por episodio
-        iters_por_episodio = numpy.empty((cantidad_episodios, 1), object)
+        iters_por_episodio = numpy.empty((cantidad_episodios, 1), numpy.int)
 
         # Evolución de la diferencia entre matrices Q
         mat_diff_array = [self.interv_diff_calc, []]
@@ -181,11 +186,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Obtener recompensa inmediata del estado actual
                 recompensa_estado = vecinos[(x_eleg, y_eleg)]
 
-                # Incrementar acceso y guardar recompensa inmediata para estadística
-                accion_stat = matriz_avg_rwd[x_act - 1][y_act - 1]
-                accion_stat[0] += 1
-                accion_stat[1] += recompensa_estado
-
                 # Obtener vecinos del estado elegido por la acción
                 vecinos_est_elegido = self.matriz_q[x_eleg - 1][y_eleg - 1][1]
 
@@ -210,6 +210,12 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                      'ValorParametro': self.tecnica.valor_param_parcial,
                                      'ProcesoJoined': False
                                      })
+
+                # ------------ Recompensas promedio ---------------------------
+                # Incrementar acceso y guardar recompensa inmediata para estadística
+                rp_cont_acc_accion[x_act - 1][y_act - 1] += 1
+                rp_sum_recomp_accion[x_act - 1][y_act - 1] += recompensa_estado
+                # ------------------------------------------------------------
 
                 # Actualizar estado actual
                 x_act, y_act = x_eleg, y_eleg
@@ -247,7 +253,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
             if matdiff_active:
                 if calc_mat_diff_cont == 0:
-                    try:
                         # Sumar todos los valores Q de la matriz actual
                         suma_matriz_q_actual = sum([elto for fila in self.matriz_q
                                                     for columna in fila
@@ -271,8 +276,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
                         # Volver a cargar valor inicial a contador
                         calc_mat_diff_cont = self.interv_diff_calc
-                    except TypeError:
-                        pass
                 elif calc_mat_diff_cont == 1:
                     # Sumar todos los valores Q de la matriz actual
                     suma_matriz_q_anterior = sum([elto for fila in self.matriz_q
@@ -309,11 +312,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Reiniciar contador
                 cont_interv_muestreo = 0
 
-            # FIXME: Estadística
-            recompensas_promedio[epnum - 1][0] = sum([datos[1] / float(datos[0])
-                                                             for fila in matriz_avg_rwd
-                                                             for datos in fila
-                                                             if datos[0] != 0]) / float(len(matriz_avg_rwd))
+            # Recompensas promedio -------------------------------------------
+            rp_res_promedio[epnum - 1][0] = numpy.average(numpy.ma.true_divide(rp_sum_recomp_accion,
+                                                                               rp_cont_acc_accion))
 
             # Avanzar un episodio
             epnum += 1
@@ -347,7 +348,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                              'ValorParametro': self.tecnica.valor_param_parcial,
                              'RunningExecTime': running_exec_time,
                              'MatDiff': tmp_diff_mat,
-                             'MatRecompProm': recompensas_promedio,
+                             'MatRecompProm': rp_res_promedio,
                              'EpFinalizados': episodios_finalizados,
                              'ItersXEpisodio': iters_por_episodio,
                              'MatDiffStat': mat_diff_array
@@ -512,12 +513,14 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         :param default: Valor con que se inicializa cada estado de la matriz.
         """
         matriz_q = numpy.empty((self.ancho, self.alto), object)
+        q_init_value = self.q_init_value_fn
 
         for i in xrange(0, self.alto):
             for j in xrange(0, self.ancho):
-                tipo_estado = matriz_r[i][j][0]
-                vecinos = matriz_r[i][j][1]
-                vecinos = dict([(key, self.q_init_value_fn)
+                estado = matriz_r[i][j]
+                tipo_estado = estado[0]
+                vecinos = estado[1]
+                vecinos = dict([(key, q_init_value)
                                 for key in vecinos.iterkeys()])
                 matriz_q[i][j] = (tipo_estado, vecinos)
         return matriz_q
@@ -546,16 +549,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         :param y: Columna del estado
         """
         return self.estados[x - 1][y - 1]
-
-    def get_matriz_avg_rwd(self, matriz_r):
-        matriz_avg_rwd = numpy.empty((self.ancho, self.alto), object)
-
-        for i in xrange(0, self.alto):
-            for j in xrange(0, self.ancho):
-                # vecinos = matriz_r[i][j][1]
-                # vecinos = {key: 0 for key in vecinos.iterkeys()}
-                matriz_avg_rwd[i][j] = [0, 0]
-        return matriz_avg_rwd
 
 
 # ----------------------------------------------------------------------------
