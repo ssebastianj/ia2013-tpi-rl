@@ -27,4 +27,4 @@ class AboutDialog(QtGui.QDialog):
         self.APP_NAME = app_info.__app_name__
 
     def _initialize_dialog(self):
-        pass
+        self.AboutDialog.lblAppVersion.setText(_tr("Versión {0}".format(app_info.__version__)))
