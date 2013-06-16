@@ -918,7 +918,7 @@ class MainWindow(QtGui.QMainWindow):
         for proceso in multiprocessing.active_children():
             try:
                 # Darle una oportunidad más al proceso de terminar
-                proceso.join(0.01)
+                proceso.join(0.05)
                 # Esperar a que termine
                 time.sleep(0.1)
                 # Forzar terminación de proceso
@@ -1151,7 +1151,7 @@ class MainWindow(QtGui.QMainWindow):
 
         for proceso in active_children:
             if not proceso.is_alive():
-                proceso.join(0.01)
+                proceso.join(0.05)
             # self._logger.debug("Proceso hijo: {0}".format(proceso))
 
         if not active_children:

@@ -78,6 +78,7 @@ class QLearning(object):
                                                                 out_queue,
                                                                 error_queue
                                                                 )
+            qlearning_entrenar_worker.daemon = True
             qlearning_entrenar_worker.start()
         except multiprocessing.ProcessError as pe:
             self._logger.debug(pe)
@@ -104,6 +105,7 @@ class QLearning(object):
                                                                 out_queue,
                                                                 error_queue
                                                                 )
+            qlearning_recorrer_worker.daemon = True
             qlearning_recorrer_worker.start()
         except multiprocessing.ProcessError as pe:
             self._logger.debug(pe)
