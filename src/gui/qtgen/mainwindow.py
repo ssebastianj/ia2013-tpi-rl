@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Fri Jun 14 23:03:42 2013
+# Created: Sun Jun 16 17:02:50 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -248,7 +248,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
         self.sbDecrementoVal = QtGui.QDoubleSpinBox(self.groupBox_6)
         self.sbDecrementoVal.setMinimumSize(QtCore.QSize(50, 0))
-        self.sbDecrementoVal.setDecimals(3)
+        self.sbDecrementoVal.setDecimals(2)
         self.sbDecrementoVal.setMinimum(0.01)
         self.sbDecrementoVal.setMaximum(0.99)
         self.sbDecrementoVal.setSingleStep(0.01)
@@ -302,11 +302,14 @@ class Ui_MainWindow(object):
         self.lblTecnica.setObjectName(_fromUtf8("lblTecnica"))
         self.gridLayout_4.addWidget(self.lblTecnica, 0, 0, 1, 2)
         self.sbQLEpsilon = QtGui.QDoubleSpinBox(self.groupBox_6)
+        self.sbQLEpsilon.setMinimum(0.01)
         self.sbQLEpsilon.setMaximum(0.99)
         self.sbQLEpsilon.setSingleStep(0.01)
+        self.sbQLEpsilon.setProperty("value", 0.1)
         self.sbQLEpsilon.setObjectName(_fromUtf8("sbQLEpsilon"))
         self.gridLayout_4.addWidget(self.sbQLEpsilon, 1, 2, 1, 2)
         self.sbQLTau = QtGui.QDoubleSpinBox(self.groupBox_6)
+        self.sbQLTau.setMinimum(1.0)
         self.sbQLTau.setMaximum(1000000000.0)
         self.sbQLTau.setSingleStep(1.0)
         self.sbQLTau.setObjectName(_fromUtf8("sbQLTau"))
