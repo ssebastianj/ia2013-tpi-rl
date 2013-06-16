@@ -552,8 +552,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         for i in xrange(0, self.alto):
             for j in xrange(0, self.ancho):
-                vecinos = matriz_r[i][j][1]
-                vecinos = {key: 0 for key in vecinos.iterkeys()}
+                # vecinos = matriz_r[i][j][1]
+                # vecinos = {key: 0 for key in vecinos.iterkeys()}
                 matriz_avg_rwd[i][j] = [0, 0]
         return matriz_avg_rwd
 
