@@ -187,6 +187,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.lblMatQIntervalo.setDisabled(True)
         self.WMainWindow.sbIntervaloDiffCalc.setDisabled(True)
         self.WMainWindow.sbMatricesMinDiff.setDisabled(True)
+        self.WMainWindow.gbCOAnimacion.setVisible(False)
+        self.WMainWindow.btnGWGenerarEstados.setVisible(False)
 
         # Asignar shorcuts
         entrenar_shortcut = "F5"
