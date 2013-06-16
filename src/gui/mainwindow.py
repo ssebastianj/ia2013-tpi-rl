@@ -1619,7 +1619,7 @@ class MainWindow(QtGui.QMainWindow):
             if filename:
                 avg_rwds_worker = GraphRecompensasPromedioWorker((self._parametros,
                                                                   self.graph_recompensas_promedio))
-                avg_rwds_worker.guardar_dibujo(filename)
+                avg_rwds_worker.exportar_info(filename)
         elif data == 2:
             # Episodios finalizados
             # Mostrar gráfico
@@ -1640,7 +1640,7 @@ class MainWindow(QtGui.QMainWindow):
             if filename:
                 suces_eps_worker = GraphSucessfulEpisodesWorker((self._parametros,
                                                                   self.graph_episodios_finalizados))
-                suces_eps_worker.guardar_dibujo(filename)
+                suces_eps_worker.exportar_info(filename)
         elif data == 4:
             # Iteraciones por episodio
             # Mostrar gráfico
@@ -1660,7 +1660,7 @@ class MainWindow(QtGui.QMainWindow):
             if filename:
                 iters_por_ep_worker = GraphIteracionesXEpisodioWorker((self._parametros,
                                                                        self.graph_iters_por_episodio))
-                iters_por_ep_worker.guardar_dibujo(filename)
+                iters_por_ep_worker.exportar_info(filename)
         elif data == 6:
             # Diferencia entre matrices Q
             # Mostrar gráfico
@@ -1680,7 +1680,7 @@ class MainWindow(QtGui.QMainWindow):
             if filename:
                 mat_diffs_worker = GraphMatrizDiffsWorker((self._parametros,
                                                            self.graph_mat_diff))
-                mat_diffs_worker.guardar_dibujo(filename)
+                mat_diffs_worker.exportar_info(filename)
 
     def generar_menu_edicion(self):
         action = QtGui.QAction("Copiar datos de pruebas al portapapeles", self)
@@ -1820,18 +1820,21 @@ class MainWindow(QtGui.QMainWindow):
 
                 if len(prueba) == 13:
                     estados_num = eval(prueba[0])
-                    gamma = float(prueba[1])
+                    gamma = float(prueba[1].replace(',', '.'))
                     tecnica_idx = int(prueba[2])
-                    parametro = float(prueba[3])
+                    parametro = float(prueba[3].replace(',', '.'))
                     cant_episodios = int(prueba[4])
-                    decremento = float(prueba[5])
+                    decremento = float(prueba[5].replace(',', '.'))
                     interv_dec = int(prueba[6])
                     limitar_iter = prueba[7].strip().lower()
                     cant_max_iter = int(prueba[8])
-                    valor_inicial = float(prueba[9])
+                    valor_inicial = float(prueba[9].replace(',', '.'))
                     calcular_mat_diff = prueba[10].strip().lower()
-                    mat_diff_min = float(prueba[11])
+                    mat_diff_min = float(prueba[11].replace(',', '.'))
                     interv_calc_diff = int(prueba[12])
+
+                    indice = self.WMainWindow.cbQLTecnicas.findData(tecnica_idx)
+                    self.WMainWindow.cbQLTecnicas.setCurrentIndex(indice)
 
                     self.WMainWindow.sbQLGamma.setValue(gamma)
 
@@ -1867,13 +1870,15 @@ class MainWindow(QtGui.QMainWindow):
                     elif calcular_mat_diff == 'false':
                         self.WMainWindow.chkQLCalcularMatDiff.setChecked(False)
 
-                    indice = self.WMainWindow.cbQLTecnicas.findData(tecnica_idx)
-                    self.WMainWindow.cbQLTecnicas.setCurrentIndex(indice)
+
+
+                    self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect()
 
                     ancho, alto = len(estados_num), len(estados_num[0])
-                    dimension = "{0}x{1}".format(ancho, alto)
+                    dimension = "{0} x {1}".format(ancho, alto)
                     indice = self.WMainWindow.cbGWDimension.findData(dimension)
                     self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
+                    self.WMainWindow.cbGWDimension.currentIndexChanged.connect(self.set_gw_dimension_cb)
 
                     self.set_gw_dimension(dimension)
                     self.estado_final = self.gridworld.from_matriz_tipos_estados(estados_num)
