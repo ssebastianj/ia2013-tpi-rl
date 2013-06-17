@@ -557,6 +557,8 @@ class MainWindow(QtGui.QMainWindow):
         # Inicializar variables de gráficos
         self.graph_episodios_finalizados = None
         self.graph_recompensas_promedio = None
+        self.graph_mat_diff = None
+        self.graph_iters_por_episodio = None
 
         # Parámetros para mostrar el estado actual en pantalla
         self.ent_show_estado_act = self.window_config["gw"]["entrenamiento"]["actual_state"]["show"]
@@ -967,17 +969,28 @@ class MainWindow(QtGui.QMainWindow):
         Actualiza la información mostrada en la ventana de acuerdo a los
         datos de entrada,
         """
-        self.update_window_entrenar()
-        self.update_window_recorrer()
+        if self.entrenar_is_running:
+            self.update_window_entrenar()
+
+        if self.recorrer_is_running:
+            self.update_window_recorrer()
 
     def update_window_entrenar(self):
         u"""
         Actualizar ventana con información del Entrenamiento
         """
-        # Cachear acceso al objeto WMainWindow
-        main_wnd = self.WMainWindow
-
         try:
+            # Cachear acceso a métodos y atributos
+            main_wnd = self.WMainWindow
+            ent_progress_bar = self._ent_progress_bar
+            ent_show_estado_act = self.ent_show_estado_act
+            # last_state_bkp = self.last_state_bkp
+            # ent_null_icon = self.ent_null_icon
+            # last_state_bg = self.last_state_bg
+            # last_state_text = self.last_state_text
+            # ent_icon_estado_act = self.ent_icon_estado_act
+            # ent_color_estado_act = self.ent_color_estado_act
+
             data_entrenar = self.get_all_from_queue(self.ql_entrenar_out_q)
 
             for ql_ent_info in data_entrenar:
@@ -988,17 +1001,23 @@ class MainWindow(QtGui.QMainWindow):
                 iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
                 worker_joined = ql_ent_info.get('ProcesoJoined', None)
                 loop_alarm = ql_ent_info.get('LoopAlarm', False)
-                self.matriz_q = ql_ent_info.get('MatrizQ', None)
+                matriz_q = ql_ent_info.get('MatrizQ', None)
                 valor_parametro = ql_ent_info.get('ValorParametro', None)
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
                 tmp_mat_diff = ql_ent_info.get('MatDiff', None)
                 corte_iteracion = ql_ent_info.get('CorteIteracion', None)
 
                 # Información estadística
-                self.graph_recompensas_promedio = ql_ent_info.get('MatRecompProm', None)
-                self.graph_episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
-                self.graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio', None)
-                self.graph_mat_diff = ql_ent_info.get('MatDiffStat', None)
+                graph_recompensas_promedio = ql_ent_info.get('MatRecompProm', None)
+                graph_episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
+                graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio', None)
+                graph_mat_diff = ql_ent_info.get('MatDiffStat', None)
+
+                self.graph_episodios_finalizados = graph_episodios_finalizados
+                self.graph_recompensas_promedio = graph_recompensas_promedio
+                self.graph_mat_diff = graph_mat_diff
+                self.graph_iters_por_episodio = graph_iters_por_episodio
+                self.matriz_q = matriz_q
 
                 try:
                     # Descomponen coordenadas de estado actual
@@ -1018,14 +1037,14 @@ class MainWindow(QtGui.QMainWindow):
                                                                                             running_exec_time_ent * 1000))  # @IgnorePep8
                     main_wnd.lblEntDiffMatrices.setText(str(tmp_mat_diff))
 
-                    self._ent_progress_bar.setValue(nro_episodio)
+                    ent_progress_bar.setValue(nro_episodio)
                 except TypeError:
                     pass
                 except ValueError:
                     pass
 
                 # Mostrar estado actual en grilla
-                if self.ent_show_estado_act:
+                if ent_show_estado_act:
                     try:
                         item = main_wnd.tblGridWorld.item(x_actual - 1,
                                                           y_actual - 1)
@@ -1069,10 +1088,11 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Actualizar ventana con información del Recorrido
         """
-        # Cachear acceso al objeto WMainWindow
-        main_wnd = self.WMainWindow
-
         try:
+            # Cachear acceso al objeto WMainWindow
+            main_wnd = self.WMainWindow
+            rec_show_est_act = self.rec_show_estado_act
+
             data_recorrer = self.get_all_from_queue(self.ql_recorrer_out_q)
 
             for ql_rec_info in data_recorrer:
@@ -1101,7 +1121,7 @@ class MainWindow(QtGui.QMainWindow):
                     pass
 
                 # Mostrar estado actual en grilla
-                if self.rec_show_estado_act:
+                if rec_show_est_act:
                     try:
                         item = main_wnd.tblGridWorld.item(x_actual - 1,
                                                           y_actual - 1)
