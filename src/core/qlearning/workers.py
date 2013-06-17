@@ -12,9 +12,9 @@ import random
 from core.estado.estado import TIPOESTADO
 
 
-# ----------------------------------------------------------------------------
+# ============================================================================
 #                         QLearningEntrenarWorker
-#-----------------------------------------------------------------------------
+# ============================================================================
 class QLearningEntrenarWorker(multiprocessing.Process):
     u"""
     Worker encargado de realizar el aprendizaje de Q-Learning.
@@ -578,9 +578,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         return self.estados[x - 1][y - 1]
 
 
-# ----------------------------------------------------------------------------
+# ============================================================================
 #                         QLearningRecorrerWorker
-#-----------------------------------------------------------------------------
+# ============================================================================
 class QLearningRecorrerWorker(multiprocessing.Process):
     u"""
     Worker encargado de recorrer el GridWorld utilizando la matriz Q para seguir

@@ -3,8 +3,13 @@
 
 from __future__ import absolute_import
 
+
+try:
+    import cdecimal as decimal
+except ImportError:
+    import decimal
+
 import csv
-import decimal
 import logging
 import multiprocessing
 import Queue
@@ -298,9 +303,7 @@ class MainWindow(QtGui.QMainWindow):
                                    [TIPOESTADO.PARED]
                                    )
 
-        # FIXME
         self.calcular_recompensa_final()
-        # FIXME: Actualizar gamma sólo si se encuentra seleccionado Softmax
         idx_tecnica = self.WMainWindow.cbQLTecnicas.currentIndex()
         if self.WMainWindow.cbQLTecnicas.itemData(idx_tecnica).toInt()[0] == 2:
             self.calcular_gamma_minimo()
@@ -494,6 +497,9 @@ class MainWindow(QtGui.QMainWindow):
         action = self.menu_item.exec_(self.WMainWindow.tblGridWorld.mapToGlobal(posicion))
 
         if action is not None:
+            # Cachear acceso a métodos y atributos
+            gw_get_estado = self.gridworld.get_estado
+
             for item in selected_items:
                 # Obtener el tipo de estado asociado al texto clickeado
                 tipo_num = action.data().toInt()[0]
@@ -503,8 +509,8 @@ class MainWindow(QtGui.QMainWindow):
                 item.setBackgroundColor(QtGui.QColor(tipos_estados[tipo_num].color))
                 item.setSelected(False)
 
-                estado_actual = self.gridworld.get_estado(item.row() + 1,
-                                                      item.column() + 1)
+                estado_actual = gw_get_estado(item.row() + 1,
+                                              item.column() + 1)
 
                 if tipo_num == TIPOESTADO.INICIAL:
                     self.estado_inicial = estado_actual
@@ -780,6 +786,8 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
             self.WMainWindow.btnEntrenar.setDisabled(self.entrenar_is_running)
             self.WMainWindow.btnRecorrer.setDisabled(self.entrenar_is_running)
+            self.WMainWindow.actionAgenteEntrenar.setDisabled(self.entrenar_is_running)
+            self.WMainWindow.actionAgenteRecorrer.setDisabled(self.entrenar_is_running)
 
             self.WMainWindow.lblEntEstadoActual.setText("-")
             self.WMainWindow.lblEntExecTimeEpisodios.setText("-")
@@ -803,6 +811,8 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
             self.WMainWindow.btnEntrenar.setDisabled(self.recorrer_is_running)
             self.WMainWindow.btnRecorrer.setDisabled(self.recorrer_is_running)
+            self.WMainWindow.actionAgenteEntrenar.setDisabled(self.recorrer_is_running)
+            self.WMainWindow.actionAgenteRecorrer.setDisabled(self.recorrer_is_running)
 
             self.WMainWindow.lblRecEstadoActual.setText("-")
             self.WMainWindow.lblRecExecTimeRecorrido.setText("-")
@@ -815,6 +825,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.gbMatrices.setDisabled(True)
         self.WMainWindow.gbCOAcciones.setDisabled(True)
         self.WMainWindow.gbCOAnimacion.setDisabled(True)
+        self.WMainWindow.menuConfiguracion.setDisabled(True)
+        self.WMainWindow.menuPruebas.setDisabled(True)
+        self.WMainWindow.menuEstadisticas.setDisabled(True)
 
         try:
             self.wnd_taskbar = taskbar.WindowsTaskBar()
@@ -842,6 +855,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.gbQLearning.setEnabled(True)
         self.WMainWindow.gbGeneral.setEnabled(True)
         self.WMainWindow.gbMatrices.setEnabled(True)
+        self.WMainWindow.menuConfiguracion.setEnabled(True)
+        self.WMainWindow.menuPruebas.setEnabled(True)
+        self.WMainWindow.menuEstadisticas.setEnabled(True)
 
         if self.entrenar_is_running:
             self.entrenar_is_running = False
@@ -919,7 +935,9 @@ class MainWindow(QtGui.QMainWindow):
         aplicación. Este método debe ser llamado al desconectarse o al salir
         de la aplicación.
         """
-        for proceso in multiprocessing.active_children():
+        active_children = multiprocessing.active_children()
+
+        for proceso in active_children:
             try:
                 # Darle una oportunidad más al proceso de terminar
                 proceso.join(0.05)
@@ -969,11 +987,8 @@ class MainWindow(QtGui.QMainWindow):
         Actualiza la información mostrada en la ventana de acuerdo a los
         datos de entrada,
         """
-        if self.entrenar_is_running:
-            self.update_window_entrenar()
-
-        if self.recorrer_is_running:
-            self.update_window_recorrer()
+        self.update_window_entrenar()
+        self.update_window_recorrer()
 
     def update_window_entrenar(self):
         u"""
@@ -1302,8 +1317,12 @@ class MainWindow(QtGui.QMainWindow):
             pass
 
         self.WMainWindow.cbGWDimension.clear()
+
+        # Cachear acceso a métodos y atributos
+        gw_dimension_additem = self.WMainWindow.cbGWDimension.addItem
+
         for dimension in self.gw_dimensiones:
-            self.WMainWindow.cbGWDimension.addItem(_tr(dimension), dimension)
+            gw_dimension_additem(_tr(dimension), dimension)
 
         self.WMainWindow.cbGWDimension.currentIndexChanged.connect(self.set_gw_dimension_cb)
 
@@ -1449,8 +1468,11 @@ class MainWindow(QtGui.QMainWindow):
             # Colorear items pertenecientes al camino optimo
             item_color = QtGui.QColor(self.window_config["opt_path"]["color"])
 
+            # Cachear acceso a métodos y atributos
+            gw_item = self.WMainWindow.tblGridWorld.item
+
             for x, y in camino:
-                opt_item = self.WMainWindow.tblGridWorld.item(x - 1, y - 1)
+                opt_item = gw_item(x - 1, y - 1)
                 opt_item.setBackgroundColor(item_color)
                 time.sleep(delay)
 
@@ -1481,9 +1503,13 @@ class MainWindow(QtGui.QMainWindow):
         if self.camino_optimo is not None and self.camino_optimo_active:
             self.camino_optimo_active = False
 
+            # Cachear acceso a métodos y atributos
+            get_estado = self.gridworld.get_estado
+            gw_item = self.WMainWindow.tblGridWorld.item
+
             for x, y in self.camino_optimo:
-                item = self.WMainWindow.tblGridWorld.item(x - 1, y - 1)
-                estado = self.gridworld.get_estado(x, y)
+                item = gw_item(x - 1, y - 1)
+                estado = get_estado(x, y)
                 item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
 
     def mostrar_camino_optimo_act(self):
@@ -1515,26 +1541,34 @@ class MainWindow(QtGui.QMainWindow):
             self.mostrar_camino_optimo_act()
 
     def recargar_estados(self):
+        # Cachear acceso a métodos y atributos
+        show_tooltip = self.window_config["item"]["show_tooltip"]
+        get_estado = self.gridworld.get_estado
+        gw_setitem = self.WMainWindow.tblGridWorld.setItem
+        item_flags = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+        item_text_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
+
         # Desactivar actualización de la tabla para optimizar la carga
         self.WMainWindow.tblGridWorld.setUpdatesEnabled(False)
         # Rellenar tabla con items
         for fila in xrange(0, self.gridworld.alto):
             for columna in xrange(0, self.gridworld.ancho):
-                estado = self.gridworld.get_estado(fila + 1, columna + 1)
+                estado = get_estado(fila + 1, columna + 1)
                 letra_estado = estado.tipo.letra
                 # Cada item muestra la letra asignada al estado
                 item = QtGui.QTableWidgetItem(str(letra_estado))
                 item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
-                item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
-                item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter)
+                item.setFlags(item_flags)
+                item.setTextAlignment(item_text_align)
 
-                if self.window_config["item"]["show_tooltip"]:
+                if show_tooltip:
                     item.setToolTip("Fila: {0} Columna: {1}\nTipo: {2}\nRecompensa: {3}"
                                     .format(fila + 1, columna + 1,
                                     estado.tipo.nombre,
                                     estado.tipo.recompensa))
 
-                self.WMainWindow.tblGridWorld.setItem(fila, columna, item)
+                # Agregar item al GridWorld
+                gw_setitem(fila, columna, item)
         # Reactivar la actualización de la tabla
         self.WMainWindow.tblGridWorld.setUpdatesEnabled(True)
 
@@ -1787,10 +1821,11 @@ class MainWindow(QtGui.QMainWindow):
         gamma = 0.01
         incremento = 0.01
 
+        c_decimal = decimal.Decimal
         while 1:
             try:
                 calc_recomp_final = int(recomp_excelente / (gamma ** exponente))
-                expo = decimal.Decimal(calc_recomp_final) / tau
+                expo = c_decimal(calc_recomp_final) / tau
                 expo.exp()
                 break
             except decimal.Overflow:
