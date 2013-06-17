@@ -499,6 +499,7 @@ class MainWindow(QtGui.QMainWindow):
         if action is not None:
             # Cachear acceso a métodos y atributos
             gw_get_estado = self.gridworld.get_estado
+            show_tooltip = self.window_config["item"]["show_tooltip"]
 
             for item in selected_items:
                 # Obtener el tipo de estado asociado al texto clickeado
@@ -528,7 +529,7 @@ class MainWindow(QtGui.QMainWindow):
                 # Estados
                 estado_actual.tipo = tipos_estados[tipo_num]
 
-                if self.window_config["item"]["show_tooltip"]:
+                if show_tooltip:
                     item.setToolTip("Fila: {0}\nColumna: {1}\nTipo: {2}\nRecompensa: {3}"
                                     .format(item.row() + 1, item.column() + 1,
                                             estado_actual.tipo.nombre,
@@ -846,7 +847,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # Habilitar GridWorld
         self.window_config["item"]["menu_estado"]["enabled"] = True
-        self.window_config["item"]["show_tooltip"] = self.window_config["item"]["show_tooltip"] and True
+        self.window_config["item"]["show_tooltip"] = True
 
         self._logger.debug("Procesos hijos activos: {0}\nFin de procesamiento"
             .format(multiprocessing.active_children()))
