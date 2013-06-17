@@ -50,9 +50,12 @@ class Softmax(QLTecnica):
         sigma = 0
 
         # Calcula las probabilidades de cada vecino
+        c_decimal = decimal.Decimal
+        valor_param_parcial = self._val_param_parcial
+
         for key, q_valor in vecinos.iteritems():
             try:
-                exponente = decimal.Decimal(q_valor) / self._val_param_parcial
+                exponente = c_decimal(q_valor) / valor_param_parcial
                 probabilidad_vecino = exponente.exp()
                 probabilidades_vecinos[key] = probabilidad_vecino
                 sigma += probabilidad_vecino
@@ -69,9 +72,10 @@ class Softmax(QLTecnica):
         intervalos = {}
         cant_ranuras = self.cant_ranuras
 
+        redondear = round
         for key, prob in probabilidades_vecinos.iteritems():
             aux = sumatoria
-            calculo = round(prob * cant_ranuras)
+            calculo = redondear(prob * cant_ranuras)
             sumatoria += calculo
             ext_sup = sumatoria - 1
 

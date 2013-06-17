@@ -68,20 +68,24 @@ class GridWorld(object):
             default_tipo = self._tipos_estados[default]
 
             self._estados = numpy.empty((self.alto, self.ancho), Estado)
-            self._coordenadas = []
+            coordenadas = []
+            coord_append = coordenadas.append
 
             # Crear una lista de listas
             for i in xrange(1, self._alto + 1):
                 fila = numpy.empty((1, self.ancho), Estado)
                 for j in xrange(1, self._ancho + 1):
                     fila[0][j - 1] = Estado(i, j, default_tipo)
-                    self._coordenadas.append((i, j))
+                    coord_append((i, j))
                 self._estados[i - 1] = fila
+            self._coordenadas = coordenadas
         else:
-            self._coordenadas = []
+            coordenadas = []
+            coord_append = coordenadas.append
             for i in xrange(1, self._alto + 1):
                 for j in xrange(1, self._ancho + 1):
-                    self._coordenadas.append((i, j))
+                    coord_append((i, j))
+            self._coordenadas = coordenadas
 
     def get_matriz_r(self):
         u"""
@@ -190,11 +194,12 @@ class GridWorld(object):
         :param y: Columna del estado
         """
         vecinos = []
+        vec_append = vecinos.append
         for fila, columna in ((x + i, y + j)
                               for i in (-1, 0, 1) for j in (-1, 0, 1)
                               if i != 0 or j != 0):
             if (fila, columna) in self._coordenadas:
-                vecinos.append(self.get_estado(fila, columna))
+                vec_append(self.get_estado(fila, columna))
         return numpy.array(vecinos, object)
 
     def matriz_estados_to_string(self):
@@ -240,48 +245,66 @@ class GridWorld(object):
 
         if self._estados is None:
             self._estados = numpy.empty((self.alto, self.ancho), Estado)
-            self._coordenadas = []
+            # Cachear acceso a métodos y atributos
+            coordenadas = []
+            coord_append = coordenadas.append
+            random_choice = random.choice
+            random_randint = random.randint
+            get_estado = self.get_estado
+            tipos_estados = self._tipos_estados
+            estados = self._estados
 
             # Crear una lista de listas
             for i in xrange(1, self._alto + 1):
                 fila = numpy.empty((1, self.ancho), Estado)
                 for j in xrange(1, self._ancho + 1):
                     # Generar tipo de estado aleatorio
-                    rnd_tipo = random.choice(self._tipos_estados.values())
+                    rnd_tipo = random_choice(tipos_estados.values())
 
                     # Generar hasta que no coincida con un tipo de estado prohibido
                     while rnd_tipo.ide in excluir_estados_random:
-                        rnd_tipo = random.choice(self._tipos_estados.values())
+                        rnd_tipo = random_choice(tipos_estados.values())
 
                     fila[0][j - 1] = Estado(i, j, rnd_tipo)
-                    self._coordenadas.append((i, j))
-                self._estados[i - 1] = fila
+                    coord_append((i, j))
+                estados[i - 1] = fila
 
                 # Generar Estado Final aleatorio si es necesario
                 if incluir_final:
-                    coord_x = random.randint(1, self.ancho - 1)
-                    coord_y = random.randint(1, self.alto - 1)
-                    estado = self.get_estado(coord_x, coord_y)
-                    estado.tipo = self._tipos_estados[TIPOESTADO.FINAL]
+                    coord_x = random_randint(1, self.ancho - 1)
+                    coord_y = random_randint(1, self.alto - 1)
+                    estado = get_estado(coord_x, coord_y)
+                    estado.tipo = tipos_estados[TIPOESTADO.FINAL]
                     estado_final = estado
+            self._coordenadas = coordenadas
+            self._estados = estados
         else:
+            # Cachear acceso a métodos y atributos
+            coordenadas = []
+            coord_append = coordenadas.append
+            random_choice = random.choice
+            random_randint = random.randint
+            get_estado = self.get_estado
+            tipos_estados = self._tipos_estados
+            estados = self._estados
+
             for fila in self._estados:
                 for estado in fila:
                     # Generar tipo de estado aleatorio
-                    rnd_tipo = random.choice(self._tipos_estados.values())
+                    rnd_tipo = random_choice(tipos_estados.values())
 
                     # Generar hasta que no coincida con un tipo de estado prohibido
                     while rnd_tipo.ide in excluir_estados_random:
-                        rnd_tipo = random.choice(self._tipos_estados.values())
+                        rnd_tipo = random_choice(tipos_estados.values())
 
                     estado.tipo = rnd_tipo
 
             # Generar Estado Final aleatorio si es necesario
             if incluir_final:
-                coord_x = random.randint(1, self.ancho - 1)
-                coord_y = random.randint(1, self.alto - 1)
-                estado = self.get_estado(coord_x, coord_y)
-                estado.tipo = self._tipos_estados[TIPOESTADO.FINAL]
+                coord_x = random_randint(1, self.ancho - 1)
+                coord_y = random_randint(1, self.alto - 1)
+                estado = get_estado(coord_x, coord_y)
+                estado.tipo = tipos_estados[TIPOESTADO.FINAL]
                 estado_final = estado
 
         # Guardar referencia al estado final generado
@@ -291,14 +314,21 @@ class GridWorld(object):
         u"""
         Actualiza la información de los Estados acerca del tipo de dato modificado.
         """
-        if self._estados is not None:
-            for fila in self._estados:
+        # Cachear acceso a métodos y atributos
+        tipos_estados = self._tipos_estados
+        estados = self._estados
+
+        if estados is not None:
+            for fila in estados:
                 for estado in fila:
-                    estado.tipo = self._tipos_estados[estado.tipo.ide]
+                    estado.tipo = tipos_estados[estado.tipo.ide]
 
     def get_matriz_tipos_estados(self):
-        if self._estados is not None:
-            return [[j.tipo.ide for j in i] for i in self._estados]
+        # Cachear acceso a métodos y atributos
+        estados = self._estados
+
+        if estados is not None:
+            return [[j.tipo.ide for j in i] for i in estados]
         else:
             return None
 
@@ -308,20 +338,25 @@ class GridWorld(object):
         self.ancho = ancho
         self.alto = alto
         estados = numpy.empty((ancho, alto), Estado)
+        # Cachear acceso a métodos y atributos
+        tipos_estados = self._tipos_estados
+        coordenadas = []
+        coord_append = coordenadas.append
 
         for i in xrange(1, alto + 1):
             fila = numpy.empty((1, ancho), Estado)
             for j in xrange(1, ancho + 1):
-                tipo_estado = self.tipos_estados[estados_num[i - 1][j - 1]]
+                tipo_estado = tipos_estados[estados_num[i - 1][j - 1]]
                 estado = Estado(i, j, tipo_estado)
 
                 if tipo_estado.ide == TIPOESTADO.FINAL:
                     self._estado_final = estado
 
                 fila[0][j - 1] = estado
-                self.coordenadas.append((i, j))
+                coord_append((i, j))
             estados[i - 1] = fila
-        self.estados = estados
+        self._estados = estados
+        self._coordenadas = coordenadas
 
         return self._estado_final
 
