@@ -28,6 +28,7 @@ Dependencias
 * `PyQt4 <http://www.riverbankcomputing.co.uk/software/pyqt/intro>`_ 4.10+
 * `Qt4 <http://qt-project.org/>`_ 4.8.4+
 * `NumPy <http://www.numpy.org/>`_ 1.7+
+* `SciPy <www.scipy.org>`_ 0.12+
 * `Matplotlib <matplotlib.org>`_ 1.2+
 * `cDecimal <https://pypi.python.org/pypi/cdecimal/>`_ 2.3+
 * `Sphinx <http://sphinx-doc.org/>`_ 1.2+
