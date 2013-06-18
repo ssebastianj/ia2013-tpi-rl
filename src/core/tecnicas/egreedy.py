@@ -14,6 +14,8 @@ class EGreedy(QLTecnica):
         Inicializador.
 
         :param epsilon: Parámetro Epsilon de la técnica.
+        :param paso_decremento: Valor flotante con el que se decrementará el parámetro general.
+        :param intervalo_decremento: Intervalo de episodios entre los cuales se realizará el decremento.
         """
         super(EGreedy, self).__init__()
         self._val_param_general = epsilon
@@ -35,6 +37,11 @@ class EGreedy(QLTecnica):
         self._val_param_parcial = valor
 
     def obtener_accion(self, vecinos):
+        u"""
+        Dado un conjunto de vecinos selecciona acorde uno de ellos.
+
+        :param vecinos: Diccionario conteniendo los vecinos de un estado.
+        """
         # Generar un número aleatorio para saber cuál política usar
         random_num = random.uniform(0, 1)
         elegir_estado_aleatorio = self.elegir_estado_aleatorio
@@ -82,6 +89,9 @@ class EGreedy(QLTecnica):
         return random.choice(lista_estados)
 
     def decrementar_parametro(self):
+        u"""
+        Decrementa el parámetro general en un valor dado.
+        """
         decremento = self._val_param_parcial - self._paso_decremento
         # No puede ser igual a cero sino se estaría ante un caso de
         # técnica Greedy (E = 0)

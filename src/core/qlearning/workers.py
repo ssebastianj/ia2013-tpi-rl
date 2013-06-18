@@ -156,7 +156,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # --------------------------------------------------------------------
         # Cantidad de iteraciones por episodio
-        iters_por_episodio = numpy.empty((cantidad_episodios, 1), numpy.int)
+        # iters_por_episodio = numpy.empty((cantidad_episodios, 1), numpy.int)
 
         # Evolución de la diferencia entre matrices Q
         mat_diff_array = [intervalo_diff_calc, []]
@@ -253,7 +253,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 cant_iteraciones += 1
                 # ==================== Fin de iteraciones ====================
 
-                iters_por_episodio[epnum - 1] = cant_iteraciones
+                # FIXME
+                # iters_por_episodio[epnum - 1] = cant_iteraciones
 
             iter_end_time = wtimer()
 
@@ -369,7 +370,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                         'MatDiff': tmp_diff_mat,
                         'MatRecompProm': rp_res_promedio,
                         'EpFinalizados': episodios_finalizados,
-                        'ItersXEpisodio': iters_por_episodio,
+                        # 'ItersXEpisodio': iters_por_episodio,
                         'MatDiffStat': mat_diff_array
                         })
 

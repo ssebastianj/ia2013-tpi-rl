@@ -20,6 +20,8 @@ class Softmax(QLTecnica):
         Inicializador Softmax.
 
         :param tau: Parámetro Tau de la técnica.
+        :param paso_decremento: Valor flotante con el que se decrementará el parámetro general.
+        :param intervalo_decremento: Intervalo de episodios entre los cuales se realizará el decremento.
         """
         super(Softmax, self).__init__(paso_decremento, intervalo_decremento)
         self._val_param_general = decimal.Decimal(tau)
@@ -35,6 +37,11 @@ class Softmax(QLTecnica):
         decimal.getcontext().prec = 2
 
     def obtener_accion(self, vecinos):
+        u"""
+        Dado un conjunto de vecinos selecciona acorde uno de ellos.
+
+        :param vecinos: Diccionario conteniendo los vecinos de un estado.
+        """
         rnd_valor = random.randint(0, self.cant_ranuras - 1)
 
         intervalos_probabilidad = self.obtener_probabilidades(vecinos)
@@ -46,6 +53,11 @@ class Softmax(QLTecnica):
         return None
 
     def obtener_probabilidades(self, vecinos):
+        """
+        Calcula y devuelve los intervalos de probabilidad para cada vecino.
+
+        :param vecinos: Diccionario conteniendo vecinos de un estado.
+        """
         probabilidades_vecinos = {}
         sigma = 0
 
@@ -85,6 +97,9 @@ class Softmax(QLTecnica):
         return intervalos
 
     def decrementar_parametro(self):
+        u"""
+        Decrementa el valor del parámetro generar en función del paso de decremento.
+        """
         decremento = self._val_param_parcial - self._paso_decremento
         # No puede ser igual a cero sino se estaría ante un caso de
         # técnica Greedy (E = 0)

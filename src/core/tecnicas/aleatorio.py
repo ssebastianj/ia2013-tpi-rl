@@ -19,7 +19,15 @@ class Aleatorio(QLTecnica):
         super(Aleatorio, self).__init__()
 
     def obtener_accion(self, vecinos):
+        u"""
+        Dado un conjunto de vecinos selecciona acorde uno de ellos.
+
+        :param vecinos: Diccionario conteniendo los vecinos de un estado.
+        """
         return random.choice(list(vecinos.keys()))
 
     def decrementar_parametro(self):
+        u"""
+        Decrementa el parámetro general en un valor dado.
+        """
         pass
