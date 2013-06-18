@@ -7,6 +7,7 @@ import logging
 import multiprocessing
 import numpy
 import random
+import sys
 
 from core.qlearning.workers import QLearningEntrenarWorker, QLearningRecorrerWorker
 from core.gridworld.gridworld import GridWorld
@@ -16,7 +17,8 @@ from core.tecnicas.tecnica import QLTecnica
 class QLearning(object):
     u"""Algoritmo QLearning"""
     def __init__(self, gridworld, gamma, tecnica, episodes, iterations_pack,
-                 init_value_fn, matriz_diff_pack, excluir_tipos_vecinos=None):
+                 init_value_fn, matriz_diff_pack, cant_max_iter_gral_pack=(sys.maxint, 1),
+                 excluir_tipos_vecinos=None):
         """
         Inicializador de QLearning.
 
@@ -39,6 +41,7 @@ class QLearning(object):
         self._init_value_fn = init_value_fn
         self._iterations_pack = iterations_pack
         self._mat_diff_pack = matriz_diff_pack
+        self._cant_max_iter_gral_pack = cant_max_iter_gral_pack
 
     def _generar_estado_aleatorio(self):
         u"""
@@ -68,7 +71,8 @@ class QLearning(object):
                        False,
                        self._gridworld.tipos_vecinos_excluidos,
                        self._init_value_fn,
-                       self._mat_diff_pack
+                       self._mat_diff_pack,
+                       self._cant_max_iter_gral_pack
                       ))
 
         qlearning_entrenar_worker = None

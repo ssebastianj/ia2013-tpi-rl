@@ -123,7 +123,9 @@ class MainWindow(QtGui.QMainWindow):
                                "size": 40},
                               "gw":
                              {"entrenamiento": {"actual_state": {"show": True, "color": "#000000", "icono": None},
-                                                "recompfinalauto": True},
+                                                "recompfinalauto": True,
+                                                "maxitersreached": {"action": 1, "warn": False}
+                                                },
                               "recorrido": {"actual_state": {"show": True, "color": "#000000", "icono": None}}
                               },
                               "tipos_estados":
@@ -571,6 +573,7 @@ class MainWindow(QtGui.QMainWindow):
         # self.graph_iters_por_episodio = None
 
         # Parámetros para mostrar el estado actual en pantalla
+        self.ent_warn_loop_alarm = self.window_config["gw"]["entrenamiento"]["maxitersreached"]["warn"]
         self.ent_show_estado_act = self.window_config["gw"]["entrenamiento"]["actual_state"]["show"]
         self.ent_color_estado_act = QtGui.QColor(self.window_config["gw"]["entrenamiento"]["actual_state"]["color"])
         self.ent_icon_estado_act = self.window_config["gw"]["entrenamiento"]["actual_state"]["icono"]
@@ -637,6 +640,9 @@ class MainWindow(QtGui.QMainWindow):
         # Intervalo de episodios entre cálculos de diferencia entre matrices
         intervalo_diff_calc = self.WMainWindow.sbIntervaloDiffCalc.value()
 
+        cant_max_iter_gral = 50000
+        stop_action = self.window_config["gw"]["entrenamiento"]["maxitersreached"]["action"]
+
         # Crear una nueva instancia de Q-Learning
         self.qlearning = QLearning(self.gridworld,
                                    gamma,
@@ -645,6 +651,7 @@ class MainWindow(QtGui.QMainWindow):
                                    (limitar_nro_iteraciones, cant_max_iter),
                                    init_value_fn,
                                    (matdiff_status, matriz_min_diff, intervalo_diff_calc),
+                                   (cant_max_iter_gral, stop_action),
                                    None)
 
         # QLearningEntrenarWorker Management
@@ -1003,6 +1010,7 @@ class MainWindow(QtGui.QMainWindow):
             main_wnd = self.WMainWindow
             ent_progress_bar = self._ent_progress_bar
             ent_show_estado_act = self.ent_show_estado_act
+            ent_warn_loop_alarm = self.ent_warn_loop_alarm
             # last_state_bkp = self.last_state_bkp
             # ent_null_icon = self.ent_null_icon
             # last_state_bg = self.last_state_bg
@@ -1019,7 +1027,7 @@ class MainWindow(QtGui.QMainWindow):
                 episode_exec_time = ql_ent_info.get('EpisodiosExecTime', 0.0)
                 iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
                 worker_joined = ql_ent_info.get('ProcesoJoined', None)
-                loop_alarm = ql_ent_info.get('LoopAlarm', False)
+                loop_alarm_pack = ql_ent_info.get('LoopAlarm', (False, -1))
                 matriz_q = ql_ent_info.get('MatrizQ', None)
                 valor_parametro = ql_ent_info.get('ValorParametro', None)
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
@@ -1038,8 +1046,10 @@ class MainWindow(QtGui.QMainWindow):
                 # self.graph_iters_por_episodio = graph_iters_por_episodio
                 self.matriz_q = matriz_q
 
+                ent_loop_alarm, ent_stop_action = loop_alarm_pack
+
                 try:
-                    # Descomponen coordenadas de estado actual
+                    # Descomponer coordenadas de estado actual
                     x_actual, y_actual = estado_actual_ent
 
                     # Mostrar información de entrenamiento en etiquetas
@@ -1087,17 +1097,23 @@ class MainWindow(QtGui.QMainWindow):
                         item.setText("")
                         item.setIcon(self.ent_icon_estado_act)
                     except TypeError:
-                        item.setBackground(self.ent_color_estado_act)
+                        try:
+                            item.setBackground(self.ent_color_estado_act)
+                        except TypeError:
+                            pass
 
-                if loop_alarm:
-                    QtGui.QMessageBox.warning(self,
-                                              _tr('QLearning - Entrenamiento'),
-                    u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
-                    self.working_process.join(0.05)
-                    self.qlearning_entrenar_worker = None
-                    self.working_process = None
-                    self.ql_entrenar_error_q = None
-                    self.ql_entrenar_out_q = None
+                if ent_loop_alarm:
+                    if ent_warn_loop_alarm:
+                        QtGui.QMessageBox.warning(self,
+                                                  _tr('QLearning - Entrenamiento'),
+                        u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
+
+                    # self.working_process.join(0.05)
+                    # self.qlearning_entrenar_worker = None
+                    # self.working_process = None
+                    # self.ql_entrenar_error_q = None
+                    # self.ql_entrenar_out_q = None
+                    # self.on_fin_proceso()
         except Queue.Empty:
             pass
         except AttributeError:

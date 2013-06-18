@@ -102,8 +102,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         intervalo_diff_calc = self.interv_diff_calc
         # --------------------------------------------------------------------
 
+        # Cantidad máxima de iteraciones antes de emitir un aviso
+        cant_max_iter_general, stop_action = (self.cant_max_iter_gral_pack[0],
+                                              self.cant_max_iter_gral_pack[1])
+
+        # FIXME: Detector de bloqueos
         if detectar_bloqueo:
-            self._contador_ref = self._crear_cont_ref(self.tipos_vec_excluidos)
+            self._contador_ref = self._crear_cont_ref(tipos_vec_excluidos)
             self._cant_estados_libres = len(self._contador_ref)
             self._visitados_1 = []
             self._visitados_2 = []
@@ -248,6 +253,17 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                     cant_lleg_final -= 1
                     # Terminar y comenzar en un episodio nuevo
                     break
+
+                # Comprobar si se alcanzó el número máximo de iteraciones general
+                if cant_max_iter_general == cant_iteraciones:
+                    if stop_action == 0:
+                        # Finalizar ejecución de proceso
+                        encolar_salida({'LoopAlarm': (True, 0)})
+                        self._stoprequest.set()
+                    elif stop_action == 1:
+                        encolar_salida({'LoopAlarm': (True, 1)})
+                        # Continuar con el siguiente episodio
+                        break
 
                 # Incrementar cantidad de iteraciones realizadas
                 cant_iteraciones += 1
@@ -422,6 +438,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self.tipos_vec_excluidos = self.input_data[8]
         self.q_init_value_fn = self.input_data[9]
         self.matdiff_status, self.min_diff_mat, self.interv_diff_calc = self.input_data[10]
+        self.cant_max_iter_gral_pack = self.input_data[11]
 
         self.matriz_r = self.get_matriz_r()
         self.matriz_q = self.get_matriz_q(self.matriz_r)
@@ -463,7 +480,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 if columna[0] not in tipos_vec_exc:
                     contador_ref[(i + 1, j + 1)] = 0
 
-        return numpy.array(contador_ref)
+        return contador_ref
 
     def _contar_ref(self, estado):
         u"""
@@ -493,7 +510,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         test_2 = len(self._visitados_1) == len(self._visitados_2)
 
         if test_1 or test_2:
-            self._out_queue.put({'LoopAlarm': True})
+            self._out_queue.put({'LoopAlarm': (True, 2)})
 
     def get_matriz_r(self):
         u"""
