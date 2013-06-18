@@ -22,6 +22,15 @@ Inteligencia Artificial 2013: Aprendizaje por Refuerzo
   
   * *Bitbucket*: https://bitbucket.org/luvallejos
 
+Dependencias
+------------
+* `Python <http://www.python.org/>`_ 2.7+ (Python 3 no soportado)
+* `PyQt4 <http://www.riverbankcomputing.co.uk/software/pyqt/intro>`_ 4.10+
+* `Qt4 <http://qt-project.org/>`_ 4.8.4+
+* `NumPy <http://www.numpy.org/>`_ 1.7+
+* `Matplotlib <matplotlib.org>`_ 1.2+
+* `cDecimal <https://pypi.python.org/pypi/cdecimal/>`_ 2.3+
+* `Sphinx <http://sphinx-doc.org/>`_ 1.2+
 
 Contenido
 ---------
