@@ -163,6 +163,11 @@ class GridWorld(object):
         return self._tipos_estados
 
     def set_tipos_estados(self, tipos_estados):
+        u"""
+        Asigna los tipos de estados al GridwWorld.
+
+        :param tipos_estados: Diccionario conteniendo los tipos de estados válidos.
+        """
         if isinstance(tipos_estados, dict):
             self._tipos_estados = tipos_estados
             self.actualizar_info_estados()
@@ -171,6 +176,11 @@ class GridWorld(object):
         return self._excluir_tipos_vecinos
 
     def set_tipos_vecinos_excluidos(self, valor):
+        u"""
+        Establece los tipos de vecinos a excluir durante el procesamiento.
+
+        :param valor: Lista conteniendo tipos de estados válidos.
+        """
         if isinstance(valor, dict):
             self._excluir_tipos_vecinos = valor
         else:
@@ -183,6 +193,11 @@ class GridWorld(object):
         return (self._ancho, self._alto)
 
     def set_dimension(self, dimension):
+        u"""
+        Establece la dimensión del GridWorld.
+
+        :param dimension: Tupla conteniendo la dimensión el formato (Ancho, Alto)
+        """
         self._ancho, self._alto = dimension
 
     def get_vecinos_estado(self, x, y):
@@ -324,6 +339,9 @@ class GridWorld(object):
                     estado.tipo = tipos_estados[estado.tipo.ide]
 
     def get_matriz_tipos_estados(self):
+        u"""
+        Devuelve el conjunto de tipos de estados.
+        """
         # Cachear acceso a métodos y atributos
         estados = self._estados
 
@@ -333,6 +351,12 @@ class GridWorld(object):
             return None
 
     def from_matriz_tipos_estados(self, estados_num):
+        u"""
+        Crea una nueva instancia de un GridWorld a partir de un arreglo conteniendo
+        los identificadores de tipos de estado.
+
+        :param estados_num: Lista con identificadores válidos de tipos de estado.
+        """
         # Crear una lista de listas
         ancho, alto = len(estados_num), len(estados_num[0])
         self.ancho = ancho
@@ -346,7 +370,11 @@ class GridWorld(object):
         for i in xrange(1, alto + 1):
             fila = numpy.empty((1, ancho), Estado)
             for j in xrange(1, ancho + 1):
-                tipo_estado = tipos_estados[estados_num[i - 1][j - 1]]
+                try:
+                    tipo_estado = tipos_estados[estados_num[i - 1][j - 1]]
+                except KeyError:
+                    # Tipo de estado inválido. Salir.
+                    return None
                 estado = Estado(i, j, tipo_estado)
 
                 if tipo_estado.ide == TIPOESTADO.FINAL:

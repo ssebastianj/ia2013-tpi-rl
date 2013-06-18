@@ -134,6 +134,11 @@ class QLearning(object):
         return self._gridworld
 
     def set_gridworld(self, valor):
+        u"""
+        Asigna un GridWorld dado a Q-Learning.
+
+        :param valor: Arreglo de estados conteniendo un GridWorld.
+        """
         if isinstance(valor, GridWorld):
             self._gridworld = valor
         else:
@@ -172,6 +177,11 @@ class QLearning(object):
         return self._iterations_pack
 
     def set_iterations_pack(self, valor):
+        u"""
+        Establece un conjunto de opciones referidas a las iteraciones de Q-Learning.
+
+        :param valor: Tupla con el formato: (Activar Limitador (Booleano), Cantidad Iteraciones Máxima (Entero))
+        """
         self._iterations_pack = valor
 
     def get_max_iterations(self):

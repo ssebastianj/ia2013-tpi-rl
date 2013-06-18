@@ -25,7 +25,7 @@ def main():
     process = subprocess.Popen(args, cwd=doc_build_path, shell=True)
     process.communicate()
     # Build
-    args = [full_path, "singlehtml"]
+    args = [full_path, "html"]
     process = subprocess.Popen(args, cwd=doc_build_path, shell=True)
     process.communicate()
 

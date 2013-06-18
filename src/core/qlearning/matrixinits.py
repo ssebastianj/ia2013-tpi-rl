@@ -50,6 +50,7 @@ class QLMatrixInitEnRecompensa(QLMatrixInicializador):
     def procesar_valor(self, valor):
         return valor
 
+
 class QLMatrixInitOptimista(QLMatrixInicializador):
     def __init__(self, default):
         super(QLMatrixInitOptimista, self).__init__()

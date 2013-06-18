@@ -12,13 +12,26 @@ from PyQt4 import QtCore
 
 
 class GraphSucessfulEpisodesWorker(QtCore.QObject):
+    u"""
+    Worker encargado de generar el gráfico correspondiente a la cantidad de
+    Episodios Exitosos por cada intervalo de muestreo.
+    """
     def __init__(self, input_data):
+        u"""
+        Inicializador.
+
+        :param input_data: Tupla conteniendo los parámetros del entrenamiento y los valores del eje Y.
+        """
         super(GraphSucessfulEpisodesWorker, self).__init__()
 
         self.input_data = input_data
         self._init_plt()
 
     def _init_plt(self):
+        u"""
+        Configurar valores de ploteo.
+        """
+
         decimal.getcontext().prec = 6
         run_values = self.input_data[0]
         gamma = run_values[0]
@@ -82,19 +95,33 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
             raise ValueError
 
     def mostrar_figura(self):
+        u"""
+        Renderizar gráfico y mostrarlo por pantalla.
+        """
         # Renderizar gráfico y mostrar ventana
         plt.show()
         # Liberar memoria
         plt.close()
 
     def guardar_dibujo(self, filename):
+        u"""
+        Guardar dibujo generado a disco.
+
+        :param filepath: Ruta donde se guardará el archivo.
+        """
         # Renderizar gráfico y guardar a archivo
         plt.savefig(filename)
         # Liberar memoria
         plt.close()
 
-
     def exportar_info(self, filepath, append=False):
+        u"""
+        Exportar datos tabulares de gráfico hacia archivo.
+
+        :param filepath: Ruta donde se guardará el archivo.
+        :param append: Booleano que establece si se agregará la información exportada al final de un archivo (si se utiliza la misma ruta de archivo)
+        """
+
         mode = 'ab' if append else 'wb'
 
         with open(filepath, mode) as csvf:

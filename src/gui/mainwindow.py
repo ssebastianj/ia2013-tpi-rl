@@ -36,7 +36,7 @@ from core.tecnicas.softmax import Softmax
 
 from graphs.avgrwds.worker import GraphRecompensasPromedioWorker
 from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
-from graphs.itersep.worker import GraphIteracionesXEpisodioWorker
+# from graphs.itersep.worker import GraphIteracionesXEpisodioWorker
 from graphs.matdiffs.worker import GraphMatrizDiffsWorker
 
 from tools.queue import get_item_from_queue
@@ -101,7 +101,7 @@ class MainWindow(QtGui.QMainWindow):
         # Variables necesarias para los gráficos
         self.graph_recompensas_promedio = None
         self.graph_episodios_finalizados = None
-        self.graph_iters_por_episodio = None
+        # self.graph_iters_por_episodio = None
         self.graph_mat_diff = None
 
         self.tecnicas = {  # 0: "Greedy",
@@ -153,6 +153,9 @@ class MainWindow(QtGui.QMainWindow):
                               }
 
     def _initialize_window(self):
+        u"""
+        Inicializa el aspecto y características de la ventana.
+        """
         # Aspectos de la ventana principal
         screen_geometry = QtGui.QApplication.desktop().screenGeometry()
         y_wnd = (screen_geometry.height() - self.height()) / 2.0
@@ -565,7 +568,7 @@ class MainWindow(QtGui.QMainWindow):
         self.graph_episodios_finalizados = None
         self.graph_recompensas_promedio = None
         self.graph_mat_diff = None
-        self.graph_iters_por_episodio = None
+        # self.graph_iters_por_episodio = None
 
         # Parámetros para mostrar el estado actual en pantalla
         self.ent_show_estado_act = self.window_config["gw"]["entrenamiento"]["actual_state"]["show"]
@@ -927,7 +930,7 @@ class MainWindow(QtGui.QMainWindow):
         # FIXME: Eliminar
         self._logger.debug("Matriz Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
         self._logger.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
-        self._logger.debug("Iteraciones Por Episodio: {0}".format(self.graph_iters_por_episodio))
+        # self._logger.debug("Iteraciones Por Episodio: {0}".format(self.graph_iters_por_episodio))
         self._logger.debug("Diferencia entre matrices: {0}".format(self.graph_mat_diff))
 
     def _reintentar_detener_hilos(self):
@@ -1026,13 +1029,13 @@ class MainWindow(QtGui.QMainWindow):
                 # Información estadística
                 graph_recompensas_promedio = ql_ent_info.get('MatRecompProm', None)
                 graph_episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
-                graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio', None)
+                # graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio', None)
                 graph_mat_diff = ql_ent_info.get('MatDiffStat', None)
 
                 self.graph_episodios_finalizados = graph_episodios_finalizados
                 self.graph_recompensas_promedio = graph_recompensas_promedio
                 self.graph_mat_diff = graph_mat_diff
-                self.graph_iters_por_episodio = graph_iters_por_episodio
+                # self.graph_iters_por_episodio = graph_iters_por_episodio
                 self.matriz_q = matriz_q
 
                 try:
@@ -1207,12 +1210,27 @@ class MainWindow(QtGui.QMainWindow):
                                             item.column() + 1))
 
     def mouseMoveEvent(self, event):
+        u"""
+        Sobrecarga del evento mouseMoveEvent de Qt.
+
+        :param event: Evento.
+        """
         self.lbl_item_actual.setText("")
 
     def enterEvent(self, event):
+        u"""
+        Sobrecarga del evento enterEvent de Qt.
+
+        :param event: Evento.
+        """
         self.lbl_item_actual.setText("")
 
     def set_gw_dimension_menu(self, action):
+        u"""
+        Establece la dimensión del GridWorld en función del ítem seleccionado en el menú.
+
+        :param action: Acción seleccionada.
+        """
         dimension = action.data().toString()
         self._logger.debug("Dimensión: {0}".format(dimension))
         indice = self.WMainWindow.cbGWDimension.findData(dimension)
@@ -1220,15 +1238,28 @@ class MainWindow(QtGui.QMainWindow):
         self.set_gw_dimension(dimension)
 
     def set_gw_dimension_cb(self, indice):
+        u"""
+        Establece la dimensión del GridWorld en función del ítem seleccionado en el combobox.
+
+        :param indice: Ítem seleccionado.
+        """
         dimension = self.WMainWindow.cbGWDimension.itemData(indice).toString()
         self._logger.debug("Dimensión: {0}".format(dimension))
         self.set_gw_dimension(dimension)
 
     def parametros_segun_tecnica_menu(self, action):
+        u"""
+        Establecer técnica seleccionada de acuerdo al ítem seleccionado en el menú.
+
+        :param action: Acción seleccionada.
+        """
         indice = action.data().toInt()[0]
         self.WMainWindow.cbQLTecnicas.setCurrentIndex(indice)
 
     def generar_menu_dimensiones(self):
+        u"""
+        Crea el menú Dimensiones junto a sus submenúes y acciones.
+        """
         self._logger.debug("Generar Menú Dimensiones")
         dim_idx = self.WMainWindow.cbGWDimension.currentIndex()
         dim_data = self.WMainWindow.cbGWDimension.itemData(dim_idx).toString()
@@ -1251,6 +1282,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuGridWorld.addMenu(submenu_dimension)
 
     def generar_menu_tecnicas(self):
+        u"""
+        Crea el menú Técnicas junto a sus acciones.
+        """
         self._logger.debug("Generar Menú Técnicas")
         dim_idx = self.WMainWindow.cbQLTecnicas.currentIndex()
         dim_data = self.WMainWindow.cbQLTecnicas.itemData(dim_idx).toInt()[0]
@@ -1273,6 +1307,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuQLearning.addMenu(submenu_tecnica)
 
     def mostrar_opciones_gw(self):
+        u"""
+        Despliega un cuadro de diálogo conteniendo opciones configurables del GridWorld.
+        """
         # Inicializar cuadros de diálogo
         self.GWOpcionesD = GWOpcionesDialog(self, self.window_config)
 
@@ -1306,11 +1343,19 @@ class MainWindow(QtGui.QMainWindow):
             self.recargar_estados()
 
     def mostrar_gen_rnd_estados_dialog(self):
+        u"""
+        Despliega un cuadro de diálogo que permite seleccionar valores para generar estados aleatorios.
+
+        TODO: NotYetImplemented
+        """
         self.GWGenRndEstValsD = GWGenRndEstadosDialog(self)
         if self.GWGenRndEstValsD.exec_():
             pass
 
     def inicializar_gw(self):
+        u"""
+        Inicializa el GridWorld con tipos de estados por defecto y lo actualiza.
+        """
         # Cargar dimensiones posibles del GridWorld
         try:
             self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect()
@@ -1333,6 +1378,9 @@ class MainWindow(QtGui.QMainWindow):
         self.refresh_gw()
 
     def refresh_gw(self):
+        u"""
+        Actualizar estados del GridWorld.
+        """
         indice = self.WMainWindow.cbGWDimension.currentIndex()
         self.set_gw_dimension(self.WMainWindow.cbGWDimension.itemData(indice).toString())
         self.WMainWindow.btnRecorrer.setDisabled(True)
@@ -1353,32 +1401,32 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.lblTau.hide()
         self.WMainWindow.sbQLTau.hide()
 
-        # Establecer por defecto 1 episodio
-        self.WMainWindow.sbCantidadEpisodios.setValue(1000)
+        # Establecer cantidad de episodios por defecto
+        self.WMainWindow.sbCantidadEpisodios.setValue(400)
 
-        # Establecer por defecto un Epsilon = 0.1
-        self.WMainWindow.sbQLEpsilon.setValue(0.1)
+        # Establecer por defecto un Epsilon = 0.01
+        self.WMainWindow.sbQLEpsilon.setValue(0.01)
 
-        # Establecer por defecto un Gamma = 0.8
-        self.WMainWindow.sbQLGamma.setValue(0.8)
+        # Establecer por defecto un Gamma = 0.9
+        self.WMainWindow.sbQLGamma.setValue(0.9)
 
         self.WMainWindow.sbDecrementoVal.setValue(0.01)
         self.WMainWindow.sbCantEpisodiosDec.setValue(1)
         self.WMainWindow.sbCantEpisodiosDec.setSuffix(_tr(" episodios"))
         self.WMainWindow.chkDecrementarParam.setChecked(False)
-        self.WMainWindow.sbQLTau.setValue(500)
+        self.WMainWindow.sbQLTau.setValue(10)
         self.WMainWindow.sbIntervaloDiffCalc.setSuffix(_tr(" episodios"))
         self.WMainWindow.sbCantMaxIteraciones.setValue(200)
         self.WMainWindow.sbIntervaloDiffCalc.setMinimum(2)
-        self.WMainWindow.sbCantidadEpisodios.setValue(50)
         self.WMainWindow.sbValOptimoIncremento.setValue(500)
-        self.WMainWindow.optMQInitEnCero.setChecked(True)
         self.WMainWindow.sbMatricesMinDiff.setValue(0.000001)
+
+        self.WMainWindow.optMQInitValOptimistas.setChecked(True)
 
         self.WMainWindow.sbCOAnimDelay.setSuffix(_tr(" seg"))
         self.WMainWindow.sbCOAnimDelay.setValue(1)
 
-        enable_controls = not self.WMainWindow.optMQInitValOptimistas.isEnabled()
+        enable_controls = self.WMainWindow.optMQInitValOptimistas.isChecked()
         self.WMainWindow.sbValOptimoIncremento.setEnabled(enable_controls)
         self.WMainWindow.lblMQFormula.setEnabled(enable_controls)
         self.set_minimo_incremento_opt()
@@ -1412,6 +1460,9 @@ class MainWindow(QtGui.QMainWindow):
             self.show_matriz_dialog(self.matriz_q, "Matriz Q", "Matriz Q")
 
     def resize_gw_estados(self):
+        u"""
+        Redimensiona el tamaño de los estados en UI de acuerdo a lo configurado.
+        """
         ancho_estado_px = self.window_config["item"]["size"]
         ancho_gw_px = ancho_estado_px * self.gridworld.ancho
 
@@ -1481,6 +1532,8 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Muestra el camino óptimo en el GridWorld introduciendo un retraso de tiempo
         entre los estados con el fin de visualizar el progreso.
+
+        FIXME: Implementar utilizando threading.
         """
         self._logger.debug("Animar camino óptimo")
 
@@ -1542,6 +1595,9 @@ class MainWindow(QtGui.QMainWindow):
             self.mostrar_camino_optimo_act()
 
     def recargar_estados(self):
+        u"""
+        (Re)Dibuja los estados del GridWorld en la grilla de la UI.
+        """
         # Cachear acceso a métodos y atributos
         show_tooltip = self.window_config["item"]["show_tooltip"]
         get_estado = self.gridworld.get_estado
@@ -1574,6 +1630,12 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setUpdatesEnabled(True)
 
     def refresh_gw_random(self, rnd_dim=False, incluir_final=False):
+        u"""
+        Actuliza la grilla en pantalla al crear estados aleatorios.
+
+        :param rnd_dim: Booleano que establece si se genera aleatoriamente la dimensión o se utiliza la actual.
+        :param incluir_final: Booleano que establece si se generar aleatorialmente el estado final y se lo incluye.
+        """
         self.WMainWindow.btnRecorrer.setDisabled(True)
         self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
 
@@ -1609,6 +1671,9 @@ class MainWindow(QtGui.QMainWindow):
                 pass
 
     def generar_menu_estadisticas(self):
+        u"""
+        Crear el menú de Estadísticas junto a sus acciones.
+        """
         self.WMainWindow.menuEstadisticas.clear()
 
         submenu1 = QtGui.QMenu(_tr("Recompensas promedio"), self)
@@ -1627,13 +1692,15 @@ class MainWindow(QtGui.QMainWindow):
         action.setData(3)
         submenu2.addAction(action)
 
-        submenu3 = QtGui.QMenu(_tr("Iteraciones por episodio"), self)
-        action = QtGui.QAction(_tr("Ver gráfico..."), self)
-        action.setData(4)
-        submenu3.addAction(action)
-        action = QtGui.QAction(_tr("Exportar datos..."), self)
-        action.setData(5)
-        submenu3.addAction(action)
+        #=======================================================================
+        # submenu3 = QtGui.QMenu(_tr("Iteraciones por episodio"), self)
+        # action = QtGui.QAction(_tr("Ver gráfico..."), self)
+        # action.setData(4)
+        # submenu3.addAction(action)
+        # action = QtGui.QAction(_tr("Exportar datos..."), self)
+        # action.setData(5)
+        # submenu3.addAction(action)
+        #=======================================================================
 
         submenu4 = QtGui.QMenu(_tr("Diferencia entre matrices"), self)
         action = QtGui.QAction(_tr("Ver gráfico..."), self)
@@ -1645,15 +1712,20 @@ class MainWindow(QtGui.QMainWindow):
 
         self.WMainWindow.menuEstadisticas.addMenu(submenu1)
         self.WMainWindow.menuEstadisticas.addMenu(submenu2)
-        self.WMainWindow.menuEstadisticas.addMenu(submenu3)
+        # self.WMainWindow.menuEstadisticas.addMenu(submenu3)
         self.WMainWindow.menuEstadisticas.addMenu(submenu4)
 
         submenu1.setEnabled(self.graph_recompensas_promedio is not None)
         submenu2.setEnabled(self.graph_episodios_finalizados is not None)
-        submenu3.setEnabled(self.graph_iters_por_episodio is not None)
+        # submenu3.setEnabled(self.graph_iters_por_episodio is not None)
         submenu4.setEnabled(self.graph_mat_diff is not None)
 
     def show_estadisticas(self, action):
+        u"""
+        Muestra ventanas conteniendo el gráfico en función del valor de "action".
+
+        :param action: Acción seleccionada.
+        """
         data = action.data().toInt()[0]
 
         if data == 0:
@@ -1701,23 +1773,29 @@ class MainWindow(QtGui.QMainWindow):
         elif data == 4:
             # Iteraciones por episodio
             # Mostrar gráfico
-            iters_por_ep_thread = QtCore.QThread(self)
-            iters_por_ep_worker = GraphIteracionesXEpisodioWorker((self._parametros,
-                                                                   self.graph_iters_por_episodio))
-            iters_por_ep_worker.mostrar_figura()
-            iters_por_ep_worker.moveToThread(iters_por_ep_thread)
-            iters_por_ep_thread.finished.connect(lambda: iters_por_ep_thread.wait(100))
-            iters_por_ep_thread.start()
+            #===================================================================
+            # iters_por_ep_thread = QtCore.QThread(self)
+            # iters_por_ep_worker = GraphIteracionesXEpisodioWorker((self._parametros,
+            #                                                        self.graph_iters_por_episodio))
+            # iters_por_ep_worker.mostrar_figura()
+            # iters_por_ep_worker.moveToThread(iters_por_ep_thread)
+            # iters_por_ep_thread.finished.connect(lambda: iters_por_ep_thread.wait(100))
+            # iters_por_ep_thread.start()
+            #===================================================================
+            pass
         elif data == 5:
-            extfilter = "Datos estadísticos de gráfico (*.csv)"
-            filename = QtGui.QFileDialog.getSaveFileName(parent=self,
-                                                         caption=_tr('Exportar datos'),
-                                                         filter=_tr(extfilter))
-
-            if filename:
-                iters_por_ep_worker = GraphIteracionesXEpisodioWorker((self._parametros,
-                                                                       self.graph_iters_por_episodio))
-                iters_por_ep_worker.exportar_info(filename)
+            #===============================================================================
+            # extfilter = "Datos estadísticos de gráfico (*.csv)"
+            # filename = QtGui.QFileDialog.getSaveFileName(parent=self,
+            #                                              caption=_tr('Exportar datos'),
+            #                                              filter=_tr(extfilter))
+            #
+            # if filename:
+            #     iters_por_ep_worker = GraphIteracionesXEpisodioWorker((self._parametros,
+            #                                                            self.graph_iters_por_episodio))
+            #     iters_por_ep_worker.exportar_info(filename)
+            #===============================================================================
+            pass
         elif data == 6:
             # Diferencia entre matrices Q
             # Mostrar gráfico
@@ -1740,6 +1818,9 @@ class MainWindow(QtGui.QMainWindow):
                 mat_diffs_worker.exportar_info(filename)
 
     def generar_menu_edicion(self):
+        u"""
+        Crea el menú Edición junto a sus acciones.
+        """
         action = QtGui.QAction("Copiar datos de pruebas al portapapeles", self)
         action.setShortcut(QtGui.QKeySequence("Ctrl+Shift+C"))
         action.triggered.connect(self.copiar_prueba_toclipboard)
@@ -1928,8 +2009,6 @@ class MainWindow(QtGui.QMainWindow):
                     elif calcular_mat_diff == 'false':
                         self.WMainWindow.chkQLCalcularMatDiff.setChecked(False)
 
-
-
                     self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect()
 
                     ancho, alto = len(estados_num), len(estados_num[0])
@@ -1979,15 +2058,15 @@ class MainWindow(QtGui.QMainWindow):
                     valor_inicial = self.WMainWindow.sbValOptimoIncremento.value()
 
                 csv_writer.writerow([self.gridworld.get_matriz_tipos_estados(),
-                self.WMainWindow.sbQLGamma.value(),
-                tecnica,
-                parametro,
-                self.WMainWindow.sbCantidadEpisodios.value(),
-                self.WMainWindow.sbDecrementoVal.value(),
-                self.WMainWindow.sbCantEpisodiosDec.value(),
-                self.WMainWindow.chkLimitarCantIteraciones.isChecked(),
-                self.WMainWindow.sbCantMaxIteraciones.value(),
-                valor_inicial,
-                self.WMainWindow.chkQLCalcularMatDiff.isChecked(),
-                self.WMainWindow.sbMatricesMinDiff.value(),
-                self.WMainWindow.sbIntervaloDiffCalc.value()])
+                                    self.WMainWindow.sbQLGamma.value(),
+                                    tecnica,
+                                    parametro,
+                                    self.WMainWindow.sbCantidadEpisodios.value(),
+                                    self.WMainWindow.sbDecrementoVal.value(),
+                                    self.WMainWindow.sbCantEpisodiosDec.value(),
+                                    self.WMainWindow.chkLimitarCantIteraciones.isChecked(),
+                                    self.WMainWindow.sbCantMaxIteraciones.value(),
+                                    valor_inicial,
+                                    self.WMainWindow.chkQLCalcularMatDiff.isChecked(),
+                                    self.WMainWindow.sbMatricesMinDiff.value(),
+                                    self.WMainWindow.sbIntervaloDiffCalc.value()])
