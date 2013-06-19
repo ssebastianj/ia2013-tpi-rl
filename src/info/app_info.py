@@ -13,4 +13,4 @@ __url__ = u"https://bitbucket.org/ssebastianj/ia2013-tpi-rl"
 __copyright__ = __license__
 __app_name__ = u"Inteligencia Artificial 2013 - Aprendizaje por Refuerzo"
 __org_name__ = u"Grupo Nº 1"
-__DEBUG__ = False
+__DEBUG__ = True

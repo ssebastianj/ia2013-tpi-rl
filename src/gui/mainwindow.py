@@ -30,9 +30,30 @@ from gui.matrizdialog import ShowMatrizDialog
 from core.estado.estado import TIPOESTADO, TipoEstado
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
-from core.tecnicas.aleatorio import Aleatorio
-from core.tecnicas.egreedy import EGreedy, Greedy
-from core.tecnicas.softmax import Softmax
+
+try:
+    from core.tecnicas.compiled.egreedy import EGreedy, Greedy
+    EGREEDY_COMPILED = True
+except ImportError:
+    from core.tecnicas.egreedy import EGreedy, Greedy
+    EGREEDY_COMPILED = False
+print EGREEDY_COMPILED
+
+try:
+    from core.tecnicas.compiled.softmax import Softmax
+    SOFTMAX_COMPILED = True
+except ImportError:
+    from core.tecnicas.softmax import Softmax
+    SOFTMAX_COMPILED = False
+print SOFTMAX_COMPILED
+
+try:
+    from core.tecnicas.compiled.aleatorio import Aleatorio
+    ALEATORIO_COMPILED = True
+except ImportError:
+    from core.tecnicas.aleatorio import Aleatorio
+    ALEATORIO_COMPILED = False
+print ALEATORIO_COMPILED
 
 from graphs.avgrwds.worker import GraphRecompensasPromedioWorker
 from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
