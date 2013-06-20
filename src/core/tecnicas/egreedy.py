@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 
 import random
+from numba import autojit
 from core.tecnicas.tecnica import QLTecnica
 
 
