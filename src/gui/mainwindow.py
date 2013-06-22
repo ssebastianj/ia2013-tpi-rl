@@ -937,10 +937,14 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setMouseTracking(True)
 
         # FIXME: Eliminar
-        self._logger.debug("Matriz Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
-        self._logger.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
+        # self._logger.debug("Matriz Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
+        # self._logger.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
         # self._logger.debug("Iteraciones Por Episodio: {0}".format(self.graph_iters_por_episodio))
-        self._logger.debug("Diferencia entre matrices: {0}".format(self.graph_mat_diff))
+        # self._logger.debug("Diferencia entre matrices: {0}".format(self.graph_mat_diff))
+
+        import numpy
+        numpy.set_printoptions(precision=2, threshold=1000, linewidth=200)
+        print self.matriz_q
 
     def _reintentar_detener_hilos(self):
         u"""
@@ -1147,7 +1151,7 @@ class MainWindow(QtGui.QMainWindow):
                 try:
                     # Descomponer coordenadas de estado actual
                     x_actual, y_actual = estado_actual_rec
-                    self._logger.debug("Estado actual: {0}".format(estado_actual_rec))
+                    # self._logger.debug("Estado actual: {0}".format(estado_actual_rec))
 
                     main_wnd.lblRecEstadoActual.setText("X:{0}  Y:{1}".format(x_actual, y_actual))  # @IgnorePep8
                     main_wnd.lblRecExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)".format(running_exec_time_rec,  # @IgnorePep8
@@ -1516,8 +1520,7 @@ class MainWindow(QtGui.QMainWindow):
         :param paintfinal: Booleano que determina si se debe colorear el Estado Final.
         :param show_icon: Booleano que determina si se debe mostrar el ícono del agente.
         """
-        # DEBUG:
-        self._logger.debug(caminoopt)
+        self._logger.debug(self.camino_optimo)
 
 
         # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order

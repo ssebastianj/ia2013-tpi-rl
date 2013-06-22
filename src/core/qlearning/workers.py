@@ -756,15 +756,15 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             # Obtener acciones a partir del estado actual
             acciones = matriz_q[fila_idx]
             # Buscar el estado que posea el mayor valor de Q
-            maximos = numpy.where(acciones == numpy.nanmax(acciones))[0]
-
-            # Obtener acción a seguir
-            accion_elegida = numpy.random.choice(maximos)
+            maximo_q = numpy.nanmax(acciones)
+            maximos_q = numpy.where(acciones == maximo_q)[0]
+            accion_elegida = numpy.random.choice(maximos_q)
             columna_idx = accion_elegida
 
             # Calcular coordenadas y actualizar estado actual
-            new_y = int(columna_idx / alto)
-            new_x = columna_idx - (new_y * ancho)
+            new_x = int(columna_idx / alto)
+            new_y = columna_idx - (new_x * ancho)
+
             estado_actual = matriz_est_acc[new_x][new_y]
 
             # Agregar estado al camino óptimo
