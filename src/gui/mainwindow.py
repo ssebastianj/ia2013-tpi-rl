@@ -111,7 +111,7 @@ class MainWindow(QtGui.QMainWindow):
                            # 3: "Aleatorio"
                          }
 
-        self.gw_dimensiones = ["3 x 3", "4 x 4", "5 x 5",
+        self.gw_dimensiones = [ # "3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
 
         self.window_config = {"item":
@@ -526,6 +526,9 @@ class MainWindow(QtGui.QMainWindow):
 
                 if estado_actual.tipo.ide == TIPOESTADO.INICIAL:
                     self.estado_inicial = None
+                    self.ocultar_camino_optimo()
+                    self.camino_optimo = None
+                    self.WMainWindow.btnCOShowHide.setDisabled(True)
                 elif estado_actual.tipo.ide == TIPOESTADO.FINAL:
                     self.estado_final = None
                     self.WMainWindow.btnRecorrer.setDisabled(True)
@@ -941,10 +944,6 @@ class MainWindow(QtGui.QMainWindow):
         # self._logger.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
         # self._logger.debug("Iteraciones Por Episodio: {0}".format(self.graph_iters_por_episodio))
         # self._logger.debug("Diferencia entre matrices: {0}".format(self.graph_mat_diff))
-
-        import numpy
-        numpy.set_printoptions(precision=2, threshold=1000, linewidth=200)
-        print self.matriz_q
 
     def _reintentar_detener_hilos(self):
         u"""
@@ -1510,7 +1509,8 @@ class MainWindow(QtGui.QMainWindow):
         # El mínimo es la mitad de la máxima recompensa
         self.WMainWindow.sbValOptimoIncremento.setMinimum(minimo / 2.0)
 
-    def mostrar_camino_optimo(self, caminoopt, delay=0, paintinicial=False, paintfinal=False, show_icon=False):
+    def mostrar_camino_optimo(self, caminoopt, delay=0, paintinicial=False,
+                              paintfinal=False, show_icon=False):
         u"""
         Muestra el camino óptimo obtenido del Recorrido (Play) sobre el GridWorld.
 
@@ -1520,9 +1520,6 @@ class MainWindow(QtGui.QMainWindow):
         :param paintfinal: Booleano que determina si se debe colorear el Estado Final.
         :param show_icon: Booleano que determina si se debe mostrar el ícono del agente.
         """
-        self._logger.debug(self.camino_optimo)
-
-
         # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
         if caminoopt is not None:
             # Crear copia de la lista para no modificar la original
@@ -1564,7 +1561,7 @@ class MainWindow(QtGui.QMainWindow):
 
         FIXME: Implementar utilizando threading.
         """
-        self._logger.debug("Animar camino óptimo")
+        self._logger.debug("Animar camino óptimo...")
 
         # Ocultar camino óptimo previamente a animar
         self.ocultar_camino_optimo()
@@ -1578,7 +1575,7 @@ class MainWindow(QtGui.QMainWindow):
                                    paintinicial=paint_inicial,
                                    paintfinal=paint_final)
 
-    def ocultar_camino_optimo(self):
+    def ocultar_camino_optimo(self, paintinicial=False, paintfinal=False):
         u"""
         Acción que invoca al método para mostrar el camino óptimo. Utilizada desde
         un proceso o UI.
@@ -1590,7 +1587,15 @@ class MainWindow(QtGui.QMainWindow):
             get_estado = self.gridworld.get_estado
             gw_item = self.WMainWindow.tblGridWorld.item
 
-            for x, y in self.camino_optimo:
+            camino_optimo = self.camino_optimo[:]
+
+            if not paintinicial:
+                del camino_optimo[0]
+
+            if not paintfinal:
+                del camino_optimo[-1]
+
+            for x, y in camino_optimo:
                 item = gw_item(x - 1, y - 1)
                 estado = get_estado(x, y)
                 item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
