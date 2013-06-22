@@ -82,6 +82,7 @@ class MainWindow(QtGui.QMainWindow):
         self.pre_estado_inicial = None
         self.pre_estado_final = None
         self.matriz_q = None
+        self.mat_est_acc = None
         self.wnd_timer = None
         self.ql_entrenar_error_q = None
         self.ql_entrenar_out_q = None
@@ -110,7 +111,7 @@ class MainWindow(QtGui.QMainWindow):
                            # 3: "Aleatorio"
                          }
 
-        self.gw_dimensiones = [  # "3 x 3", "4 x 4", "5 x 5",
+        self.gw_dimensiones = ["3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
 
         self.window_config = {"item":
@@ -721,6 +722,7 @@ class MainWindow(QtGui.QMainWindow):
                           self.estado_inicial.columna)
 
         self.qlearning_recorrer_worker = self.qlearning.recorrer(self.matriz_q,
+                                                                 self.mat_est_acc,
                                                                  estado_inicial,
                                                                  self.ql_recorrer_out_q,
                                                                  self.ql_recorrer_error_q)
@@ -1021,30 +1023,32 @@ class MainWindow(QtGui.QMainWindow):
             data_entrenar = self.get_all_from_queue(self.ql_entrenar_out_q)
 
             for ql_ent_info in data_entrenar:
-                estado_actual_ent = ql_ent_info.get('EstadoActual', None)
-                nro_episodio = ql_ent_info.get('NroEpisodio', None)
-                cant_iteraciones = ql_ent_info.get('NroIteracion', None)
+                estado_actual_ent = ql_ent_info.get('EstadoActual')
+                nro_episodio = ql_ent_info.get('NroEpisodio')
+                cant_iteraciones = ql_ent_info.get('NroIteracion')
                 episode_exec_time = ql_ent_info.get('EpisodiosExecTime', 0.0)
                 iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
-                worker_joined = ql_ent_info.get('ProcesoJoined', None)
+                worker_joined = ql_ent_info.get('ProcesoJoined')
                 loop_alarm_pack = ql_ent_info.get('LoopAlarm', (False, -1))
-                matriz_q = ql_ent_info.get('MatrizQ', None)
-                valor_parametro = ql_ent_info.get('ValorParametro', None)
+                matriz_q = ql_ent_info.get('MatrizQ')
+                valor_parametro = ql_ent_info.get('ValorParametro')
                 running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
-                tmp_mat_diff = ql_ent_info.get('MatDiff', None)
-                corte_iteracion = ql_ent_info.get('CorteIteracion', None)
+                tmp_mat_diff = ql_ent_info.get('MatDiff')
+                corte_iteracion = ql_ent_info.get('CorteIteracion')
+                mat_est_acc = ql_ent_info.get('MatEstAcc')
 
                 # Información estadística
-                graph_recompensas_promedio = ql_ent_info.get('MatRecompProm', None)
-                graph_episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
-                # graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio', None)
-                graph_mat_diff = ql_ent_info.get('MatDiffStat', None)
+                graph_recompensas_promedio = ql_ent_info.get('MatRecompProm')
+                graph_episodios_finalizados = ql_ent_info.get('EpFinalizados')
+                # graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio')
+                graph_mat_diff = ql_ent_info.get('MatDiffStat')
 
                 self.graph_episodios_finalizados = graph_episodios_finalizados
                 self.graph_recompensas_promedio = graph_recompensas_promedio
                 self.graph_mat_diff = graph_mat_diff
                 # self.graph_iters_por_episodio = graph_iters_por_episodio
                 self.matriz_q = matriz_q
+                self.mat_est_acc = mat_est_acc
 
                 ent_loop_alarm, ent_stop_action = loop_alarm_pack
 
@@ -1131,12 +1135,12 @@ class MainWindow(QtGui.QMainWindow):
             data_recorrer = self.get_all_from_queue(self.ql_recorrer_out_q)
 
             for ql_rec_info in data_recorrer:
-                estado_actual_rec = ql_rec_info.get('EstadoActual', None)
-                camino_optimo = ql_rec_info.get('CaminoRecorrido', None)
+                estado_actual_rec = ql_rec_info.get('EstadoActual')
+                camino_optimo = ql_rec_info.get('CaminoRecorrido')
                 running_exec_time_rec = ql_rec_info.get('RunningExecTime', 0.0)
-                worker_joined = ql_rec_info.get('ProcesoJoined', None)
+                worker_joined = ql_rec_info.get('ProcesoJoined')
                 rec_exec_time = ql_rec_info.get('RecorridoExecTime', 0.0)
-                nro_iteracion = ql_rec_info.get('NroIteracion', None)
+                nro_iteracion = ql_rec_info.get('NroIteracion')
 
                 self.camino_optimo = camino_optimo
 
@@ -1430,6 +1434,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbCantEpisodiosDec.setValue(1)
         self.WMainWindow.sbCantEpisodiosDec.setSuffix(_tr(" episodios"))
         self.WMainWindow.chkDecrementarParam.setChecked(False)
+        self.WMainWindow.sbDecrementoVal.setDisabled(True)
+        self.WMainWindow.sbCantEpisodiosDec.setDisabled(True)
         self.WMainWindow.sbQLTau.setValue(10)
         self.WMainWindow.sbIntervaloDiffCalc.setSuffix(_tr(" episodios"))
         self.WMainWindow.sbCantMaxIteraciones.setValue(200)
@@ -1510,6 +1516,10 @@ class MainWindow(QtGui.QMainWindow):
         :param paintfinal: Booleano que determina si se debe colorear el Estado Final.
         :param show_icon: Booleano que determina si se debe mostrar el ícono del agente.
         """
+        # DEBUG:
+        self._logger.debug(caminoopt)
+
+
         # http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
         if caminoopt is not None:
             # Crear copia de la lista para no modificar la original
@@ -1673,7 +1683,7 @@ class MainWindow(QtGui.QMainWindow):
             recomp_excelente = estado_excelente.recompensa
             ancho = self.gridworld.ancho
 
-            exponente = self.window_config["exponentes_final"][ancho]
+            exponente = self.window_config["exponentes_final"].get(ancho, 1)
 
             try:
                 calc_recomp_final = int(recomp_excelente / (gamma ** exponente))

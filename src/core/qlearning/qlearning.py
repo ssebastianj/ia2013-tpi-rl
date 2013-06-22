@@ -92,7 +92,7 @@ class QLearning(object):
 
         return qlearning_entrenar_worker
 
-    def recorrer(self, matriz_q, estado_inicial, out_queue, error_queue):
+    def recorrer(self, matriz_q, mat_est_acc, estado_inicial, out_queue, error_queue):
         u"""
         Ejecuta el algoritmo de recorrido en otro hilo/proceso. Devuelve una
         referencia al hilo/proceso ejecutado.
@@ -101,7 +101,7 @@ class QLearning(object):
         :param error_q: Cola de errores (salida)
         """
         inp_queue = multiprocessing.Queue()
-        inp_queue.put((matriz_q, estado_inicial))
+        inp_queue.put((matriz_q, mat_est_acc, estado_inicial))
         qlearning_recorrer_worker = None
 
         try:
