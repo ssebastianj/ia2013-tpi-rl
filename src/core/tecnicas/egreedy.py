@@ -63,7 +63,7 @@ class EGreedy(QLTecnica):
 
         :param acciones: Lista de acciones de un estado dado.
         """
-        return numpy.random.choice(numpy.where(1 ^ numpy.isnan(acciones))[0])
+        return numpy.random.choice(numpy.where(~numpy.isnan(acciones))[0])
 
     def decrementar_parametro(self):
         u"""
