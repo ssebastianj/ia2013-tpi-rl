@@ -1,0 +1,3 @@
+LIBRARY compiled_egreedy.pyd
+EXPORTS
+initcompiled_egreedy

@@ -477,3 +477,4 @@ def graficar_diferencias_matrizq(tupla, nro_prueba, output_dir):
 
 if __name__ == '__main__':
     main()
+
