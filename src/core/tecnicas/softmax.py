@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 
 import numpy
 import numba
@@ -35,7 +35,7 @@ class Softmax(QLTecnica):
         self.cant_ranuras = 100
 
         # Establecer precisión de decimales a 5 dígitos
-        decimal.getcontext().prec = 2
+        # decimal.getcontext().prec = 3
 
     def obtener_accion(self, acciones):
         u"""
@@ -43,16 +43,20 @@ class Softmax(QLTecnica):
 
         :param acciones: Diccionario conteniendo los acciones de un estado.
         """
-        rnd_valor = numpy.random.randint(0, self.cant_ranuras)
+        rnd_func = numpy.random.randint
+        np_where = numpy.where
+        cant_ranuras = self.cant_ranuras
 
         intervalos_probabilidad = self.obtener_probabilidades(acciones)
 
-        idxs = numpy.ma.where(rnd_valor < intervalos_probabilidad)
-
         try:
-            idx = idxs[0][0]
+            rnd_valor = rnd_func(0, cant_ranuras)
+            idx = np_where(rnd_valor < intervalos_probabilidad)[0][0]
         except IndexError:
-            idx = idxs[0]
+            rnd_valor = rnd_func(0, cant_ranuras)
+            idx = np_where(rnd_valor < intervalos_probabilidad)[0][0]
+
+        print intervalos_probabilidad
 
         return idx
 
@@ -63,12 +67,11 @@ class Softmax(QLTecnica):
         :param acciones: Diccionario conteniendo acciones de un estado.
         """
         # Calcula las probabilidades de cada vecino
-        # c_decimal = decimal.Decimal
         valor_param_parcial = self._val_param_parcial
         c_decimal = decimal.Decimal
 
         # Arreglo auxiliar
-        probabilidades_acciones = numpy.ma.empty(acciones.size, numpy.float)
+        probabilidades_acciones = numpy.empty(acciones.size, numpy.float)
 
         for i, q_valor in numpy.ndenumerate(acciones):
             try:
@@ -83,9 +86,19 @@ class Softmax(QLTecnica):
         sigma = numpy.nansum(probabilidades_acciones)
 
         # Calcula las probabilidades de cada vecino normalizadas
-        probabilidades_acciones = numpy.ma.true_divide(probabilidades_acciones, sigma)
+        probabilidades_acciones = numpy.true_divide(probabilidades_acciones, sigma)
 
-        return probabilidades_acciones.dot(self.cant_ranuras - 1).cumsum()
+        # Multiplicar por cantidad de ranuras
+        # probabilidades_acciones = probabilidades_acciones.dot(cant_ranuras)
+        probabilidades_acciones = numpy.round(probabilidades_acciones * 100)
+
+        probabilidades_acciones[probabilidades_acciones == 0] = numpy.nan
+
+        # Armar intervalos sumando de manera acumulada
+        probabilidades_acciones = numpy.add(probabilidades_acciones * 0,
+                                            numpy.add.accumulate(numpy.nan_to_num(probabilidades_acciones)))
+
+        return probabilidades_acciones
 
     def decrementar_parametro(self):
         u"""

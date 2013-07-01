@@ -187,9 +187,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
             try:
                 tipo_estado = estado_actual[0]
-            except TypeError:
-                tipo_estado = estado_actual
-            except IndexError:
+            except (TypeError, IndexError):
                 tipo_estado = estado_actual
 
             while (not stoprequest_isset()) and (tipo_estado in tipos_vec_excluidos):
@@ -198,9 +196,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
                 try:
                     tipo_estado = estado_actual[0]
-                except TypeError:
-                    tipo_estado = estado_actual
-                except IndexError:
+                except (TypeError, IndexError):
                     tipo_estado = estado_actual
 
             # Recorrer hasta encontrar el estado final
@@ -236,7 +232,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 acciones_est_elegido = matriz_q[accion_elegida]
 
                 # Calcular el máximo valor Q de todos los vecinos
-                max_q = numpy.nanmax(acciones_est_elegido)
+                try:
+                    max_q = numpy.nanmax(acciones_est_elegido)
+                except ValueError:
+                    print "Recompensa: " + str(recompensa_accion)
+                    print "Accion elegida: " + str(accion_elegida)
+                    print "Acciones elegidas: " + str(acciones_est_elegido)
+                    raise ValueError
 
                 # -------------------------------------------------------------
                 # Fórmula principal de Q-Learning
@@ -266,9 +268,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
                 try:
                     tipo_estado = estado_actual[0]
-                except TypeError:
-                    tipo_estado = estado_actual
-                except IndexError:
+                except (TypeError, IndexError):
                     tipo_estado = estado_actual
 
                 # Nuevo estado = Acción elegida
