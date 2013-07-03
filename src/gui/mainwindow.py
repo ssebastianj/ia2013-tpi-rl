@@ -1059,9 +1059,6 @@ class MainWindow(QtGui.QMainWindow):
                     # Descomponer coordenadas de estado actual
                     x_actual, y_actual = estado_actual_ent
 
-                    print "Estado actual: {0}".format((x_actual, y_actual))
-                    self._logger.debug("Estado actual: {0}".format((x_actual, y_actual)))
-
                     # Mostrar información de entrenamiento en etiquetas
                     main_wnd.lblEntEstadoActual.setText("X:{0}  Y:{1}".format(x_actual,  # @IgnorePep8
                                                                               y_actual))  # @IgnorePep8
