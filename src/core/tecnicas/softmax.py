@@ -35,7 +35,7 @@ class Softmax(QLTecnica):
         self.cant_ranuras = 100
 
         # Establecer precisión de decimales a 5 dígitos
-        # decimal.getcontext().prec = 3
+        decimal.getcontext().prec = 2
 
     def obtener_accion(self, acciones):
         u"""
@@ -49,14 +49,12 @@ class Softmax(QLTecnica):
 
         intervalos_probabilidad = self.obtener_probabilidades(acciones)
 
-        try:
-            rnd_valor = rnd_func(0, cant_ranuras)
-            idx = np_where(rnd_valor < intervalos_probabilidad)[0][0]
-        except IndexError:
-            rnd_valor = rnd_func(0, cant_ranuras)
-            idx = np_where(rnd_valor < intervalos_probabilidad)[0][0]
+        # FIXME
+        # print intervalos_probabilidad
+        # print
 
-        print intervalos_probabilidad
+        rnd_valor = rnd_func(0, cant_ranuras)
+        idx = np_where(rnd_valor <= intervalos_probabilidad)[0][0]
 
         return idx
 
@@ -89,10 +87,11 @@ class Softmax(QLTecnica):
         probabilidades_acciones = numpy.true_divide(probabilidades_acciones, sigma)
 
         # Multiplicar por cantidad de ranuras
-        # probabilidades_acciones = probabilidades_acciones.dot(cant_ranuras)
-        probabilidades_acciones = numpy.round(probabilidades_acciones * 100)
+        probabilidades_acciones *= self.cant_ranuras
+        # probabilidades_acciones = numpy.round(probabilidades_acciones * self.cant_ranuras)
 
-        probabilidades_acciones[probabilidades_acciones == 0] = numpy.nan
+        # probabilidades_acciones[probabilidades_acciones == 0] = numpy.nan
+        # probabilidades_acciones[probabilidades_acciones < 1] = numpy.nan
 
         # Armar intervalos sumando de manera acumulada
         probabilidades_acciones = numpy.add(probabilidades_acciones * 0,

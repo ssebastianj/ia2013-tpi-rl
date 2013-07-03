@@ -219,6 +219,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Obtener acciones posibles para el estado actual
                 acciones = matriz_q[fila_idx]
 
+                # FIXME:
+                # print acciones
+
                 # Invocar a la técnica para que seleccione uno de las acciones
                 accion_elegida = obtener_accion(acciones)
 
