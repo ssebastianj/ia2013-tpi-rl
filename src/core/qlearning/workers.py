@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import Queue
 import multiprocessing
 import numpy
+import os
 import time
 import sys
 import random
@@ -251,6 +252,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 matriz_q[fila_idx][columna_idx] = nuevo_q
                 # ------------------------------------------------------------
 
+                with open("recorrido.txt", 'a') as rf:
+                    rf.write("{0}\n".format((x_act + 1, y_act + 1)))
+
+
                 encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
                                 'NroEpisodio': epnum,
                                 'NroIteracion': cant_iteraciones,
@@ -265,8 +270,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # ------------------------------------------------------------
 
                 # Calcular coordenadas y actualizar estado actual
-                new_y = int(columna_idx / alto)
-                new_x = columna_idx - (new_y * ancho)
+                new_x = int(columna_idx / alto)
+                new_y = columna_idx - (new_x * ancho)
                 estado_actual = matriz_est_acc[new_x][new_y]
 
                 try:
@@ -277,6 +282,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Nuevo estado = Acción elegida
                 x_act = new_x
                 y_act = new_y
+
+                with open("recorrido.txt", 'a') as rf:
+                    rf.write("{0}\n".format((new_x + 1, new_y + 1)))
 
                 # Comprobar si se alcanzó el número máximo de iteraciones
                 # FIXME

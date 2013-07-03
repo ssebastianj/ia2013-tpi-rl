@@ -77,9 +77,6 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Inicializa las variables 'globales'.
         """
-
-        self._logger.debug("Hola Mundo")
-
         self.estado_inicial = None
         self.estado_final = None
         self.pre_estado_inicial = None
@@ -114,7 +111,7 @@ class MainWindow(QtGui.QMainWindow):
                            # 3: "Aleatorio"
                          }
 
-        self.gw_dimensiones = [  # "3 x 3", "4 x 4", "5 x 5",
+        self.gw_dimensiones = [# "3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
 
         self.window_config = {"item":
@@ -1062,7 +1059,8 @@ class MainWindow(QtGui.QMainWindow):
                     # Descomponer coordenadas de estado actual
                     x_actual, y_actual = estado_actual_ent
 
-                    logging.debug("Estado actual: {0}".format((x_actual, y_actual)))
+                    print "Estado actual: {0}".format((x_actual, y_actual))
+                    self._logger.debug("Estado actual: {0}".format((x_actual, y_actual)))
 
                     # Mostrar información de entrenamiento en etiquetas
                     main_wnd.lblEntEstadoActual.setText("X:{0}  Y:{1}".format(x_actual,  # @IgnorePep8
