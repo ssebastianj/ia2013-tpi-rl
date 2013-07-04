@@ -236,21 +236,15 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 acciones_est_elegido = matriz_q[accion_elegida]
 
                 # Calcular el máximo valor Q de todos los vecinos
-                try:
-                    max_q = numpy.nanmax(acciones_est_elegido)
-                except ValueError:
-                    print "Recompensa: " + str(recompensa_accion)
-                    print "Accion elegida: " + str(accion_elegida)
-                    print "Acciones elegidas: " + str(acciones_est_elegido)
-                    raise ValueError
+                max_q = numpy.nanmax(acciones_est_elegido)
 
-                # -------------------------------------------------------------
-                # Fórmula principal de Q-Learning
-                # -------------------------------------------------------------
+                # =============================================================
+                # Función de valor de Q-Learning
+                # =============================================================
                 nuevo_q = recompensa_accion + (gamma * max_q)
                 # Actualizar valor de Q en matriz Q
                 matriz_q[fila_idx][columna_idx] = nuevo_q
-                # ------------------------------------------------------------
+                # =============================================================
 
                 encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
                                 'NroEpisodio': epnum,

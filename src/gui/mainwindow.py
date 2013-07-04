@@ -110,7 +110,7 @@ class MainWindow(QtGui.QMainWindow):
                            # 3: "Aleatorio"
                          }
 
-        self.gw_dimensiones = ["3 x 3", "4 x 4", "5 x 5",
+        self.gw_dimensiones = [  # "3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
 
         self.window_config = {"item":

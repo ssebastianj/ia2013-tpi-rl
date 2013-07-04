@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import
 
-import logging
 import numpy
 
 from PyQt4 import QtCore, QtGui
@@ -78,11 +77,6 @@ class ShowMatrizDialog(QtGui.QDialog):
         headers_horizontales = []
         headers_verticales = []
 
-        # Rellenar tabla con transiciones inválidas
-        item_bg_color = QtGui.QColor(240, 240, 240)
-        item_flags = QtCore.Qt.ItemIsEnabled
-        item_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
-
         for fila in xrange(alto_mat):
             # Coordenadas del estado
             coord_x = int(fila / alto_gw)
@@ -137,7 +131,8 @@ class ShowMatrizDialog(QtGui.QDialog):
                                                               coord_x_dest + 1,
                                                               coord_y_dest + 1))
 
-            self.ShowMatrizD.tblMatriz.setItem(i[0], i[1], item)
+            # Agregar ítem a GridWorld
+            tbl_set_item(i[0], i[1], item)
 
         self.ShowMatrizD.tblMatriz.setHorizontalHeaderLabels(headers_horizontales)
         self.ShowMatrizD.tblMatriz.setVerticalHeaderLabels(headers_verticales)
