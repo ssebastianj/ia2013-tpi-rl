@@ -1964,7 +1964,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.WMainWindow.menuPruebas.addSeparator()
 
-        action = QtGui.QAction("Copiar datos al portapapeles", self)
+        action = QtGui.QAction("Copiar datos de prueba al portapapeles", self)
         action.setShortcut(QtGui.QKeySequence("Ctrl+Shift+C"))
         action.triggered.connect(self.copiar_prueba_toclipboard)
         self.WMainWindow.menuPruebas.addAction(action)

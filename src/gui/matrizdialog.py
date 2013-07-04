@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+import logging
 import numpy
 
 from PyQt4 import QtCore, QtGui
@@ -53,16 +54,23 @@ class ShowMatrizDialog(QtGui.QDialog):
         self._set_dialog_signals()
         self.setWindowTitle(self.titulo_corto_dialogo)
 
-        alto_gw = len(self.matriz)
-        ancho_gw = len(self.matriz[0])
-        dimension = alto_gw * ancho_gw
+        # Cachear acceso a atributos y métodos
+        matriz = self.matriz
+        tbl_set_item = self.ShowMatrizD.tblMatriz.setItem
+
+        # Dimensiones de la matriz
+        ancho_mat, alto_mat = matriz.shape
+
+        # Dimensiones del GridWorld
+        alto_gw = int(alto_mat ** 0.5)
+        ancho_gw = int(ancho_mat ** 0.5)
 
         ancho_estado_px = self.window_config["item"]["size"]
-        ancho_gw_px = ancho_estado_px * dimension
+        # ancho_gw_px = ancho_estado_px * ancho_gw
 
         # Establecer propiedades visuales de la tabla
-        self.ShowMatrizD.tblMatriz.setRowCount(dimension)
-        self.ShowMatrizD.tblMatriz.setColumnCount(dimension)
+        self.ShowMatrizD.tblMatriz.setRowCount(alto_mat)
+        self.ShowMatrizD.tblMatriz.setColumnCount(ancho_mat)
 
         # Desactivar actualización de la tabla para optimizar la carga
         self.ShowMatrizD.tblMatriz.setUpdatesEnabled(False)
@@ -75,63 +83,61 @@ class ShowMatrizDialog(QtGui.QDialog):
         item_flags = QtCore.Qt.ItemIsEnabled
         item_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
 
-        item_dash = QtGui.QTableWidgetItem('-')
-        item_dash.setBackgroundColor(item_bg_color)
-        item_dash.setFlags(item_flags)
-        item_dash.setTextAlignment(item_align)
+        for fila in xrange(alto_mat):
+            # Coordenadas del estado
+            coord_x = int(fila / alto_gw)
+            coord_y = fila - (coord_x * ancho_gw)
 
-        for fila in xrange(dimension):
-            for columna in xrange(dimension):
-                self.ShowMatrizD.tblMatriz.setItem(fila, columna, item_dash)
+            # Armar headers horizontales (Acciones)
+            headers_horizontales.append("A{0}\n({1},{2})".format(fila + 1,
+                                                                 coord_x + 1,
+                                                                 coord_y + 1))
 
-        # Rellenar tabla con items
-        item_bg_color = QtGui.QColor("#FFFFFF")
-        item_flags = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
-        item_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
+            # Armar headers verticales (Estados)
+            headers_verticales.append("E{0} ({1},{2})".format(fila + 1,
+                                                              coord_x + 1,
+                                                              coord_y + 1))
 
-        # Cachear acceso a atributos y métodos
-        matriz = self.matriz
+        # Ítem para transición válida
+        item_bg_color_val = QtGui.QColor("#FFFFFF")
+        item_flags_val = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
 
-        # Iterador de arreglo de Numpy
-        matriz_iter = numpy.nditer(matriz, flags=['buffered'])
+        # Ítem para transición inválida
+        item_bg_color_inv = QtGui.QColor(240, 240, 240)
+        item_flags_inv = QtCore.Qt.ItemIsEnabled
+        item_text_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
 
-        # WIP: Nueva forma de visualizar matrices
-        for (i, fila) in numpy.ndenumerate(matriz_iter):
-            for (j, columna) in numpy.ndenumerate(fila):
+        for i, accion in numpy.ndenumerate(matriz):
+            if numpy.isnan(accion):
+                item = QtGui.QTableWidgetItem('-')
+                item.setBackgroundColor(item_bg_color_inv)
+                item.setFlags(item_flags_inv)
+                item.setTextAlignment(item_text_align)
+            else:
+                # Cada item muestra el valor asociado a la acción
+                if isinstance(accion, float):
+                    item = QtGui.QTableWidgetItem("{0:.2f}".format(accion))
+                elif isinstance(accion, int):
+                    item = QtGui.QTableWidgetItem(str(accion))
 
-                for key, value in acciones.iteritems():
-                    # Cada item muestra la letra asignada al estado
-                    if isinstance(value, float):
-                        item = QtGui.QTableWidgetItem("{0:.2f}".format(value))
-                    elif isinstance(value, int):
-                        item = QtGui.QTableWidgetItem(str(value))
+                item.setBackgroundColor(item_bg_color_val)
+                item.setFlags(item_flags_val)
+                item.setTextAlignment(item_align)
 
-                    item.setBackgroundColor(item_bg_color)
-                    item.setFlags(item_flags)
-                    item.setTextAlignment(item_align)
+            # Coordenadas de origen
+            coord_x_orig = int(i[0] / alto_gw)
+            coord_y_orig = i[0] - (coord_x_orig * ancho_gw)
 
-                    # Coordenadas
-                    coord_x = (fila * alto_gw) + columna
-                    coord_y = ((key[0] - 1) * ancho_gw) + (key[1] - 1)
+            # Coordenadas de destino
+            coord_x_dest = int(i[1] / alto_gw)
+            coord_y_dest = i[1] - (coord_x_dest * ancho_gw)
 
-                    item.setToolTip(u"({0},{1}) ---> {2}"
-                                    .format(fila + 1, columna + 1, key))
-                    self.ShowMatrizD.tblMatriz.setItem(coord_x, coord_y, item)
+            item.setToolTip(u"({0},{1}) --> ({2},{3})".format(coord_x_orig + 1,
+                                                              coord_y_orig + 1,
+                                                              coord_x_dest + 1,
+                                                              coord_y_dest + 1))
 
-                # Coordenadas
-                coord_x = (fila * alto_gw) + columna
-
-                # Armar headers horizontales (Acciones)
-                headers_horizontales.append("A{0}\n({1},{2})"
-                                            .format(coord_x + 1,
-                                                    fila + 1,
-                                                    columna + 1))
-
-                # Armar headers verticales (Estados)
-                headers_verticales.append("E{0} ({1},{2})"
-                                          .format(coord_x + 1,
-                                                  fila + 1,
-                                                  columna + 1))
+            self.ShowMatrizD.tblMatriz.setItem(i[0], i[1], item)
 
         self.ShowMatrizD.tblMatriz.setHorizontalHeaderLabels(headers_horizontales)
         self.ShowMatrizD.tblMatriz.setVerticalHeaderLabels(headers_verticales)
