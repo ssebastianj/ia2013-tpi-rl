@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Wed Jul 03 14:45:15 2013
+# Created: Thu Jul 04 12:04:38 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -960,8 +960,8 @@ class Ui_MainWindow(object):
         self.btnMostrarMatrizQ.setText(_translate("MainWindow", "Mostrar Matriz Q...", None))
         self.gbAgente.setTitle(_translate("MainWindow", "Agente", None))
         self.btnEntrenar.setText(_translate("MainWindow", "Entrenar", None))
-        self.btnRecorrer.setText(_translate("MainWindow", "Jugar", None))
-        self.btnTerminarProceso.setText(_translate("MainWindow", "Cancelar", None))
+        self.btnRecorrer.setText(_translate("MainWindow", "Explotar", None))
+        self.btnTerminarProceso.setText(_translate("MainWindow", "Detener", None))
         self.dwCaminoOptimo.setWindowTitle(_translate("MainWindow", "Camino óptimo", None))
         self.gbCOAcciones.setTitle(_translate("MainWindow", "Acciones", None))
         self.btnCOShowHide.setText(_translate("MainWindow", "Ocultar", None))
@@ -987,13 +987,13 @@ class Ui_MainWindow(object):
         self.lblEntValParametro.setText(_translate("MainWindow", "-", None))
         self.label_14.setText(_translate("MainWindow", "Diferencia entre matrices:", None))
         self.lblEntDiffMatrices.setText(_translate("MainWindow", "-", None))
-        self.gbRecorrido.setTitle(_translate("MainWindow", "Recorrido", None))
+        self.gbRecorrido.setTitle(_translate("MainWindow", "Explotación", None))
         self.label_6.setText(_translate("MainWindow", "Posición agente:", None))
         self.lblRecEstadoActual.setText(_translate("MainWindow", "-", None))
         self.gbRecExecTime.setTitle(_translate("MainWindow", "Tiempo de ejecución", None))
         self.label_16.setText(_translate("MainWindow", "Total:", None))
         self.lblRecExecTimeTotal.setText(_translate("MainWindow", "-", None))
-        self.label_17.setText(_translate("MainWindow", "Recorrido:", None))
+        self.label_17.setText(_translate("MainWindow", "Explotación:", None))
         self.lblRecExecTimeRecorrido.setText(_translate("MainWindow", "-", None))
         self.dwConfigGeneral.setWindowTitle(_translate("MainWindow", "Configuración general", None))
         self.gbGeneral.setTitle(_translate("MainWindow", "General", None))
@@ -1002,8 +1002,8 @@ class Ui_MainWindow(object):
         self.actionAppSalir.setText(_translate("MainWindow", "Salir", None))
         self.actionAcercaDe.setText(_translate("MainWindow", "Acerca de...", None))
         self.actionAgenteEntrenar.setText(_translate("MainWindow", "Entrenar", None))
-        self.actionAgenteRecorrer.setText(_translate("MainWindow", "Recorrer", None))
-        self.actionAgenteCancelar.setText(_translate("MainWindow", "Cancelar", None))
+        self.actionAgenteRecorrer.setText(_translate("MainWindow", "Explotar", None))
+        self.actionAgenteCancelar.setText(_translate("MainWindow", "Detener", None))
         self.actionInicializarTodo.setText(_translate("MainWindow", "Inicializar todo", None))
         self.actionEre.setText(_translate("MainWindow", "ere", None))
 

@@ -203,7 +203,7 @@ class MainWindow(QtGui.QMainWindow):
         # Asignar shorcuts
         entrenar_shortcut = "F5"
         recorrer_shortcut = "F6"
-        cancelar_shortcut = "Shift+X"
+        cancelar_shortcut = "Esc"
         self.WMainWindow.btnEntrenar.setShortcut(QtGui.QKeySequence(entrenar_shortcut))
         self.WMainWindow.btnRecorrer.setShortcut(QtGui.QKeySequence(recorrer_shortcut))
         self.WMainWindow.btnTerminarProceso.setShortcut(QtGui.QKeySequence(cancelar_shortcut))
@@ -214,12 +214,12 @@ class MainWindow(QtGui.QMainWindow):
                                                 {0}</span></p></body></html>"
                                                 .format(entrenar_shortcut))
         self.WMainWindow.btnRecorrer.setToolTip("<html><head/><body><p>\
-                                                Recorrer GridWorld \
+                                                Explotar conocimiento \
                                                 <span style='font-size:7pt;'>\
                                                 {0}</span></p></body></html>"
                                                 .format(recorrer_shortcut))
         self.WMainWindow.btnTerminarProceso.setToolTip("<html><head/><body><p>\
-                                                    Cancelar proceso \
+                                                    Detener proceso \
                                                     <span style='font-size:7pt;'>\
                                                     {0}</span></p></body></html>"
                                                     .format(cancelar_shortcut))

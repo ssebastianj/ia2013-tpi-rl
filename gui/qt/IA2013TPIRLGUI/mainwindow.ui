@@ -1225,7 +1225,7 @@
              <locale language="Spanish" country="Argentina"/>
             </property>
             <property name="text">
-             <string>Jugar</string>
+             <string>Explotar</string>
             </property>
             <property name="icon">
              <iconset resource="recursos.qrc">
@@ -1245,7 +1245,7 @@
              <locale language="Spanish" country="Argentina"/>
             </property>
             <property name="text">
-             <string>Cancelar</string>
+             <string>Detener</string>
             </property>
             <property name="icon">
              <iconset resource="recursos.qrc">
@@ -1754,7 +1754,7 @@
      <item row="1" column="0">
       <widget class="QGroupBox" name="gbRecorrido">
        <property name="title">
-        <string>Recorrido</string>
+        <string>Explotación</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_16">
         <item row="0" column="0">
@@ -1880,7 +1880,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>Recorrido:</string>
+                <string>Explotación:</string>
                </property>
               </widget>
              </item>
@@ -2014,7 +2014,7 @@
      <normaloff>:/iconos/Recorrer.png</normaloff>:/iconos/Recorrer.png</iconset>
    </property>
    <property name="text">
-    <string>Recorrer</string>
+    <string>Explotar</string>
    </property>
   </action>
   <action name="actionAgenteCancelar">
@@ -2023,7 +2023,7 @@
      <normaloff>:/iconos/Cancelar.png</normaloff>:/iconos/Cancelar.png</iconset>
    </property>
    <property name="text">
-    <string>Cancelar</string>
+    <string>Detener</string>
    </property>
   </action>
   <action name="actionInicializarTodo">
