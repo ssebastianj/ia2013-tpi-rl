@@ -463,6 +463,7 @@ class MainWindow(QtGui.QMainWindow):
         # Crear menu contextual para los items de la tabla
         self.menu_item = QtGui.QMenu("Tipo de estado")
         tipos_estados_group = QtGui.QActionGroup(self.WMainWindow.tblGridWorld)
+
         for tipo in tipos_estados.values():
             if tipo.ide not in self.window_config["item"]["menu_estado"]["ocultar_tipos"]:
 
@@ -483,8 +484,10 @@ class MainWindow(QtGui.QMainWindow):
                 if estado_actual.tipo.ide == tipo.ide:
                     action.setChecked(True)
 
-                action.setStatusTip("Establecer calidad de estado a {0}"
-                                   .format(tipo.nombre))
+                if cant_selected == 1:
+                    action.setStatusTip("Establecer estado como {0}".format(tipo.nombre))
+                elif cant_selected > 1:
+                    action.setStatusTip("Establecer estados seleccionados como {0}".format(tipo.nombre))
                 self.menu_item.addAction(action)
 
                 if tipo.ide == TIPOESTADO.FINAL:

@@ -116,7 +116,7 @@ class ShowMatrizDialog(QtGui.QDialog):
 
                 item.setBackgroundColor(item_bg_color_val)
                 item.setFlags(item_flags_val)
-                item.setTextAlignment(item_align)
+                item.setTextAlignment(item_text_align)
 
             # Coordenadas de origen
             coord_x_orig = int(i[0] / alto_gw)
