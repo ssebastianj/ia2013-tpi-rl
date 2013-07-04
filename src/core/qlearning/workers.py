@@ -220,9 +220,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Obtener acciones posibles para el estado actual
                 acciones = matriz_q[fila_idx]
 
-                # FIXME:
-                # print acciones
-
                 # Invocar a la técnica para que seleccione uno de las acciones
                 accion_elegida = obtener_accion(acciones)
 
@@ -242,6 +239,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Función de valor de Q-Learning
                 # =============================================================
                 nuevo_q = recompensa_accion + (gamma * max_q)
+
                 # Actualizar valor de Q en matriz Q
                 matriz_q[fila_idx][columna_idx] = nuevo_q
                 # =============================================================
@@ -270,8 +268,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                     tipo_estado = estado_actual
 
                 # Nuevo estado = Acción elegida
-                x_act = new_x
-                y_act = new_y
+                x_act, y_act = new_x, new_y
 
                 # Comprobar si se alcanzó el número máximo de iteraciones
                 # FIXME
@@ -377,8 +374,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 cont_interv_muestreo = 0
 
             # Recompensas promedio -------------------------------------------
-            rp_res_promedio[epnum - 1][0] = numpy.average(numpy.ma.true_divide(rp_sum_recomp_accion,
-                                                                               rp_cont_acc_accion))
+            rp_res_promedio[epnum - 1][0] = numpy.average(numpy.true_divide(rp_sum_recomp_accion,
+                                                                            rp_cont_acc_accion))
 
             # Avanzar un episodio
             epnum += 1
