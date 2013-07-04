@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import
 
-
 try:
     import cdecimal as decimal
 except ImportError:
@@ -111,7 +110,7 @@ class MainWindow(QtGui.QMainWindow):
                            # 3: "Aleatorio"
                          }
 
-        self.gw_dimensiones = [# "3 x 3", "4 x 4", "5 x 5",
+        self.gw_dimensiones = ["3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
 
         self.window_config = {"item":
@@ -147,11 +146,11 @@ class MainWindow(QtGui.QMainWindow):
                                  "delay": 0,
                                  "show_icon": False
                               },
-                              "exponentes_final": {6: 12,
-                                                   7: 17,
-                                                   8: 19,
-                                                   9: 28,
-                                                   10: 31
+                              "exponentes_final": {6: 13,
+                                                   7: 18,
+                                                   8: 20,
+                                                   9: 29,
+                                                   10: 32
                                                    }
                               }
 
@@ -1694,7 +1693,7 @@ class MainWindow(QtGui.QMainWindow):
             exponente = self.window_config["exponentes_final"].get(ancho, 1)
 
             try:
-                calc_recomp_final = int(recomp_excelente / (gamma ** exponente))
+                calc_recomp_final = int(recomp_excelente / (gamma ** (exponente - 1)))
 
                 estado_final_cfg = self.window_config["tipos_estados"][TIPOESTADO.FINAL]
                 estado_final_cfg.recompensa = calc_recomp_final
@@ -1931,7 +1930,7 @@ class MainWindow(QtGui.QMainWindow):
         estado_excelente = self.window_config["tipos_estados"][TIPOESTADO.EXCELENTE]
         recomp_excelente = estado_excelente.recompensa
         ancho = self.gridworld.ancho
-        exponente = self.window_config["exponentes_final"][ancho]
+        exponente = self.window_config["exponentes_final"].get(ancho, 1)
 
         tau = decimal.Decimal(self.WMainWindow.sbQLTau.value())
         gamma = 0.01
@@ -1940,7 +1939,7 @@ class MainWindow(QtGui.QMainWindow):
         c_decimal = decimal.Decimal
         while 1:
             try:
-                calc_recomp_final = int(recomp_excelente / (gamma ** exponente))
+                calc_recomp_final = int(recomp_excelente / (gamma ** (exponente - 1)))
                 expo = c_decimal(calc_recomp_final) / tau
                 expo.exp()
                 break

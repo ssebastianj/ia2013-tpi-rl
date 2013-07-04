@@ -69,12 +69,16 @@ class GridWorld(object):
 
             self._estados = numpy.empty((self.alto, self.ancho), Estado)
             coordenadas = []
+
+            # Cachear acceso a métodos y atributos
             coord_append = coordenadas.append
+            ancho = self.ancho
+            alto = self.alto
 
             # Crear una lista de listas
-            for i in xrange(1, self._alto + 1):
-                fila = numpy.empty((1, self.ancho), Estado)
-                for j in xrange(1, self._ancho + 1):
+            for i in xrange(1, alto + 1):
+                fila = numpy.empty((1, ancho), Estado)
+                for j in xrange(1, ancho + 1):
                     fila[0][j - 1] = Estado(i, j, default_tipo)
                     coord_append((i, j))
                 self._estados[i - 1] = fila
@@ -82,41 +86,75 @@ class GridWorld(object):
         else:
             coordenadas = []
             coord_append = coordenadas.append
-            for i in xrange(1, self._alto + 1):
-                for j in xrange(1, self._ancho + 1):
+            for i in xrange(1, alto + 1):
+                for j in xrange(1, ancho + 1):
                     coord_append((i, j))
             self._coordenadas = coordenadas
 
-    def get_matriz_r(self):
+    def get_matriz_r(self, include_vecinos=False):
         u"""
-        Crea y devuelve la matriz R de recompensa en en función de la ubicación de los estados
-        y sus vecinos. Representa las transiciones posibles.
+        Genera y devuelve la matriz de recompensas R.
         """
         # Verificar si hay tipos de vecinos a excluir de la matriz R
         if self._excluir_tipos_vecinos is None:
             self._excluir_tipos_vecinos = []
 
-        matriz_r = numpy.empty((self.alto, self.ancho), object)
-        # Crear una lista de listas
-        for i in xrange(1, self._alto + 1):
-            fila = []
+        # Cachear acceso a métodos y atributos
+        get_vecinos_estado = self.get_vecinos_estado
+        get_estado = self.get_estado
+        tipos_vec_excluidos = self._excluir_tipos_vecinos
+        ancho = self.ancho
+        alto = self.alto
+        dimension = ancho * alto
 
-            for j in xrange(1, self._ancho + 1):
+        # Matriz de vecinos
+        matriz_estados = numpy.empty((alto, ancho), numpy.int)
+
+        # Matriz R
+        matriz_r = numpy.empty((dimension, dimension), numpy.float)
+        matriz_r.fill(numpy.nan)
+
+        for i in xrange(alto):
+            fila = []
+            fappend = fila.append
+
+            for j in xrange(ancho):
                 # Obtener estado actual y su ID de tipo
-                estado = self.get_estado(i, j)
+                estado = get_estado(i + 1, j + 1)
                 estado_ide = estado.tipo.ide
                 # Obtener los estados vecinos del estado actual (i, j)
-                vecinos = self.get_vecinos_estado(i, j)
-                # Agregar vecinos y su recompensa al estado
-                # excluyendo los prohibidos
-                recomp_and_vec = {}
+                vecinos = get_vecinos_estado(i + 1, j + 1, True)
 
-                for vecino in vecinos:
-                    if vecino.tipo.ide not in self._excluir_tipos_vecinos:
-                        recomp_and_vec[(vecino.fila, vecino.columna)] = vecino.tipo.recompensa
+                # Calcular posición en eje Y
+                y_coord = (i * alto) + j
 
-                fila.append((estado_ide, recomp_and_vec))
-            matriz_r[i - 1] = fila
+                if include_vecinos:
+                    evecinos = []
+                    evappend = evecinos.append
+
+                for x, y in vecinos:
+                    est_vec = get_estado(x, y)
+
+                    if est_vec.tipo.ide not in tipos_vec_excluidos:
+                        # Calcular posición en eje X
+                        x_coord = ((x - 1) * ancho) + (y - 1)
+
+                        # Establecer recompensa en matriz R
+                        matriz_r[y_coord][x_coord] = est_vec.tipo.recompensa
+
+                        if include_vecinos:
+                            # Agregar coordenadas de vecino
+                            evappend((y_coord, x_coord))
+
+                if include_vecinos:
+                    # Agregar columna a la fila
+                    fappend((estado_ide, evecinos))
+                else:
+                    fappend(estado_ide)
+
+            # Agregar fila a matriz de vecinos
+            matriz_estados[i] = fila
+
         return matriz_r
 
     def get_estado(self, x, y):
@@ -200,7 +238,7 @@ class GridWorld(object):
         """
         self._ancho, self._alto = dimension
 
-    def get_vecinos_estado(self, x, y):
+    def get_vecinos_estado(self, x, y, iterate=False):
         u"""
         Devuelve los estados adyacentes en función de un estado dado.
         Fuente: http://stackoverflow.com/questions/2373306/pythonic-and-efficient-way-of-finding-adjacent-cells-in-grid
@@ -208,14 +246,19 @@ class GridWorld(object):
         :param x: Fila del estado
         :param y: Columna del estado
         """
+        coordenadas = self._coordenadas
         vecinos = []
-        vec_append = vecinos.append
+        vappend = vecinos.append
+
         for fila, columna in ((x + i, y + j)
                               for i in (-1, 0, 1) for j in (-1, 0, 1)
                               if i != 0 or j != 0):
-            if (fila, columna) in self._coordenadas:
-                vec_append(self.get_estado(fila, columna))
-        return numpy.array(vecinos, object)
+            if (fila, columna) in coordenadas:
+                vappend((fila, columna))
+        if iterate:
+            return iter(vecinos)
+        else:
+            return vecinos
 
     def matriz_estados_to_string(self):
         u"""

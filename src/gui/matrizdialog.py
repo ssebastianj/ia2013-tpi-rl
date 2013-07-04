@@ -3,6 +3,8 @@
 
 from __future__ import absolute_import
 
+import numpy
+
 from PyQt4 import QtCore, QtGui
 from gui.qtgen.matrizdialog import Ui_MatrizDialog
 
@@ -73,22 +75,29 @@ class ShowMatrizDialog(QtGui.QDialog):
         item_flags = QtCore.Qt.ItemIsEnabled
         item_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
 
+        item_dash = QtGui.QTableWidgetItem('-')
+        item_dash.setBackgroundColor(item_bg_color)
+        item_dash.setFlags(item_flags)
+        item_dash.setTextAlignment(item_align)
+
         for fila in xrange(dimension):
             for columna in xrange(dimension):
-                item = QtGui.QTableWidgetItem('-')
-                item.setBackgroundColor(item_bg_color)
-                item.setFlags(item_flags)
-                item.setTextAlignment(item_align)
-                self.ShowMatrizD.tblMatriz.setItem(fila, columna, item)
+                self.ShowMatrizD.tblMatriz.setItem(fila, columna, item_dash)
 
         # Rellenar tabla con items
         item_bg_color = QtGui.QColor("#FFFFFF")
         item_flags = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         item_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
 
-        for fila in xrange(0, alto_gw):
-            for columna in xrange(0, ancho_gw):
-                acciones = self.matriz[fila][columna][1]
+        # Cachear acceso a atributos y métodos
+        matriz = self.matriz
+
+        # Iterador de arreglo de Numpy
+        matriz_iter = numpy.nditer(matriz, flags=['buffered'])
+
+        # WIP: Nueva forma de visualizar matrices
+        for (i, fila) in numpy.ndenumerate(matriz_iter):
+            for (j, columna) in numpy.ndenumerate(fila):
 
                 for key, value in acciones.iteritems():
                     # Cada item muestra la letra asignada al estado
