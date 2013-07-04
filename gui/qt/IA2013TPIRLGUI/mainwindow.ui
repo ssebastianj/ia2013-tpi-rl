@@ -91,6 +91,7 @@
     </property>
     <addaction name="actionAgenteEntrenar"/>
     <addaction name="actionAgenteRecorrer"/>
+    <addaction name="actionAgentePausar"/>
     <addaction name="actionAgenteCancelar"/>
    </widget>
    <widget class="QMenu" name="menuConfiguracion">
@@ -1234,6 +1235,23 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="btnPausar">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Pausar</string>
+            </property>
+            <property name="icon">
+             <iconset resource="recursos.qrc">
+              <normaloff>:/iconos/Pausar.png</normaloff>:/iconos/Pausar.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="btnTerminarProceso">
             <property name="minimumSize">
              <size>
@@ -1249,7 +1267,7 @@
             </property>
             <property name="icon">
              <iconset resource="recursos.qrc">
-              <normaloff>:/iconos/Cancelar.png</normaloff>:/iconos/Cancelar.png</iconset>
+              <normaloff>:/iconos/Detener.png</normaloff>:/iconos/Detener.png</iconset>
             </property>
            </widget>
           </item>
@@ -2020,7 +2038,7 @@
   <action name="actionAgenteCancelar">
    <property name="icon">
     <iconset resource="recursos.qrc">
-     <normaloff>:/iconos/Cancelar.png</normaloff>:/iconos/Cancelar.png</iconset>
+     <normaloff>:/iconos/Detener.png</normaloff>:/iconos/Detener.png</iconset>
    </property>
    <property name="text">
     <string>Detener</string>
@@ -2034,6 +2052,15 @@
   <action name="actionEre">
    <property name="text">
     <string>ere</string>
+   </property>
+  </action>
+  <action name="actionAgentePausar">
+   <property name="icon">
+    <iconset resource="recursos.qrc">
+     <normaloff>:/iconos/Pausar.png</normaloff>:/iconos/Pausar.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pausar</string>
    </property>
   </action>
  </widget>

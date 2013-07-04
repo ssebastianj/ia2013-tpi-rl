@@ -8,6 +8,8 @@
         <file>UTN.ico</file>
         <file>Agente_1.png</file>
         <file>Random.png</file>
+        <file>Detener.png</file>
+        <file>Pausar.png</file>
     </qresource>
     <qresource prefix="/logos">
         <file>LogoUTN.jpeg</file>

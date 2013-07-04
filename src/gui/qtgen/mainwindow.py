@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Thu Jul 04 13:48:43 2013
+# Created: Thu Jul 04 14:46:20 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -482,12 +482,19 @@ class Ui_MainWindow(object):
         self.btnRecorrer.setIcon(icon4)
         self.btnRecorrer.setObjectName(_fromUtf8("btnRecorrer"))
         self.verticalLayout.addWidget(self.btnRecorrer)
+        self.btnPausar = QtGui.QPushButton(self.gbAgente)
+        self.btnPausar.setMinimumSize(QtCore.QSize(100, 0))
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Pausar.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnPausar.setIcon(icon5)
+        self.btnPausar.setObjectName(_fromUtf8("btnPausar"))
+        self.verticalLayout.addWidget(self.btnPausar)
         self.btnTerminarProceso = QtGui.QPushButton(self.gbAgente)
         self.btnTerminarProceso.setMinimumSize(QtCore.QSize(100, 0))
         self.btnTerminarProceso.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
-        icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Cancelar.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnTerminarProceso.setIcon(icon5)
+        icon6 = QtGui.QIcon()
+        icon6.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Detener.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnTerminarProceso.setIcon(icon6)
         self.btnTerminarProceso.setObjectName(_fromUtf8("btnTerminarProceso"))
         self.verticalLayout.addWidget(self.btnTerminarProceso)
         self.gridLayout_18.addLayout(self.verticalLayout, 0, 0, 1, 1)
@@ -815,16 +822,20 @@ class Ui_MainWindow(object):
         self.actionAgenteRecorrer.setIcon(icon4)
         self.actionAgenteRecorrer.setObjectName(_fromUtf8("actionAgenteRecorrer"))
         self.actionAgenteCancelar = QtGui.QAction(MainWindow)
-        self.actionAgenteCancelar.setIcon(icon5)
+        self.actionAgenteCancelar.setIcon(icon6)
         self.actionAgenteCancelar.setObjectName(_fromUtf8("actionAgenteCancelar"))
         self.actionInicializarTodo = QtGui.QAction(MainWindow)
         self.actionInicializarTodo.setObjectName(_fromUtf8("actionInicializarTodo"))
         self.actionEre = QtGui.QAction(MainWindow)
         self.actionEre.setObjectName(_fromUtf8("actionEre"))
+        self.actionAgentePausar = QtGui.QAction(MainWindow)
+        self.actionAgentePausar.setIcon(icon5)
+        self.actionAgentePausar.setObjectName(_fromUtf8("actionAgentePausar"))
         self.menuArchivo.addAction(self.actionAppSalir)
         self.menuAyuda.addAction(self.actionAcercaDe)
         self.menuOperaciones.addAction(self.actionAgenteEntrenar)
         self.menuOperaciones.addAction(self.actionAgenteRecorrer)
+        self.menuOperaciones.addAction(self.actionAgentePausar)
         self.menuOperaciones.addAction(self.actionAgenteCancelar)
         self.menuConfiguracion.addAction(self.menuGridWorld.menuAction())
         self.menuConfiguracion.addAction(self.menuQLearning.menuAction())
@@ -961,6 +972,7 @@ class Ui_MainWindow(object):
         self.gbAgente.setTitle(_translate("MainWindow", "Agente", None))
         self.btnEntrenar.setText(_translate("MainWindow", "Entrenar", None))
         self.btnRecorrer.setText(_translate("MainWindow", "Explotar", None))
+        self.btnPausar.setText(_translate("MainWindow", "Pausar", None))
         self.btnTerminarProceso.setText(_translate("MainWindow", "Detener", None))
         self.dwCaminoOptimo.setWindowTitle(_translate("MainWindow", "Camino óptimo", None))
         self.gbCOAcciones.setTitle(_translate("MainWindow", "Acciones", None))
@@ -1006,5 +1018,6 @@ class Ui_MainWindow(object):
         self.actionAgenteCancelar.setText(_translate("MainWindow", "Detener", None))
         self.actionInicializarTodo.setText(_translate("MainWindow", "Inicializar todo", None))
         self.actionEre.setText(_translate("MainWindow", "ere", None))
+        self.actionAgentePausar.setText(_translate("MainWindow", "Pausar", None))
 
 import recursos_rc
