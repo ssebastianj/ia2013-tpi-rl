@@ -203,9 +203,11 @@ class MainWindow(QtGui.QMainWindow):
         # Asignar shorcuts
         entrenar_shortcut = "F5"
         recorrer_shortcut = "F6"
+        pausar_shortcut = "F7"
         cancelar_shortcut = "Esc"
         self.WMainWindow.btnEntrenar.setShortcut(QtGui.QKeySequence(entrenar_shortcut))
         self.WMainWindow.btnRecorrer.setShortcut(QtGui.QKeySequence(recorrer_shortcut))
+        self.WMainWindow.btnPausar.setShortcut(QtGui.QKeySequence(pausar_shortcut))
         self.WMainWindow.btnTerminarProceso.setShortcut(QtGui.QKeySequence(cancelar_shortcut))
 
         self.WMainWindow.btnEntrenar.setToolTip("<html><head/><body><p>\
@@ -219,10 +221,16 @@ class MainWindow(QtGui.QMainWindow):
                                                 {0}</span></p></body></html>"
                                                 .format(recorrer_shortcut))
         self.WMainWindow.btnTerminarProceso.setToolTip("<html><head/><body><p>\
-                                                    Detener proceso \
-                                                    <span style='font-size:7pt;'>\
-                                                    {0}</span></p></body></html>"
-                                                    .format(cancelar_shortcut))
+                                                       Detener proceso \
+                                                       <span style='font-size:7pt;'>\
+                                                       {0}</span></p></body></html>"
+                                                       .format(cancelar_shortcut))
+
+        self.WMainWindow.btnPausar.setToolTip("<html><head/><body><p>\
+                                              Pausar proceso \
+                                              <span style='font-size:7pt;'>\
+                                              {0}</span></p></body></html>"
+                                              .format(pausar_shortcut))
 
         # Asignar shortcuts
         mostrar_mat_r_sc = "Ctrl+R"

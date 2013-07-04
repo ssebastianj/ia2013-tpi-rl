@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Thu Jul 04 14:46:20 2013
+# Created: Thu Jul 04 15:12:31 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -432,7 +432,6 @@ class Ui_MainWindow(object):
         self.dwQLearning.setWidget(self.dockWidgetContents)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dwQLearning)
         self.dwEjecucion = QtGui.QDockWidget(MainWindow)
-        self.dwEjecucion.setMaximumSize(QtCore.QSize(524287, 170))
         self.dwEjecucion.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
         self.dwEjecucion.setFeatures(QtGui.QDockWidget.DockWidgetFloatable|QtGui.QDockWidget.DockWidgetMovable)
         self.dwEjecucion.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
@@ -463,8 +462,10 @@ class Ui_MainWindow(object):
         self.gbAgente = QtGui.QGroupBox(self.dockWidgetContents_4)
         self.gbAgente.setObjectName(_fromUtf8("gbAgente"))
         self.gridLayout_18 = QtGui.QGridLayout(self.gbAgente)
+        self.gridLayout_18.setContentsMargins(-1, 4, -1, 4)
         self.gridLayout_18.setObjectName(_fromUtf8("gridLayout_18"))
         self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setSpacing(5)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.btnEntrenar = QtGui.QPushButton(self.gbAgente)
         self.btnEntrenar.setMinimumSize(QtCore.QSize(100, 0))
@@ -475,7 +476,7 @@ class Ui_MainWindow(object):
         self.btnEntrenar.setObjectName(_fromUtf8("btnEntrenar"))
         self.verticalLayout.addWidget(self.btnEntrenar)
         self.btnRecorrer = QtGui.QPushButton(self.gbAgente)
-        self.btnRecorrer.setMinimumSize(QtCore.QSize(100, 0))
+        self.btnRecorrer.setMinimumSize(QtCore.QSize(100, 24))
         self.btnRecorrer.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
         icon4 = QtGui.QIcon()
         icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Recorrer.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -483,14 +484,14 @@ class Ui_MainWindow(object):
         self.btnRecorrer.setObjectName(_fromUtf8("btnRecorrer"))
         self.verticalLayout.addWidget(self.btnRecorrer)
         self.btnPausar = QtGui.QPushButton(self.gbAgente)
-        self.btnPausar.setMinimumSize(QtCore.QSize(100, 0))
+        self.btnPausar.setMinimumSize(QtCore.QSize(100, 24))
         icon5 = QtGui.QIcon()
         icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Pausar.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnPausar.setIcon(icon5)
         self.btnPausar.setObjectName(_fromUtf8("btnPausar"))
         self.verticalLayout.addWidget(self.btnPausar)
         self.btnTerminarProceso = QtGui.QPushButton(self.gbAgente)
-        self.btnTerminarProceso.setMinimumSize(QtCore.QSize(100, 0))
+        self.btnTerminarProceso.setMinimumSize(QtCore.QSize(100, 24))
         self.btnTerminarProceso.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
         icon6 = QtGui.QIcon()
         icon6.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Detener.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)

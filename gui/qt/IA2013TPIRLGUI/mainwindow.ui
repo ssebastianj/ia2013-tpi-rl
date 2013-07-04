@@ -1112,12 +1112,6 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dwEjecucion">
-   <property name="maximumSize">
-    <size>
-     <width>524287</width>
-     <height>170</height>
-    </size>
-   </property>
    <property name="locale">
     <locale language="Spanish" country="Argentina"/>
    </property>
@@ -1192,8 +1186,17 @@
         <string>Agente</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_18">
+        <property name="topMargin">
+         <number>4</number>
+        </property>
+        <property name="bottomMargin">
+         <number>4</number>
+        </property>
         <item row="0" column="0">
          <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <widget class="QPushButton" name="btnEntrenar">
             <property name="minimumSize">
@@ -1219,7 +1222,7 @@
             <property name="minimumSize">
              <size>
               <width>100</width>
-              <height>0</height>
+              <height>24</height>
              </size>
             </property>
             <property name="locale">
@@ -1239,7 +1242,7 @@
             <property name="minimumSize">
              <size>
               <width>100</width>
-              <height>0</height>
+              <height>24</height>
              </size>
             </property>
             <property name="text">
@@ -1256,7 +1259,7 @@
             <property name="minimumSize">
              <size>
               <width>100</width>
-              <height>0</height>
+              <height>24</height>
              </size>
             </property>
             <property name="locale">
