@@ -817,6 +817,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.btnRecorrer.setDisabled(self.entrenar_is_running)
             self.WMainWindow.actionAgenteEntrenar.setDisabled(self.entrenar_is_running)
             self.WMainWindow.actionAgenteRecorrer.setDisabled(self.entrenar_is_running)
+            self.WMainWindow.actionAgenteCancelar.setDisabled(self.entrenar_is_running)
 
             self.WMainWindow.lblEntEstadoActual.setText("-")
             self.WMainWindow.lblEntExecTimeEpisodios.setText("-")
@@ -862,7 +863,7 @@ class MainWindow(QtGui.QMainWindow):
             self.wnd_taskbar = taskbar.WindowsTaskBar()
             self.wnd_taskbar.HrInit()
             self.wnd_taskbar.SetProgressState(self.winId(),
-                                              self.wnd_taskbar.TBPF_INDETERMINATE)
+                                              self.wnd_taskbar.TBPF_NORMAL)
         except RuntimeError:
             pass
 
@@ -1035,6 +1036,7 @@ class MainWindow(QtGui.QMainWindow):
             # last_state_text = self.last_state_text
             # ent_icon_estado_act = self.ent_icon_estado_act
             # ent_color_estado_act = self.ent_color_estado_act
+            cant_episodios = self._parametros[2]
 
             data_entrenar = self.get_all_from_queue(self.ql_entrenar_out_q)
 
@@ -1086,7 +1088,16 @@ class MainWindow(QtGui.QMainWindow):
                                                                                             running_exec_time_ent * 1000))  # @IgnorePep8
                     main_wnd.lblEntDiffMatrices.setText(str(tmp_mat_diff))
 
+                    # Actualizar progress bar interno
                     ent_progress_bar.setValue(nro_episodio)
+
+                    # Actualizar progress bar de Windows
+                    try:
+                        self.wnd_taskbar.SetProgressValue(self.winId(),
+                                                          nro_episodio,
+                                                          cant_episodios)
+                    except RuntimeError:
+                        pass
                 except TypeError:
                     pass
                 except ValueError:
@@ -2132,6 +2143,13 @@ class MainWindow(QtGui.QMainWindow):
                 self.WMainWindow.btnPausar.setIcon(resume_icon)
                 self.WMainWindow.actionAgentePausar.setText(resume_text)
                 self.WMainWindow.actionAgentePausar.setIcon(resume_icon)
+
+                # Cambiar estado de progress bar de Windows
+                try:
+                    self.wnd_taskbar.SetProgressState(self.winId(),
+                                                      self.wnd_taskbar.TBPF_NORMAL)
+                except RuntimeError:
+                    pass
             except AttributeError:
                 pass
         else:
@@ -2147,5 +2165,12 @@ class MainWindow(QtGui.QMainWindow):
                 self.WMainWindow.btnPausar.setIcon(pausar_icon)
                 self.WMainWindow.actionAgentePausar.setIcon(pausar_icon)
                 self.WMainWindow.actionAgentePausar.setText(pausar_text)
+
+                # Cambiar estado de progress bar de Windows
+                try:
+                    self.wnd_taskbar.SetProgressState(self.winId(),
+                                                      self.wnd_taskbar.TBPF_PAUSED)
+                except RuntimeError:
+                    pass
             except AttributeError:
                 pass
