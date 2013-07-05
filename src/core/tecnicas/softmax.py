@@ -4,7 +4,6 @@
 from __future__ import absolute_import, division
 
 import numpy
-import numba
 
 try:
     import cdecimal as decimal

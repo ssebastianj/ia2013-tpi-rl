@@ -33,6 +33,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self._out_queue = out_queue
         self._error_queue = error_q
         self._stoprequest = multiprocessing.Event()
+        self._pauserequest = multiprocessing.Event()
         self.name = "QLearningEntrenarWorker"
         self.input_data = None
         self._visitados_1 = None
@@ -97,11 +98,14 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         limitar_iteraciones = self.limitar_iteraciones
         cant_max_iteraciones = self.cant_max_iter
         stoprequest_isset = self._stoprequest.is_set
+        pauserequest_isset = self._pauserequest.is_set
         obtener_accion = self.tecnica.obtener_accion
         tecnica = self.tecnica
         intervalo_diff_calc = self.interv_diff_calc
         ancho = self.ancho
         alto = self.alto
+        inp_queue = self._inp_queue
+        out_queue = self._out_queue
         # --------------------------------------------------------------------
 
         # Cantidad máxima de iteraciones antes de emitir un aviso
@@ -248,7 +252,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                 'NroEpisodio': epnum,
                                 'NroIteracion': cant_iteraciones,
                                 'ValorParametro': tecnica.valor_param_parcial,
-                                'ProcesoJoined': False
+                                'ProcesoJoined': False,
+                                'ProcesoPaused': True
                                 })
 
                 # ------------ Recompensas promedio ---------------------------
@@ -292,10 +297,38 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
                 # Incrementar cantidad de iteraciones realizadas
                 cant_iteraciones += 1
-                # ==================== Fin de iteraciones ====================
 
                 # FIXME
                 # iters_por_episodio[epnum - 1] = cant_iteraciones
+
+                # WIP: Pausar procesamiento
+                # ---------------------- Pausa --------------------------
+                # Comprobar si se solicitó pausar el procesamiento
+                while pauserequest_isset and not stoprequest_isset:
+                    # Encolar datos de salida (Dump del contexto actual)
+                    encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
+                                    'NroEpisodio': epnum - 1,
+                                    'NroIteracion': cant_iteraciones,
+                                    'MatrizQ': matriz_q,
+                                    'EpisodiosExecTime': ep_exec_time,
+                                    'IteracionesExecTime': iter_exec_time,
+                                    'ProcesoJoined': False,
+                                    'ProcesoPaused': True,
+                                    'ValorParametro': tecnica.valor_param_parcial,
+                                    'RunningExecTime': running_exec_time,
+                                    'MatDiff': tmp_diff_mat,
+                                    'MatRecompProm': rp_res_promedio,
+                                    'EpFinalizados': episodios_finalizados,
+                                    # 'ItersXEpisodio': iters_por_episodio,
+                                    'MatDiffStat': mat_diff_array,
+                                    'MatEstAcc': matriz_est_acc
+                                    })
+
+                    try:
+                        comando = inp_queue.get(True, 1)
+                    except Queue.Empty:
+                        continue
+                # ==================== Fin de iteraciones ====================
 
             iter_end_time = wtimer()
 
@@ -350,6 +383,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                 'IteracionesExecTime': iter_exec_time,
                                 'ValorParametro': tecnica.valor_param_parcial,
                                 'ProcesoJoined': False,
+                                'ProcesoPaused': False,
                                 'MatDiff': tmp_diff_mat,
                                 })
 
@@ -406,6 +440,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                         'EpisodiosExecTime': ep_exec_time,
                         'IteracionesExecTime': iter_exec_time,
                         'ProcesoJoined': True,
+                        'ProcesoPaused': False,
                         'ValorParametro': tecnica.valor_param_parcial,
                         'RunningExecTime': running_exec_time,
                         'MatDiff': tmp_diff_mat,
@@ -642,6 +677,20 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         :param y: Columna del estado
         """
         return self.estados[x - 1][y - 1]
+
+    def pausar(self):
+        u"""
+        Solicitud de Pausa del procesamiento.
+        """
+        # Activar flag para pausar proceso
+        self._pauserequest.set()
+
+    def reanudar(self):
+        u"""
+        Solicitud de Reanudar el procesamiento.
+        """
+        # Desactivar flag para pausar proceso
+        self._pauserequest.clear()
 
 
 # ============================================================================

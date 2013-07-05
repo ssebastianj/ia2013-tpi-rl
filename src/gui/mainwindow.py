@@ -97,6 +97,7 @@ class MainWindow(QtGui.QMainWindow):
         self.last_state_text = None
         self.camino_optimo = None
         self.camino_optimo_active = None
+        self.worker_paused = False
 
         # Variables necesarias para los gráficos
         self.graph_recompensas_promedio = None
@@ -388,6 +389,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuEstadisticas.triggered.connect(self.show_estadisticas)
         self.WMainWindow.menuEstadisticas.aboutToShow.connect(self.generar_menu_estadisticas)
         self.WMainWindow.sbQLTau.editingFinished.connect(self.calcular_gamma_minimo)
+        self.WMainWindow.btnPausar.clicked.connect(self.pausar_reanudar_proceso)
+        self.WMainWindow.actionAgentePausar.triggered.connect(self.pausar_reanudar_proceso)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -2114,3 +2117,35 @@ class MainWindow(QtGui.QMainWindow):
                                     self.WMainWindow.chkQLCalcularMatDiff.isChecked(),
                                     self.WMainWindow.sbMatricesMinDiff.value(),
                                     self.WMainWindow.sbIntervaloDiffCalc.value()])
+
+    def pausar_reanudar_proceso(self):
+        if self.worker_paused:
+            try:
+                # Reanudar procesamiento
+                # self.working_process.reanudar()
+
+                self.worker_paused = False
+
+                resume_icon = QtGui.QIcon(QtGui.QPixmap(":/iconos/Pausar.png"))
+                resume_text = _tr("Pausar")
+                self.WMainWindow.btnPausar.setText(resume_text)
+                self.WMainWindow.btnPausar.setIcon(resume_icon)
+                self.WMainWindow.actionAgentePausar.setText(resume_text)
+                self.WMainWindow.actionAgentePausar.setIcon(resume_icon)
+            except AttributeError:
+                pass
+        else:
+            try:
+                # Pausar procesamiento
+                # self.working_process.pausar()
+
+                self.worker_paused = True
+
+                pausar_icon = QtGui.QIcon(QtGui.QPixmap(":/iconos/PausarContinuar.png"))
+                pausar_text = _tr("Reanudar")
+                self.WMainWindow.btnPausar.setText(pausar_text)
+                self.WMainWindow.btnPausar.setIcon(pausar_icon)
+                self.WMainWindow.actionAgentePausar.setIcon(pausar_icon)
+                self.WMainWindow.actionAgentePausar.setText(pausar_text)
+            except AttributeError:
+                pass
