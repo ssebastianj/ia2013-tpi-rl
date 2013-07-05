@@ -512,7 +512,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         Devuelve una tupla conteniendo las coordenadas X e Y aleatorias.
         """
         # Devolver un estado seleccionado aleatoriamente del conjunto de vecinos
-        return (random.randint(1, self.ancho), random.randint(1, self.alto))
+        return (random.randint(0, self.ancho - 1), random.randint(0, self.alto - 1))
 
     def join(self, timeout=None):
         u"""
