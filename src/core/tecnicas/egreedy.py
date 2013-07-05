@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 
+import numpy
 import random
 from core.tecnicas.tecnica import QLTecnica
 
@@ -36,57 +37,33 @@ class EGreedy(QLTecnica):
     def set_epsilon_parcial(self, valor):
         self._val_param_parcial = valor
 
-    def obtener_accion(self, vecinos):
+    def obtener_accion(self, acciones):
         u"""
-        Dado un conjunto de vecinos selecciona acorde uno de ellos.
+        Dado un conjunto de acciones selecciona acorde uno de ellos.
 
-        :param vecinos: Diccionario conteniendo los vecinos de un estado.
+        :param acciones: Diccionario conteniendo los acciones de un estado.
         """
         # Generar un número aleatorio para saber cuál política usar
         random_num = random.uniform(0, 1)
-        elegir_estado_aleatorio = self.elegir_estado_aleatorio
 
         if 0 <= random_num <= (1 - self.epsilon_parcial):
             # EXPLOTAR
-            maximo = None
-            estados_qmax = []
-            eq_append = estados_qmax.append
-
-            for key, value in vecinos.iteritems():
-                q_valor = value
-
-                try:
-                    if q_valor > maximo:
-                        maximo = q_valor
-                        estados_qmax = [key]
-                    elif q_valor == maximo:
-                        eq_append(key)
-                except TypeError:
-                    maximo = q_valor
-
-            # Comprobar si hay estados con recompensas iguales y elegir uno
-            # de forma aleatoria
-            long_vecinos = len(estados_qmax)
-            if long_vecinos == 1:
-                estado_qmax = estados_qmax[0]
-            elif long_vecinos > 1:
-                estado_qmax = elegir_estado_aleatorio(estados_qmax)
-            else:
-                pass
+            maximo_q = numpy.nanmax(acciones)
+            estado_qmax = numpy.random.choice(numpy.where(acciones == maximo_q)[0])
         else:
             # EXPLORAR
-            # Elegir un estado vecino de forma aleatoria
-            estado_qmax = elegir_estado_aleatorio(vecinos.keys())
+            # Elegir una acción de forma aleatoria
+            estado_qmax = self.elegir_accion_aleatoria(acciones)
         return estado_qmax
 
-    def elegir_estado_aleatorio(self, lista_estados):
+    def elegir_accion_aleatoria(self, acciones):
         u"""
-        Dada una lista de estados vecinos elige aleatoriamente sólo uno.
+        Dada una lista de estados acciones elige aleatoriamente sólo uno.
         Fuente: http://stackoverflow.com/questions/4859292/get-random-value-in-python-dictionary
 
-        :param lista_estados: Lista de vecinos de un estado dado.
+        :param acciones: Lista de acciones de un estado dado.
         """
-        return random.choice(lista_estados)
+        return numpy.random.choice(numpy.where(~numpy.isnan(acciones))[0])
 
     def decrementar_parametro(self):
         u"""

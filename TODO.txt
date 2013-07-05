@@ -5,7 +5,6 @@ Prioridad Alta
 Prioridad Media
 ---------------
 * Agregar un Log para ver comportamiento interno de la aplicación.
-* Agregar diálogo Acerca De.
 
 Prioridad Baja
 --------------
