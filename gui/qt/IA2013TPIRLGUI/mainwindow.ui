@@ -59,78 +59,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>876</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuArchivo">
-    <property name="title">
-     <string>&amp;Archivo</string>
-    </property>
-    <addaction name="actionAppSalir"/>
-   </widget>
-   <widget class="QMenu" name="menuEdicion">
-    <property name="title">
-     <string>&amp;Edición</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuAyuda">
-    <property name="title">
-     <string>Ay&amp;uda</string>
-    </property>
-    <addaction name="actionAcercaDe"/>
-   </widget>
-   <widget class="QMenu" name="menuOperaciones">
-    <property name="title">
-     <string>Agente</string>
-    </property>
-    <addaction name="actionAgenteEntrenar"/>
-    <addaction name="actionAgenteRecorrer"/>
-    <addaction name="actionAgentePausar"/>
-    <addaction name="actionAgenteCancelar"/>
-   </widget>
-   <widget class="QMenu" name="menuConfiguracion">
-    <property name="title">
-     <string>&amp;Configuración</string>
-    </property>
-    <widget class="QMenu" name="menuGridWorld">
-     <property name="title">
-      <string>Grid World</string>
-     </property>
-    </widget>
-    <widget class="QMenu" name="menuQLearning">
-     <property name="title">
-      <string>Q-Learning</string>
-     </property>
-    </widget>
-    <addaction name="menuGridWorld"/>
-    <addaction name="menuQLearning"/>
-    <addaction name="separator"/>
-    <addaction name="actionInicializarTodo"/>
-   </widget>
-   <widget class="QMenu" name="menuEstadisticas">
-    <property name="title">
-     <string>Estadísticas</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuPruebas">
-    <property name="title">
-     <string>Pruebas</string>
-    </property>
-   </widget>
-   <addaction name="menuArchivo"/>
-   <addaction name="menuEdicion"/>
-   <addaction name="menuConfiguracion"/>
-   <addaction name="menuOperaciones"/>
-   <addaction name="menuEstadisticas"/>
-   <addaction name="menuPruebas"/>
-   <addaction name="menuAyuda"/>
-  </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dwGridWorld">
    <property name="features">
@@ -2010,6 +1938,72 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>876</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuArchivo">
+    <property name="title">
+     <string>&amp;Archivo</string>
+    </property>
+    <addaction name="actionAppSalir"/>
+   </widget>
+   <widget class="QMenu" name="menuAyuda">
+    <property name="title">
+     <string>Ay&amp;uda</string>
+    </property>
+    <addaction name="actionAcercaDe"/>
+   </widget>
+   <widget class="QMenu" name="menuOperaciones">
+    <property name="title">
+     <string>Agente</string>
+    </property>
+    <addaction name="actionAgenteEntrenar"/>
+    <addaction name="actionAgenteRecorrer"/>
+    <addaction name="actionAgentePausar"/>
+    <addaction name="actionAgenteCancelar"/>
+   </widget>
+   <widget class="QMenu" name="menuConfiguracion">
+    <property name="title">
+     <string>&amp;Configuración</string>
+    </property>
+    <widget class="QMenu" name="menuGridWorld">
+     <property name="title">
+      <string>Grid World</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuQLearning">
+     <property name="title">
+      <string>Q-Learning</string>
+     </property>
+    </widget>
+    <addaction name="menuGridWorld"/>
+    <addaction name="menuQLearning"/>
+    <addaction name="separator"/>
+    <addaction name="actionInicializarTodo"/>
+   </widget>
+   <widget class="QMenu" name="menuEstadisticas">
+    <property name="title">
+     <string>Estadísticas</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuPruebas">
+    <property name="title">
+     <string>Pruebas</string>
+    </property>
+   </widget>
+   <addaction name="menuArchivo"/>
+   <addaction name="menuConfiguracion"/>
+   <addaction name="menuOperaciones"/>
+   <addaction name="menuEstadisticas"/>
+   <addaction name="menuPruebas"/>
+   <addaction name="menuAyuda"/>
+  </widget>
   <action name="actionAppSalir">
    <property name="text">
     <string>Salir</string>
@@ -2050,11 +2044,6 @@
   <action name="actionInicializarTodo">
    <property name="text">
     <string>Inicializar todo</string>
-   </property>
-  </action>
-  <action name="actionEre">
-   <property name="text">
-    <string>ere</string>
    </property>
   </action>
   <action name="actionAgentePausar">

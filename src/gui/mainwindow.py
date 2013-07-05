@@ -2133,7 +2133,7 @@ class MainWindow(QtGui.QMainWindow):
         if self.worker_paused:
             try:
                 # Reanudar procesamiento
-                # self.working_process.reanudar()
+                self.working_process.reanudar()
 
                 self.worker_paused = False
 
@@ -2155,7 +2155,7 @@ class MainWindow(QtGui.QMainWindow):
         else:
             try:
                 # Pausar procesamiento
-                # self.working_process.pausar()
+                self.working_process.pausar()
 
                 self.worker_paused = True
 
