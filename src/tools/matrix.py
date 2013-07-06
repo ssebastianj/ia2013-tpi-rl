@@ -6,13 +6,13 @@
 
 def matrix_to_string(matrix, header=None):
     """
-    Return a pretty, aligned string representation of a nxm matrix.
+    Returns a pretty and aligned string representation of a NxM matrix.
 
     This representation can be used to print any tabular data, such as
     database results. It works by scanning the lengths of each element
-    in each column, and determining the format string dynamically.
+    in each column and determining the format string dynamically.
 
-    :param matrix: Matrix representation (list with n rows of m elements).
+    :param matrix: Matrix representation (list with N rows and M elements).
     :param header: Optional tuple or list with header elements to be displayed.
     """
     if type(header) is list:

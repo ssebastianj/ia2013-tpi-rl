@@ -6,7 +6,6 @@ from __future__ import absolute_import
 import Queue
 import multiprocessing
 import numpy
-import os
 import time
 import sys
 import random
@@ -304,18 +303,15 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # WIP: Pausar procesamiento
                 # ---------------------- Pausa --------------------------
                 # Comprobar si se solicitó pausar el procesamiento
-                while pauserequest_isset and not stoprequest_isset:
+                if pauserequest_isset():
                     # Encolar datos de salida (Dump del contexto actual)
                     encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
                                     'NroEpisodio': epnum - 1,
                                     'NroIteracion': cant_iteraciones,
                                     'MatrizQ': matriz_q,
-                                    'EpisodiosExecTime': ep_exec_time,
-                                    'IteracionesExecTime': iter_exec_time,
                                     'ProcesoJoined': False,
                                     'ProcesoPaused': True,
                                     'ValorParametro': tecnica.valor_param_parcial,
-                                    'RunningExecTime': running_exec_time,
                                     'MatDiff': tmp_diff_mat,
                                     'MatRecompProm': rp_res_promedio,
                                     'EpFinalizados': episodios_finalizados,
@@ -324,10 +320,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                     'MatEstAcc': matriz_est_acc
                                     })
 
-                    try:
-                        comando = inp_queue.get(True, 1)
-                    except Queue.Empty:
-                        continue
+                    while pauserequest_isset() and not stoprequest_isset():
+                        time.sleep(1)
                 # ==================== Fin de iteraciones ====================
 
             iter_end_time = wtimer()
@@ -512,7 +506,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         Devuelve una tupla conteniendo las coordenadas X e Y aleatorias.
         """
         # Devolver un estado seleccionado aleatoriamente del conjunto de vecinos
-        return (random.randint(1, self.ancho), random.randint(1, self.alto))
+        return (random.randint(0, self.ancho - 1), random.randint(0, self.alto - 1))
 
     def join(self, timeout=None):
         u"""

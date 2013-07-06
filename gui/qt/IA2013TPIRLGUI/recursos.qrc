@@ -11,6 +11,8 @@
         <file>Detener.png</file>
         <file>Pausar.png</file>
         <file>PausarContinuar.png</file>
+        <file>Adelante.png</file>
+        <file>Atras.png</file>
     </qresource>
     <qresource prefix="/logos">
         <file>LogoUTN.jpeg</file>

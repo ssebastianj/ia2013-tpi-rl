@@ -32,7 +32,7 @@ class ShowMatrizDialog(QtGui.QDialog):
         self.setWindowFlags(QtCore.Qt.Dialog |
                             QtCore.Qt.WindowSystemMenuHint |
                             QtCore.Qt.WindowTitleHint |
-                            QtCore.Qt.WindowMaximizeButtonHint)
+                            QtCore.Qt.WindowMinMaxButtonsHint)
 
         self.matriz = matriz
         self.titulo_corto_dialogo = titulo_corto

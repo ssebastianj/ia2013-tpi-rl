@@ -172,14 +172,30 @@ class MainWindow(QtGui.QMainWindow):
         # Agregar barra de progreso
         self._ent_progress_bar = QtGui.QProgressBar()
         self.WMainWindow.statusBar.addPermanentWidget(self._ent_progress_bar)
-        self._ent_progress_bar.setFixedSize(350, 14)
-        self._ent_progress_bar.setFormat(_tr(" %p% / %m episodios"))
+        self._ent_progress_bar.setFixedSize(340, 14)
+        self._ent_progress_bar.setFormat(_tr("  %p% / %m episodios"))
         self._ent_progress_bar.setVisible(False)
 
         # Agregar etiqueta para mostrar coordenadas actuales
         self.lbl_item_actual = QtGui.QLabel()
         self.lbl_item_actual.setFixedWidth(120)
+        self.lbl_item_actual.setAlignment(QtCore.Qt.AlignHCenter)
         self.WMainWindow.statusBar.addPermanentWidget(self.lbl_item_actual)
+
+        self.lbl_tipo_est_actual = QtGui.QLabel()
+        self.lbl_tipo_est_actual.setFixedWidth(80)
+        self.lbl_tipo_est_actual.setAlignment(QtCore.Qt.AlignHCenter)
+        self.WMainWindow.statusBar.addPermanentWidget(self.lbl_tipo_est_actual)
+
+        self.lbl_rec_estado = QtGui.QLabel()
+        self.lbl_rec_estado.setFixedWidth(80)
+        self.lbl_rec_estado.setAlignment(QtCore.Qt.AlignHCenter)
+        self.WMainWindow.statusBar.addPermanentWidget(self.lbl_rec_estado)
+
+        self.lbl_nro_estado = QtGui.QLabel()
+        self.lbl_nro_estado.setFixedWidth(50)
+        self.lbl_nro_estado.setAlignment(QtCore.Qt.AlignHCenter)
+        self.WMainWindow.statusBar.addPermanentWidget(self.lbl_nro_estado)
 
         self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.WMainWindow.tblGridWorld.setSortingEnabled(False)
@@ -193,13 +209,13 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.lblCantMaxIteraciones.setDisabled(True)
         self.WMainWindow.sbCantMaxIteraciones.setDisabled(True)
         self.WMainWindow.gbCOAcciones.setDisabled(True)
-        self.WMainWindow.gbCOAnimacion.setDisabled(True)
         self.WMainWindow.lblMatQDiff.setDisabled(True)
         self.WMainWindow.lblMatQIntervalo.setDisabled(True)
         self.WMainWindow.sbIntervaloDiffCalc.setDisabled(True)
         self.WMainWindow.sbMatricesMinDiff.setDisabled(True)
-        self.WMainWindow.gbCOAnimacion.setVisible(False)
         self.WMainWindow.btnGWGenerarEstados.setVisible(False)
+        self.WMainWindow.btnPausar.setDisabled(True)
+        self.WMainWindow.actionAgentePausar.setDisabled(True)
 
         # Asignar shorcuts
         entrenar_shortcut = "F5"
@@ -303,7 +319,6 @@ class MainWindow(QtGui.QMainWindow):
 
         # Desactivar controles para mostrar camino optimo
         self.WMainWindow.gbCOAcciones.setDisabled(True)
-        self.WMainWindow.gbCOAnimacion.setDisabled(True)
 
         # Obtener ancho y alto del GridWorld
         self._logger.debug("Dimensión: {0}".format(dimension))
@@ -366,7 +381,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnInicializarTodo.clicked.connect(self.inicializar_todo)
         self.WMainWindow.btnRecorrer.clicked.connect(self.recorrer_gw)
         # Emite cuando se coloca el cursor del mouse sobre un ítem
-        self.WMainWindow.tblGridWorld.itemEntered.connect(self.mostrar_item_actual)
+        self.WMainWindow.tblGridWorld.itemEntered.connect(self.mostrar_info_est_status_bar)
         self.WMainWindow.menuGridWorld.aboutToShow.connect(self.generar_menu_dimensiones)
         self.WMainWindow.menuQLearning.aboutToShow.connect(self.generar_menu_tecnicas)
         self.WMainWindow.menuGridWorld.triggered.connect(self.set_gw_dimension_menu)
@@ -382,7 +397,6 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.actionAgenteCancelar.triggered.connect(self.terminar_proceso)
         self.WMainWindow.btnMostrarMatrizQ.clicked.connect(self.show_matriz_q)
         self.WMainWindow.btnMostrarMatrizR.clicked.connect(self.show_matriz_r)
-        self.WMainWindow.btnCOAnimCancel.clicked.connect(self.animar_camino_optimo)
         self.WMainWindow.btnCOShowHide.clicked.connect(self.show_hide_camino_optimo)
         self.WMainWindow.btnGenEstRndRapida.clicked.connect(lambda: self.refresh_gw_random(True, True))
         self.WMainWindow.sbQLGamma.valueChanged.connect(self.calcular_recompensa_final)
@@ -552,8 +566,14 @@ class MainWindow(QtGui.QMainWindow):
                 estado_actual.tipo = tipos_estados[tipo_num]
 
                 if show_tooltip:
-                    item.setToolTip("Fila: {0}\nColumna: {1}\nTipo: {2}\nRecompensa: {3}"
-                                    .format(item.row() + 1, item.column() + 1,
+                    fila = item.row()
+                    columna = item.column()
+                    nro_estado = (fila * self.gridworld.alto) + columna + 1
+
+                    item.setToolTip("Estado E{0}\nFila: {1}\nColumna: {2}\nTipo: {3}\nRecompensa: {4}"
+                                    .format(nro_estado,
+                                            fila + 1,
+                                            columna + 1,
                                             estado_actual.tipo.nombre,
                                             estado_actual.tipo.recompensa))
 
@@ -817,7 +837,6 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.btnRecorrer.setDisabled(self.entrenar_is_running)
             self.WMainWindow.actionAgenteEntrenar.setDisabled(self.entrenar_is_running)
             self.WMainWindow.actionAgenteRecorrer.setDisabled(self.entrenar_is_running)
-            self.WMainWindow.actionAgenteCancelar.setDisabled(self.entrenar_is_running)
 
             self.WMainWindow.lblEntEstadoActual.setText("-")
             self.WMainWindow.lblEntExecTimeEpisodios.setText("-")
@@ -849,12 +868,14 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.lblRecExecTimeTotal.setText("-")
 
         self.WMainWindow.btnTerminarProceso.setEnabled(True)
+        self.WMainWindow.actionAgenteCancelar.setEnabled(True)
+        self.WMainWindow.btnPausar.setEnabled(True)
+        self.WMainWindow.actionAgentePausar.setEnabled(True)
         self.WMainWindow.gbGridWorld.setDisabled(True)
         self.WMainWindow.gbQLearning.setDisabled(True)
         self.WMainWindow.gbGeneral.setDisabled(True)
         self.WMainWindow.gbMatrices.setDisabled(True)
         self.WMainWindow.gbCOAcciones.setDisabled(True)
-        self.WMainWindow.gbCOAnimacion.setDisabled(True)
         self.WMainWindow.menuConfiguracion.setDisabled(True)
         self.WMainWindow.menuPruebas.setDisabled(True)
         self.WMainWindow.menuEstadisticas.setDisabled(True)
@@ -864,7 +885,7 @@ class MainWindow(QtGui.QMainWindow):
             self.wnd_taskbar.HrInit()
             self.wnd_taskbar.SetProgressState(self.winId(),
                                               self.wnd_taskbar.TBPF_NORMAL)
-        except RuntimeError:
+        except (RuntimeError, AttributeError):
             pass
 
     def on_fin_proceso(self):
@@ -911,6 +932,18 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.statusBar.showMessage(_tr("Ha finalizado la búsqueda del camino óptimo."), 2000)
 
         self.WMainWindow.btnTerminarProceso.setEnabled(False)
+        self.WMainWindow.actionAgenteCancelar.setEnabled(False)
+        self.WMainWindow.btnPausar.setEnabled(False)
+        self.WMainWindow.actionAgentePausar.setEnabled(False)
+
+        self.worker_paused = False
+        resume_icon = QtGui.QIcon(QtGui.QPixmap(":/iconos/Pausar.png"))
+        resume_text = _tr("Pausar")
+        self.WMainWindow.btnPausar.setText(resume_text)
+        self.WMainWindow.btnPausar.setIcon(resume_icon)
+        self.WMainWindow.actionAgentePausar.setText(resume_text)
+        self.WMainWindow.actionAgentePausar.setIcon(resume_icon)
+
         # self.WMainWindow.statusBar.clearMessage()
         self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
 
@@ -936,7 +969,7 @@ class MainWindow(QtGui.QMainWindow):
         try:
             self.wnd_taskbar.SetProgressState(self.winId(),
                                               self.wnd_taskbar.TBPF_NOPROGRESS)
-        except RuntimeError:
+        except (RuntimeError, AttributeError):
             pass
 
         # Mostrar camino óptimo
@@ -1245,16 +1278,28 @@ class MainWindow(QtGui.QMainWindow):
         if not active_children:
             self.on_fin_proceso()
 
-    def mostrar_item_actual(self, item):
+    def mostrar_info_est_status_bar(self, item):
         u"""
-        Muestra en la barra de estado las coordenadas del ítem sobre el
-        cual el cursor se encuentra arriba.
+        Muestra información en la barra de estado acerca del estado actual 
+        en grilla.
 
-        :param item: Item debajo del cursor.
+        :param item: Item seleccionado.
         """
+        fila = item.row()
+        columna = item.column()
+
+        estado = self.gridworld.get_estado(fila + 1,
+                                           columna + 1)
+
+        nro_estado = (fila * self.gridworld.alto) + columna + 1
+
         self.lbl_item_actual.setText("Fila: {0} Columna: {1}"
-                                    .format(item.row() + 1,
-                                            item.column() + 1))
+                                     .format(fila + 1,
+                                             columna + 1))
+
+        self.lbl_rec_estado.setText("R = {0}".format(estado.tipo.recompensa))
+        self.lbl_tipo_est_actual.setText("{0}".format(estado.tipo.nombre))
+        self.lbl_nro_estado.setText("E{0}".format(nro_estado))
 
     def mouseMoveEvent(self, event):
         u"""
@@ -1263,6 +1308,9 @@ class MainWindow(QtGui.QMainWindow):
         :param event: Evento.
         """
         self.lbl_item_actual.setText("")
+        self.lbl_nro_estado.setText("")
+        self.lbl_rec_estado.setText("")
+        self.lbl_tipo_est_actual.setText("")
 
     def enterEvent(self, event):
         u"""
@@ -1271,6 +1319,9 @@ class MainWindow(QtGui.QMainWindow):
         :param event: Evento.
         """
         self.lbl_item_actual.setText("")
+        self.lbl_nro_estado.setText("")
+        self.lbl_rec_estado.setText("")
+        self.lbl_tipo_est_actual.setText("")
 
     def set_gw_dimension_menu(self, action):
         u"""
@@ -1472,9 +1523,6 @@ class MainWindow(QtGui.QMainWindow):
 
         self.WMainWindow.optMQInitValOptimistas.setChecked(True)
 
-        self.WMainWindow.sbCOAnimDelay.setSuffix(_tr(" seg"))
-        self.WMainWindow.sbCOAnimDelay.setValue(1)
-
         enable_controls = self.WMainWindow.optMQInitValOptimistas.isChecked()
         self.WMainWindow.sbValOptimoIncremento.setEnabled(enable_controls)
         self.WMainWindow.lblMQFormula.setEnabled(enable_controls)
@@ -1647,9 +1695,12 @@ class MainWindow(QtGui.QMainWindow):
         """
         if self.camino_optimo_active:
             self.WMainWindow.btnCOShowHide.setText(_tr("Mostrar"))
+            self.WMainWindow.btnCOShowHide.setToolTip(_tr("Mostrar camino óptimo"))
+
             self.ocultar_camino_optimo()
         else:
             self.WMainWindow.btnCOShowHide.setText(_tr("Ocultar"))
+            self.WMainWindow.btnCOShowHide.setToolTip(_tr("Ocultar camino óptimo"))
             self.mostrar_camino_optimo_act()
 
     def recargar_estados(self):
@@ -1677,10 +1728,14 @@ class MainWindow(QtGui.QMainWindow):
                 item.setTextAlignment(item_text_align)
 
                 if show_tooltip:
-                    item.setToolTip("Fila: {0} Columna: {1}\nTipo: {2}\nRecompensa: {3}"
-                                    .format(fila + 1, columna + 1,
-                                    estado.tipo.nombre,
-                                    estado.tipo.recompensa))
+                    nro_estado = (fila * self.gridworld.alto) + columna + 1
+
+                    item.setToolTip("Estado E{0}\nFila: {1} Columna: {2}\nTipo: {3}\nRecompensa: {4}"
+                                    .format(nro_estado,
+                                            fila + 1,
+                                            columna + 1,
+                                            estado.tipo.nombre,
+                                            estado.tipo.recompensa))
 
                 # Agregar item al GridWorld
                 gw_setitem(fila, columna, item)
@@ -2133,7 +2188,7 @@ class MainWindow(QtGui.QMainWindow):
         if self.worker_paused:
             try:
                 # Reanudar procesamiento
-                # self.working_process.reanudar()
+                self.working_process.reanudar()
 
                 self.worker_paused = False
 
@@ -2148,14 +2203,14 @@ class MainWindow(QtGui.QMainWindow):
                 try:
                     self.wnd_taskbar.SetProgressState(self.winId(),
                                                       self.wnd_taskbar.TBPF_NORMAL)
-                except RuntimeError:
+                except (RuntimeError, AttributeError):
                     pass
             except AttributeError:
                 pass
         else:
             try:
                 # Pausar procesamiento
-                # self.working_process.pausar()
+                self.working_process.pausar()
 
                 self.worker_paused = True
 
@@ -2170,7 +2225,7 @@ class MainWindow(QtGui.QMainWindow):
                 try:
                     self.wnd_taskbar.SetProgressState(self.winId(),
                                                       self.wnd_taskbar.TBPF_PAUSED)
-                except RuntimeError:
+                except (RuntimeError, AttributeError):
                     pass
             except AttributeError:
                 pass
