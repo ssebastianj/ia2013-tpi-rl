@@ -174,3 +174,5 @@ setup/version_info.txt
 *.pro.user*
 
 gui/qt/build*
+
+pruebas/

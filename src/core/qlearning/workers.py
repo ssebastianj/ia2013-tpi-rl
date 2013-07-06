@@ -6,12 +6,16 @@ from __future__ import absolute_import
 import Queue
 import multiprocessing
 import numpy
+import os
 import time
 import sys
 import random
 from core.estado.estado import TIPOESTADO
 
 
+# ============================================================================
+#                         QLearningEntrenarWorker
+# ============================================================================
 class QLearningEntrenarWorker(multiprocessing.Process):
     u"""
     Worker encargado de realizar el aprendizaje de Q-Learning.
@@ -29,6 +33,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self._out_queue = out_queue
         self._error_queue = error_q
         self._stoprequest = multiprocessing.Event()
+        self._pauserequest = multiprocessing.Event()
         self.name = "QLearningEntrenarWorker"
         self.input_data = None
         self._visitados_1 = None
@@ -51,8 +56,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         """
         # Cerrar Queues
         self._inp_queue.close()
+        self._inp_queue.join_thread()
+
         self._error_queue.close()
+        self._error_queue.join_thread()
+
         self._out_queue.close()
+        self._out_queue.join_thread()
 
     def run(self):
         u"""
@@ -75,8 +85,36 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Procesar datos de entrada
         self.procesar_entrada()
 
-        if self.detector_bloqueo:
-            self._contador_ref = self._crear_cont_ref(self.tipos_vec_excluidos)
+        # Cachear acceso a funciones y atributos de instancia
+        encolar_salida = self.encolar_salida
+        generar_estado_aleatorio = self.generar_estado_aleatorio
+        matriz_r = self.matriz_r
+        matriz_q = self.matriz_q
+        matriz_est_acc = self.matriz_est_acc
+        tipos_vec_excluidos = self.tipos_vec_excluidos
+        detectar_bloqueo = self.detector_bloqueo
+        contar_ref = self._contar_ref
+        gamma = self.gamma
+        limitar_iteraciones = self.limitar_iteraciones
+        cant_max_iteraciones = self.cant_max_iter
+        stoprequest_isset = self._stoprequest.is_set
+        pauserequest_isset = self._pauserequest.is_set
+        obtener_accion = self.tecnica.obtener_accion
+        tecnica = self.tecnica
+        intervalo_diff_calc = self.interv_diff_calc
+        ancho = self.ancho
+        alto = self.alto
+        inp_queue = self._inp_queue
+        out_queue = self._out_queue
+        # --------------------------------------------------------------------
+
+        # Cantidad máxima de iteraciones antes de emitir un aviso
+        cant_max_iter_general, stop_action = (self.cant_max_iter_gral_pack[0],
+                                              self.cant_max_iter_gral_pack[1])
+
+        # FIXME: Detector de bloqueos
+        if detectar_bloqueo:
+            self._contador_ref = self._crear_cont_ref(tipos_vec_excluidos)
             self._cant_estados_libres = len(self._contador_ref)
             self._visitados_1 = []
             self._visitados_2 = []
@@ -86,11 +124,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # Descontador utilizado para saber en que momento calcular la diferencia
         # entre dos matrices Q
-        calc_mat_diff_cont = self.interv_diff_calc - 1
-
-        # Variables auxiliar para resguardar los resultados de las sumas
-        suma_matriz_q_actual = None
-        suma_matriz_q_anterior = None
+        calc_mat_diff_cont = intervalo_diff_calc - 1
 
         # Bandera que determina si se calcula la diferencia de matrices
         matdiff_active = self.matdiff_status
@@ -106,12 +140,20 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         epnum = 1  # Inicializar número de episodio
         cant_cortes_iteraciones = 0
 
-        # --- Estadísticas para gráficos ---
-        # Acumular recompensas de los estados elegidos
-        acum_recomp_elegidas = 0
-        # Lista de recompensas promedio
-        recompensas_promedio = numpy.empty((cantidad_episodios, 1), dtype=object)
+        suma_matriz_q_anterior = 0
+        suma_matriz_q_actual = 0
 
+        # --- Estadísticas para gráficos -------------------------------------
+        # --------------------------------------------------------------------
+        # Contador de accesos a acción
+        rp_cont_acc_accion = numpy.zeros((self.ancho, self.alto), numpy.int)
+        # Sumatoria de recompensas inmediatas
+        rp_sum_recomp_accion = numpy.zeros((self.ancho, self.alto), numpy.float)
+        # Resultado de recompensas promedio de los estados elegidos
+        rp_res_promedio = numpy.empty((cantidad_episodios, 1), numpy.float)
+        # --------------------------------------------------------------------
+
+        # --------------------------------------------------------------------
         # Cantidad de veces que se llegó al Estado Final
         cant_lleg_final = 0
         # Cantidad de episodios entre muestreo
@@ -122,94 +164,170 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         contador_idx_arr = 0
         # Lista con episodios finalizados
         episodios_finalizados = numpy.empty((inter_muestreo + 1, 1), object)
+
+        # --------------------------------------------------------------------
+        # Cantidad de iteraciones por episodio
+        # iters_por_episodio = numpy.empty((cantidad_episodios, 1), numpy.int)
+
+        # Evolución de la diferencia entre matrices Q
+        mat_diff_array = [intervalo_diff_calc, []]
         # ---------------------------------
 
         # Registrar tiempo de comienzo de los episodios
         ep_start_time = wtimer()
 
         # Ejecutar una cantidad dada de episodios o detener antes si se considera necesario
-        while (not self._stoprequest.is_set()) and (epnum <= cantidad_episodios):
+        while (not stoprequest_isset()) and (epnum <= cantidad_episodios):
 
             # Obtener coordenadas aleatorias y obtener Estado asociado
-            x_act, y_act = self.generar_estado_aleatorio()
+            x_act, y_act = generar_estado_aleatorio()
+
+            # Normalizar coordenadas para uso interno
+            x_act -= 1
+            y_act -= 1
 
             # Generar estados aleatorios hasta que las coordenadas no
             # coincidan con las de un tipo excluido
-            estado_actual = self.matriz_r[x_act - 1][y_act - 1]
-            tipo_estado = estado_actual[0]
+            estado_actual = matriz_est_acc[x_act][y_act]
 
-            while tipo_estado in self.tipos_vec_excluidos:
-                x_act, y_act = self.generar_estado_aleatorio()
-                estado_actual = self.matriz_r[x_act - 1][y_act - 1]
+            try:
                 tipo_estado = estado_actual[0]
+            except (TypeError, IndexError):
+                tipo_estado = estado_actual
+
+            while (not stoprequest_isset()) and (tipo_estado in tipos_vec_excluidos):
+                x_act, y_act = generar_estado_aleatorio()
+                estado_actual = matriz_est_acc[x_act][y_act]
+
+                try:
+                    tipo_estado = estado_actual[0]
+                except (TypeError, IndexError):
+                    tipo_estado = estado_actual
 
             # Recorrer hasta encontrar el estado final
             cant_iteraciones = 1
-            while (not self._stoprequest.is_set()) and (estado_actual[0] != TIPOESTADO.FINAL):
+            while (not stoprequest_isset()) and (tipo_estado != TIPOESTADO.FINAL):
                 # Registrar tiempo de comienzo de las iteraciones
                 iter_start_time = wtimer()
 
                 # TODO: Utilizar detector de bloqueos
-                if self.detector_bloqueo:
-                    self._contar_ref((x_act, y_act))
+                if detectar_bloqueo:
+                    contar_ref((x_act, y_act))
 
-                # Obtener vecinos del estado actual
-                vecinos = estado_actual[1]
-                # Invocar a la técnica para que seleccione uno de los vecinos
-                estado_elegido = self.tecnica.obtener_accion(vecinos)
-                # Asignar coordenadas X,Y
-                try:
-                    x_eleg, y_eleg = estado_elegido
-                except TypeError:
-                    cant_iteraciones += 1
-                    continue
+                # Coordenada Y de la matriz (fila)
+                # Para acceder a un elemento de la matriz Q o R se utiliza un esquema
+                # de acceso del tipo "Base + Desplazamiento" donde las filas
+                # representan los estados del GridWorld y las columnas representan
+                # las acciones posibles apartir de dichos estados.
+                fila_idx = (x_act * alto) + y_act
 
-                # Obtener recompensa inmediata del estado actual
-                recompensa_estado = vecinos[(x_eleg, y_eleg)]
+                # Obtener acciones posibles para el estado actual
+                acciones = matriz_q[fila_idx]
 
-                # Sumar recompensa elegida al total
-                acum_recomp_elegidas += recompensa_estado
+                # Invocar a la técnica para que seleccione uno de las acciones
+                accion_elegida = obtener_accion(acciones)
+
+                # Coordenada X de la matriz (columna)
+                columna_idx = accion_elegida
+
+                # Obtener recompensa inmediata de la acción actual
+                recompensa_accion = matriz_r[fila_idx][columna_idx]
 
                 # Obtener vecinos del estado elegido por la acción
-                vecinos_est_elegido = self.matriz_q[x_eleg - 1][y_eleg - 1][1]
+                acciones_est_elegido = matriz_q[accion_elegida]
 
                 # Calcular el máximo valor Q de todos los vecinos
-                max_q = max([q_val for q_val in vecinos_est_elegido.values()])
+                max_q = numpy.nanmax(acciones_est_elegido)
 
-                # -------------------------------------------------------------
-                # Fórmula principal de Q-Learning
-                # -------------------------------------------------------------
+                # =============================================================
+                # Función de valor de Q-Learning
+                # =============================================================
+                nuevo_q = recompensa_accion + (gamma * max_q)
+
+                # Actualizar valor de Q en matriz Q
+                matriz_q[fila_idx][columna_idx] = nuevo_q
+                # =============================================================
+
+                encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
+                                'NroEpisodio': epnum,
+                                'NroIteracion': cant_iteraciones,
+                                'ValorParametro': tecnica.valor_param_parcial,
+                                'ProcesoJoined': False,
+                                'ProcesoPaused': True
+                                })
+
+                # ------------ Recompensas promedio ---------------------------
+                # Incrementar acceso y guardar recompensa inmediata para estadística
+                rp_cont_acc_accion[x_act][y_act] += 1
+                rp_sum_recomp_accion[x_act][y_act] += recompensa_accion
+                # ------------------------------------------------------------
+
+                # Calcular coordenadas y actualizar estado actual
+                new_x = int(columna_idx / alto)
+                new_y = columna_idx - (new_x * ancho)
+                estado_actual = matriz_est_acc[new_x][new_y]
+
                 try:
-                    nuevo_q = recompensa_estado + (self.gamma * max_q)
-                    # Actualizar valor de Q en matriz Q
-                    self.matriz_q[x_act - 1][y_act - 1][1][(x_eleg, y_eleg)] = nuevo_q
-                except TypeError:
-                    pass
-                except ValueError:
-                    pass
+                    tipo_estado = estado_actual[0]
+                except (TypeError, IndexError):
+                    tipo_estado = estado_actual
 
-                self.encolar_salida({'EstadoActual': (x_act, y_act),
-                                     'NroEpisodio': epnum,
-                                     'NroIteracion': cant_iteraciones,
-                                     'ValorParametro': self.tecnica.valor_param_parcial,
-                                     'ProcesoJoined': False
-                                     })
-
-                # Actualizar estado actual
-                x_act, y_act = x_eleg, y_eleg
-                estado_actual = self.matriz_r[x_act - 1][y_act - 1]
+                # Nuevo estado = Acción elegida
+                x_act, y_act = new_x, new_y
 
                 # Comprobar si se alcanzó el número máximo de iteraciones
                 # FIXME
-                if self.limitar_iteraciones and (self.cant_max_iter == cant_iteraciones):
-                    self.encolar_salida({'CorteIteracion': True})
+                if limitar_iteraciones and (cant_max_iteraciones == cant_iteraciones):
+                    # self.encolar_salida({'CorteIteracion': True})
                     cant_cortes_iteraciones += 1
                     cant_lleg_final -= 1
                     # Terminar y comenzar en un episodio nuevo
                     break
 
+                # Comprobar si se alcanzó el número máximo de iteraciones general
+                if cant_max_iter_general == cant_iteraciones:
+                    if stop_action == 0:
+                        # Finalizar ejecución de proceso
+                        encolar_salida({'LoopAlarm': (True, 0)})
+                        self._stoprequest.set()
+                    elif stop_action == 1:
+                        encolar_salida({'LoopAlarm': (True, 1)})
+                        # Continuar con el siguiente episodio
+                        break
+
                 # Incrementar cantidad de iteraciones realizadas
                 cant_iteraciones += 1
+
+                # FIXME
+                # iters_por_episodio[epnum - 1] = cant_iteraciones
+
+                # WIP: Pausar procesamiento
+                # ---------------------- Pausa --------------------------
+                # Comprobar si se solicitó pausar el procesamiento
+                while pauserequest_isset and not stoprequest_isset:
+                    # Encolar datos de salida (Dump del contexto actual)
+                    encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
+                                    'NroEpisodio': epnum - 1,
+                                    'NroIteracion': cant_iteraciones,
+                                    'MatrizQ': matriz_q,
+                                    'EpisodiosExecTime': ep_exec_time,
+                                    'IteracionesExecTime': iter_exec_time,
+                                    'ProcesoJoined': False,
+                                    'ProcesoPaused': True,
+                                    'ValorParametro': tecnica.valor_param_parcial,
+                                    'RunningExecTime': running_exec_time,
+                                    'MatDiff': tmp_diff_mat,
+                                    'MatRecompProm': rp_res_promedio,
+                                    'EpFinalizados': episodios_finalizados,
+                                    # 'ItersXEpisodio': iters_por_episodio,
+                                    'MatDiffStat': mat_diff_array,
+                                    'MatEstAcc': matriz_est_acc
+                                    })
+
+                    try:
+                        comando = inp_queue.get(True, 1)
+                    except Queue.Empty:
+                        continue
                 # ==================== Fin de iteraciones ====================
 
             iter_end_time = wtimer()
@@ -220,25 +338,17 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             except UnboundLocalError:
                 iter_exec_time = 0
 
-            # Calcular recompensa promedio
-            # FIXME
-            recompensa_promedio = acum_recomp_elegidas / float(cant_iteraciones)
-            # Agregar resultado al arreglo
-            # FIXME
-            recompensas_promedio[epnum - 1][0] = ((epnum, recompensa_promedio))
-
             decrementar_step += 1
             # Comprobar si es necesario decrementar el valor del parámetro
-            if self.tecnica.intervalo_decremento == decrementar_step:
+            if tecnica.intervalo_decremento == decrementar_step:
                 # Decrementar valor del parámetro en 1 paso
-                self.tecnica.decrementar_parametro()
+                tecnica.decrementar_parametro()
                 decrementar_step = 0
 
             if matdiff_active:
                 if calc_mat_diff_cont == 0:
-                    try:
                         # Sumar todos los valores Q de la matriz actual
-                        suma_matriz_q_actual = sum([elto for fila in self.matriz_q
+                        suma_matriz_q_actual = sum([elto for fila in matriz_q
                                                     for columna in fila
                                                     for elto in columna[1].itervalues()])
 
@@ -250,30 +360,32 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                         # tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
                         tmp_diff_mat = numpy.absolute(resta_diff_mat)
 
+                        # Almacenar para estadística
+                        mat_diff_array[1].append(tmp_diff_mat)
+
                         # Comprobar si la diferencia entre matrices supera la establecida
                         # por el usuario
                         if tmp_diff_mat < min_diff_mat:
                             self._stoprequest.set()
 
                         # Volver a cargar valor inicial a contador
-                        calc_mat_diff_cont = self.interv_diff_calc
-                    except TypeError:
-                        pass
+                        calc_mat_diff_cont = intervalo_diff_calc
                 elif calc_mat_diff_cont == 1:
                     # Sumar todos los valores Q de la matriz actual
-                    suma_matriz_q_anterior = sum([elto for fila in self.matriz_q
+                    suma_matriz_q_anterior = sum([elto for fila in matriz_q
                                                   for columna in fila
                                                   for elto in columna[1].itervalues()])
 
                 # Poner en la cola de salida los resultados
-                self.encolar_salida({'EstadoActual': (x_act, y_act),
-                                     'NroEpisodio': epnum,
-                                     'NroIteracion': cant_iteraciones,
-                                     'IteracionesExecTime': iter_exec_time,
-                                     'ValorParametro': self.tecnica.valor_param_parcial,
-                                     'ProcesoJoined': False,
-                                     'MatDiff': tmp_diff_mat,
-                                     })
+                encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
+                                'NroEpisodio': epnum,
+                                'NroIteracion': cant_iteraciones,
+                                'IteracionesExecTime': iter_exec_time,
+                                'ValorParametro': tecnica.valor_param_parcial,
+                                'ProcesoJoined': False,
+                                'ProcesoPaused': False,
+                                'MatDiff': tmp_diff_mat,
+                                })
 
                 # Decrementar contador para saber si es necesario calcular
                 # la diferencia entre las matrices Q
@@ -288,19 +400,27 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             cont_interv_muestreo += 1
 
             # Registrar cuantas veces se llegó al Estado Final
-            # FIXME
+            # FIXME: Estadística
             if cont_interv_muestreo == inter_muestreo:
                 episodios_finalizados[contador_idx_arr][0] = (epnum, cant_lleg_final)
                 contador_idx_arr += 1
                 # Reiniciar contador
                 cont_interv_muestreo = 0
 
+            # Recompensas promedio -------------------------------------------
+            rp_res_promedio[epnum - 1][0] = numpy.average(numpy.true_divide(rp_sum_recomp_accion,
+                                                                            rp_cont_acc_accion))
+
             # Avanzar un episodio
             epnum += 1
             # ======================= Fin de episodios =======================
 
+        # FIXME: Estadística
         # Incluir estadísticas del último episodio
-        episodios_finalizados[contador_idx_arr][0] = (epnum - 1, cant_lleg_final)
+        try:
+            episodios_finalizados[contador_idx_arr - 1][0] = (epnum - 1, cant_lleg_final)
+        except IndexError:
+            pass
 
         # Calcular tiempos de finalización
         running_end_time = ep_end_time = wtimer()
@@ -313,19 +433,23 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             running_exec_time = 0
 
         # Poner en la cola de salida los resultados
-        self.encolar_salida({'EstadoActual': (x_act, y_act),
-                             'NroEpisodio': epnum - 1,
-                             'NroIteracion': cant_iteraciones,
-                             'MatrizQ': self.matriz_q,
-                             'EpisodiosExecTime': ep_exec_time,
-                             'IteracionesExecTime': iter_exec_time,
-                             'ProcesoJoined': False,
-                             'ValorParametro': self.tecnica.valor_param_parcial,
-                             'RunningExecTime': running_exec_time,
-                             'MatDiff': tmp_diff_mat,
-                             'RecompProm': recompensas_promedio,
-                             'EpFinalizados': episodios_finalizados
-                             })
+        encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
+                        'NroEpisodio': epnum - 1,
+                        'NroIteracion': cant_iteraciones,
+                        'MatrizQ': matriz_q,
+                        'EpisodiosExecTime': ep_exec_time,
+                        'IteracionesExecTime': iter_exec_time,
+                        'ProcesoJoined': True,
+                        'ProcesoPaused': False,
+                        'ValorParametro': tecnica.valor_param_parcial,
+                        'RunningExecTime': running_exec_time,
+                        'MatDiff': tmp_diff_mat,
+                        'MatRecompProm': rp_res_promedio,
+                        'EpFinalizados': episodios_finalizados,
+                        # 'ItersXEpisodio': iters_por_episodio,
+                        'MatDiffStat': mat_diff_array,
+                        'MatEstAcc': matriz_est_acc
+                        })
 
         # Realizar tareas al finalizar
         self._on_end()
@@ -375,12 +499,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self.tipos_vec_excluidos = self.input_data[8]
         self.q_init_value_fn = self.input_data[9]
         self.matdiff_status, self.min_diff_mat, self.interv_diff_calc = self.input_data[10]
-
-        self.matriz_r = self.get_matriz_r()
-        self.matriz_q = self.get_matriz_q(self.matriz_r)
+        self.cant_max_iter_gral_pack = self.input_data[11]
         self.tecnica = self.tecnica_pack[0](self.tecnica_pack[1],
                                             self.tecnica_pack[2],
                                             self.tecnica_pack[3])
+
+        # Inicializar matrices de vecinos, Q y R
+        self.matriz_est_acc, self.matriz_r, self.matriz_q = self.get_matrixes()
 
     def generar_estado_aleatorio(self):
         u"""
@@ -446,57 +571,83 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         test_2 = len(self._visitados_1) == len(self._visitados_2)
 
         if test_1 or test_2:
-            self._out_queue.put({'LoopAlarm': True})
+            self._out_queue.put({'LoopAlarm': (True, 2)})
 
-    def get_matriz_r(self):
+    def get_matrixes(self, include_vecinos=False):
         u"""
-        Crea y devuelve la matriz R de recompensa en en función de la ubicación de los estados
-        y sus vecinos. Representa las transiciones posibles.
+        Genera y devuelve la matriz de vecinos, matriz R y matriz Q.
         """
         # Verificar si hay tipos de vecinos a excluir de la matriz R
         if self.tipos_vec_excluidos is None:
             self.tipos_vec_excluidos = []
 
-        matriz_r = numpy.empty((self.alto, self.ancho), object)
-        # Crear una lista de listas
-        for i in xrange(1, self.alto + 1):
+        # Cachear acceso a métodos y atributos
+        get_vecinos_estado = self.get_vecinos_estado
+        get_estado = self.get_estado
+        tipos_vec_excluidos = self.tipos_vec_excluidos
+        q_init_value_fn = self.q_init_value_fn
+        ancho = self.ancho
+        alto = self.alto
+        dimension = ancho * alto
+
+        # Matriz de vecinos
+        matriz_estados = numpy.empty((alto, ancho), numpy.int)
+
+        # Matriz Q
+        matriz_q = numpy.empty((dimension, dimension), numpy.float)
+        matriz_q.fill(numpy.nan)
+
+        # Matriz R
+        matriz_r = numpy.empty((dimension, dimension), numpy.float)
+        matriz_r.fill(numpy.nan)
+
+        for i in xrange(alto):
             fila = []
-            for j in xrange(1, self.ancho + 1):
+            fappend = fila.append
+
+            for j in xrange(ancho):
                 # Obtener estado actual y su ID de tipo
-                estado = self.get_estado(i, j)
+                estado = get_estado(i + 1, j + 1)
                 estado_ide = estado.tipo.ide
                 # Obtener los estados vecinos del estado actual (i, j)
-                vecinos = self.get_vecinos_estado(i, j)
-                # Agregar vecinos y su recompensa al estado
-                # excluyendo los prohibidos
-                recomp_and_vec = {}
+                vecinos = get_vecinos_estado(i + 1, j + 1, True)
 
-                for vecino in vecinos:
-                    if vecino.tipo.ide not in self.tipos_vec_excluidos:
-                        recomp_and_vec[(vecino.fila, vecino.columna)] = vecino.tipo.recompensa
+                # Calcular posición en eje Y
+                y_coord = (i * alto) + j
 
-                fila.append((estado_ide, recomp_and_vec))
-            matriz_r[i - 1] = fila
-        return matriz_r
+                if include_vecinos:
+                    evecinos = []
+                    evappend = evecinos.append
 
-    def get_matriz_q(self, matriz_r):
-        u"""
-        Crea la matriz Q con un valor inicial.
+                for x, y in vecinos:
+                    est_vec = get_estado(x, y)
 
-        :param default: Valor con que se inicializa cada estado de la matriz.
-        """
-        matriz_q = numpy.empty((self.ancho, self.alto), object)
+                    if est_vec.tipo.ide not in tipos_vec_excluidos:
+                        # Calcular posición en eje X
+                        x_coord = ((x - 1) * ancho) + (y - 1)
 
-        for i in xrange(0, self.alto):
-            for j in xrange(0, self.ancho):
-                tipo_estado = matriz_r[i][j][0]
-                vecinos = matriz_r[i][j][1]
-                vecinos = dict([(key, self.q_init_value_fn)
-                                for key in vecinos.iterkeys()])
-                matriz_q[i][j] = (tipo_estado, vecinos)
-        return matriz_q
+                        # Establecer valor Q inicial en matriz
+                        matriz_q[y_coord][x_coord] = q_init_value_fn
 
-    def get_vecinos_estado(self, x, y):
+                        # Establecer recompensa en matriz R
+                        matriz_r[y_coord][x_coord] = est_vec.tipo.recompensa
+
+                        if include_vecinos:
+                            # Agregar coordenadas de vecino
+                            evappend((y_coord, x_coord))
+
+                if include_vecinos:
+                    # Agregar columna a la fila
+                    fappend((estado_ide, evecinos))
+                else:
+                    fappend(estado_ide)
+
+            # Agregar fila a matriz de vecinos
+            matriz_estados[i] = fila
+
+        return (matriz_estados, matriz_r, matriz_q)
+
+    def get_vecinos_estado(self, x, y, iterate=False):
         u"""
         Devuelve los estados adyacentes en función de un estado dado.
         Fuente: http://stackoverflow.com/questions/2373306/pythonic-and-efficient-way-of-finding-adjacent-cells-in-grid
@@ -504,13 +655,19 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         :param x: Fila del estado
         :param y: Columna del estado
         """
+        coordenadas = self.coordenadas
         vecinos = []
+        vappend = vecinos.append
+
         for fila, columna in ((x + i, y + j)
                               for i in (-1, 0, 1) for j in (-1, 0, 1)
                               if i != 0 or j != 0):
-            if (fila, columna) in self.coordenadas:
-                vecinos.append(self.get_estado(fila, columna))
-        return numpy.array(vecinos, object)
+            if (fila, columna) in coordenadas:
+                vappend((fila, columna))
+        if iterate:
+            return iter(vecinos)
+        else:
+            return vecinos
 
     def get_estado(self, x, y):
         u"""
@@ -521,7 +678,24 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         """
         return self.estados[x - 1][y - 1]
 
+    def pausar(self):
+        u"""
+        Solicitud de Pausa del procesamiento.
+        """
+        # Activar flag para pausar proceso
+        self._pauserequest.set()
 
+    def reanudar(self):
+        u"""
+        Solicitud de Reanudar el procesamiento.
+        """
+        # Desactivar flag para pausar proceso
+        self._pauserequest.clear()
+
+
+# ============================================================================
+#                         QLearningRecorrerWorker
+# ============================================================================
 class QLearningRecorrerWorker(multiprocessing.Process):
     u"""
     Worker encargado de recorrer el GridWorld utilizando la matriz Q para seguir
@@ -542,8 +716,6 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._stoprequest = multiprocessing.Event()
         self.name = "QLearningRecorrerWorker"
         self.input_data = None
-        self._visitados = []
-        self._contador_ref = {}
 
     def _do_on_start(self):
         u"""
@@ -582,7 +754,10 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             return None
 
         matriz_q = self.input_data[0]
-        estado_inicial = self.input_data[1]
+        matriz_est_acc = self.input_data[1]
+        estado_inicial = self.input_data[2]
+
+        ancho, alto = matriz_est_acc.shape
 
         # Lista que contiene la secuencia de estados comenzando por el
         # Estado Inicial
@@ -592,56 +767,63 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         rec_start_time = wtimer()
 
         x_act, y_act = estado_inicial
-        estado_actual = matriz_q[x_act - 1][y_act - 1]
+        x_act -= 1
+        y_act -= 1
+
+        estado_actual = matriz_est_acc[x_act][y_act]
+        try:
+            tipo_estado = estado_actual[0]
+        except TypeError:
+            tipo_estado = estado_actual
+        except IndexError:
+            tipo_estado = estado_actual
 
         # Inicializar contador de iteraciones
         cant_iteraciones = 1
 
-        while (not self._stoprequest.is_set()) and (estado_actual[0] != TIPOESTADO.FINAL):
-            self.encolar_salida({'EstadoActual': (x_act, y_act),
-                                 'ProcesoJoined': False,
-                                 'NroIteracion': cant_iteraciones})
+        # Cachear acceso a métodos y atributos
+        encolar_salida = self.encolar_salida
+        co_append = camino_optimo.append
 
-            vecinos = estado_actual[1]
-            # Eliminar vecinos que alcanzaron el umbral de visitas
-            vecinos = {key: value for key, value in vecinos.iteritems() if key not in self._visitados}  # @IgnorePep8
+        while (not self._stoprequest.is_set()) and (tipo_estado != TIPOESTADO.FINAL):
+            encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
+                            'ProcesoJoined': False,
+                            'NroIteracion': cant_iteraciones})
 
+            # Coordenada Y de la matriz (fila)
+            # Para acceder a un elemento de la matriz Q o R se utiliza un esquema
+            # de acceso del tipo "Base + Desplazamiento" donde las filas
+            # representan los estados del GridWorld y las columnas representan
+            # las acciones posibles apartir de dichos estados.
+            fila_idx = (x_act * alto) + y_act
+
+            # Obtener acciones a partir del estado actual
+            acciones = matriz_q[fila_idx]
             # Buscar el estado que posea el mayor valor de Q
-            maximo = None
-            estados_qmax = []
+            maximo_q = numpy.nanmax(acciones)
+            maximos_q = numpy.where(acciones == maximo_q)[0]
+            accion_elegida = numpy.random.choice(maximos_q)
+            columna_idx = accion_elegida
 
-            for key, q_valor in vecinos.iteritems():
-                if maximo is None:
-                    maximo = q_valor
+            # Calcular coordenadas y actualizar estado actual
+            new_x = int(columna_idx / alto)
+            new_y = columna_idx - (new_x * ancho)
 
-                if q_valor > maximo:
-                    maximo = q_valor
-                    estados_qmax = [key]
-                elif q_valor == maximo:
-                    estados_qmax.append(key)
-
-            # Comprobar si hay estados con valores Q iguales y elegir uno
-            # de forma aleatoria
-            long_vecinos = len(estados_qmax)
-            if long_vecinos == 1:
-                estado_qmax = estados_qmax[0]
-            elif long_vecinos > 1:
-                estado_qmax = random.choice(estados_qmax)
-            else:
-                pass
-
-            # Descomponer coordenadas de estado
-            x_eleg, y_eleg = estado_qmax
+            estado_actual = matriz_est_acc[new_x][new_y]
 
             # Agregar estado al camino óptimo
-            camino_optimo.append(estado_qmax)
+            co_append((new_x + 1, new_y + 1))
 
-            # Contar referencia a estado elegido
-            self._contar_ref((x_eleg, y_eleg))
+            try:
+                tipo_estado = estado_actual[0]
+            except TypeError:
+                tipo_estado = estado_actual
+            except IndexError:
+                tipo_estado = estado_actual
 
-            # Actualizar estado actual
-            x_act, y_act = x_eleg, y_eleg
-            estado_actual = matriz_q[x_act - 1][y_act - 1]
+            # Nuevo estado = Acción elegida
+            x_act = new_x
+            y_act = new_y
 
             # Incrementar número de iteraciones
             cant_iteraciones += 1
@@ -657,7 +839,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             running_exec_time = 0
 
         # Poner en la cola de salida los resultados
-        self.encolar_salida({'EstadoActual': (x_act, y_act),
+        self.encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
                              'CaminoRecorrido': camino_optimo,
                              'RecorridoExecTime': rec_exec_time,
                              'ProcesoJoined': False,
@@ -697,19 +879,3 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             self._error_queue.put(error)
         except Queue.Full:
             pass
-
-    def _contar_ref(self, estado):
-        u"""
-        Contar referencia a estado (cada vez que se accede al mismo)
-
-        :param estado: Estado que fue accedido.
-        """
-        umbral = 1
-
-        try:
-            self._contador_ref[estado] += 1
-        except KeyError:
-            self._contador_ref[estado] = 0
-
-        if self._contador_ref[estado] == umbral:
-            self._visitados.append(estado)

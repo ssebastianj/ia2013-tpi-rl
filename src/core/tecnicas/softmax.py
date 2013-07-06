@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 
-import random
-import decimal
+import numpy
+
+try:
+    import cdecimal as decimal
+except ImportError:
+    import decimal
+
 from core.tecnicas.tecnica import QLTecnica
 
 
@@ -15,6 +20,8 @@ class Softmax(QLTecnica):
         Inicializador Softmax.
 
         :param tau: Parámetro Tau de la técnica.
+        :param paso_decremento: Valor flotante con el que se decrementará el parámetro general.
+        :param intervalo_decremento: Intervalo de episodios entre los cuales se realizará el decremento.
         """
         super(Softmax, self).__init__(paso_decremento, intervalo_decremento)
         self._val_param_general = decimal.Decimal(tau)
@@ -27,57 +34,74 @@ class Softmax(QLTecnica):
         self.cant_ranuras = 100
 
         # Establecer precisión de decimales a 5 dígitos
-        decimal.getcontext().prec = 4
+        decimal.getcontext().prec = 2
 
-    def obtener_accion(self, vecinos):
-        rnd_valor = random.randint(0, self.cant_ranuras - 1)
+    def obtener_accion(self, acciones):
+        u"""
+        Dado un conjunto de acciones selecciona acorde uno de ellos.
 
-        intervalos_probabilidad = self.obtener_probabilidades(vecinos)
-
-        for key, intervalo in intervalos_probabilidad.iteritems():
-            if intervalo[0] <= rnd_valor <= intervalo[1]:
-                return key
-
-        return None
-
-    def obtener_probabilidades(self, vecinos):
-        probabilidades_vecinos = {}
-        sigma = 0
-
-        # Calcula las probabilidades de cada vecino
-        for key, q_valor in vecinos.iteritems():
-            try:
-                exponente = decimal.Decimal(q_valor) / self._val_param_parcial
-                probabilidad_vecino = exponente.exp()
-            except OverflowError:
-                pass
-            else:
-                probabilidades_vecinos[key] = probabilidad_vecino
-                sigma += probabilidad_vecino
-
-        # N = constante de Normalización
-        # n = sum(probabilidades_vecinos.itervalues())
-
-        # Calcula las probabilidades de cada vecino normalizadas
-        for key, prob in probabilidades_vecinos.iteritems():
-            probabilidades_vecinos[key] = prob / sigma
-
-        sumatoria = 0
-        intervalos = {}
+        :param acciones: Diccionario conteniendo los acciones de un estado.
+        """
+        rnd_func = numpy.random.randint
+        np_where = numpy.where
         cant_ranuras = self.cant_ranuras
 
-        for key, prob in probabilidades_vecinos.iteritems():
-            aux = sumatoria
-            calculo = round(prob * cant_ranuras)
-            sumatoria += calculo
-            ext_sup = sumatoria - 1
+        intervalos_probabilidad = self.obtener_probabilidades(acciones)
 
-            if cant_ranuras > aux <= ext_sup:
-                intervalos[key] = (aux, ext_sup)
+        # FIXME
+        # print intervalos_probabilidad
+        # print
 
-        return intervalos
+        rnd_valor = rnd_func(0, cant_ranuras)
+        idx = np_where(rnd_valor <= intervalos_probabilidad)[0][0]
+
+        return idx
+
+    def obtener_probabilidades(self, acciones):
+        """
+        Calcula y devuelve los intervalos de probabilidad para cada vecino.
+
+        :param acciones: Diccionario conteniendo acciones de un estado.
+        """
+        # Calcula las probabilidades de cada vecino
+        valor_param_parcial = self._val_param_parcial
+        c_decimal = decimal.Decimal
+
+        # Arreglo auxiliar
+        probabilidades_acciones = numpy.empty(acciones.size, numpy.float)
+
+        for i, q_valor in numpy.ndenumerate(acciones):
+            try:
+                exponente = c_decimal(q_valor) / valor_param_parcial
+                probabilidades_acciones[i[0]] = exponente.exp()
+            except OverflowError:
+                pass
+            except decimal.Overflow:
+                raise decimal.Overflow
+
+        # Constante de normalización
+        sigma = numpy.nansum(probabilidades_acciones)
+
+        # Calcula las probabilidades de cada vecino normalizadas
+        probabilidades_acciones = numpy.true_divide(probabilidades_acciones, sigma)
+
+        # Multiplicar por cantidad de ranuras
+        probabilidades_acciones *= self.cant_ranuras
+        # probabilidades_acciones = numpy.round(probabilidades_acciones * self.cant_ranuras)
+
+        # probabilidades_acciones[probabilidades_acciones == 0] = numpy.nan
+        # probabilidades_acciones[probabilidades_acciones < 1] = numpy.nan
+
+        # Armar intervalos sumando de manera acumulada
+        probabilidades_acciones = numpy.add(probabilidades_acciones * 0,
+                                            numpy.add.accumulate(numpy.nan_to_num(probabilidades_acciones)))
+
+        return probabilidades_acciones
 
     def decrementar_parametro(self):
+        u"""
+        Decrementa el valor del parámetro generar en función del paso de decremento.
+        """
         decremento = self._val_param_parcial - self._paso_decremento
         # No puede ser igual a cero sino se estaría ante un caso de
         # técnica Greedy (E = 0)

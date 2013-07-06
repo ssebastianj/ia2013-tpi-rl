@@ -12,12 +12,12 @@ class QLTecnica(object):
         self._val_param_parcial = parametro
         self._name = "QLTecnica"
 
-    def obtener_accion(self, vecinos):
+    def obtener_accion(self, acciones):
         u"""
-        Devuelve un sólo estado vecino de una lista de estados vecinos.
+        Devuelve un sólo estado vecino de una lista de estados acciones.
 
         :param matriz_q: Matriz Q a utilizar.
-        :param vecinos: Vecinos del estado actual.
+        :param acciones: Acciones del estado actual.
         """
         pass
 
@@ -54,6 +54,12 @@ class QLTecnica(object):
 
     def set_name(self, nombre):
         self._name = nombre
+
+    def __repr__(self, *args, **kwargs):
+        return self.__class__.__name__
+
+    def __str__(self, *args, **kwargs):
+        return self.__class__.__name__
 
     paso_decremento = property(get_paso_decremento,
                                set_paso_decremento,
