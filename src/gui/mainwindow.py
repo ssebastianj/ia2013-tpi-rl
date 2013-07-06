@@ -200,6 +200,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbMatricesMinDiff.setDisabled(True)
         self.WMainWindow.gbCOAnimacion.setVisible(False)
         self.WMainWindow.btnGWGenerarEstados.setVisible(False)
+        self.WMainWindow.btnPausar.setDisabled(True)
+        self.WMainWindow.actionAgentePausar.setDisabled(True)
 
         # Asignar shorcuts
         entrenar_shortcut = "F5"
@@ -817,7 +819,6 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.btnRecorrer.setDisabled(self.entrenar_is_running)
             self.WMainWindow.actionAgenteEntrenar.setDisabled(self.entrenar_is_running)
             self.WMainWindow.actionAgenteRecorrer.setDisabled(self.entrenar_is_running)
-            self.WMainWindow.actionAgenteCancelar.setDisabled(self.entrenar_is_running)
 
             self.WMainWindow.lblEntEstadoActual.setText("-")
             self.WMainWindow.lblEntExecTimeEpisodios.setText("-")
@@ -849,6 +850,9 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.lblRecExecTimeTotal.setText("-")
 
         self.WMainWindow.btnTerminarProceso.setEnabled(True)
+        self.WMainWindow.actionAgenteCancelar.setEnabled(True)
+        self.WMainWindow.btnPausar.setEnabled(True)
+        self.WMainWindow.actionAgentePausar.setEnabled(True)
         self.WMainWindow.gbGridWorld.setDisabled(True)
         self.WMainWindow.gbQLearning.setDisabled(True)
         self.WMainWindow.gbGeneral.setDisabled(True)
@@ -911,6 +915,18 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.statusBar.showMessage(_tr("Ha finalizado la búsqueda del camino óptimo."), 2000)
 
         self.WMainWindow.btnTerminarProceso.setEnabled(False)
+        self.WMainWindow.actionAgenteCancelar.setEnabled(False)
+        self.WMainWindow.btnPausar.setEnabled(False)
+        self.WMainWindow.actionAgentePausar.setEnabled(False)
+
+        self.worker_paused = False
+        resume_icon = QtGui.QIcon(QtGui.QPixmap(":/iconos/Pausar.png"))
+        resume_text = _tr("Pausar")
+        self.WMainWindow.btnPausar.setText(resume_text)
+        self.WMainWindow.btnPausar.setIcon(resume_icon)
+        self.WMainWindow.actionAgentePausar.setText(resume_text)
+        self.WMainWindow.actionAgentePausar.setIcon(resume_icon)
+
         # self.WMainWindow.statusBar.clearMessage()
         self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
 
