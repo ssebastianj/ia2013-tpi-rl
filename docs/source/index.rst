@@ -26,7 +26,7 @@ Dependencias
 ------------
 * `Python <http://www.python.org/>`_ 2.7+ (Python 3 no soportado)
 * `PyQt4 <http://www.riverbankcomputing.co.uk/software/pyqt/intro>`_ 4.10+
-* `Qt4 <http://qt-project.org/>`_ 4.8.4+
+* `Qt4 <http://qt-project.org/>`_ 4.8.5+
 * `NumPy <http://www.numpy.org/>`_ 1.7+
 * `SciPy <www.scipy.org>`_ 0.12+
 * `Matplotlib <matplotlib.org>`_ 1.2+
