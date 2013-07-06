@@ -7,6 +7,7 @@ import logging
 import multiprocessing
 import numpy
 import random
+import sys
 
 from core.qlearning.workers import QLearningEntrenarWorker, QLearningRecorrerWorker
 from core.gridworld.gridworld import GridWorld
@@ -16,7 +17,8 @@ from core.tecnicas.tecnica import QLTecnica
 class QLearning(object):
     u"""Algoritmo QLearning"""
     def __init__(self, gridworld, gamma, tecnica, episodes, iterations_pack,
-                 init_value_fn, matriz_diff_pack, excluir_tipos_vecinos=None):
+                 init_value_fn, matriz_diff_pack, cant_max_iter_gral_pack=(sys.maxint, 1),
+                 excluir_tipos_vecinos=None):
         """
         Inicializador de QLearning.
 
@@ -39,6 +41,7 @@ class QLearning(object):
         self._init_value_fn = init_value_fn
         self._iterations_pack = iterations_pack
         self._mat_diff_pack = matriz_diff_pack
+        self._cant_max_iter_gral_pack = cant_max_iter_gral_pack
 
     def _generar_estado_aleatorio(self):
         u"""
@@ -68,7 +71,8 @@ class QLearning(object):
                        False,
                        self._gridworld.tipos_vecinos_excluidos,
                        self._init_value_fn,
-                       self._mat_diff_pack
+                       self._mat_diff_pack,
+                       self._cant_max_iter_gral_pack
                       ))
 
         qlearning_entrenar_worker = None
@@ -78,6 +82,7 @@ class QLearning(object):
                                                                 out_queue,
                                                                 error_queue
                                                                 )
+            qlearning_entrenar_worker.daemon = True
             qlearning_entrenar_worker.start()
         except multiprocessing.ProcessError as pe:
             self._logger.debug(pe)
@@ -87,7 +92,7 @@ class QLearning(object):
 
         return qlearning_entrenar_worker
 
-    def recorrer(self, matriz_q, estado_inicial, out_queue, error_queue):
+    def recorrer(self, matriz_q, mat_est_acc, estado_inicial, out_queue, error_queue):
         u"""
         Ejecuta el algoritmo de recorrido en otro hilo/proceso. Devuelve una
         referencia al hilo/proceso ejecutado.
@@ -96,7 +101,7 @@ class QLearning(object):
         :param error_q: Cola de errores (salida)
         """
         inp_queue = multiprocessing.Queue()
-        inp_queue.put((matriz_q, estado_inicial))
+        inp_queue.put((matriz_q, mat_est_acc, estado_inicial))
         qlearning_recorrer_worker = None
 
         try:
@@ -104,6 +109,7 @@ class QLearning(object):
                                                                 out_queue,
                                                                 error_queue
                                                                 )
+            qlearning_recorrer_worker.daemon = True
             qlearning_recorrer_worker.start()
         except multiprocessing.ProcessError as pe:
             self._logger.debug(pe)
@@ -132,6 +138,11 @@ class QLearning(object):
         return self._gridworld
 
     def set_gridworld(self, valor):
+        u"""
+        Asigna un GridWorld dado a Q-Learning.
+
+        :param valor: Arreglo de estados conteniendo un GridWorld.
+        """
         if isinstance(valor, GridWorld):
             self._gridworld = valor
         else:
@@ -170,47 +181,104 @@ class QLearning(object):
         return self._iterations_pack
 
     def set_iterations_pack(self, valor):
+        u"""
+        Establece un conjunto de opciones referidas a las iteraciones de Q-Learning.
+
+        :param valor: Tupla con el formato: (Activar Limitador (Booleano), Cantidad Iteraciones Máxima (Entero))
+        """
         self._iterations_pack = valor
 
     def get_max_iterations(self):
         self._iterations_pack[1]
 
-    def get_matriz_q(self):
+    def get_matriz_q(self, include_vecinos=False):
         u"""
-        Crea la matriz Q con un valor inicial.
-
-        :param default: Valor con que se inicializa cada estado de la matriz.
+        Genera y devuelve la matriz de vecinos, matriz R y matriz Q.
         """
-        matriz_r = self._gridworld.matriz_r
-        ancho = self.gridworld.ancho
-        alto = self.gridworld.alto
-        matriz_q = numpy.empty((ancho, alto), object)
+        # Verificar si hay tipos de vecinos a excluir de la matriz R
+        if self.tipos_vec_excluidos is None:
+            self.tipos_vec_excluidos = []
 
-        for i in xrange(0, alto):
-            for j in xrange(0, ancho):
-                tipo_estado = matriz_r[i][j][0]
-                vecinos = matriz_r[i][j][1]
-                vecinos = dict([(key, self._init_value_fn)
-                                for key in vecinos.iterkeys()])
-                matriz_q[i][j] = (tipo_estado, vecinos)
+        # Cachear acceso a métodos y atributos
+        get_vecinos_estado = self.get_vecinos_estado
+        get_estado = self.get_estado
+        tipos_vec_excluidos = self.tipos_vec_excluidos
+        q_init_value_fn = self.q_init_value_fn
+        ancho = self.ancho
+        alto = self.alto
+        dimension = ancho * alto
+
+        # Matriz de vecinos
+        matriz_estados = numpy.empty((alto, ancho), numpy.int)
+
+        # Matriz Q
+        matriz_q = numpy.empty((dimension, dimension), numpy.float)
+        matriz_q.fill(numpy.nan)
+
+        for i in xrange(alto):
+            fila = []
+            fappend = fila.append
+
+            for j in xrange(ancho):
+                # Obtener estado actual y su ID de tipo
+                estado = get_estado(i + 1, j + 1)
+                estado_ide = estado.tipo.ide
+                # Obtener los estados vecinos del estado actual (i, j)
+                vecinos = get_vecinos_estado(i + 1, j + 1, True)
+
+                # Calcular posición en eje Y
+                y_coord = (i * alto) + j
+
+                if include_vecinos:
+                    evecinos = []
+                    evappend = evecinos.append
+
+                for x, y in vecinos:
+                    est_vec = get_estado(x, y)
+
+                    if est_vec.tipo.ide not in tipos_vec_excluidos:
+                        # Calcular posición en eje X
+                        x_coord = ((x - 1) * ancho) + (y - 1)
+
+                        # Establecer valor Q inicial en matriz
+                        matriz_q[y_coord][x_coord] = q_init_value_fn
+
+                        if include_vecinos:
+                            # Agregar coordenadas de vecino
+                            evappend((y_coord, x_coord))
+
+                if include_vecinos:
+                    # Agregar columna a la fila
+                    fappend((estado_ide, evecinos))
+                else:
+                    fappend(estado_ide)
+
+            # Agregar fila a matriz de vecinos
+            matriz_estados[i] = fila
+
         return matriz_q
 
-    def get_vecinos_estado(self, x, y):
+    def get_vecinos_estado(self, x, y, iterate=False):
         u"""
         Devuelve los estados adyacentes en función de un estado dado.
         Fuente: http://stackoverflow.com/questions/2373306/pythonic-and-efficient-way-of-finding-adjacent-cells-in-grid
 
-        :param x: Fila de la celda
-        :param y: Columna de la celda
+        :param x: Fila del estado
+        :param y: Columna del estado
         """
+        coordenadas = self.coordenadas
         vecinos = []
-        coordenadas = self._gridworld.coordenadas
+        vappend = vecinos.append
+
         for fila, columna in ((x + i, y + j)
                               for i in (-1, 0, 1) for j in (-1, 0, 1)
                               if i != 0 or j != 0):
             if (fila, columna) in coordenadas:
-                vecinos.append(self.get_estado(fila, columna))
-        return numpy.array(vecinos)
+                vappend((fila, columna))
+        if iterate:
+            return iter(vecinos)
+        else:
+            return vecinos
 
     def matriz_q_to_string(self):
         u"""

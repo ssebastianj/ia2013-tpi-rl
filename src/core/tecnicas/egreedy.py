@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import
 
-import logging
+import numpy
 import random
 from core.tecnicas.tecnica import QLTecnica
 
@@ -15,6 +15,8 @@ class EGreedy(QLTecnica):
         Inicializador.
 
         :param epsilon: Parámetro Epsilon de la técnica.
+        :param paso_decremento: Valor flotante con el que se decrementará el parámetro general.
+        :param intervalo_decremento: Intervalo de episodios entre los cuales se realizará el decremento.
         """
         super(EGreedy, self).__init__()
         self._val_param_general = epsilon
@@ -35,62 +37,38 @@ class EGreedy(QLTecnica):
     def set_epsilon_parcial(self, valor):
         self._val_param_parcial = valor
 
-    def obtener_accion(self, vecinos):
-        logging.debug("Vecinos para EGreedy: {0}".format(vecinos))
+    def obtener_accion(self, acciones):
+        u"""
+        Dado un conjunto de acciones selecciona acorde uno de ellos.
 
+        :param acciones: Diccionario conteniendo los acciones de un estado.
+        """
         # Generar un número aleatorio para saber cuál política usar
         random_num = random.uniform(0, 1)
 
         if 0 <= random_num <= (1 - self.epsilon_parcial):
             # EXPLOTAR
-            logging.debug("EXPLOTAR")  # FIXME: Eliminar print de debug
-
-            maximo = None
-            estados_qmax = []
-            for key, value in vecinos.iteritems():
-                logging.debug("X:{0} Y:{1}".format(*key))  # FIXME: Eliminar print de debug
-                q_valor = value
-                logging.debug("Q Valor: {0}".format(q_valor))  # FIXME: Eliminar print de debug
-
-                try:
-                    if q_valor > maximo:
-                        maximo = q_valor
-                        estados_qmax = [key]
-                    elif q_valor == maximo:
-                        estados_qmax.append(key)
-                except TypeError:
-                    maximo = q_valor
-
-            logging.debug("Estados Q-Max: {0}".format(estados_qmax))
-
-            # Comprobar si hay estados con recompensas iguales y elegir uno
-            # de forma aleatoria
-            long_vecinos = len(estados_qmax)
-            if long_vecinos == 1:
-                estado_qmax = estados_qmax[0]
-                logging.debug("Existe un sólo estado vecino máximo")  # FIXME: Eliminar print de debug
-            elif long_vecinos > 1:
-                estado_qmax = self.elegir_estado_aleatorio(estados_qmax)
-                logging.debug("Existen varios estados con igual recompensa")  # FIXME: Eliminar print de debug
-            else:
-                pass
+            maximo_q = numpy.nanmax(acciones)
+            estado_qmax = numpy.random.choice(numpy.where(acciones == maximo_q)[0])
         else:
             # EXPLORAR
-            logging.debug("EXPLORAR")  # FIXME: Eliminar print de debug
-            # Elegir un estado vecino de forma aleatoria
-            estado_qmax = self.elegir_estado_aleatorio(vecinos.keys())
+            # Elegir una acción de forma aleatoria
+            estado_qmax = self.elegir_accion_aleatoria(acciones)
         return estado_qmax
 
-    def elegir_estado_aleatorio(self, lista_estados):
+    def elegir_accion_aleatoria(self, acciones):
         u"""
-        Dada una lista de estados vecinos elige aleatoriamente sólo uno.
+        Dada una lista de estados acciones elige aleatoriamente sólo uno.
         Fuente: http://stackoverflow.com/questions/4859292/get-random-value-in-python-dictionary
 
-        :param lista_estados: Lista de vecinos de un estado dado.
+        :param acciones: Lista de acciones de un estado dado.
         """
-        return random.choice(lista_estados)
+        return numpy.random.choice(numpy.where(~numpy.isnan(acciones))[0])
 
     def decrementar_parametro(self):
+        u"""
+        Decrementa el parámetro general en un valor dado.
+        """
         decremento = self._val_param_parcial - self._paso_decremento
         # No puede ser igual a cero sino se estaría ante un caso de
         # técnica Greedy (E = 0)
@@ -114,10 +92,10 @@ class EGreedy(QLTecnica):
 
 class Greedy(EGreedy):
     u"""Técnica Greedy"""
-    def __init__(self):
+    def __init__(self, epsilon=0, paso_decremento=0, intervalo_decremento=0):
         u"""
         Inicializador
         """
-        super(Greedy, self).__init__(0)
+        super(Greedy, self).__init__(0, 0, 0)
         self._epsilon = 0
         self._name = "Greedy"

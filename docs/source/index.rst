@@ -22,6 +22,16 @@ Inteligencia Artificial 2013: Aprendizaje por Refuerzo
   
   * *Bitbucket*: https://bitbucket.org/luvallejos
 
+Dependencias
+------------
+* `Python <http://www.python.org/>`_ 2.7+ (Python 3 no soportado)
+* `PyQt4 <http://www.riverbankcomputing.co.uk/software/pyqt/intro>`_ 4.10+
+* `Qt4 <http://qt-project.org/>`_ 4.8.4+
+* `NumPy <http://www.numpy.org/>`_ 1.7+
+* `SciPy <www.scipy.org>`_ 0.12+
+* `Matplotlib <matplotlib.org>`_ 1.2+
+* `cDecimal <https://pypi.python.org/pypi/cdecimal/>`_ 2.3+
+* `Sphinx <http://sphinx-doc.org/>`_ 1.2+
 
 Contenido
 ---------
@@ -143,13 +153,26 @@ Contents:
    :private-members:
    :special-members:
    
-.. automodule:: graphs.graficos
-.. autoclass:: GraphEpsExitososWorker
+.. automodule:: graphs.avgrwds.worker
+.. autoclass:: GraphRecompensasPromedioWorker
    :members:
    :private-members:
    :special-members:
    
-.. autoclass:: GraphRecompPromedioWorker
+.. automodule:: graphs.itersep.worker
+.. autoclass:: GraphIteracionesXEpisodioWorker
+   :members:
+   :private-members:
+   :special-members:
+   
+.. automodule:: graphs.matdiffs.worker
+.. autoclass:: GraphMatrizDiffsWorker
+   :members:
+   :private-members:
+   :special-members:
+   
+.. automodule:: graphs.sucessfuleps.worker
+.. autoclass:: GraphSucessfulEpisodesWorker
    :members:
    :private-members:
    :special-members:
