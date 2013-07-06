@@ -1279,7 +1279,12 @@ class MainWindow(QtGui.QMainWindow):
             self.on_fin_proceso()
 
     def mostrar_info_est_status_bar(self, item):
+        u"""
+        Muestra información en la barra de estado acerca del estado actual 
+        en grilla.
 
+        :param item: Item seleccionado.
+        """
         fila = item.row()
         columna = item.column()
 
@@ -1690,9 +1695,12 @@ class MainWindow(QtGui.QMainWindow):
         """
         if self.camino_optimo_active:
             self.WMainWindow.btnCOShowHide.setText(_tr("Mostrar"))
+            self.WMainWindow.btnCOShowHide.setToolTip(_tr("Mostrar camino óptimo"))
+
             self.ocultar_camino_optimo()
         else:
             self.WMainWindow.btnCOShowHide.setText(_tr("Ocultar"))
+            self.WMainWindow.btnCOShowHide.setToolTip(_tr("Ocultar camino óptimo"))
             self.mostrar_camino_optimo_act()
 
     def recargar_estados(self):
