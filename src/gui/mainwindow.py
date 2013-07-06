@@ -176,6 +176,11 @@ class MainWindow(QtGui.QMainWindow):
         self._ent_progress_bar.setFormat(_tr("  %p% / %m episodios"))
         self._ent_progress_bar.setVisible(False)
 
+        self.lbl_nro_estado = QtGui.QLabel()
+        self.lbl_nro_estado.setFixedWidth(50)
+        self.lbl_nro_estado.setAlignment(QtCore.Qt.AlignHCenter)
+        self.WMainWindow.statusBar.addPermanentWidget(self.lbl_nro_estado)
+
         # Agregar etiqueta para mostrar coordenadas actuales
         self.lbl_item_actual = QtGui.QLabel()
         self.lbl_item_actual.setFixedWidth(120)
@@ -191,11 +196,6 @@ class MainWindow(QtGui.QMainWindow):
         self.lbl_rec_estado.setFixedWidth(80)
         self.lbl_rec_estado.setAlignment(QtCore.Qt.AlignHCenter)
         self.WMainWindow.statusBar.addPermanentWidget(self.lbl_rec_estado)
-
-        self.lbl_nro_estado = QtGui.QLabel()
-        self.lbl_nro_estado.setFixedWidth(50)
-        self.lbl_nro_estado.setAlignment(QtCore.Qt.AlignHCenter)
-        self.WMainWindow.statusBar.addPermanentWidget(self.lbl_nro_estado)
 
         self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.WMainWindow.tblGridWorld.setSortingEnabled(False)
