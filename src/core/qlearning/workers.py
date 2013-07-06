@@ -182,8 +182,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             x_act, y_act = generar_estado_aleatorio()
 
             # Normalizar coordenadas para uso interno
-            x_act -= 1
-            y_act -= 1
+            # x_act -= 1
+            # y_act -= 1
 
             # Generar estados aleatorios hasta que las coordenadas no
             # coincidan con las de un tipo excluido

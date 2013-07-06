@@ -96,7 +96,10 @@ class MainWindow(QtGui.QMainWindow):
         self.last_state_bg = None
         self.last_state_text = None
         self.camino_optimo = None
-        self.camino_optimo_active = None
+        self.camino_optimo_active = False
+        self.camino_optimo_start = None
+        self.camino_optimo_end = None
+        self.camino_optimo_cursor = None
         self.worker_paused = False
 
         # Variables necesarias para los gráficos
@@ -216,6 +219,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnGWGenerarEstados.setVisible(False)
         self.WMainWindow.btnPausar.setDisabled(True)
         self.WMainWindow.actionAgentePausar.setDisabled(True)
+        self.WMainWindow.btnCOAdelante.setDisabled(True)
+        self.WMainWindow.btnCOAtras.setDisabled(True)
 
         # Asignar shorcuts
         entrenar_shortcut = "F5"
@@ -405,6 +410,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbQLTau.editingFinished.connect(self.calcular_gamma_minimo)
         self.WMainWindow.btnPausar.clicked.connect(self.pausar_reanudar_proceso)
         self.WMainWindow.actionAgentePausar.triggered.connect(self.pausar_reanudar_proceso)
+        self.WMainWindow.btnCOAdelante.clicked.connect(self.estado_co_next)
+        self.WMainWindow.btnCOAtras.clicked.connect(self.estado_co_back)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -928,7 +935,6 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.btnRecorrer.setEnabled(True)
             self.WMainWindow.actionAgenteRecorrer.setEnabled(True)
             self.WMainWindow.gbCOAcciones.setEnabled(True)
-            self.WMainWindow.gbCOAnimacion.setEnabled(True)
             self.WMainWindow.statusBar.showMessage(_tr("Ha finalizado la búsqueda del camino óptimo."), 2000)
 
         self.WMainWindow.btnTerminarProceso.setEnabled(False)
@@ -1106,6 +1112,8 @@ class MainWindow(QtGui.QMainWindow):
                 try:
                     # Descomponer coordenadas de estado actual
                     x_actual, y_actual = estado_actual_ent
+
+                    self._logger.debug(estado_actual_ent)
 
                     # Mostrar información de entrenamiento en etiquetas
                     main_wnd.lblEntEstadoActual.setText("X:{0}  Y:{1}".format(x_actual,  # @IgnorePep8
@@ -1607,13 +1615,20 @@ class MainWindow(QtGui.QMainWindow):
             # FIXME
             self._logger.debug("Camino óptimo (sin repetidos): {0}".format(camino_optimo_sin_repetidos))
 
+            self.camino_optimo_end = len(camino) - 1
+            self.camino_optimo_start = 0
+            self.camino_optimo_cursor = len(camino) - 1
+
             # Determinar si se solicitó pintar el estado inicial
             if not paintinicial:
                 del camino[0]
+                self.camino_optimo_start += 1
 
             # Determinar si se solicitó pintar el estado inicial
             if not paintfinal:
                 del camino[-1]
+                self.camino_optimo_end -= 1
+                self.camino_optimo_cursor -= 1
 
             # Colorear items pertenecientes al camino optimo
             item_color = QtGui.QColor(self.window_config["opt_path"]["color"])
@@ -1625,6 +1640,9 @@ class MainWindow(QtGui.QMainWindow):
                 opt_item = gw_item(x - 1, y - 1)
                 opt_item.setBackgroundColor(item_color)
                 time.sleep(delay)
+
+            # Activar controles de avance
+            self.WMainWindow.btnCOAtras.setEnabled(True)
 
     def animar_camino_optimo(self):
         u"""
@@ -1661,16 +1679,27 @@ class MainWindow(QtGui.QMainWindow):
 
             camino_optimo = self.camino_optimo[:]
 
+            self.camino_optimo_end = len(camino_optimo) - 1
+            self.camino_optimo_start = 0
+            self.camino_optimo_cursor = len(camino_optimo) - 1
+
             if not paintinicial:
                 del camino_optimo[0]
+                self.camino_optimo_start += 1
 
             if not paintfinal:
                 del camino_optimo[-1]
+                self.camino_optimo_end -= 1
+                self.camino_optimo_cursor -= 1
 
             for x, y in camino_optimo:
                 item = gw_item(x - 1, y - 1)
                 estado = get_estado(x, y)
                 item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
+
+            # Desactivar controles de avance
+            self.WMainWindow.btnCOAdelante.setDisabled(True)
+            self.WMainWindow.btnCOAtras.setDisabled(True)
 
     def mostrar_camino_optimo_act(self):
         u"""
@@ -2017,7 +2046,7 @@ class MainWindow(QtGui.QMainWindow):
         incremento = 0.01
 
         c_decimal = decimal.Decimal
-        while 1:
+        while True:
             try:
                 calc_recomp_final = int(recomp_excelente / (gamma ** (exponente - 1)))
                 expo = c_decimal(calc_recomp_final) / tau
@@ -2185,6 +2214,9 @@ class MainWindow(QtGui.QMainWindow):
                                     self.WMainWindow.sbIntervaloDiffCalc.value()])
 
     def pausar_reanudar_proceso(self):
+        u"""
+        Pausa/Reanuda el Entrenamiento o Explotación.
+        """
         if self.worker_paused:
             try:
                 # Reanudar procesamiento
@@ -2229,3 +2261,51 @@ class MainWindow(QtGui.QMainWindow):
                     pass
             except AttributeError:
                 pass
+
+    def estado_co_back(self):
+        u"""
+        Retrocede un estado en el camino óptimo visualizado en pantalla.
+        """
+        if self.camino_optimo is not None and self.camino_optimo_active:
+            if self.camino_optimo_cursor >= self.camino_optimo_start:
+                # Obtener coordenadas
+                x, y = self.camino_optimo[self.camino_optimo_cursor]
+                item = self.WMainWindow.tblGridWorld.item(x - 1, y - 1)
+                estado = self.gridworld.get_estado(x, y)
+                item.setBackgroundColor(QtGui.QColor(estado.tipo.color))
+
+                # Comprobar si se llegó al comienzo del camino
+                if self.camino_optimo_cursor == self.camino_optimo_start:
+                    # Desactivar retroceso
+                    self.WMainWindow.btnCOAtras.setDisabled(True)
+                else:
+                    # Actualizar cursor de acceso
+                    self.camino_optimo_cursor -= 1
+
+                    # Reactivar botón de avance si es necesario
+                    if not self.WMainWindow.btnCOAdelante.isEnabled():
+                        self.WMainWindow.btnCOAdelante.setEnabled(True)
+
+    def estado_co_next(self):
+        u"""
+        Avanza un estado en el camino óptimo visualizado en pantalla.
+        """
+        if self.camino_optimo is not None and self.camino_optimo_active:
+            if self.camino_optimo_cursor <= self.camino_optimo_end:
+                # Obtener coordenadas
+                x, y = self.camino_optimo[self.camino_optimo_cursor]
+                item = self.WMainWindow.tblGridWorld.item(x - 1, y - 1)
+                item_color = QtGui.QColor(self.window_config["opt_path"]["color"])
+                item.setBackgroundColor(item_color)
+
+                # Comprobar si se llegó al final del camino
+                if self.camino_optimo_cursor == self.camino_optimo_end:
+                    # Desactivar avance
+                    self.WMainWindow.btnCOAdelante.setDisabled(True)
+                else:
+                    # Actualizar cursor de acceso
+                    self.camino_optimo_cursor += 1
+
+                    # Reactivar botón de retroceso si es necesario
+                    if not self.WMainWindow.btnCOAtras.isEnabled():
+                        self.WMainWindow.btnCOAtras.setEnabled(True)
