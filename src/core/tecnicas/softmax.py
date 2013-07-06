@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 
-import random
+import numpy
 
 try:
     import cdecimal as decimal
@@ -36,65 +36,67 @@ class Softmax(QLTecnica):
         # Establecer precisión de decimales a 5 dígitos
         decimal.getcontext().prec = 2
 
-    def obtener_accion(self, vecinos):
+    def obtener_accion(self, acciones):
         u"""
-        Dado un conjunto de vecinos selecciona acorde uno de ellos.
+        Dado un conjunto de acciones selecciona acorde uno de ellos.
 
-        :param vecinos: Diccionario conteniendo los vecinos de un estado.
+        :param acciones: Diccionario conteniendo los acciones de un estado.
         """
-        rnd_valor = random.randint(0, self.cant_ranuras - 1)
+        rnd_func = numpy.random.randint
+        np_where = numpy.where
+        cant_ranuras = self.cant_ranuras
 
-        intervalos_probabilidad = self.obtener_probabilidades(vecinos)
+        intervalos_probabilidad = self.obtener_probabilidades(acciones)
 
-        for key, intervalo in intervalos_probabilidad.iteritems():
-            if intervalo[0] <= rnd_valor <= intervalo[1]:
-                return key
+        # FIXME
+        # print intervalos_probabilidad
+        # print
 
-        return None
+        rnd_valor = rnd_func(0, cant_ranuras)
+        idx = np_where(rnd_valor <= intervalos_probabilidad)[0][0]
 
-    def obtener_probabilidades(self, vecinos):
+        return idx
+
+    def obtener_probabilidades(self, acciones):
         """
         Calcula y devuelve los intervalos de probabilidad para cada vecino.
 
-        :param vecinos: Diccionario conteniendo vecinos de un estado.
+        :param acciones: Diccionario conteniendo acciones de un estado.
         """
-        probabilidades_vecinos = {}
-        sigma = 0
-
         # Calcula las probabilidades de cada vecino
-        c_decimal = decimal.Decimal
         valor_param_parcial = self._val_param_parcial
+        c_decimal = decimal.Decimal
 
-        for key, q_valor in vecinos.iteritems():
+        # Arreglo auxiliar
+        probabilidades_acciones = numpy.empty(acciones.size, numpy.float)
+
+        for i, q_valor in numpy.ndenumerate(acciones):
             try:
                 exponente = c_decimal(q_valor) / valor_param_parcial
-                probabilidad_vecino = exponente.exp()
-                probabilidades_vecinos[key] = probabilidad_vecino
-                sigma += probabilidad_vecino
+                probabilidades_acciones[i[0]] = exponente.exp()
             except OverflowError:
                 pass
             except decimal.Overflow:
                 raise decimal.Overflow
 
+        # Constante de normalización
+        sigma = numpy.nansum(probabilidades_acciones)
+
         # Calcula las probabilidades de cada vecino normalizadas
-        for key, prob in probabilidades_vecinos.iteritems():
-            probabilidades_vecinos[key] = prob / sigma
+        probabilidades_acciones = numpy.true_divide(probabilidades_acciones, sigma)
 
-        sumatoria = 0
-        intervalos = {}
-        cant_ranuras = self.cant_ranuras
+        # Multiplicar por cantidad de ranuras
+        probabilidades_acciones *= self.cant_ranuras
+        # probabilidades_acciones = numpy.round(probabilidades_acciones * self.cant_ranuras)
 
-        redondear = round
-        for key, prob in probabilidades_vecinos.iteritems():
-            aux = sumatoria
-            calculo = redondear(prob * cant_ranuras)
-            sumatoria += calculo
-            ext_sup = sumatoria - 1
+        # probabilidades_acciones[probabilidades_acciones == 0] = numpy.nan
+        # probabilidades_acciones[probabilidades_acciones < 1] = numpy.nan
 
-            if cant_ranuras > aux <= ext_sup:
-                intervalos[key] = (aux, ext_sup)
+        # Armar intervalos sumando de manera acumulada
+        probabilidades_acciones = numpy.add(probabilidades_acciones * 0,
+                                            numpy.add.accumulate(numpy.nan_to_num(probabilidades_acciones)))
 
-        return intervalos
+        return probabilidades_acciones
 
     def decrementar_parametro(self):
         u"""

@@ -91,6 +91,7 @@
     </property>
     <addaction name="actionAgenteEntrenar"/>
     <addaction name="actionAgenteRecorrer"/>
+    <addaction name="actionAgentePausar"/>
     <addaction name="actionAgenteCancelar"/>
    </widget>
    <widget class="QMenu" name="menuConfiguracion">
@@ -1111,12 +1112,6 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dwEjecucion">
-   <property name="maximumSize">
-    <size>
-     <width>524287</width>
-     <height>170</height>
-    </size>
-   </property>
    <property name="locale">
     <locale language="Spanish" country="Argentina"/>
    </property>
@@ -1191,8 +1186,17 @@
         <string>Agente</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_18">
+        <property name="topMargin">
+         <number>4</number>
+        </property>
+        <property name="bottomMargin">
+         <number>4</number>
+        </property>
         <item row="0" column="0">
          <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <widget class="QPushButton" name="btnEntrenar">
             <property name="minimumSize">
@@ -1218,14 +1222,14 @@
             <property name="minimumSize">
              <size>
               <width>100</width>
-              <height>0</height>
+              <height>24</height>
              </size>
             </property>
             <property name="locale">
              <locale language="Spanish" country="Argentina"/>
             </property>
             <property name="text">
-             <string>Jugar</string>
+             <string>Explotar</string>
             </property>
             <property name="icon">
              <iconset resource="recursos.qrc">
@@ -1234,22 +1238,39 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="btnPausar">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Pausar</string>
+            </property>
+            <property name="icon">
+             <iconset resource="recursos.qrc">
+              <normaloff>:/iconos/Pausar.png</normaloff>:/iconos/Pausar.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="btnTerminarProceso">
             <property name="minimumSize">
              <size>
               <width>100</width>
-              <height>0</height>
+              <height>24</height>
              </size>
             </property>
             <property name="locale">
              <locale language="Spanish" country="Argentina"/>
             </property>
             <property name="text">
-             <string>Cancelar</string>
+             <string>Detener</string>
             </property>
             <property name="icon">
              <iconset resource="recursos.qrc">
-              <normaloff>:/iconos/Cancelar.png</normaloff>:/iconos/Cancelar.png</iconset>
+              <normaloff>:/iconos/Detener.png</normaloff>:/iconos/Detener.png</iconset>
             </property>
            </widget>
           </item>
@@ -1754,7 +1775,7 @@
      <item row="1" column="0">
       <widget class="QGroupBox" name="gbRecorrido">
        <property name="title">
-        <string>Recorrido</string>
+        <string>Explotación</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_16">
         <item row="0" column="0">
@@ -1880,7 +1901,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>Recorrido:</string>
+                <string>Explotación:</string>
                </property>
               </widget>
              </item>
@@ -2014,16 +2035,16 @@
      <normaloff>:/iconos/Recorrer.png</normaloff>:/iconos/Recorrer.png</iconset>
    </property>
    <property name="text">
-    <string>Recorrer</string>
+    <string>Explotar</string>
    </property>
   </action>
   <action name="actionAgenteCancelar">
    <property name="icon">
     <iconset resource="recursos.qrc">
-     <normaloff>:/iconos/Cancelar.png</normaloff>:/iconos/Cancelar.png</iconset>
+     <normaloff>:/iconos/Detener.png</normaloff>:/iconos/Detener.png</iconset>
    </property>
    <property name="text">
-    <string>Cancelar</string>
+    <string>Detener</string>
    </property>
   </action>
   <action name="actionInicializarTodo">
@@ -2034,6 +2055,15 @@
   <action name="actionEre">
    <property name="text">
     <string>ere</string>
+   </property>
+  </action>
+  <action name="actionAgentePausar">
+   <property name="icon">
+    <iconset resource="recursos.qrc">
+     <normaloff>:/iconos/Pausar.png</normaloff>:/iconos/Pausar.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pausar</string>
    </property>
   </action>
  </widget>

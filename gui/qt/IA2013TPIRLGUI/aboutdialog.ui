@@ -51,7 +51,7 @@
   <widget class="QLabel" name="lblAppVersion">
    <property name="geometry">
     <rect>
-     <x>328</x>
+     <x>312</x>
      <y>104</y>
      <width>121</width>
      <height>16</height>
