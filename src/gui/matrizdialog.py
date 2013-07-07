@@ -61,8 +61,11 @@ class ShowMatrizDialog(QtGui.QDialog):
         ancho_mat, alto_mat = matriz.shape
 
         # Dimensiones del GridWorld
-        alto_gw = int(alto_mat ** 0.5)
-        ancho_gw = int(ancho_mat ** 0.5)
+        self.alto_gw = int(alto_mat ** 0.5)
+        self.ancho_gw = int(ancho_mat ** 0.5)
+
+        alto_gw = self.alto_gw
+        ancho_gw = self.ancho_gw
 
         ancho_estado_px = self.window_config["item"]["size"]
         # ancho_gw_px = ancho_estado_px * ancho_gw

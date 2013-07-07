@@ -37,6 +37,8 @@ from graphs.avgrwds.worker import GraphRecompensasPromedioWorker
 from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
 # from graphs.itersep.worker import GraphIteracionesXEpisodioWorker
 from graphs.matdiffs.worker import GraphMatrizDiffsWorker
+from graphs.heatmaps.matrizr import ShowMatrizRHeatMap
+from graphs.heatmaps.matrizq import ShowMatrizQHeatMap
 
 from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
@@ -155,7 +157,8 @@ class MainWindow(QtGui.QMainWindow):
                                                    8: 20,
                                                    9: 29,
                                                    10: 32
-                                                   }
+                                                   },
+                              "heatmap": {"interpolation": "nearest"}
                               }
 
     def _initialize_window(self):
@@ -208,7 +211,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.actionAgenteRecorrer.setDisabled(True)
         self.WMainWindow.actionAgenteCancelar.setDisabled(True)
         self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
+        self.WMainWindow.btnMatrizQVerHM.setDisabled(True)
         self.WMainWindow.btnMostrarMatrizR.setDisabled(True)
+        self.WMainWindow.btnMatrizRVerHM.setDisabled(True)
         self.WMainWindow.lblCantMaxIteraciones.setDisabled(True)
         self.WMainWindow.sbCantMaxIteraciones.setDisabled(True)
         self.WMainWindow.gbCOAcciones.setDisabled(True)
@@ -290,6 +295,7 @@ class MainWindow(QtGui.QMainWindow):
         self.setMouseTracking(True)
 
         self.generar_menu_pruebas()
+        self.generar_menu_hm_ip()
         # self.generar_menu_edicion()
         # self.generar_menu_estadisticas()
 
@@ -317,9 +323,11 @@ class MainWindow(QtGui.QMainWindow):
         """
         # Desactivar la visualización de la Matriz R
         self.WMainWindow.btnMostrarMatrizR.setDisabled(True)
+        self.WMainWindow.btnMatrizRVerHM.setDisabled(True)
 
         # Desactiva la visualización de la Matriz Q y el Juego
         self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
+        self.WMainWindow.btnMatrizQVerHM.setDisabled(True)
         self.WMainWindow.btnRecorrer.setDisabled(True)
 
         # Desactivar controles para mostrar camino optimo
@@ -365,6 +373,7 @@ class MainWindow(QtGui.QMainWindow):
         self.recargar_estados()
 
         self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
+        self.WMainWindow.btnMatrizRVerHM.setEnabled(True)
 
     def _set_window_signals(self):
         u"""
@@ -412,6 +421,9 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.actionAgentePausar.triggered.connect(self.pausar_reanudar_proceso)
         self.WMainWindow.btnCOAdelante.clicked.connect(self.estado_co_next)
         self.WMainWindow.btnCOAtras.clicked.connect(self.estado_co_back)
+        self.WMainWindow.btnMatrizQVerHM.clicked.connect(self.mostrar_matrizq_hm)
+        self.WMainWindow.btnMatrizRVerHM.clicked.connect(self.mostrar_matrizr_hm)
+        self.WMainWindow.menuInterpolacion.triggered.connect(self.set_hm_interpolation)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -881,7 +893,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.gbGridWorld.setDisabled(True)
         self.WMainWindow.gbQLearning.setDisabled(True)
         self.WMainWindow.gbGeneral.setDisabled(True)
-        self.WMainWindow.gbMatrices.setDisabled(True)
+        self.WMainWindow.gbMatrizQ.setDisabled(True)
+        self.WMainWindow.gbMatrizR.setDisabled(True)
         self.WMainWindow.gbCOAcciones.setDisabled(True)
         self.WMainWindow.menuConfiguracion.setDisabled(True)
         self.WMainWindow.menuPruebas.setDisabled(True)
@@ -912,7 +925,8 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.gbGridWorld.setEnabled(True)
         self.WMainWindow.gbQLearning.setEnabled(True)
         self.WMainWindow.gbGeneral.setEnabled(True)
-        self.WMainWindow.gbMatrices.setEnabled(True)
+        self.WMainWindow.gbMatrizQ.setEnabled(True)
+        self.WMainWindow.gbMatrizR.setEnabled(True)
         self.WMainWindow.menuConfiguracion.setEnabled(True)
         self.WMainWindow.menuPruebas.setEnabled(True)
         self.WMainWindow.menuEstadisticas.setEnabled(True)
@@ -927,6 +941,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.btnRecorrer.setEnabled(test_matriz_q)
             self.WMainWindow.actionAgenteRecorrer.setEnabled(test_matriz_q)
             self.WMainWindow.btnMostrarMatrizQ.setEnabled(test_matriz_q)
+            self.WMainWindow.btnMatrizQVerHM.setEnabled(test_matriz_q)
 
         if self.recorrer_is_running:
             self.recorrer_is_running = False
@@ -952,6 +967,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # self.WMainWindow.statusBar.clearMessage()
         self.WMainWindow.btnMostrarMatrizR.setEnabled(True)
+        self.WMainWindow.btnMatrizRVerHM.setEnabled(True)
 
         # Restaurar color original del estado final
         try:
@@ -1112,8 +1128,6 @@ class MainWindow(QtGui.QMainWindow):
                 try:
                     # Descomponer coordenadas de estado actual
                     x_actual, y_actual = estado_actual_ent
-
-                    self._logger.debug(estado_actual_ent)
 
                     # Mostrar información de entrenamiento en etiquetas
                     main_wnd.lblEntEstadoActual.setText("X:{0}  Y:{1}".format(x_actual,  # @IgnorePep8
@@ -1491,6 +1505,7 @@ class MainWindow(QtGui.QMainWindow):
         self.set_gw_dimension(self.WMainWindow.cbGWDimension.itemData(indice).toString())
         self.WMainWindow.btnRecorrer.setDisabled(True)
         self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
+        self.WMainWindow.btnMatrizQVerHM.setDisabled(True)
 
     def inicializar_ql_vals(self):
         u"""
@@ -1780,6 +1795,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         self.WMainWindow.btnRecorrer.setDisabled(True)
         self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
+        self.WMainWindow.btnMatrizQVerHM.setDisabled(True)
 
         if rnd_dim:
             indice = random.randint(0, self.WMainWindow.cbGWDimension.count() - 1)
@@ -2309,3 +2325,52 @@ class MainWindow(QtGui.QMainWindow):
                     # Reactivar botón de retroceso si es necesario
                     if not self.WMainWindow.btnCOAtras.isEnabled():
                         self.WMainWindow.btnCOAtras.setEnabled(True)
+
+    def generar_menu_hm_ip(self):
+        u"""
+        Crea el submenú Interpolaciones del Heatmap.
+        """
+        self._logger.debug("Generar Menú Interpolación")
+
+        self.WMainWindow.menuInterpolacion.clear()
+
+        interpolation_group = QtGui.QActionGroup(self)
+        interpolations = ["None", "Nearest", "Bilinear", "Bicubic", "Hanning",
+                          "Hamming", "Hermite", "Kaiser", "Gaussian", "Bessel"]
+        default = 1
+
+        mw = self.WMainWindow
+
+        for n, interp in enumerate(interpolations):
+            if interp is None:
+                text = 'None'
+                data = None
+            else:
+                text = interp
+                data = interp.lower()
+
+            action = QtGui.QAction(_tr(text), self)
+            action.setData(data)
+            action.setCheckable(True)
+            action.setActionGroup(interpolation_group)
+
+            if n == default:
+                action.setChecked(True)
+
+            mw.menuInterpolacion.addAction(action)
+
+    def mostrar_matrizq_hm(self):
+        interpolation = self.window_config["heatmap"]["interpolation"]
+
+        if self.matriz_q is not None:
+            smq = ShowMatrizQHeatMap(self.matriz_q)
+            smq.show_heatmap(interpolation)
+
+    def mostrar_matrizr_hm(self):
+        interpolation = self.window_config["heatmap"]["interpolation"]
+        smr = ShowMatrizRHeatMap(self.gridworld.get_matriz_r())
+        smr.show_heatmap(interpolation)
+
+    def set_hm_interpolation(self, item):
+        interpolation = item.data().toString()
+        self.window_config["heatmap"]["interpolation"] = str(interpolation)

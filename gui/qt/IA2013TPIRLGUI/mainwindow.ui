@@ -1056,59 +1056,103 @@
     <number>2</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_4">
-    <layout class="QGridLayout" name="gridLayout_20">
-     <property name="topMargin">
-      <number>4</number>
-     </property>
-     <property name="bottomMargin">
-      <number>4</number>
-     </property>
-     <item row="0" column="1">
-      <widget class="QGroupBox" name="gbMatrices">
-       <property name="title">
-        <string>Matrices</string>
+    <layout class="QGridLayout" name="gridLayout_19">
+     <item row="3" column="1">
+      <spacer name="verticalSpacer_9">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
        </property>
-       <layout class="QGridLayout" name="gridLayout_19">
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="1">
+      <widget class="QGroupBox" name="gbMatrizQ">
+       <property name="title">
+        <string>Matriz Q</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_20">
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="bottomMargin">
+         <number>3</number>
+        </property>
+        <property name="spacing">
+         <number>3</number>
+        </property>
         <item row="0" column="0">
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QPushButton" name="btnMostrarMatrizR">
-            <property name="minimumSize">
-             <size>
-              <width>105</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="locale">
-             <locale language="Spanish" country="Argentina"/>
-            </property>
-            <property name="text">
-             <string>Mostrar Matriz R...</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnMostrarMatrizQ">
-            <property name="minimumSize">
-             <size>
-              <width>105</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="locale">
-             <locale language="Spanish" country="Argentina"/>
-            </property>
-            <property name="text">
-             <string>Mostrar Matriz Q...</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QPushButton" name="btnMostrarMatrizQ">
+          <property name="minimumSize">
+           <size>
+            <width>105</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="locale">
+           <locale language="Spanish" country="Argentina"/>
+          </property>
+          <property name="text">
+           <string>Ver matriz...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="btnMatrizQVerHM">
+          <property name="text">
+           <string>Ver heatmap...</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
      </item>
-     <item row="0" column="0">
+     <item row="0" column="1">
+      <widget class="QGroupBox" name="gbMatrizR">
+       <property name="title">
+        <string>Matriz R</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_27">
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="bottomMargin">
+         <number>3</number>
+        </property>
+        <property name="spacing">
+         <number>3</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="btnMostrarMatrizR">
+          <property name="minimumSize">
+           <size>
+            <width>105</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="locale">
+           <locale language="Spanish" country="Argentina"/>
+          </property>
+          <property name="text">
+           <string>Ver matriz...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="btnMatrizRVerHM">
+          <property name="text">
+           <string>Ver heatmap...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="0" column="0" rowspan="3">
       <widget class="QGroupBox" name="gbAgente">
        <property name="title">
         <string>Agente</string>
@@ -1963,10 +2007,23 @@
       <string>Q-Learning</string>
      </property>
     </widget>
+    <widget class="QMenu" name="menuHeatmap">
+     <property name="title">
+      <string>Heatmap</string>
+     </property>
+     <widget class="QMenu" name="menuInterpolacion">
+      <property name="title">
+       <string>Interpolación</string>
+      </property>
+     </widget>
+     <addaction name="menuInterpolacion"/>
+    </widget>
     <addaction name="menuGridWorld"/>
     <addaction name="menuQLearning"/>
     <addaction name="separator"/>
     <addaction name="actionInicializarTodo"/>
+    <addaction name="separator"/>
+    <addaction name="menuHeatmap"/>
    </widget>
    <widget class="QMenu" name="menuEstadisticas">
     <property name="title">
@@ -2036,6 +2093,31 @@
     <string>Pausar</string>
    </property>
   </action>
+  <action name="actionNearest">
+   <property name="text">
+    <string>Nearest</string>
+   </property>
+  </action>
+  <action name="actionBilinear">
+   <property name="text">
+    <string>Bilinear</string>
+   </property>
+  </action>
+  <action name="actionBicubic">
+   <property name="text">
+    <string>Bicubic</string>
+   </property>
+  </action>
+  <action name="actionDf">
+   <property name="text">
+    <string>df</string>
+   </property>
+  </action>
+  <action name="actionDfsd">
+   <property name="text">
+    <string>dfsd</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
@@ -2064,8 +2146,6 @@
   <tabstop>btnEntrenar</tabstop>
   <tabstop>btnRecorrer</tabstop>
   <tabstop>btnTerminarProceso</tabstop>
-  <tabstop>btnMostrarMatrizR</tabstop>
-  <tabstop>btnMostrarMatrizQ</tabstop>
   <tabstop>btnCOShowHide</tabstop>
   <tabstop>btnInicializarValoresQL</tabstop>
  </tabstops>
