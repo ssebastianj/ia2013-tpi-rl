@@ -177,6 +177,18 @@ Contents:
    :private-members:
    :special-members:
 
+.. automodule:: graphs.heatmaps.matrizq
+.. autoclass:: ShowMatrizQHeatMap
+   :members:
+   :private-members:
+   :special-members:
+   
+.. automodule:: graphs.heatmaps.matrizr
+.. autoclass:: ShowMatrizRHeatMap
+   :members:
+   :private-members:
+   :special-members:
+
 Indices and tables
 ==================
 

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Sun Jul 07 14:33:37 2013
+# Created: Sun Jul 07 16:27:03 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -978,9 +978,11 @@ class Ui_MainWindow(object):
         self.dwEjecucion.setWindowTitle(_translate("MainWindow", "Ejecución", None))
         self.gbMatrizQ.setTitle(_translate("MainWindow", "Matriz Q", None))
         self.btnMostrarMatrizQ.setText(_translate("MainWindow", "Ver matriz...", None))
+        self.btnMatrizQVerHM.setToolTip(_translate("MainWindow", "Generar y mostrar heatmap de Matriz Q", None))
         self.btnMatrizQVerHM.setText(_translate("MainWindow", "Ver heatmap...", None))
         self.gbMatrizR.setTitle(_translate("MainWindow", "Matriz R", None))
         self.btnMostrarMatrizR.setText(_translate("MainWindow", "Ver matriz...", None))
+        self.btnMatrizRVerHM.setToolTip(_translate("MainWindow", "Generar y mostrar heatmap de Matriz R", None))
         self.btnMatrizRVerHM.setText(_translate("MainWindow", "Ver heatmap...", None))
         self.gbAgente.setTitle(_translate("MainWindow", "Agente", None))
         self.btnEntrenar.setText(_translate("MainWindow", "Entrenar", None))

@@ -1103,6 +1103,9 @@
         </item>
         <item row="1" column="0">
          <widget class="QPushButton" name="btnMatrizQVerHM">
+          <property name="toolTip">
+           <string>Generar y mostrar heatmap de Matriz Q</string>
+          </property>
           <property name="text">
            <string>Ver heatmap...</string>
           </property>
@@ -1144,6 +1147,9 @@
         </item>
         <item row="1" column="0">
          <widget class="QPushButton" name="btnMatrizRVerHM">
+          <property name="toolTip">
+           <string>Generar y mostrar heatmap de Matriz R</string>
+          </property>
           <property name="text">
            <string>Ver heatmap...</string>
           </property>

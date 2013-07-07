@@ -2330,8 +2330,6 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Crea el submenú Interpolaciones del Heatmap.
         """
-        self._logger.debug("Generar Menú Interpolación")
-
         self.WMainWindow.menuInterpolacion.clear()
 
         interpolation_group = QtGui.QActionGroup(self)
@@ -2360,6 +2358,9 @@ class MainWindow(QtGui.QMainWindow):
             mw.menuInterpolacion.addAction(action)
 
     def mostrar_matrizq_hm(self):
+        u"""
+        Genera y muestra un heatmap en base a la Matriz Q.
+        """
         interpolation = self.window_config["heatmap"]["interpolation"]
 
         if self.matriz_q is not None:
@@ -2367,10 +2368,18 @@ class MainWindow(QtGui.QMainWindow):
             smq.show_heatmap(interpolation)
 
     def mostrar_matrizr_hm(self):
+        u"""
+        Genera y muestra un heatmap en base a la Matriz R.
+        """
         interpolation = self.window_config["heatmap"]["interpolation"]
         smr = ShowMatrizRHeatMap(self.gridworld.get_matriz_r())
         smr.show_heatmap(interpolation)
 
     def set_hm_interpolation(self, item):
+        u"""
+        Establece el tipo de interpolación del heatmap generado por matriz.
+
+        :param item: Ítem de menu conteniendo un valor de interpolación válido.
+        """
         interpolation = item.data().toString()
         self.window_config["heatmap"]["interpolation"] = str(interpolation)
