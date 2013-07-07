@@ -314,11 +314,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                     'ProcesoPaused': True,
                                     'ValorParametro': tecnica.valor_param_parcial,
                                     'MatDiff': tmp_diff_mat,
-                                    'MatRecompProm': rp_res_promedio,
-                                    'EpFinalizados': episodios_finalizados,
-                                    # 'ItersXEpisodio': iters_por_episodio,
-                                    'MatDiffStat': mat_diff_array,
-                                    'MatEstAcc': matriz_est_acc
                                     })
 
                     while pauserequest_isset() and not stoprequest_isset():
@@ -422,11 +417,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                 'ProcesoPaused': True,
                                 'ValorParametro': tecnica.valor_param_parcial,
                                 'MatDiff': tmp_diff_mat,
-                                'MatRecompProm': rp_res_promedio,
-                                'EpFinalizados': episodios_finalizados,
-                                # 'ItersXEpisodio': iters_por_episodio,
-                                'MatDiffStat': mat_diff_array,
-                                'MatEstAcc': matriz_est_acc
                                 })
 
                 while pauserequest_isset() and not stoprequest_isset():
