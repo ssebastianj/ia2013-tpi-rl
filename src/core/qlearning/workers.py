@@ -105,6 +105,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         alto = self.alto
         inp_queue = self._inp_queue
         out_queue = self._out_queue
+        sleepd = time.sleep
         # --------------------------------------------------------------------
 
         # Cantidad máxima de iteraciones antes de emitir un aviso
@@ -300,8 +301,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # FIXME
                 # iters_por_episodio[epnum - 1] = cant_iteraciones
 
-                # WIP: Pausar procesamiento
                 # ---------------------- Pausa --------------------------
+                # ------------ Primer verificación ----------------------
                 # Comprobar si se solicitó pausar el procesamiento
                 if pauserequest_isset():
                     # Encolar datos de salida (Dump del contexto actual)
@@ -321,7 +322,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                     })
 
                     while pauserequest_isset() and not stoprequest_isset():
-                        time.sleep(1)
+                        sleepd(1)
                 # ==================== Fin de iteraciones ====================
 
             iter_end_time = wtimer()
@@ -407,6 +408,29 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
             # Avanzar un episodio
             epnum += 1
+
+            # ---------------------- Pausa --------------------------
+            # ------------ Segunda verificación ---------------------
+            # Comprobar si se solicitó pausar el procesamiento
+            if pauserequest_isset():
+                # Encolar datos de salida (Dump del contexto actual)
+                encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
+                                'NroEpisodio': epnum - 1,
+                                'NroIteracion': cant_iteraciones,
+                                'MatrizQ': matriz_q,
+                                'ProcesoJoined': False,
+                                'ProcesoPaused': True,
+                                'ValorParametro': tecnica.valor_param_parcial,
+                                'MatDiff': tmp_diff_mat,
+                                'MatRecompProm': rp_res_promedio,
+                                'EpFinalizados': episodios_finalizados,
+                                # 'ItersXEpisodio': iters_por_episodio,
+                                'MatDiffStat': mat_diff_array,
+                                'MatEstAcc': matriz_est_acc
+                                })
+
+                while pauserequest_isset() and not stoprequest_isset():
+                    sleepd(1)
             # ======================= Fin de episodios =======================
 
         # FIXME: Estadística
@@ -708,6 +732,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._out_queue = out_queue
         self._error_queue = error_queue
         self._stoprequest = multiprocessing.Event()
+        self._pauserequest = multiprocessing.Event()
         self.name = "QLearningRecorrerWorker"
         self.input_data = None
 
@@ -772,16 +797,23 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         except IndexError:
             tipo_estado = estado_actual
 
+        # Cachear acceso a funciones y atributos de instancia
+        encolar_salida = self.encolar_salida
+        pauserequest_isset = self._pauserequest.is_set
+        stoprequest_isset = self._stoprequest.is_set
+        inp_queue = self._inp_queue
+        out_queue = self._out_queue
+        co_append = camino_optimo.append
+        sleepd = time.sleep
+        # --------------------------------------------------------------------
+
         # Inicializar contador de iteraciones
         cant_iteraciones = 1
 
-        # Cachear acceso a métodos y atributos
-        encolar_salida = self.encolar_salida
-        co_append = camino_optimo.append
-
-        while (not self._stoprequest.is_set()) and (tipo_estado != TIPOESTADO.FINAL):
+        while (not stoprequest_isset()) and (tipo_estado != TIPOESTADO.FINAL):
             encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
                             'ProcesoJoined': False,
+                            'ProcesoPaused': False,
                             'NroIteracion': cant_iteraciones})
 
             # Coordenada Y de la matriz (fila)
@@ -810,9 +842,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
             try:
                 tipo_estado = estado_actual[0]
-            except TypeError:
-                tipo_estado = estado_actual
-            except IndexError:
+            except (TypeError, IndexError):
                 tipo_estado = estado_actual
 
             # Nuevo estado = Acción elegida
@@ -821,6 +851,20 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
             # Incrementar número de iteraciones
             cant_iteraciones += 1
+
+            # ---------------------- Pausa --------------------------
+            # ------------ Primer verificación ----------------------
+            # Comprobar si se solicitó pausar el procesamiento
+            if pauserequest_isset():
+                # Encolar datos de salida (Dump del contexto actual)
+                encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
+                                'ProcesoJoined': False,
+                                'ProcesoPaused': False,
+                                'NroIteracion': cant_iteraciones})
+
+                while pauserequest_isset() and not stoprequest_isset():
+                    sleepd(1)
+            # ==================== Fin iteraciones ============================
 
         # Registrar tiempo de finalización
         running_end_time = rec_end_time = wtimer()
@@ -837,6 +881,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
                              'CaminoRecorrido': camino_optimo,
                              'RecorridoExecTime': rec_exec_time,
                              'ProcesoJoined': False,
+                             'ProcesoPaused': False,
                              'RunningExecTime': running_exec_time})
 
         # Realizar tareas al finalizar
@@ -873,3 +918,17 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             self._error_queue.put(error)
         except Queue.Full:
             pass
+
+    def pausar(self):
+        u"""
+        Solicitud de Pausa del procesamiento.
+        """
+        # Activar flag para pausar proceso
+        self._pauserequest.set()
+
+    def reanudar(self):
+        u"""
+        Solicitud de Reanudar el procesamiento.
+        """
+        # Desactivar flag para pausar proceso
+        self._pauserequest.clear()

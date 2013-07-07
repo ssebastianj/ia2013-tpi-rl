@@ -175,6 +175,12 @@ class MainWindow(QtGui.QMainWindow):
         self.setWindowFlags(QtCore.Qt.WindowSoftkeysVisibleHint)
 
         # Configurar statusbar
+
+        self.lbl_process_stat = QtGui.QLabel()
+        self.lbl_process_stat.setFixedWidth(80)
+        self.lbl_process_stat.setAlignment(QtCore.Qt.AlignHCenter)
+        self.WMainWindow.statusBar.addPermanentWidget(self.lbl_process_stat)
+
         # Agregar barra de progreso
         self._ent_progress_bar = QtGui.QProgressBar()
         self.WMainWindow.statusBar.addPermanentWidget(self._ent_progress_bar)
@@ -183,13 +189,13 @@ class MainWindow(QtGui.QMainWindow):
         self._ent_progress_bar.setVisible(False)
 
         self.lbl_nro_estado = QtGui.QLabel()
-        self.lbl_nro_estado.setFixedWidth(50)
+        self.lbl_nro_estado.setFixedWidth(40)
         self.lbl_nro_estado.setAlignment(QtCore.Qt.AlignHCenter)
         self.WMainWindow.statusBar.addPermanentWidget(self.lbl_nro_estado)
 
         # Agregar etiqueta para mostrar coordenadas actuales
         self.lbl_item_actual = QtGui.QLabel()
-        self.lbl_item_actual.setFixedWidth(120)
+        self.lbl_item_actual.setFixedWidth(110)
         self.lbl_item_actual.setAlignment(QtCore.Qt.AlignHCenter)
         self.WMainWindow.statusBar.addPermanentWidget(self.lbl_item_actual)
 
@@ -852,6 +858,7 @@ class MainWindow(QtGui.QMainWindow):
 
         if self.entrenar_is_running:
             self.WMainWindow.statusBar.showMessage(_tr("Entrenando agente..."))
+            self.lbl_process_stat.setText("Entrenando")
             self.WMainWindow.btnEntrenar.setDisabled(self.entrenar_is_running)
             self.WMainWindow.btnRecorrer.setDisabled(self.entrenar_is_running)
             self.WMainWindow.actionAgenteEntrenar.setDisabled(self.entrenar_is_running)
@@ -877,6 +884,7 @@ class MainWindow(QtGui.QMainWindow):
 
         if self.recorrer_is_running:
             self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
+            self.lbl_process_stat.setText("Explotando")
             self.WMainWindow.btnEntrenar.setDisabled(self.recorrer_is_running)
             self.WMainWindow.btnRecorrer.setDisabled(self.recorrer_is_running)
             self.WMainWindow.actionAgenteEntrenar.setDisabled(self.recorrer_is_running)
@@ -956,6 +964,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.actionAgenteCancelar.setEnabled(False)
         self.WMainWindow.btnPausar.setEnabled(False)
         self.WMainWindow.actionAgentePausar.setEnabled(False)
+        self.lbl_process_stat.setText("")
 
         self.worker_paused = False
         resume_icon = QtGui.QIcon(QtGui.QPixmap(":/iconos/Pausar.png"))
@@ -1302,7 +1311,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def mostrar_info_est_status_bar(self, item):
         u"""
-        Muestra información en la barra de estado acerca del estado actual 
+        Muestra información en la barra de estado acerca del estado actual
         en grilla.
 
         :param item: Item seleccionado.
@@ -2247,6 +2256,12 @@ class MainWindow(QtGui.QMainWindow):
                 self.WMainWindow.actionAgentePausar.setText(resume_text)
                 self.WMainWindow.actionAgentePausar.setIcon(resume_icon)
 
+                # Mostrar cursor de ocupado indicando que se está procesando
+                QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BusyCursor))
+
+                status_text = self.lbl_process_stat_text
+                self.lbl_process_stat.setText(_tr(status_text))
+
                 # Cambiar estado de progress bar de Windows
                 try:
                     self.wnd_taskbar.SetProgressState(self.winId(),
@@ -2268,6 +2283,12 @@ class MainWindow(QtGui.QMainWindow):
                 self.WMainWindow.btnPausar.setIcon(pausar_icon)
                 self.WMainWindow.actionAgentePausar.setIcon(pausar_icon)
                 self.WMainWindow.actionAgentePausar.setText(pausar_text)
+
+                # Restaurar cursor normal
+                QtGui.QApplication.restoreOverrideCursor()
+
+                self.lbl_process_stat_text = self.lbl_process_stat.text()
+                self.lbl_process_stat.setText(_tr("Pausado"))
 
                 # Cambiar estado de progress bar de Windows
                 try:
