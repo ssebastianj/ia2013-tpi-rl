@@ -8,11 +8,25 @@ import matplotlib.pyplot as plt
 
 
 class ShowMatrizRHeatMap(object):
+    u"""
+    Clase dedicada a generar y mostrar un heatmap de la Matriz R.
+    """
     def __init__(self, matrizr, parent=None):
+        u"""
+        Inicializador de la clase.
+
+        :param matrizq: Matriz R a representar.
+        :param parent: Ventana padre.
+        """
         super(ShowMatrizRHeatMap, self).__init__()
         self.matriz = matrizr
 
     def show_heatmap(self, interpolation=None):
+        u"""
+        Generar y mostrar heatmap.
+
+        :param interpolation: Parámetro válido de interpolación del heatmap.
+        """
         # Dimensiones de la matriz
         ancho_mat, alto_mat = self.matriz.shape
 
