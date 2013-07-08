@@ -73,6 +73,7 @@ class ShowMatrizDialog(QtGui.QDialog):
         # Establecer propiedades visuales de la tabla
         self.ShowMatrizD.tblMatriz.setRowCount(alto_mat)
         self.ShowMatrizD.tblMatriz.setColumnCount(ancho_mat)
+        self.ShowMatrizD.tblMatriz.setMouseTracking(True)
 
         # Desactivar actualización de la tabla para optimizar la carga
         self.ShowMatrizD.tblMatriz.setUpdatesEnabled(False)
@@ -150,7 +151,22 @@ class ShowMatrizDialog(QtGui.QDialog):
         self.ShowMatrizD.tblMatriz.resizeColumnsToContents()
 
     def _set_dialog_signals(self):
-        pass
+        self.ShowMatrizD.tblMatriz.itemEntered.connect(self.mostrar_info_item)
+
+    def mostrar_info_item(self, item):
+        nro_estado = item.row()
+        nro_accion = item.column()
+        item_valor = str(item.text())
+
+        try:
+            item_text = "Valor = {0}".format(float(item_valor))
+        except ValueError:
+            item_text = "Sin transición"
+
+        self.ShowMatrizD.lblMatrizItemInfo.setText(_tr("Estado {0} --> Acción {1} ({2})"
+                                                       .format(nro_estado,
+                                                               nro_accion,
+                                                               item_text)))
 
     def accept(self):
         super(ShowMatrizDialog, self).accept()

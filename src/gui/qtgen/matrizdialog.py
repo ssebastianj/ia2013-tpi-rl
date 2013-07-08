@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\matrizdialog.ui'
 #
-# Created: Mon Jul 08 15:03:25 2013
+# Created: Mon Jul 08 15:58:41 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -71,9 +71,14 @@ class Ui_MatrizDialog(object):
         self.btnCerrarDialogo = QtGui.QPushButton(MatrizDialog)
         self.btnCerrarDialogo.setDefault(True)
         self.btnCerrarDialogo.setObjectName(_fromUtf8("btnCerrarDialogo"))
-        self.gridLayout.addWidget(self.btnCerrarDialogo, 1, 2, 1, 1)
+        self.gridLayout.addWidget(self.btnCerrarDialogo, 1, 3, 1, 1)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem, 1, 1, 1, 1)
+        self.gridLayout.addItem(spacerItem, 1, 2, 1, 1)
+        self.lblMatrizItemInfo = QtGui.QLabel(MatrizDialog)
+        self.lblMatrizItemInfo.setObjectName(_fromUtf8("lblMatrizItemInfo"))
+        self.gridLayout.addWidget(self.lblMatrizItemInfo, 1, 1, 1, 1)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem1, 1, 0, 1, 1)
         self.line = QtGui.QFrame(MatrizDialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -83,7 +88,7 @@ class Ui_MatrizDialog(object):
         self.line.setFrameShape(QtGui.QFrame.HLine)
         self.line.setFrameShadow(QtGui.QFrame.Sunken)
         self.line.setObjectName(_fromUtf8("line"))
-        self.gridLayout.addWidget(self.line, 0, 0, 1, 3)
+        self.gridLayout.addWidget(self.line, 0, 0, 1, 4)
         self.gridLayout_2.addLayout(self.gridLayout, 2, 0, 1, 2)
 
         self.retranslateUi(MatrizDialog)
@@ -94,4 +99,5 @@ class Ui_MatrizDialog(object):
         self.label.setText(_translate("MatrizDialog", "Acciones", None))
         self.label_2.setText(_translate("MatrizDialog", "Estados", None))
         self.btnCerrarDialogo.setText(_translate("MatrizDialog", "&Cerrar", None))
+        self.lblMatrizItemInfo.setText(_translate("MatrizDialog", "-", None))
 
