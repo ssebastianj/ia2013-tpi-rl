@@ -253,7 +253,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                 'NroIteracion': cant_iteraciones,
                                 'ValorParametro': tecnica.valor_param_parcial,
                                 'ProcesoJoined': False,
-                                'ProcesoPaused': True
+                                'ProcesoPaused': False
                                 })
 
                 # ------------ Recompensas promedio ---------------------------
@@ -335,6 +335,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 tecnica.decrementar_parametro()
                 decrementar_step = 0
 
+            # TODO: Re-escribir cálculo de diferencia de matrices
+            # ------------------------------------------------------------------
             if matdiff_active:
                 if calc_mat_diff_cont == 0:
                         # Sumar todos los valores Q de la matriz actual
@@ -849,7 +851,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
                 # Encolar datos de salida (Dump del contexto actual)
                 encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
                                 'ProcesoJoined': False,
-                                'ProcesoPaused': False,
+                                'ProcesoPaused': True,
                                 'NroIteracion': cant_iteraciones})
 
                 while pauserequest_isset() and not stoprequest_isset():
@@ -867,12 +869,13 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             running_exec_time = 0
 
         # Poner en la cola de salida los resultados
-        self.encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
-                             'CaminoRecorrido': camino_optimo,
-                             'RecorridoExecTime': rec_exec_time,
-                             'ProcesoJoined': False,
-                             'ProcesoPaused': False,
-                             'RunningExecTime': running_exec_time})
+        encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
+                        'CaminoRecorrido': camino_optimo,
+                        'RecorridoExecTime': rec_exec_time,
+                        'ProcesoJoined': False,
+                        'ProcesoPaused': False,
+                        'RunningExecTime': running_exec_time
+                        })
 
         # Realizar tareas al finalizar
         self._on_end()

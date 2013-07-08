@@ -2024,12 +2024,19 @@
      </widget>
      <addaction name="menuInterpolacion"/>
     </widget>
+    <widget class="QMenu" name="menuAnteBloqueo">
+     <property name="title">
+      <string>Ante bloqueo</string>
+     </property>
+    </widget>
     <addaction name="menuGridWorld"/>
     <addaction name="menuQLearning"/>
     <addaction name="separator"/>
     <addaction name="actionInicializarTodo"/>
     <addaction name="separator"/>
     <addaction name="menuHeatmap"/>
+    <addaction name="separator"/>
+    <addaction name="menuAnteBloqueo"/>
    </widget>
    <widget class="QMenu" name="menuEstadisticas">
     <property name="title">
@@ -2097,31 +2104,6 @@
    </property>
    <property name="text">
     <string>Pausar</string>
-   </property>
-  </action>
-  <action name="actionNearest">
-   <property name="text">
-    <string>Nearest</string>
-   </property>
-  </action>
-  <action name="actionBilinear">
-   <property name="text">
-    <string>Bilinear</string>
-   </property>
-  </action>
-  <action name="actionBicubic">
-   <property name="text">
-    <string>Bicubic</string>
-   </property>
-  </action>
-  <action name="actionDf">
-   <property name="text">
-    <string>df</string>
-   </property>
-  </action>
-  <action name="actionDfsd">
-   <property name="text">
-    <string>dfsd</string>
    </property>
   </action>
  </widget>

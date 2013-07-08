@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Sun Jul 07 16:27:03 2013
+# Created: Sun Jul 07 21:16:11 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -820,6 +820,8 @@ class Ui_MainWindow(object):
         self.menuHeatmap.setObjectName(_fromUtf8("menuHeatmap"))
         self.menuInterpolacion = QtGui.QMenu(self.menuHeatmap)
         self.menuInterpolacion.setObjectName(_fromUtf8("menuInterpolacion"))
+        self.menuAnteBloqueo = QtGui.QMenu(self.menuConfiguracion)
+        self.menuAnteBloqueo.setObjectName(_fromUtf8("menuAnteBloqueo"))
         self.menuEstadisticas = QtGui.QMenu(self.menuBar)
         self.menuEstadisticas.setObjectName(_fromUtf8("menuEstadisticas"))
         self.menuPruebas = QtGui.QMenu(self.menuBar)
@@ -843,16 +845,6 @@ class Ui_MainWindow(object):
         self.actionAgentePausar = QtGui.QAction(MainWindow)
         self.actionAgentePausar.setIcon(icon5)
         self.actionAgentePausar.setObjectName(_fromUtf8("actionAgentePausar"))
-        self.actionNearest = QtGui.QAction(MainWindow)
-        self.actionNearest.setObjectName(_fromUtf8("actionNearest"))
-        self.actionBilinear = QtGui.QAction(MainWindow)
-        self.actionBilinear.setObjectName(_fromUtf8("actionBilinear"))
-        self.actionBicubic = QtGui.QAction(MainWindow)
-        self.actionBicubic.setObjectName(_fromUtf8("actionBicubic"))
-        self.actionDf = QtGui.QAction(MainWindow)
-        self.actionDf.setObjectName(_fromUtf8("actionDf"))
-        self.actionDfsd = QtGui.QAction(MainWindow)
-        self.actionDfsd.setObjectName(_fromUtf8("actionDfsd"))
         self.menuArchivo.addAction(self.actionAppSalir)
         self.menuAyuda.addAction(self.actionAcercaDe)
         self.menuOperaciones.addAction(self.actionAgenteEntrenar)
@@ -866,6 +858,8 @@ class Ui_MainWindow(object):
         self.menuConfiguracion.addAction(self.actionInicializarTodo)
         self.menuConfiguracion.addSeparator()
         self.menuConfiguracion.addAction(self.menuHeatmap.menuAction())
+        self.menuConfiguracion.addSeparator()
+        self.menuConfiguracion.addAction(self.menuAnteBloqueo.menuAction())
         self.menuBar.addAction(self.menuArchivo.menuAction())
         self.menuBar.addAction(self.menuConfiguracion.menuAction())
         self.menuBar.addAction(self.menuOperaciones.menuAction())
@@ -1036,6 +1030,7 @@ class Ui_MainWindow(object):
         self.menuQLearning.setTitle(_translate("MainWindow", "Q-Learning", None))
         self.menuHeatmap.setTitle(_translate("MainWindow", "Heatmap", None))
         self.menuInterpolacion.setTitle(_translate("MainWindow", "Interpolación", None))
+        self.menuAnteBloqueo.setTitle(_translate("MainWindow", "Ante bloqueo", None))
         self.menuEstadisticas.setTitle(_translate("MainWindow", "Estadísticas", None))
         self.menuPruebas.setTitle(_translate("MainWindow", "Pruebas", None))
         self.actionAppSalir.setText(_translate("MainWindow", "Salir", None))
@@ -1045,10 +1040,5 @@ class Ui_MainWindow(object):
         self.actionAgenteCancelar.setText(_translate("MainWindow", "Detener", None))
         self.actionInicializarTodo.setText(_translate("MainWindow", "Inicializar todo", None))
         self.actionAgentePausar.setText(_translate("MainWindow", "Pausar", None))
-        self.actionNearest.setText(_translate("MainWindow", "Nearest", None))
-        self.actionBilinear.setText(_translate("MainWindow", "Bilinear", None))
-        self.actionBicubic.setText(_translate("MainWindow", "Bicubic", None))
-        self.actionDf.setText(_translate("MainWindow", "df", None))
-        self.actionDfsd.setText(_translate("MainWindow", "dfsd", None))
 
 import recursos_rc

@@ -132,7 +132,8 @@ class MainWindow(QtGui.QMainWindow):
                                                 "recompfinalauto": True,
                                                 "maxitersreached": {"action": 1, "warn": False}
                                                 },
-                              "recorrido": {"actual_state": {"show": True, "color": "#000000", "icono": None}}
+                              "recorrido": {"actual_state": {"show": True, "color": "#000000", "icono": None},
+                                            "maxitersreached": {"action": 0, "warn": False}},
                               },
                               "tipos_estados":
                               {0: TipoEstado(0, None, _tr("Inicial"), _tr("I"), "#FF5500", None),
@@ -302,6 +303,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.generar_menu_pruebas()
         self.generar_menu_hm_ip()
+        self.generar_menu_bloqueo()
         # self.generar_menu_edicion()
         # self.generar_menu_estadisticas()
 
@@ -430,6 +432,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMatrizQVerHM.clicked.connect(self.mostrar_matrizq_hm)
         self.WMainWindow.btnMatrizRVerHM.clicked.connect(self.mostrar_matrizr_hm)
         self.WMainWindow.menuInterpolacion.triggered.connect(self.set_hm_interpolation)
+        self.WMainWindow.menuAnteBloqueo.triggered.connect(self.set_stop_action)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -2249,6 +2252,7 @@ class MainWindow(QtGui.QMainWindow):
 
                 self.worker_paused = False
 
+                # Establecer estado de controles de forma acorde
                 resume_icon = QtGui.QIcon(QtGui.QPixmap(":/iconos/Pausar.png"))
                 resume_text = _tr("Pausar")
                 self.WMainWindow.btnPausar.setText(resume_text)
@@ -2259,6 +2263,7 @@ class MainWindow(QtGui.QMainWindow):
                 # Mostrar cursor de ocupado indicando que se está procesando
                 QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BusyCursor))
 
+                # Mostrar estado de proceso
                 status_text = self.lbl_process_stat_text
                 self.lbl_process_stat.setText(_tr(status_text))
 
@@ -2277,6 +2282,7 @@ class MainWindow(QtGui.QMainWindow):
 
                 self.worker_paused = True
 
+                # Establecer estado de controles de forma acorde
                 pausar_icon = QtGui.QIcon(QtGui.QPixmap(":/iconos/PausarContinuar.png"))
                 pausar_text = _tr("Reanudar")
                 self.WMainWindow.btnPausar.setText(pausar_text)
@@ -2287,6 +2293,7 @@ class MainWindow(QtGui.QMainWindow):
                 # Restaurar cursor normal
                 QtGui.QApplication.restoreOverrideCursor()
 
+                # Mostrar estado de proceso
                 self.lbl_process_stat_text = self.lbl_process_stat.text()
                 self.lbl_process_stat.setText(_tr("Pausado"))
 
@@ -2404,3 +2411,25 @@ class MainWindow(QtGui.QMainWindow):
         """
         interpolation = item.data().toString()
         self.window_config["heatmap"]["interpolation"] = str(interpolation)
+
+    def generar_menu_bloqueo(self):
+        options_group = QtGui.QActionGroup(self)
+
+        action = QtGui.QAction(_tr("Continuar con siguiente episodio"), self)
+        action.setData(1)
+        action.setCheckable(True)
+        action.setChecked(True)
+        action.setActionGroup(options_group)
+        self.WMainWindow.menuAnteBloqueo.addAction(action)
+
+        action = QtGui.QAction(_tr("Detener proceso"), self)
+        action.setData(0)
+        action.setCheckable(True)
+        action.setChecked(False)
+        action.setActionGroup(options_group)
+        self.WMainWindow.menuAnteBloqueo.addAction(action)
+
+    def set_stop_action(self, item):
+        data = item.data().toInt()[0]
+        self.window_config["gw"]["entrenamiento"]["maxitersreached"]["action"] = data
+        self.window_config["gw"]["recorrido"]["maxitersreached"]["action"] = data
