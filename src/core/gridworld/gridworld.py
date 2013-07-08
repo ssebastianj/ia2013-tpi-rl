@@ -25,7 +25,6 @@ class GridWorld(object):
                                       obtener los vecinos de un estado dado.
         """
         super(GridWorld, self).__init__()
-        # FIXME: Logging
         self._logger = logging.getLogger()
 
         self._ancho = ancho

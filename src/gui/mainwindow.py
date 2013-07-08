@@ -22,6 +22,7 @@ from info import app_info
 
 from gui.aboutdialog import AboutDialog
 from gui.qtgen.mainwindow import Ui_MainWindow
+from gui.codetailsdialog import ShowCODetailsDialog
 from gui.gwgenrndestadosdialog import GWGenRndEstadosDialog
 from gui.gwopcionesdialog import GWOpcionesDialog
 from gui.matrizdialog import ShowMatrizDialog
@@ -103,6 +104,7 @@ class MainWindow(QtGui.QMainWindow):
         self.camino_optimo_end = None
         self.camino_optimo_cursor = None
         self.worker_paused = False
+        self.q_vals_co = None
 
         # Variables necesarias para los gráficos
         self.graph_recompensas_promedio = None
@@ -340,6 +342,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # Desactivar controles para mostrar camino optimo
         self.WMainWindow.gbCOAcciones.setDisabled(True)
+        self.WMainWindow.gbCOAvance.setDisabled(True)
 
         # Obtener ancho y alto del GridWorld
         self._logger.debug("Dimensión: {0}".format(dimension))
@@ -433,6 +436,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMatrizRVerHM.clicked.connect(self.mostrar_matrizr_hm)
         self.WMainWindow.menuInterpolacion.triggered.connect(self.set_hm_interpolation)
         self.WMainWindow.menuAnteBloqueo.triggered.connect(self.set_stop_action)
+        self.WMainWindow.btnCOVerDetalles.clicked.connect(self.mostrar_detalles_co)
 
     def parametros_segun_tecnica(self, indice):
         u"""
@@ -505,6 +509,10 @@ class MainWindow(QtGui.QMainWindow):
         if not self.window_config["item"]["menu_estado"]["enabled"]:
             return None
 
+        # Cachear acceso a métodos y atributos
+        ocultar_tipos_list = self.window_config["item"]["menu_estado"]["ocultar_tipos"]
+        alto = self.gridworld.alto
+
         selected_items = self.WMainWindow.tblGridWorld.selectedItems()
         cant_selected = len(selected_items)
 
@@ -518,7 +526,7 @@ class MainWindow(QtGui.QMainWindow):
         tipos_estados_group = QtGui.QActionGroup(self.WMainWindow.tblGridWorld)
 
         for tipo in tipos_estados.values():
-            if tipo.ide not in self.window_config["item"]["menu_estado"]["ocultar_tipos"]:
+            if tipo.ide not in ocultar_tipos_list:
 
                 # Verificar si el tipo de estado posee un ícono
                 if tipo.icono is None:
@@ -584,10 +592,14 @@ class MainWindow(QtGui.QMainWindow):
                     self.ocultar_camino_optimo()
                     self.camino_optimo = None
                     self.WMainWindow.btnCOShowHide.setDisabled(True)
+                    self.WMainWindow.btnCOVerDetalles.setDisabled(True)
+                    self.WMainWindow.btnCOAtras.setDisabled(True)
+                    self.WMainWindow.btnCOAdelante.setDisabled(True)
                 elif estado_actual.tipo.ide == TIPOESTADO.FINAL:
                     self.estado_final = None
                     self.WMainWindow.btnRecorrer.setDisabled(True)
                     self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
+                    self.WMainWindow.btnMatrizQVerHM.setDisabled(True)
 
                 # Establecer tipo de estado seleccionado al estado en la matriz de
                 # Estados
@@ -596,7 +608,7 @@ class MainWindow(QtGui.QMainWindow):
                 if show_tooltip:
                     fila = item.row()
                     columna = item.column()
-                    nro_estado = (fila * self.gridworld.alto) + columna + 1
+                    nro_estado = (fila * alto) + columna + 1
 
                     item.setToolTip("Estado E{0}\nFila: {1}\nColumna: {2}\nTipo: {3}\nRecompensa: {4}"
                                     .format(nro_estado,
@@ -770,7 +782,9 @@ class MainWindow(QtGui.QMainWindow):
 
         # Ocultar camino óptimo antes de jugar
         self.ocultar_camino_optimo()
+        # Inicializar camino óptimo
         self.camino_optimo = None
+        self.q_vals_co = None
 
         # Parámetros para mostrar el estado actual en pantalla
         self.rec_show_estado_act = self.window_config["gw"]["recorrido"]["actual_state"]["show"]
@@ -961,6 +975,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.btnRecorrer.setEnabled(True)
             self.WMainWindow.actionAgenteRecorrer.setEnabled(True)
             self.WMainWindow.gbCOAcciones.setEnabled(True)
+            self.WMainWindow.gbCOAvance.setEnabled(True)
             self.WMainWindow.statusBar.showMessage(_tr("Ha finalizado la búsqueda del camino óptimo."), 2000)
 
         self.WMainWindow.btnTerminarProceso.setEnabled(False)
@@ -1025,6 +1040,7 @@ class MainWindow(QtGui.QMainWindow):
         # self._logger.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
         # self._logger.debug("Iteraciones Por Episodio: {0}".format(self.graph_iters_por_episodio))
         # self._logger.debug("Diferencia entre matrices: {0}".format(self.graph_mat_diff))
+        self._logger.debug(self.q_vals_co)
 
     def _reintentar_detener_hilos(self):
         u"""
@@ -1235,8 +1251,10 @@ class MainWindow(QtGui.QMainWindow):
                 worker_joined = ql_rec_info.get('ProcesoJoined')
                 rec_exec_time = ql_rec_info.get('RecorridoExecTime', 0.0)
                 nro_iteracion = ql_rec_info.get('NroIteracion')
+                q_vals_co = ql_rec_info.get('ValoresQCR')
 
                 self.camino_optimo = camino_optimo
+                self.q_vals_co = q_vals_co
 
                 try:
                     # Descomponer coordenadas de estado actual
@@ -1675,8 +1693,6 @@ class MainWindow(QtGui.QMainWindow):
         u"""
         Muestra el camino óptimo en el GridWorld introduciendo un retraso de tiempo
         entre los estados con el fin de visualizar el progreso.
-
-        FIXME: Implementar utilizando threading.
         """
         self._logger.debug("Animar camino óptimo...")
 
@@ -1769,12 +1785,14 @@ class MainWindow(QtGui.QMainWindow):
         gw_setitem = self.WMainWindow.tblGridWorld.setItem
         item_flags = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         item_text_align = QtCore.Qt.AlignHCenter | QtCore.Qt.AlignCenter
+        ancho = self.gridworld.ancho
+        alto = self.gridworld.alto
 
         # Desactivar actualización de la tabla para optimizar la carga
         self.WMainWindow.tblGridWorld.setUpdatesEnabled(False)
         # Rellenar tabla con items
-        for fila in xrange(0, self.gridworld.alto):
-            for columna in xrange(0, self.gridworld.ancho):
+        for fila in xrange(0, alto):
+            for columna in xrange(0, ancho):
                 estado = get_estado(fila + 1, columna + 1)
                 letra_estado = estado.tipo.letra
                 # Cada item muestra la letra asignada al estado
@@ -1784,7 +1802,7 @@ class MainWindow(QtGui.QMainWindow):
                 item.setTextAlignment(item_text_align)
 
                 if show_tooltip:
-                    nro_estado = (fila * self.gridworld.alto) + columna + 1
+                    nro_estado = (fila * alto) + columna + 1
 
                     item.setToolTip("Estado E{0}\nFila: {1} Columna: {2}\nTipo: {3}\nRecompensa: {4}"
                                     .format(nro_estado,
@@ -2433,3 +2451,14 @@ class MainWindow(QtGui.QMainWindow):
         data = item.data().toInt()[0]
         self.window_config["gw"]["entrenamiento"]["maxitersreached"]["action"] = data
         self.window_config["gw"]["recorrido"]["maxitersreached"]["action"] = data
+
+    def mostrar_detalles_co(self):
+        u"""
+        Muestra un cuadro de diálogo conteniendo detalles del camino óptimo.
+        """
+        self.ShowCODetailsD = ShowCODetailsDialog(self.camino_optimo,
+                                                  self.q_vals_co,
+                                                  (self.gridworld.ancho,
+                                                   self.gridworld.alto),
+                                                  self)
+        self.ShowCODetailsD.show()

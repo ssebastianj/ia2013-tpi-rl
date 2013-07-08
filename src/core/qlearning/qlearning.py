@@ -30,7 +30,6 @@ class QLearning(object):
         """
         super(QLearning, self).__init__()
 
-        # FIXME: Logging
         self._logger = logging.getLogger()
 
         self._gridworld = gridworld

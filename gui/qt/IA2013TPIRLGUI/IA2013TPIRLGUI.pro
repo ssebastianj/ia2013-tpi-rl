@@ -18,20 +18,23 @@ SOURCES += main.cpp\
     aboutdialog.cpp \
     gwgenrndestadosdialog.cpp \
     gwopcionesdialog.cpp \
-    matrizdialog.cpp
+    matrizdialog.cpp \
+    codetailsdialog.cpp
 
 HEADERS  += mainwindow.h \
     genrndvalsdialog.h \
     aboutdialog.h \
     gwgenrndestadosdialog.h \
     gwopcionesdialog.h \
-    matrizdialog.h
+    matrizdialog.h \
+    codetailsdialog.h
 
 FORMS    += mainwindow.ui \
     aboutdialog.ui \
     gwgenrndestadosdialog.ui \
     gwopcionesdialog.ui \
-    matrizdialog.ui
+    matrizdialog.ui \
+    codetailsdialog.ui
 
 TRANSLATIONS += EN-US
 

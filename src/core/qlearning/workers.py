@@ -774,6 +774,10 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         # Estado Inicial
         camino_optimo = [estado_inicial]
 
+        # Lista que contiene los máximos valores de Q pertenecientes al
+        # camino óptimo
+        q_values_co = []
+
         # Registrar tiempo de comienzo
         rec_start_time = wtimer()
 
@@ -796,6 +800,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         inp_queue = self._inp_queue
         out_queue = self._out_queue
         co_append = camino_optimo.append
+        qvals_append = q_values_co.append
         sleepd = time.sleep
         # --------------------------------------------------------------------
 
@@ -831,6 +836,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
 
             # Agregar estado al camino óptimo
             co_append((new_x + 1, new_y + 1))
+            # Agregar Q máximo a lista
+            qvals_append(maximo_q)
 
             try:
                 tipo_estado = estado_actual[0]
@@ -871,6 +878,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         # Poner en la cola de salida los resultados
         encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
                         'CaminoRecorrido': camino_optimo,
+                        'ValoresQCR': q_values_co,
                         'RecorridoExecTime': rec_exec_time,
                         'ProcesoJoined': False,
                         'ProcesoPaused': False,
