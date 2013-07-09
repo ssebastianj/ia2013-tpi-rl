@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\aboutdialog.ui'
 #
-# Created: Mon Jul 08 23:03:18 2013
+# Created: Tue Jul 09 15:27:46 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -45,9 +45,9 @@ class Ui_AboutDialog(object):
         self.lblAppVersion.setFont(font)
         self.lblAppVersion.setObjectName(_fromUtf8("lblAppVersion"))
         self.label_4 = QtGui.QLabel(AboutDialog)
-        self.label_4.setGeometry(QtCore.QRect(16, 16, 129, 121))
+        self.label_4.setGeometry(QtCore.QRect(16, 16, 121, 113))
         self.label_4.setText(_fromUtf8(""))
-        self.label_4.setPixmap(QtGui.QPixmap(_fromUtf8(":/logos/LogoUTN.jpeg")))
+        self.label_4.setPixmap(QtGui.QPixmap(_fromUtf8(":/logos/LogoUTNFRRe.jpeg")))
         self.label_4.setScaledContents(True)
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.label_5 = QtGui.QLabel(AboutDialog)

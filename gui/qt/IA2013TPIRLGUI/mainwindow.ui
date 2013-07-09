@@ -16,7 +16,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="recursos.qrc">
-    <normaloff>:/iconos/UTN.ico</normaloff>:/iconos/UTN.ico</iconset>
+    <normaloff>:/logos/LogoUTN_2.png</normaloff>:/logos/LogoUTN_2.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_14">

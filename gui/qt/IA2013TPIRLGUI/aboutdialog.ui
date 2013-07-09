@@ -71,15 +71,15 @@
     <rect>
      <x>16</x>
      <y>16</y>
-     <width>129</width>
-     <height>121</height>
+     <width>121</width>
+     <height>113</height>
     </rect>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="recursos.qrc">:/logos/LogoUTN.jpeg</pixmap>
+    <pixmap resource="recursos.qrc">:/logos/LogoUTNFRRe.jpeg</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>

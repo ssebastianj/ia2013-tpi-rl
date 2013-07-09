@@ -15,7 +15,7 @@
         <file>Atras.png</file>
     </qresource>
     <qresource prefix="/logos">
-        <file>LogoUTN.jpeg</file>
+        <file>LogoUTNFRRe.jpeg</file>
         <file>LogoUTN_2.png</file>
     </qresource>
 </RCC>
