@@ -1236,11 +1236,10 @@ class MainWindow(QtGui.QMainWindow):
                         except TypeError:
                             pass
 
-                if ent_loop_alarm:
-                    if ent_warn_loop_alarm:
-                        QtGui.QMessageBox.warning(self,
-                                                  _tr('QLearning - Entrenamiento'),
-                        u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
+                if ent_loop_alarm and ent_warn_loop_alarm:
+                    QtGui.QMessageBox.warning(self,
+                                              _tr('QLearning - Entrenamiento'),
+                    u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
 
                     # self.working_process.join(0.05)
                     # self.qlearning_entrenar_worker = None
@@ -1249,10 +1248,12 @@ class MainWindow(QtGui.QMainWindow):
                     # self.ql_entrenar_out_q = None
                     # self.on_fin_proceso()
 
+            # ----------- Pausa ------------------
             # Comprobar si se ha pausado el proceso
             if self.worker_paused:
                 # Detener Timer
                 self.wnd_timer.stop()
+            # ------------------------------------
         except Queue.Empty:
             pass
         except AttributeError:
@@ -1321,10 +1322,12 @@ class MainWindow(QtGui.QMainWindow):
                     except TypeError:
                         item.setBackground(self.rec_color_estado_act)
 
+            # ----------- Pausa ------------------
             # Comprobar si se ha pausado el proceso
             if self.worker_paused:
                 # Detener Timer
                 self.wnd_timer.stop()
+            # ------------------------------------
         except Queue.Empty:
             pass
         except AttributeError:
