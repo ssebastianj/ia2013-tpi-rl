@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\mainwindow.ui'
 #
-# Created: Mon Jul 08 15:58:40 2013
+# Created: Mon Jul 08 23:03:20 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -352,8 +352,8 @@ class Ui_MainWindow(object):
         self.sbIntervaloDiffCalc.setObjectName(_fromUtf8("sbIntervaloDiffCalc"))
         self.gridLayout_6.addWidget(self.sbIntervaloDiffCalc, 2, 2, 1, 1)
         self.sbMatricesMinDiff = QtGui.QDoubleSpinBox(self.gbCondicionParada)
-        self.sbMatricesMinDiff.setDecimals(20)
-        self.sbMatricesMinDiff.setMinimum(1e-05)
+        self.sbMatricesMinDiff.setDecimals(15)
+        self.sbMatricesMinDiff.setMinimum(1e-06)
         self.sbMatricesMinDiff.setMaximum(1000000000.0)
         self.sbMatricesMinDiff.setSingleStep(1e-06)
         self.sbMatricesMinDiff.setProperty("value", 1e-05)

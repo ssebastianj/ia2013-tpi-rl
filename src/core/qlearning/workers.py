@@ -4,11 +4,14 @@
 from __future__ import absolute_import
 
 import Queue
+import os
 import multiprocessing
 import numpy
 import time
 import sys
 import random
+
+from scipy.stats import nanmean
 from core.estado.estado import TIPOESTADO
 
 
@@ -132,16 +135,16 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Inicializar variable auxiliar de cálculo de diferencia
         tmp_diff_mat = 0
 
+        # Matriz Q temporal
+        matriz_anterior = None
+
         min_diff_mat = self.min_diff_mat  # Diferencia mínima entre matrices
         # Diferencia mínima temporal entre matrices (calculada)
         # Se le suma 1 para que la condición para entrar en el bucle 'while'
         # se cumpla al comenzar
         cantidad_episodios = self.cant_episodios  # Cantidad de episodios a ejecutar
-        epnum = 1  # Inicializar número de episodio
+        epnum = 1  # Inicializadoralizar número de episodio
         cant_cortes_iteraciones = 0
-
-        suma_matriz_q_anterior = 0
-        suma_matriz_q_actual = 0
 
         # --- Estadísticas para gráficos -------------------------------------
         # --------------------------------------------------------------------
@@ -339,18 +342,12 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             # ------------------------------------------------------------------
             if matdiff_active:
                 if calc_mat_diff_cont == 0:
-                        # Sumar todos los valores Q de la matriz actual
-                        suma_matriz_q_actual = sum([elto for fila in matriz_q
-                                                    for columna in fila
-                                                    for elto in columna[1].itervalues()])
-
-                        # Restar valores de ambas matrices
-                        resta_diff_mat = numpy.subtract(suma_matriz_q_anterior,
-                                                        suma_matriz_q_actual)
-
-                        # Calcular el error medio cuadrático
-                        # tmp_diff_mat = numpy.true_divide(numpy.power(resta_diff_mat, 2), 2)
-                        tmp_diff_mat = numpy.absolute(resta_diff_mat)
+                        # Realizar resta de ambas matrices Q
+                        resta = numpy.subtract(matriz_q, matriz_anterior)
+                        # Calcular potencia
+                        potencia = nanmean(numpy.power(resta, 2))
+                        # Calcular error medio cuadrático
+                        tmp_diff_mat = numpy.nansum(potencia) / numpy.sum(~numpy.isnan(potencia))
 
                         # Almacenar para estadística
                         mat_diff_array[1].append(tmp_diff_mat)
@@ -363,10 +360,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                         # Volver a cargar valor inicial a contador
                         calc_mat_diff_cont = intervalo_diff_calc
                 elif calc_mat_diff_cont == 1:
-                    # Sumar todos los valores Q de la matriz actual
-                    suma_matriz_q_anterior = sum([elto for fila in matriz_q
-                                                  for columna in fila
-                                                  for elto in columna[1].itervalues()])
+                    # Resguardar Matriz Q
+                    matriz_anterior = numpy.copy(matriz_q)
 
                 # Poner en la cola de salida los resultados
                 encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),

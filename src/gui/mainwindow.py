@@ -1039,7 +1039,7 @@ class MainWindow(QtGui.QMainWindow):
         # self._logger.debug("Matriz Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
         # self._logger.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
         # self._logger.debug("Iteraciones Por Episodio: {0}".format(self.graph_iters_por_episodio))
-        # self._logger.debug("Diferencia entre matrices: {0}".format(self.graph_mat_diff))
+        self._logger.debug("Diferencia entre matrices: {0}".format(self.graph_mat_diff))
         self._logger.debug(self.q_vals_co)
 
     def _reintentar_detener_hilos(self):
