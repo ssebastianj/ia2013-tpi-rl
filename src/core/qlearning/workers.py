@@ -4,14 +4,12 @@
 from __future__ import absolute_import
 
 import Queue
-import os
 import multiprocessing
 import numpy
 import time
 import sys
 import random
 
-from scipy.stats import nanmean
 from core.estado.estado import TIPOESTADO
 
 
@@ -345,7 +343,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                         # Realizar resta de ambas matrices Q
                         resta = numpy.subtract(matriz_q, matriz_anterior)
                         # Calcular potencia
-                        potencia = nanmean(numpy.power(resta, 2))
+                        potencia = numpy.power(resta, 2)
                         # Calcular error medio cuadrático
                         tmp_diff_mat = numpy.nansum(potencia) / numpy.sum(~numpy.isnan(potencia))
 
