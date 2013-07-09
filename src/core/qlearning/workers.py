@@ -320,7 +320,18 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                     'ValorParametro': tecnica.valor_param_parcial,
                                     'MatDiff': tmp_diff_mat,
                                     })
-
+                    # Esperar 10 milisegundos
+                    time.sleep(0.01)
+                    # Reenviar datos de salida (Dump del contexto actual)
+                    encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
+                                    'NroEpisodio': epnum - 1,
+                                    'NroIteracion': cant_iteraciones,
+                                    'MatrizQ': matriz_q,
+                                    'ProcesoJoined': False,
+                                    'ProcesoPaused': True,
+                                    'ValorParametro': tecnica.valor_param_parcial,
+                                    'MatDiff': tmp_diff_mat,
+                                    })
                     # Esperar 1 segundo
                     time.sleep(1)
                 # ==================== Fin de iteraciones ====================
@@ -416,7 +427,18 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                 'ValorParametro': tecnica.valor_param_parcial,
                                 'MatDiff': tmp_diff_mat,
                                 })
-
+                # Esperar 10 milisegundos
+                time.sleep(0.01)
+                # Reenviar datos de salida (Dump del contexto actual)
+                encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
+                                'NroEpisodio': epnum - 1,
+                                'NroIteracion': cant_iteraciones,
+                                'MatrizQ': matriz_q,
+                                'ProcesoJoined': False,
+                                'ProcesoPaused': True,
+                                'ValorParametro': tecnica.valor_param_parcial,
+                                'MatDiff': tmp_diff_mat,
+                                })
                 # Esperar 1 segundo
                 time.sleep(1)
             # ======================= Fin de episodios =======================

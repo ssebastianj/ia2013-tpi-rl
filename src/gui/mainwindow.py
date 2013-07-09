@@ -1168,8 +1168,10 @@ class MainWindow(QtGui.QMainWindow):
                 self.graph_recompensas_promedio = graph_recompensas_promedio
                 self.graph_mat_diff = graph_mat_diff
                 # self.graph_iters_por_episodio = graph_iters_por_episodio
-                self.matriz_q = matriz_q
-                self.mat_est_acc = mat_est_acc
+
+                if matriz_q is not None:
+                    self.matriz_q = matriz_q
+                    self.mat_est_acc = mat_est_acc
 
                 ent_loop_alarm, ent_stop_action = loop_alarm_pack
 
@@ -1250,7 +1252,7 @@ class MainWindow(QtGui.QMainWindow):
 
             # ----------- Pausa ------------------
             # Comprobar si se ha pausado el proceso
-            if self.worker_paused:
+            if self.worker_paused and self.ql_entrenar_out_q.empty():
                 # Detener Timer
                 self.wnd_timer.stop()
             # ------------------------------------
@@ -1324,7 +1326,7 @@ class MainWindow(QtGui.QMainWindow):
 
             # ----------- Pausa ------------------
             # Comprobar si se ha pausado el proceso
-            if self.worker_paused:
+            if self.worker_paused and self.ql_recorrer_out_q.empty():
                 # Detener Timer
                 self.wnd_timer.stop()
             # ------------------------------------
@@ -2326,6 +2328,8 @@ class MainWindow(QtGui.QMainWindow):
                 except (RuntimeError, AttributeError):
                     pass
 
+                self.WMainWindow.gbMatrizQ.setDisabled(True)
+
                 # Reanudar proceso
                 self.working_process_mng.resume()
                 self.working_process.reanudar()
@@ -2361,7 +2365,14 @@ class MainWindow(QtGui.QMainWindow):
                     self.lbl_process_stat_text = self.lbl_process_stat.text()
                     self.lbl_process_stat.setText(_tr("Pausado"))
 
-                    # Cambiar estado de progress bar de Windows
+                    self.WMainWindow.gbMatrizQ.setEnabled(True)
+                    test_matriz_q = self.matriz_q is not None
+                    self.WMainWindow.btnMostrarMatrizQ.setEnabled(test_matriz_q)
+                    self.WMainWindow.btnMatrizQVerHM.setEnabled(test_matriz_q)
+
+                    self._logger.debug(self.matriz_q)
+
+                    # Cambiar estado de progress bar de Windows (Windows 7 o superior)
                     try:
                         self.wnd_taskbar.SetProgressState(self.winId(),
                                                           self.wnd_taskbar.TBPF_PAUSED)
