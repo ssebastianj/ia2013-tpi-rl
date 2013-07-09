@@ -42,17 +42,17 @@ class Softmax(QLTecnica):
 
         :param acciones: Diccionario conteniendo los acciones de un estado.
         """
+        # Cachear acceso a métodos y atributos
         rnd_func = numpy.random.randint
         np_where = numpy.where
         cant_ranuras = self.cant_ranuras
 
+        # Armar intervalos de probabilidad
         intervalos_probabilidad = self.obtener_probabilidades(acciones)
 
-        # FIXME
-        # print intervalos_probabilidad
-        # print
-
+        # Generar número aleatorio
         rnd_valor = rnd_func(0, cant_ranuras)
+        # Obtener índice de acuerdo al intervalo de probabilidad
         idx = np_where(rnd_valor <= intervalos_probabilidad)[0][0]
 
         return idx
@@ -67,9 +67,10 @@ class Softmax(QLTecnica):
         valor_param_parcial = self._val_param_parcial
         c_decimal = decimal.Decimal
 
-        # Arreglo auxiliar
+        # Crear arreglo para almacenar cálculos
         probabilidades_acciones = numpy.empty(acciones.size, numpy.float)
 
+        # Calcular probabilidades
         for i, q_valor in numpy.ndenumerate(acciones):
             try:
                 exponente = c_decimal(q_valor) / valor_param_parcial
@@ -82,7 +83,7 @@ class Softmax(QLTecnica):
         # Constante de normalización
         sigma = numpy.nansum(probabilidades_acciones)
 
-        # Calcula las probabilidades de cada vecino normalizadas
+        # Calcular las probabilidades normalizadas de cada vecino
         probabilidades_acciones = numpy.true_divide(probabilidades_acciones, sigma)
 
         # Multiplicar por cantidad de ranuras

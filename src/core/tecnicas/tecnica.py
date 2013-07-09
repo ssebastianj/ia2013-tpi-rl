@@ -22,6 +22,9 @@ class QLTecnica(object):
         pass
 
     def decrementar_parametro(self):
+        u"""
+        Decrementar parámetro en un valor dado.
+        """
         pass
 
     def get_paso_decremento(self):
@@ -34,6 +37,11 @@ class QLTecnica(object):
         return self._intervalo_decremento
 
     def set_intervalo_decremento(self, valor):
+        u"""
+        Establecer cada cuantos episodios se decrementará el episodio.
+
+        :param valor: Número flotante que se descontará al parámetro.
+        """
         self._intervalo_decremento = valor
 
     def get_valor_param_general(self):

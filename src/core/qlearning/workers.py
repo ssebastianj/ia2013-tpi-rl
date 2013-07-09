@@ -190,15 +190,19 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             # coincidan con las de un tipo excluido
             estado_actual = matriz_est_acc[x_act][y_act]
 
+            # Obtener tipo de estado
             try:
                 tipo_estado = estado_actual[0]
             except (TypeError, IndexError):
                 tipo_estado = estado_actual
 
+            # Generar nuevo número aleatorio si el actual se encuentra dentro
+            # de la lista de tipos excluidos
             while (not stoprequest_isset()) and (tipo_estado in tipos_vec_excluidos):
                 x_act, y_act = generar_estado_aleatorio()
                 estado_actual = matriz_est_acc[x_act][y_act]
 
+                # Obtener tipo de estado
                 try:
                     tipo_estado = estado_actual[0]
                 except (TypeError, IndexError):
@@ -267,6 +271,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 new_y = columna_idx - (new_x * ancho)
                 estado_actual = matriz_est_acc[new_x][new_y]
 
+                # Obtener tipo de estado
                 try:
                     tipo_estado = estado_actual[0]
                 except (TypeError, IndexError):
@@ -335,7 +340,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 tecnica.decrementar_parametro()
                 decrementar_step = 0
 
-            # TODO: Re-escribir cálculo de diferencia de matrices
             # ------------------------------------------------------------------
             if matdiff_active:
                 if calc_mat_diff_cont == 0:
@@ -357,7 +361,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                         # Volver a cargar valor inicial a contador
                         calc_mat_diff_cont = intervalo_diff_calc
                 elif calc_mat_diff_cont == 1:
-                    # Resguardar Matriz Q
+                    # Resguardar Matriz Q creando una copia
                     matriz_anterior = numpy.copy(matriz_q)
 
                 # Poner en la cola de salida los resultados
@@ -427,6 +431,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Calcular tiempos de finalización
         running_end_time = ep_end_time = wtimer()
 
+        # Calcular tiempos de procesamiento
         try:
             ep_exec_time = ep_end_time - ep_start_time
             running_exec_time = running_end_time - running_start_time
@@ -815,7 +820,9 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             acciones = matriz_q[fila_idx]
             # Buscar el estado que posea el mayor valor de Q
             maximo_q = numpy.nanmax(acciones)
+            # Verificar si existen valores Q iguales al máximo
             maximos_q = numpy.where(acciones == maximo_q)[0]
+            # Elegir una acción de manera aleatoria
             accion_elegida = numpy.random.choice(maximos_q)
             columna_idx = accion_elegida
 
@@ -830,6 +837,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             # Agregar Q máximo a lista
             qvals_append(maximo_q)
 
+            # Obtener tipo de estado
             try:
                 tipo_estado = estado_actual[0]
             except (TypeError, IndexError):
@@ -859,6 +867,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         # Registrar tiempo de finalización
         running_end_time = rec_end_time = wtimer()
 
+        # Calcular tiempos de procesamiento
         try:
             rec_exec_time = rec_end_time - rec_start_time
             running_exec_time = running_end_time - running_start_time

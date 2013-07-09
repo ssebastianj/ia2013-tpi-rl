@@ -48,7 +48,10 @@ class EGreedy(QLTecnica):
 
         if 0 <= random_num <= (1 - self.epsilon_parcial):
             # EXPLOTAR
+            # Buscar acción con mayor valor Q
             maximo_q = numpy.nanmax(acciones)
+            # En caso de que hubieras varias acciones con Q igual al máximo
+            # elegir una de forma aleatoria
             estado_qmax = numpy.random.choice(numpy.where(acciones == maximo_q)[0])
         else:
             # EXPLORAR
