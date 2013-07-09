@@ -11,6 +11,7 @@ except ImportError:
 import csv
 import logging
 import multiprocessing
+import psutil
 import Queue
 import random
 import threading
@@ -104,6 +105,7 @@ class MainWindow(QtGui.QMainWindow):
         self.camino_optimo_end = None
         self.camino_optimo_cursor = None
         self.worker_paused = False
+        self.working_process_mng = None
         self.q_vals_co = None
 
         # Variables necesarias para los gráficos
@@ -591,8 +593,8 @@ class MainWindow(QtGui.QMainWindow):
                     self.estado_inicial = None
                     self.ocultar_camino_optimo()
                     self.camino_optimo = None
-                    self.WMainWindow.btnCOShowHide.setDisabled(True)
-                    self.WMainWindow.btnCOVerDetalles.setDisabled(True)
+
+                    self.WMainWindow.gbCOAcciones.setDisabled(True)
                     self.WMainWindow.btnCOAtras.setDisabled(True)
                     self.WMainWindow.btnCOAdelante.setDisabled(True)
                 elif estado_actual.tipo.ide == TIPOESTADO.FINAL:
@@ -752,6 +754,9 @@ class MainWindow(QtGui.QMainWindow):
 
         if self.qlearning_entrenar_worker is not None:
             self.working_process = self.qlearning_entrenar_worker
+
+            # PsUtils Process Manager
+            self.working_process_mng = psutil.Process(self.working_process.pid)
             self.entrenar_is_running = True
 
             self._parametros = (gamma,
@@ -819,6 +824,9 @@ class MainWindow(QtGui.QMainWindow):
             self.recorrer_is_running = True
             self.working_process = self.qlearning_recorrer_worker
 
+            # PsUtil Process Manager
+            self.working_process_mng = psutil.Process(self.working_process.pid)
+
             self.on_comienzo_proceso()
 
     def terminar_proceso(self):
@@ -830,6 +838,7 @@ class MainWindow(QtGui.QMainWindow):
             self.working_process.join(0.05)
             self._logger.debug(self.working_process)
             self.working_process = None
+            self.working_process_mng = None
 
             if self.wnd_timer is not None:
                 self.on_fin_proceso()
@@ -899,6 +908,15 @@ class MainWindow(QtGui.QMainWindow):
             self._ent_progress_bar.setMaximum(cant_episodios)
             self._ent_progress_bar.setValue(0)
 
+            # Inicializar barra de progreso de Windows (Windows 7 o superior)
+            try:
+                self.wnd_taskbar = taskbar.WindowsTaskBar()
+                self.wnd_taskbar.HrInit()
+                self.wnd_taskbar.SetProgressState(self.winId(),
+                                                  self.wnd_taskbar.TBPF_NORMAL)
+            except (RuntimeError, AttributeError):
+                pass
+
         if self.recorrer_is_running:
             self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
             self.lbl_process_stat.setText("Explotando")
@@ -910,6 +928,15 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.lblRecEstadoActual.setText("-")
             self.WMainWindow.lblRecExecTimeRecorrido.setText("-")
             self.WMainWindow.lblRecExecTimeTotal.setText("-")
+
+            # Inicializar barra de progreso de Windows (Windows 7 o superior)
+            try:
+                self.wnd_taskbar = taskbar.WindowsTaskBar()
+                self.wnd_taskbar.HrInit()
+                self.wnd_taskbar.SetProgressState(self.winId(),
+                                                  self.wnd_taskbar.TBPF_INDETERMINATE)
+            except (RuntimeError, AttributeError):
+                pass
 
         self.WMainWindow.btnTerminarProceso.setEnabled(True)
         self.WMainWindow.actionAgenteCancelar.setEnabled(True)
@@ -924,14 +951,6 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuConfiguracion.setDisabled(True)
         self.WMainWindow.menuPruebas.setDisabled(True)
         self.WMainWindow.menuEstadisticas.setDisabled(True)
-
-        try:
-            self.wnd_taskbar = taskbar.WindowsTaskBar()
-            self.wnd_taskbar.HrInit()
-            self.wnd_taskbar.SetProgressState(self.winId(),
-                                              self.wnd_taskbar.TBPF_NORMAL)
-        except (RuntimeError, AttributeError):
-            pass
 
     def on_fin_proceso(self):
         u"""
@@ -1120,6 +1139,7 @@ class MainWindow(QtGui.QMainWindow):
             # ent_icon_estado_act = self.ent_icon_estado_act
             # ent_color_estado_act = self.ent_color_estado_act
             cant_episodios = self._parametros[2]
+            win_id = self.winId()
 
             data_entrenar = self.get_all_from_queue(self.ql_entrenar_out_q)
 
@@ -1176,7 +1196,7 @@ class MainWindow(QtGui.QMainWindow):
 
                     # Actualizar progress bar de Windows
                     try:
-                        self.wnd_taskbar.SetProgressValue(self.winId(),
+                        self.wnd_taskbar.SetProgressValue(win_id,
                                                           nro_episodio,
                                                           cant_episodios)
                     except RuntimeError:
@@ -1228,6 +1248,11 @@ class MainWindow(QtGui.QMainWindow):
                     # self.ql_entrenar_error_q = None
                     # self.ql_entrenar_out_q = None
                     # self.on_fin_proceso()
+
+            # Comprobar si se ha pausado el proceso
+            if self.worker_paused:
+                # Detener Timer
+                self.wnd_timer.stop()
         except Queue.Empty:
             pass
         except AttributeError:
@@ -1295,6 +1320,11 @@ class MainWindow(QtGui.QMainWindow):
                         item.setIcon(self.rec_icon_estado_act)
                     except TypeError:
                         item.setBackground(self.rec_color_estado_act)
+
+            # Comprobar si se ha pausado el proceso
+            if self.worker_paused:
+                # Detener Timer
+                self.wnd_timer.stop()
         except Queue.Empty:
             pass
         except AttributeError:
@@ -2265,9 +2295,10 @@ class MainWindow(QtGui.QMainWindow):
         """
         if self.worker_paused:
             try:
-                # Reanudar procesamiento
-                self.working_process.reanudar()
+                # Reactivar Timer
+                self.wnd_timer.start(15)
 
+                # Establecer flag
                 self.worker_paused = False
 
                 # Establecer estado de controles de forma acorde
@@ -2291,36 +2322,48 @@ class MainWindow(QtGui.QMainWindow):
                                                       self.wnd_taskbar.TBPF_NORMAL)
                 except (RuntimeError, AttributeError):
                     pass
+
+                # Reanudar proceso
+                self.working_process_mng.resume()
+                self.working_process.reanudar()
+
+                # FIXME: Eliminar
+                self._logger.debug("Reanudar: {0}".format(self.working_process))
             except AttributeError:
                 pass
         else:
             try:
-                # Pausar procesamiento
-                self.working_process.pausar()
+                if self.working_process_mng.is_running():
+                    # Pausar proceso
+                    self.working_process.pausar()
+                    self.working_process_mng.suspend()
 
-                self.worker_paused = True
+                    # FIXME: Eliminar
+                    self._logger.debug("Pausar: {0}".format(self.working_process))
 
-                # Establecer estado de controles de forma acorde
-                pausar_icon = QtGui.QIcon(QtGui.QPixmap(":/iconos/PausarContinuar.png"))
-                pausar_text = _tr("Reanudar")
-                self.WMainWindow.btnPausar.setText(pausar_text)
-                self.WMainWindow.btnPausar.setIcon(pausar_icon)
-                self.WMainWindow.actionAgentePausar.setIcon(pausar_icon)
-                self.WMainWindow.actionAgentePausar.setText(pausar_text)
+                    self.worker_paused = True
 
-                # Restaurar cursor normal
-                QtGui.QApplication.restoreOverrideCursor()
+                    # Establecer estado de controles de forma acorde
+                    pausar_icon = QtGui.QIcon(QtGui.QPixmap(":/iconos/PausarContinuar.png"))
+                    pausar_text = _tr("Reanudar")
+                    self.WMainWindow.btnPausar.setText(pausar_text)
+                    self.WMainWindow.btnPausar.setIcon(pausar_icon)
+                    self.WMainWindow.actionAgentePausar.setIcon(pausar_icon)
+                    self.WMainWindow.actionAgentePausar.setText(pausar_text)
 
-                # Mostrar estado de proceso
-                self.lbl_process_stat_text = self.lbl_process_stat.text()
-                self.lbl_process_stat.setText(_tr("Pausado"))
+                    # Restaurar cursor normal
+                    QtGui.QApplication.restoreOverrideCursor()
 
-                # Cambiar estado de progress bar de Windows
-                try:
-                    self.wnd_taskbar.SetProgressState(self.winId(),
-                                                      self.wnd_taskbar.TBPF_PAUSED)
-                except (RuntimeError, AttributeError):
-                    pass
+                    # Mostrar estado de proceso
+                    self.lbl_process_stat_text = self.lbl_process_stat.text()
+                    self.lbl_process_stat.setText(_tr("Pausado"))
+
+                    # Cambiar estado de progress bar de Windows
+                    try:
+                        self.wnd_taskbar.SetProgressState(self.winId(),
+                                                          self.wnd_taskbar.TBPF_PAUSED)
+                    except (RuntimeError, AttributeError):
+                        pass
             except AttributeError:
                 pass
 
@@ -2431,6 +2474,9 @@ class MainWindow(QtGui.QMainWindow):
         self.window_config["heatmap"]["interpolation"] = str(interpolation)
 
     def generar_menu_bloqueo(self):
+        u"""
+        Generar el menú de Bloqueo con las opciones acordes.
+        """
         options_group = QtGui.QActionGroup(self)
 
         action = QtGui.QAction(_tr("Continuar con siguiente episodio"), self)
@@ -2448,6 +2494,11 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuAnteBloqueo.addAction(action)
 
     def set_stop_action(self, item):
+        u"""
+        Establece la acción a tomar ante un bloqueo.
+
+        :param item: Ítem de menú seleccionado.
+        """
         data = item.data().toInt()[0]
         self.window_config["gw"]["entrenamiento"]["maxitersreached"]["action"] = data
         self.window_config["gw"]["recorrido"]["maxitersreached"]["action"] = data
@@ -2460,5 +2511,6 @@ class MainWindow(QtGui.QMainWindow):
                                                   self.q_vals_co,
                                                   (self.gridworld.ancho,
                                                    self.gridworld.alto),
+                                                  self.WMainWindow.tblGridWorld,
                                                   self)
         self.ShowCODetailsD.show()

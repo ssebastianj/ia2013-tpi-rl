@@ -106,7 +106,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         alto = self.alto
         inp_queue = self._inp_queue
         out_queue = self._out_queue
-        sleepd = time.sleep
         # --------------------------------------------------------------------
 
         # Cantidad máxima de iteraciones antes de emitir un aviso
@@ -317,8 +316,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                     'MatDiff': tmp_diff_mat,
                                     })
 
-                    while pauserequest_isset() and not stoprequest_isset():
-                        sleepd(1)
+                    # Esperar 1 segundo
+                    time.sleep(1)
                 # ==================== Fin de iteraciones ====================
 
             iter_end_time = wtimer()
@@ -414,8 +413,8 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                                 'MatDiff': tmp_diff_mat,
                                 })
 
-                while pauserequest_isset() and not stoprequest_isset():
-                    sleepd(1)
+                # Esperar 1 segundo
+                time.sleep(1)
             # ======================= Fin de episodios =======================
 
         # FIXME: Estadística
@@ -794,7 +793,6 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         out_queue = self._out_queue
         co_append = camino_optimo.append
         qvals_append = q_values_co.append
-        sleepd = time.sleep
         # --------------------------------------------------------------------
 
         # Inicializar contador de iteraciones
@@ -854,8 +852,8 @@ class QLearningRecorrerWorker(multiprocessing.Process):
                                 'ProcesoPaused': True,
                                 'NroIteracion': cant_iteraciones})
 
-                while pauserequest_isset() and not stoprequest_isset():
-                    sleepd(1)
+                # Esperar 1 segundo
+                time.sleep(1)
             # ==================== Fin iteraciones ============================
 
         # Registrar tiempo de finalización
