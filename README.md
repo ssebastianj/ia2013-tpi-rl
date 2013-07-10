@@ -1,5 +1,6 @@
 Inteligencia Artificial 2013
 ============================
+[![Build Status](https://travis-ci.org/ssebastianj/ia2013-tpi-rl.png?branch=master)](https://travis-ci.org/ssebastianj/ia2013-tpi-rl)
 
 Implementación de Técnicas de Aprendizaje por Refuerzo
 ------------------------------------------------------
