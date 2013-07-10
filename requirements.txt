@@ -4,7 +4,6 @@ Sphinx
 distribute
 docutils
 numpy
-pywin32
 scipy
 cdecimal
 PyQt
