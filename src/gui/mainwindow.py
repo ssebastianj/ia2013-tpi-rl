@@ -472,8 +472,10 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbQLEpsilon.setValue(0.00)
             self.WMainWindow.sbQLEpsilon.setEnabled(False)
             self.WMainWindow.chkDecrementarParam.setEnabled(True)
-            self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
-            self.WMainWindow.sbDecrementoVal.setEnabled(True)
+
+            if self.WMainWindow.chkDecrementarParam.isChecked():
+                self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
+                self.WMainWindow.sbDecrementoVal.setEnabled(True)
         elif key == 1:
             # E-Greedy
             self.WMainWindow.lblTau.hide()
@@ -483,8 +485,11 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbQLEpsilon.setMinimum(0.01)
             self.WMainWindow.sbQLEpsilon.setEnabled(True)
             self.WMainWindow.chkDecrementarParam.setEnabled(True)
-            self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
-            self.WMainWindow.sbDecrementoVal.setEnabled(True)
+
+            if self.WMainWindow.chkDecrementarParam.isChecked():
+                self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
+                self.WMainWindow.sbDecrementoVal.setEnabled(True)
+
             self.WMainWindow.sbDecrementoVal.setMaximum(0.99)
             self.WMainWindow.sbDecrementoVal.setValue(0.01)
             self.WMainWindow.sbQLGamma.setMinimum(0.01)
@@ -495,8 +500,11 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.lblTau.show()
             self.WMainWindow.sbQLTau.show()
             self.WMainWindow.chkDecrementarParam.setEnabled(True)
-            self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
-            self.WMainWindow.sbDecrementoVal.setEnabled(True)
+
+            if self.WMainWindow.chkDecrementarParam.isChecked():
+                self.WMainWindow.sbCantEpisodiosDec.setEnabled(True)
+                self.WMainWindow.sbDecrementoVal.setEnabled(True)
+
             self.WMainWindow.sbDecrementoVal.setMaximum(1000000000)
             self.WMainWindow.sbDecrementoVal.setValue(20)
 
