@@ -46,7 +46,9 @@ class QLearning(object):
         u"""
         Devuelve una tupla conteniendo las coordenadas X e Y aleatorias.
         """
+        # Fila
         x = random.randint(1, self._gridworld.ancho)
+        # Columna
         y = random.randint(1, self._gridworld.alto)
         return (x, y)
 
@@ -58,7 +60,9 @@ class QLearning(object):
         :param out_queue: Cola de salida.
         :param error_q: Cola de errores (salida)
         """
+        # Cola de entrada
         inp_queue = multiprocessing.Queue()
+
         # Encolar Matriz R, Matriz Q, Número de episodios, Parámetro Gamma
         inp_queue.put((self._gridworld.estados,
                        self._gridworld.coordenadas,
@@ -72,11 +76,12 @@ class QLearning(object):
                        self._init_value_fn,
                        self._mat_diff_pack,
                        self._cant_max_iter_gral_pack
-                      ))
+                       ))
 
         qlearning_entrenar_worker = None
 
         try:
+            # Crear worker de Entrenamiento
             qlearning_entrenar_worker = QLearningEntrenarWorker(inp_queue,
                                                                 out_queue,
                                                                 error_queue
@@ -99,11 +104,13 @@ class QLearning(object):
         :param out_queue: Cola de salida.
         :param error_q: Cola de errores (salida)
         """
+        # Cola de entrada
         inp_queue = multiprocessing.Queue()
         inp_queue.put((matriz_q, mat_est_acc, estado_inicial))
         qlearning_recorrer_worker = None
 
         try:
+            # Crear worker de Explotación
             qlearning_recorrer_worker = QLearningRecorrerWorker(inp_queue,
                                                                 out_queue,
                                                                 error_queue
@@ -286,7 +293,7 @@ class QLearning(object):
         matriz_q = self.get_matriz_q()
         return "\n".join(["| {0} |".format(" | ".join(j))
                           for j in [[str(i) for i in f]
-                                                for f in matriz_q]])
+                                    for f in matriz_q]])
 
     gamma = property(get_gamma, set_gamma, None, u"Propiedad Gamma de QLearning")
     tecnica = property(get_tecnica, set_tecnica, None, u"Propiedad Técnica de QLearning")

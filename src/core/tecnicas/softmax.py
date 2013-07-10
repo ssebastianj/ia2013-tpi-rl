@@ -74,6 +74,7 @@ class Softmax(QLTecnica):
         for i, q_valor in numpy.ndenumerate(acciones):
             try:
                 exponente = c_decimal(q_valor) / valor_param_parcial
+                # Calcular función exponencial
                 probabilidades_acciones[i[0]] = exponente.exp()
             except OverflowError:
                 pass

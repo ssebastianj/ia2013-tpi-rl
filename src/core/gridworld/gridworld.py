@@ -46,6 +46,7 @@ class GridWorld(object):
         if isinstance(self._tipos_estados, dict):
             self._estado_final = None
 
+            # Crear worker para inicializar estados
             inicializar_estados_worker = threading.Thread(None,
                                                           self._inicializar_estados_worker,
                                                           "GWInicializarEstadosWorker",
@@ -66,7 +67,9 @@ class GridWorld(object):
             # Tipo de estado con el que se inicializará cada estado
             default_tipo = self._tipos_estados[default]
 
+            # Arreglo contenedor de estados
             self._estados = numpy.empty((self.alto, self.ancho), Estado)
+            # Arreglo de coordenadas de los estados
             coordenadas = []
 
             # Cachear acceso a métodos y atributos
@@ -85,6 +88,8 @@ class GridWorld(object):
         else:
             coordenadas = []
             coord_append = coordenadas.append
+
+            # Rellenar arreglo de coordenadas
             for i in xrange(1, alto + 1):
                 for j in xrange(1, ancho + 1):
                     coord_append((i, j))
@@ -277,6 +282,7 @@ class GridWorld(object):
         :param incluir_final: Boooleano que determina si se generará de manera aleatoria al Estado Final.
         """
         if isinstance(self._tipos_estados, dict):
+            # Crear worker para generar estados aleatorios
             gen_estados_random_worker = threading.Thread(None,
                                                          self._generar_estados_aleatorios_worker,
                                                          "GWGenerarEstadosAleatoriosWorker",
@@ -294,6 +300,7 @@ class GridWorld(object):
         u"""
         Crea la matriz de estados tipos de estados aleatorios.
         """
+        # Inicializar lista de estados excluidos
         excluir_estados_random = [TIPOESTADO.AGENTE,
                                   TIPOESTADO.INICIAL,
                                   TIPOESTADO.FINAL]
@@ -382,7 +389,7 @@ class GridWorld(object):
 
     def get_matriz_tipos_estados(self):
         u"""
-        Devuelve el conjunto de tipos de estados.
+        Devuelve el conjunto de tipos de estados en base a su Id.
         """
         # Cachear acceso a métodos y atributos
         estados = self._estados
@@ -404,6 +411,7 @@ class GridWorld(object):
         self.ancho = ancho
         self.alto = alto
         estados = numpy.empty((ancho, alto), Estado)
+
         # Cachear acceso a métodos y atributos
         tipos_estados = self._tipos_estados
         coordenadas = []
@@ -423,7 +431,9 @@ class GridWorld(object):
                     self._estado_final = estado
 
                 fila[0][j - 1] = estado
+                # Actualizar arreglo de coordenadas
                 coord_append((i, j))
+            # Actualizar arreglo de estados
             estados[i - 1] = fila
         self._estados = estados
         self._coordenadas = coordenadas

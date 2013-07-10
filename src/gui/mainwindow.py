@@ -21,6 +21,7 @@ from PyQt4 import QtCore, QtGui
 
 from info import app_info
 
+# GUI
 from gui.aboutdialog import AboutDialog
 from gui.qtgen.mainwindow import Ui_MainWindow
 from gui.codetailsdialog import ShowCODetailsDialog
@@ -28,6 +29,7 @@ from gui.gwgenrndestadosdialog import GWGenRndEstadosDialog
 from gui.gwopcionesdialog import GWOpcionesDialog
 from gui.matrizdialog import ShowMatrizDialog
 
+# Core
 from core.estado.estado import TIPOESTADO, TipoEstado
 from core.gridworld.gridworld import GridWorld
 from core.qlearning.qlearning import QLearning
@@ -35,6 +37,7 @@ from core.tecnicas.aleatorio import Aleatorio
 from core.tecnicas.egreedy import EGreedy, Greedy
 from core.tecnicas.softmax import Softmax
 
+# Graphs
 from graphs.avgrwds.worker import GraphRecompensasPromedioWorker
 from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
 # from graphs.itersep.worker import GraphIteracionesXEpisodioWorker
@@ -42,6 +45,7 @@ from graphs.matdiffs.worker import GraphMatrizDiffsWorker
 from graphs.heatmaps.matrizr import ShowMatrizRHeatMap
 from graphs.heatmaps.matrizq import ShowMatrizQHeatMap
 
+# Tools
 from tools.queue import get_item_from_queue
 from tools.taskbar import taskbar
 
@@ -114,15 +118,18 @@ class MainWindow(QtGui.QMainWindow):
         # self.graph_iters_por_episodio = None
         self.graph_mat_diff = None
 
+        # Políticas de selección de acción
         self.tecnicas = {  # 0: "Greedy",
                            1: "ε-Greedy",
                            2: "Softmax",
                            # 3: "Aleatorio"
-                         }
+                        }
 
+        # Dimensiones disponibles del GridWorld
         self.gw_dimensiones = [  # "3 x 3", "4 x 4", "5 x 5",
                                "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
 
+        # Configuración general
         self.window_config = {"item":
                               {"show_tooltip": True,
                                "menu_estado":
@@ -180,7 +187,7 @@ class MainWindow(QtGui.QMainWindow):
         self.setWindowFlags(QtCore.Qt.WindowSoftkeysVisibleHint)
 
         # Configurar statusbar
-
+        # ---------------------------------------------------------------------
         self.lbl_process_stat = QtGui.QLabel()
         self.lbl_process_stat.setFixedWidth(80)
         self.lbl_process_stat.setAlignment(QtCore.Qt.AlignHCenter)
@@ -213,6 +220,7 @@ class MainWindow(QtGui.QMainWindow):
         self.lbl_rec_estado.setFixedWidth(80)
         self.lbl_rec_estado.setAlignment(QtCore.Qt.AlignHCenter)
         self.WMainWindow.statusBar.addPermanentWidget(self.lbl_rec_estado)
+        # ---------------------------------------------------------------------
 
         self.WMainWindow.tblGridWorld.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.WMainWindow.tblGridWorld.setSortingEnabled(False)
@@ -305,6 +313,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setMouseTracking(True)
 
+        # Generación de menúes
         self.generar_menu_pruebas()
         self.generar_menu_hm_ip()
         self.generar_menu_bloqueo()
@@ -358,8 +367,11 @@ class MainWindow(QtGui.QMainWindow):
                                    [TIPOESTADO.PARED]
                                    )
 
+        # Actualizar valor de recompensa final
         self.calcular_recompensa_final()
         idx_tecnica = self.WMainWindow.cbQLTecnicas.currentIndex()
+
+        # Actualizar valor mínimo de gamma
         if self.WMainWindow.cbQLTecnicas.itemData(idx_tecnica).toInt()[0] == 2:
             self.calcular_gamma_minimo()
 
@@ -379,6 +391,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
         # self.WMainWindow.tblGridWorld.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
 
+        # Inicializar estados
         self.estado_final = None
         self.estado_inicial = None
 
