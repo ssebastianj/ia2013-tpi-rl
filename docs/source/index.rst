@@ -32,6 +32,7 @@ Dependencias
 * `Matplotlib <matplotlib.org>`_ 1.2+
 * `cDecimal <https://pypi.python.org/pypi/cdecimal/>`_ 2.3+
 * `Sphinx <http://sphinx-doc.org/>`_ 1.2+
+* `psutil <https://code.google.com/p/psutil/>`_ 1.0+
 
 Contenido
 ---------
