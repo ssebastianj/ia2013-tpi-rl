@@ -176,3 +176,5 @@ setup/version_info.txt
 gui/qt/build*
 
 pruebas/
+
+__pycache__
