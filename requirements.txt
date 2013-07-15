@@ -1,8 +1,4 @@
-Jinja2
-Pygments
 Sphinx
-distribute
-docutils
 numpy
 scipy
 cdecimal
