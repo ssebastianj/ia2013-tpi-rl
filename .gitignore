@@ -178,3 +178,5 @@ gui/qt/build*
 pruebas/
 
 __pycache__
+
+.idea/
