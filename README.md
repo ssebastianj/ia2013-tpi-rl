@@ -17,4 +17,4 @@
 ![escenario](docs/images/Escenario.jpg "Escenario propuesto")
 
 ## Resultados
-Ver paper [`Implementación de Técnicas de Aprendizaje por Refuerzo`](/paper/Seba, Vallejos, Levin - Implementación de Técnicas de Aprendizaje por Refuerzo.pdf "Seba, Vallejos, Levin - Implementación de Técnicas de Aprendizaje por Refuerzo [PDF]") [PDF].
+Ver paper [`Implementación de Técnicas de Aprendizaje por Refuerzo`](/paper/Seba%2C%20Vallejos%2C%20Levin%20-%20Implementaci%C3%B3n%20de%20T%C3%A9cnicas%20de%20Aprendizaje%20por%20Refuerzo.pdf "Seba, Vallejos, Levin - Implementación de Técnicas de Aprendizaje por Refuerzo [PDF]") [PDF].
