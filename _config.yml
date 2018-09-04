@@ -1,0 +1,8 @@
+title: Ia2013-tpi-rl
+description: Implementación de Técnicas de Aprendizaje por Refuerzo mediante el algoritmo Q-Learning para la cátedra Inteligencia Artificial (Ciclo 2013) perteneciente a UTN Facultad Regional Resistencia)
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
