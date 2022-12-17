@@ -4,6 +4,33 @@
 #
 #    pip-compile --generate-hashes --output-file=requirements.txt --resolver=backtracking pyproject.toml
 #
+cycler==0.11.0 \
+    --hash=sha256:3a27e95f763a428a739d2add979fa7494c912a32c17c4c38c4d5f082cad165a3 \
+    --hash=sha256:9c87405839a19696e837b3b818fed3f5f69f16f1eec1a1ad77e043dcea9c772f
+    # via matplotlib
+matplotlib==1.5.3 \
+    --hash=sha256:1fbcbac5c3d90ce233fbb371bb49a8c2da43f54e20d196406cf37843e24582c3 \
+    --hash=sha256:23af332bea034f1f69086637d550d9a6717b09f2030a4c5094eb82d6fda9b0de \
+    --hash=sha256:29f6b1351560af1ea34986b327328ccc382050748a4540ac11541419e1922b53 \
+    --hash=sha256:2fb6ec96e4e851f537e81a3586e9bd8f1c3fd3af6696fa24e191fb5dfec326fa \
+    --hash=sha256:576867bdf33bfa7f6e161f1b44184bc220afa24aa67f383a3996a1ca3eea5d9c \
+    --hash=sha256:683b586474c0337c8303f41941417fa8c334626d42f19282c476065ce0a96b1c \
+    --hash=sha256:6c284651db271821158d7d1fb029945371eaec79dbfa29fd7e93de79d1f52d79 \
+    --hash=sha256:713b0e6eb876070832f7102b27bb4ff867eba54d8aca5116b81af11e39f6c0b2 \
+    --hash=sha256:74200cb3fde281d772bbe0f7c9b8efb3d7b1faa77b1709d838e187b3b4fdf50d \
+    --hash=sha256:743e6f7bc75bdc18b49fcafd00539c7bb18babb3abd9d0d8eda2038643f6dc86 \
+    --hash=sha256:74daa74d6f4989c99c87070fbc8348309fef6ea43a4214e2d5dd92479f80825e \
+    --hash=sha256:7fb9616444b876c2c964d0d90597e3fb717cb0ff0a4b478199fe39041ef78ccd \
+    --hash=sha256:86156ce9ce01977b6a02bd8e5680ad5a8811d06375ac186ec69aae346136ffd8 \
+    --hash=sha256:98e7a6cc386e4c04b3340a2641376fe779621303c2802ef385fca3289dcd0e16 \
+    --hash=sha256:a0a5dc39f785014f2088fed2c6d2d129f0444f71afbb9c44f7bdf1b14d86ebbc \
+    --hash=sha256:ad635db9def26a514337aac719ed74f5064bd36d552cb8d547e18335da26af85 \
+    --hash=sha256:c1abc3521645d89d61ca7c7bc5aaf0cd4623b36890d4d7a7c1388f1f334db6af \
+    --hash=sha256:cf42c86fc1243e8f7d0430225319adf31499d80d2fb4e225d451f85db3e23d6a \
+    --hash=sha256:eff5bc7f02b7c1afc2a36f83af10c3d6bdac8fc07d1dfc01e48d04e46720f8b9 \
+    --hash=sha256:f094e9e19973c371c56ab43a53ab1624edd96101ff407f9230401a503c877c44 \
+    --hash=sha256:fab31bc9aa99b634471807d79f019cd12b8bab99f16b2575d8fc04229d66f168
+    # via ia2013-tpi-rl (pyproject.toml)
 numpy==1.23.5 \
     --hash=sha256:01dd17cbb340bf0fc23981e52e1d18a9d4050792e8fb8363cecbf066a84b827d \
     --hash=sha256:06005a2ef6014e9956c09ba07654f9837d9e26696a0470e42beedadb78c11b07 \
@@ -35,6 +62,7 @@ numpy==1.23.5 \
     --hash=sha256:f9a909a8bae284d46bbfdefbdd4a262ba19d3bc9921b1e76126b1d21c3c34135
     # via
     #   ia2013-tpi-rl (pyproject.toml)
+    #   matplotlib
     #   scipy
 psutil==5.6.6 \
     --hash=sha256:06660136ab88762309775fd47290d7da14094422d915f0466e0adf8e4b22214e \
@@ -49,6 +77,18 @@ psutil==5.6.6 \
     --hash=sha256:f21a7bb4b207e4e7c60b3c40ffa89d790997619f04bbecec9db8e3696122bc78 \
     --hash=sha256:f60042bef7dc50a78c06334ca8e25580455948ba2fa98f240d034a4fed9141a5
     # via ia2013-tpi-rl (pyproject.toml)
+pyparsing==3.0.9 \
+    --hash=sha256:2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb \
+    --hash=sha256:5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc
+    # via matplotlib
+python-dateutil==2.8.2 \
+    --hash=sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86 \
+    --hash=sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9
+    # via matplotlib
+pytz==2022.6 \
+    --hash=sha256:222439474e9c98fced559f1709d89e6c9cbf8d79c794ff3eb9f8800064291427 \
+    --hash=sha256:e89512406b793ca39f5971bc999cc538ce125c0e51c27941bef4568b460095e2
+    # via matplotlib
 scipy==1.9.3 \
     --hash=sha256:06d2e1b4c491dc7d8eacea139a1b0b295f74e1a1a0f704c375028f8320d16e31 \
     --hash=sha256:0d54222d7a3ba6022fdf5773931b5d7c56efe41ede7f7128c7b1637700409108 \
@@ -72,3 +112,7 @@ scipy==1.9.3 \
     --hash=sha256:da8245491d73ed0a994ed9c2e380fd058ce2fa8a18da204681f2fe1f57f98f95 \
     --hash=sha256:fbc5c05c85c1a02be77b1ff591087c83bc44579c6d2bd9fb798bb64ea5e1a027
     # via ia2013-tpi-rl (pyproject.toml)
+six==1.16.0 \
+    --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
+    --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
+    # via python-dateutil
