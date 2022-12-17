@@ -22,18 +22,15 @@ maintainers = [{ name = "Sebastián Seba" }]
 classifiers = [
     "Development Status :: 7 - Inactive",
     "Programming Language :: Python",
+    "Programming Language :: Python :: 2",
     "Programming Language :: Python :: 2.7",
-    "Programming Language :: Python :: 3.0",
-    "Programming Language :: Python :: 3.1",
-    "Programming Language :: Python :: 3.2",
-    "Programming Language :: Python :: 3.3",
 ]
 
 dependencies = [
     "numpy>=1.7.1,<2",
     "scipy>=0.12",
     "psutil>=0.7.0,<2",
-    "cdecimal; python_version < '3.3'",
+    "cdecimal; python_version < '3'",
 ]
 
 [project.optional-dependencies]
