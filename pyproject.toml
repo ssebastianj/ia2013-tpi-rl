@@ -1,0 +1,48 @@
+[project]
+name = "ia2013-tpi-rl"
+version = "2013.11.4"
+description = "Implementación de Técnicas de Aprendizaje por Refuerzo mediante el algoritmo Q-Learning para la cátedra Inteligencia Artificial (Ciclo 2013) perteneciente a UTN Facultad Regional Resistencia."
+readme = "README.md"
+requires-python = ">=2.7,<3.4"
+license = { file = "LICENSE.txt" }
+keywords = [
+    "artifial",
+    "intelligence",
+    "UTN",
+    "reinforcement",
+    "learning",
+    "q-learning",
+]
+authors = [
+    { name = "Sebastián Seba" },
+    { name = "Lucía Vallejos" },
+    { name = "Fabián Levin" },
+]
+maintainers = [{ name = "Sebastián Seba" }]
+classifiers = [
+    "Development Status :: 7 - Inactive",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3.0",
+    "Programming Language :: Python :: 3.1",
+    "Programming Language :: Python :: 3.2",
+    "Programming Language :: Python :: 3.3",
+]
+
+dependencies = [
+    "numpy>=1.7.1,<2",
+    "scipy>=0.12",
+    "psutil>=0.7.0,<2",
+    "cdecimal; python_version < '3.3'",
+]
+
+[project.optional-dependencies]
+dev = ["Sphinx"]
+
+[project.urls]
+homepage = "https://github.com/ssebastianj/ia2013-tpi-rl"
+repository = "https://github.com/ssebastianj/ia2013-tpi-rl"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
