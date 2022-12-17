@@ -29,7 +29,7 @@ classifiers = [
 dependencies = [
     "numpy>=1.7.1,<2",
     "scipy>=0.12",
-    "psutil>=0.7.0,<2",
+    "psutil>=0.7.0,<6",
     "cdecimal; python_version < '3'",
 ]
 
