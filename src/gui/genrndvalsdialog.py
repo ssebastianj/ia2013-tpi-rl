@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 from PyQt4 import QtCore, QtGui
 from info import app_info
@@ -14,16 +12,16 @@ except AttributeError:
 
 
 class GenRndValsDialog(QtGui.QDialog):
-    u"""
+    """
     Clase de diálogo 'Conectar a puerto' heredada de QDialog.
     """
     def __init__(self, parent=None):
-        u"""
+        """
         Constructor de la clase GenRndValsDialog.
 
         :param parent: Widget padre.
         """
-        super(GenRndValsDialog, self).__init__(parent)
+        super().__init__(parent)
         self.GenRndValsDialog = Ui_GenRndValsDialog()
         self.GenRndValsDialog.setupUi(self)
         self.setWindowFlags(QtCore.Qt.Dialog |
@@ -37,7 +35,7 @@ class GenRndValsDialog(QtGui.QDialog):
         self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
 
     def accept(self, *args, **kwargs):
-        u"""
+        r"""
         Redefinición del método 'acept' de la clase padre.
 
         :param \*args: \*args
@@ -49,4 +47,4 @@ class GenRndValsDialog(QtGui.QDialog):
         self.gen_vals_param_random = self.GenRndValsDialog.optGenerarValoresParam.isChecked()
         self.gen_todo_random = self.GenRndValsDialog.optGenerarTodo.isChecked()
 
-        super(GenRndValsDialog, self).accept()
+        super().accept()

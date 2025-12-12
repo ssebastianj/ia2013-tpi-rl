@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 try:
     import cdecimal as decimal
@@ -56,12 +54,12 @@ except AttributeError:
 
 
 class MainWindow(QtGui.QMainWindow):
-    u"""
+    """
     Clase heredada de QMainWindow encargada de mostrar la ventana principal de
     la aplicación.
     """
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super().__init__()
         self.WMainWindow = Ui_MainWindow()
         self.WMainWindow.setupUi(self)
 
@@ -77,14 +75,14 @@ class MainWindow(QtGui.QMainWindow):
         # Freeze Support
         self._logger.debug("Activar Freeze Support")
         multiprocessing.freeze_support()
-        self._logger.debug("Cantidad de CPUs: {0}"
+        self._logger.debug("Cantidad de CPUs: {}"
                       .format(multiprocessing.cpu_count()))
 
         self._init_vars()
         self._initialize_window()
 
     def _init_vars(self):
-        u"""
+        """
         Inicializa las variables 'globales'.
         """
         self.estado_inicial = None
@@ -177,7 +175,7 @@ class MainWindow(QtGui.QMainWindow):
                               }
 
     def _initialize_window(self):
-        u"""
+        """
         Inicializa el aspecto y características de la ventana.
         """
         # Aspectos de la ventana principal
@@ -262,23 +260,23 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnEntrenar.setToolTip("<html><head/><body><p>\
                                                 Entrenar agente \
                                                 <span style='font-size:7pt;'>\
-                                                {0}</span></p></body></html>"
+                                                {}</span></p></body></html>"
                                                 .format(entrenar_shortcut))
         self.WMainWindow.btnRecorrer.setToolTip("<html><head/><body><p>\
                                                 Explotar conocimiento \
                                                 <span style='font-size:7pt;'>\
-                                                {0}</span></p></body></html>"
+                                                {}</span></p></body></html>"
                                                 .format(recorrer_shortcut))
         self.WMainWindow.btnTerminarProceso.setToolTip("<html><head/><body><p>\
                                                        Detener proceso \
                                                        <span style='font-size:7pt;'>\
-                                                       {0}</span></p></body></html>"
+                                                       {}</span></p></body></html>"
                                                        .format(cancelar_shortcut))
 
         self.WMainWindow.btnPausar.setToolTip("<html><head/><body><p>\
                                               Pausar proceso \
                                               <span style='font-size:7pt;'>\
-                                              {0}</span></p></body></html>"
+                                              {}</span></p></body></html>"
                                               .format(pausar_shortcut))
 
         # Asignar shortcuts
@@ -290,12 +288,12 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMostrarMatrizR.setToolTip("<html><head/><body><p>\
                                                 Mostrar matriz de recompensas \
                                                 <span style='font-size:7pt;'>\
-                                                {0}</span></p></body></html>"
+                                                {}</span></p></body></html>"
                                                 .format(mostrar_mat_r_sc))
         self.WMainWindow.btnMostrarMatrizQ.setToolTip("<html><head/><body><p>\
                                                 Mostrar matriz Q \
                                                 <span style='font-size:7pt;'>\
-                                                {0}</span></p></body></html>"
+                                                {}</span></p></body></html>"
                                                 .format(mostrar_mat_q_sc))
 
         generar_estados_rnd_sc = "Ctrl+G"
@@ -303,15 +301,15 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnGWGenerarEstados.setShortcut(QtGui.QKeySequence(generar_estados_rnd_sc))
         self.WMainWindow.btnGenEstRndRapida.setShortcut(QtGui.QKeySequence(generar_estados_rnd_fast_sc))
 
-        self.WMainWindow.btnGWGenerarEstados.setToolTip(u"<html><head/><body><p>\
+        self.WMainWindow.btnGWGenerarEstados.setToolTip("<html><head/><body><p>\
                                                 Generar estados aleatorios \
                                                 <span style='font-size:7pt;'>\
-                                                {0}</span></p></body></html>"
+                                                {}</span></p></body></html>"
                                                 .format(generar_estados_rnd_sc))
-        self.WMainWindow.btnGenEstRndRapida.setToolTip(u"<html><head/><body><p>\
+        self.WMainWindow.btnGenEstRndRapida.setToolTip("<html><head/><body><p>\
                                                 Generar estados y dimensión aleatorios (incluyendo al Estado Final) \
                                                 <span style='font-size:7pt;'>\
-                                                {0}</span></p></body></html>"
+                                                {}</span></p></body></html>"
                                                 .format(generar_estados_rnd_fast_sc))
 
         self.setMouseTracking(True)
@@ -329,7 +327,7 @@ class MainWindow(QtGui.QMainWindow):
         self._set_window_signals()
 
     def convert_dimension(self, dim_str):
-        u"""
+        """
         Devuelve una tupla conteniendo el ancho y alto del GridWorld.
 
         :param dim_str: Cadena en forma {Ancho} x {Alto} representando la dimensión
@@ -340,7 +338,7 @@ class MainWindow(QtGui.QMainWindow):
         return (int(dimension[0]), int(dimension[1]))
 
     def set_gw_dimension(self, dimension):
-        u"""
+        """
         Configura el tblGridWorld a la dimensión seleccionada e Inicializa los estados en Neutros.
 
         :param dimension: Dimensión del GridWorld.
@@ -359,7 +357,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.gbCOAvance.setDisabled(True)
 
         # Obtener ancho y alto del GridWorld
-        self._logger.debug("Dimensión: {0}".format(dimension))
+        self._logger.debug("Dimensión: {}".format(dimension))
         ancho_gw, alto_gw = self.convert_dimension(dimension)
 
         # Crear un nuevo GridWorld dados el ancho y el alto del mismo
@@ -405,7 +403,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMatrizRVerHM.setEnabled(True)
 
     def _set_window_signals(self):
-        u"""
+        """
         Establece las señales correspondientes a los controles
         """
         self.WMainWindow.actionAppSalir.triggered.connect(self.exit)
@@ -457,7 +455,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnCOVerDetalles.clicked.connect(self.mostrar_detalles_co)
 
     def parametros_segun_tecnica(self, indice):
-        u"""
+        """
         Muestra u oculta los parámetros en función de la técnica seleccionada.
 
         :param tecnica: Técnica seleccionada
@@ -527,7 +525,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.sbDecrementoVal.setDisabled(True)
 
     def show_item_menu(self, posicion):
-        u"""
+        """
         Muestra un menú contextual al hacer clic derecho sobre un item de la tabla
 
         :param posicion: Posición relativa del item clickeado
@@ -572,9 +570,9 @@ class MainWindow(QtGui.QMainWindow):
                     action.setChecked(True)
 
                 if cant_selected == 1:
-                    action.setStatusTip("Establecer estado como {0}".format(tipo.nombre))
+                    action.setStatusTip("Establecer estado como {}".format(tipo.nombre))
                 elif cant_selected > 1:
-                    action.setStatusTip("Establecer estados seleccionados como {0}".format(tipo.nombre))
+                    action.setStatusTip("Establecer estados seleccionados como {}".format(tipo.nombre))
                 self.menu_item.addAction(action)
 
                 if tipo.ide == TIPOESTADO.FINAL:
@@ -636,7 +634,7 @@ class MainWindow(QtGui.QMainWindow):
                     columna = item.column()
                     nro_estado = (fila * alto) + columna + 1
 
-                    item.setToolTip("Estado E{0}\nFila: {1}\nColumna: {2}\nTipo: {3}\nRecompensa: {4}"
+                    item.setToolTip("Estado E{}\nFila: {}\nColumna: {}\nTipo: {}\nRecompensa: {}"
                                     .format(nro_estado,
                                             fila + 1,
                                             columna + 1,
@@ -644,7 +642,7 @@ class MainWindow(QtGui.QMainWindow):
                                             estado_actual.tipo.recompensa))
 
     def entrenar(self):
-        u"""
+        """
         Ejecuta la magia de Q-Learning. Se encarga de realizar el aprendizaje
         mediante el mismo en otro hilo/proceso.
         """
@@ -765,12 +763,12 @@ class MainWindow(QtGui.QMainWindow):
         self.qlearning_entrenar_worker = self.qlearning.entrenar(self.ql_entrenar_out_q,
                                                                  self.ql_entrenar_error_q)
 
-        self._logger.debug("Nuevo Thread: {0}".format(self.qlearning_entrenar_worker))
+        self._logger.debug("Nuevo Thread: {}".format(self.qlearning_entrenar_worker))
 
         worker_error = get_item_from_queue(self.ql_entrenar_error_q)
 
         if worker_error is not None:
-            self._logger.debug("Error {0}: ".format(worker_error))
+            self._logger.debug("Error {}: ".format(worker_error))
             self.qlearning_entrenar_worker = None
             self.working_process = None
             self.ql_entrenar_out_q = None
@@ -793,7 +791,7 @@ class MainWindow(QtGui.QMainWindow):
             self.on_comienzo_proceso()
 
     def recorrer_gw(self):
-        u"""
+        """
         Realiza el recorrido del agente en el GridWorld buscando los valores de
         Q mayores.
         """
@@ -834,11 +832,11 @@ class MainWindow(QtGui.QMainWindow):
                                                                  self.ql_recorrer_out_q,
                                                                  self.ql_recorrer_error_q)
 
-        self._logger.debug("Nuevo Thread: {0}".format(self.qlearning_recorrer_worker))
+        self._logger.debug("Nuevo Thread: {}".format(self.qlearning_recorrer_worker))
 
         worker_error = get_item_from_queue(self.ql_recorrer_error_q)
         if worker_error is not None:
-            self._logger.debug("Error {0}: ".format(worker_error))
+            self._logger.debug("Error {}: ".format(worker_error))
             self.qlearning_recorrer_worker = None
             self.working_process = None
             self.ql_recorrer_out_q = None
@@ -854,11 +852,11 @@ class MainWindow(QtGui.QMainWindow):
             self.on_comienzo_proceso()
 
     def terminar_proceso(self):
-        u"""
+        """
         Ejecutar tareas al finalizar un thread.
         """
         if self.working_process is not None:
-            self._logger.debug("Detener {0}".format(self.working_process))
+            self._logger.debug("Detener {}".format(self.working_process))
             self.working_process.join(0.05)
             self._logger.debug(self.working_process)
             self.working_process = None
@@ -881,7 +879,7 @@ class MainWindow(QtGui.QMainWindow):
         tipos_estados = self.gridworld.tipos_estados.keys()
 
     def _on_window_timer(self):
-        u"""
+        """
         Ejecuta diversas acciones a cada disparo del Timer principal.
         """
         # self._logger.debug("Timer Timeout")
@@ -889,7 +887,7 @@ class MainWindow(QtGui.QMainWindow):
         self.comprobar_actividad_procesos()
 
     def on_comienzo_proceso(self):
-        u"""
+        """
         Ejecutar tareas al ejecutar un thread.
         """
         self._logger.debug("Comienzo del proceso")
@@ -977,7 +975,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuEstadisticas.setDisabled(True)
 
     def on_fin_proceso(self):
-        u"""
+        """
         Ejecuta tareas al finalizar la ejecución de un thread/proceso.
         """
         # Detener Timer asociado a la ventana principal
@@ -987,7 +985,7 @@ class MainWindow(QtGui.QMainWindow):
         self.window_config["item"]["menu_estado"]["enabled"] = True
         self.window_config["item"]["show_tooltip"] = True
 
-        self._logger.debug("Procesos hijos activos: {0}\nFin de procesamiento"
+        self._logger.debug("Procesos hijos activos: {}\nFin de procesamiento"
             .format(multiprocessing.active_children()))
 
         self.WMainWindow.gbGridWorld.setEnabled(True)
@@ -1082,11 +1080,11 @@ class MainWindow(QtGui.QMainWindow):
         # self._logger.debug("Matriz Recompensas Promedio: {0}".format(self.graph_recompensas_promedio))
         # self._logger.debug("Episodios Finalizados: {0}".format(self.graph_episodios_finalizados))
         # self._logger.debug("Iteraciones Por Episodio: {0}".format(self.graph_iters_por_episodio))
-        self._logger.debug("Diferencia entre matrices: {0}".format(self.graph_mat_diff))
+        self._logger.debug("Diferencia entre matrices: {}".format(self.graph_mat_diff))
         self._logger.debug(self.q_vals_co)
 
     def _reintentar_detener_hilos(self):
-        u"""
+        """
         Solicita la finalización de todos los threads utilizados en la
         aplicación. Este método debe ser llamado al desconectarse o al salir
         de la aplicación.
@@ -1103,11 +1101,11 @@ class MainWindow(QtGui.QMainWindow):
                 proceso.terminate()
                 # Esperar antes de continuar
                 time.sleep(0.1)
-            except WindowsError:
+            except OSError:
                 pass
 
     def inicializar_todo(self):
-        u"""
+        """
         Reestablece los valores por defecto de varios controles de la UI
         e inicializa variables internas del programa.
         """
@@ -1117,7 +1115,7 @@ class MainWindow(QtGui.QMainWindow):
         self.inicializar_gw()
 
     def mostrar_dialogo_acerca(self):
-        u"""
+        """
         Muestra el cuadro de diálogo Acerca de...
         """
         self.AboutD = AboutDialog(self)
@@ -1133,13 +1131,13 @@ class MainWindow(QtGui.QMainWindow):
         logging.shutdown()
 
     def exit(self):
-        u"""
+        """
         Finaliza la ejecución de la aplicación.
         """
         self.close()
 
     def actualizar_window(self):
-        u"""
+        """
         Actualiza la información mostrada en la ventana de acuerdo a los
         datos de entrada,
         """
@@ -1147,7 +1145,7 @@ class MainWindow(QtGui.QMainWindow):
         self.update_window_recorrer()
 
     def update_window_entrenar(self):
-        u"""
+        """
         Actualizar ventana con información del Entrenamiento
         """
         try:
@@ -1204,16 +1202,16 @@ class MainWindow(QtGui.QMainWindow):
                     x_actual, y_actual = estado_actual_ent
 
                     # Mostrar información de entrenamiento en etiquetas
-                    main_wnd.lblEntEstadoActual.setText("X:{0}  Y:{1}".format(x_actual,  # @IgnorePep8
+                    main_wnd.lblEntEstadoActual.setText("X:{}  Y:{}".format(x_actual,  # @IgnorePep8
                                                                               y_actual))  # @IgnorePep8
                     main_wnd.lblEntNroEpisodio.setText(str(nro_episodio))
                     main_wnd.lblEntNroIteracion.setText(str(cant_iteraciones))
-                    main_wnd.lblEntValParametro.setText("{0:.2f}".format(valor_parametro))  # @IgnorePep8
-                    main_wnd.lblEntExecTimeEpisodios.setText("{0:.3f} seg  ({1:.2f} ms)".format(episode_exec_time,  # @IgnorePep8
+                    main_wnd.lblEntValParametro.setText("{:.2f}".format(valor_parametro))  # @IgnorePep8
+                    main_wnd.lblEntExecTimeEpisodios.setText("{:.3f} seg  ({:.2f} ms)".format(episode_exec_time,  # @IgnorePep8
                                                                                                 episode_exec_time * 1000))  # @IgnorePep8
-                    main_wnd.lblEntExecTimeIteraciones.setText("{0:.3f} seg  ({1:.2f} ms)".format(iter_exec_time,  # @IgnorePep8
+                    main_wnd.lblEntExecTimeIteraciones.setText("{:.3f} seg  ({:.2f} ms)".format(iter_exec_time,  # @IgnorePep8
                                                                                                   iter_exec_time * 1000))  # @IgnorePep8
-                    main_wnd.lblEntExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)".format(running_exec_time_ent,  # @IgnorePep8
+                    main_wnd.lblEntExecTimeTotal.setText("{:.3f} seg  ({:.2f} ms)".format(running_exec_time_ent,  # @IgnorePep8
                                                                                             running_exec_time_ent * 1000))  # @IgnorePep8
                     main_wnd.lblEntDiffMatrices.setText(str(tmp_mat_diff))
 
@@ -1265,7 +1263,7 @@ class MainWindow(QtGui.QMainWindow):
                 if ent_loop_alarm and ent_warn_loop_alarm:
                     QtGui.QMessageBox.warning(self,
                                               _tr('QLearning - Entrenamiento'),
-                    u"Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
+                    "Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
 
                     # self.working_process.join(0.05)
                     # self.qlearning_entrenar_worker = None
@@ -1286,7 +1284,7 @@ class MainWindow(QtGui.QMainWindow):
             pass
 
     def update_window_recorrer(self):
-        u"""
+        """
         Actualizar ventana con información del Recorrido
         """
         try:
@@ -1313,10 +1311,10 @@ class MainWindow(QtGui.QMainWindow):
                     x_actual, y_actual = estado_actual_rec
                     # self._logger.debug("Estado actual: {0}".format(estado_actual_rec))
 
-                    main_wnd.lblRecEstadoActual.setText("X:{0}  Y:{1}".format(x_actual, y_actual))  # @IgnorePep8
-                    main_wnd.lblRecExecTimeTotal.setText("{0:.3f} seg  ({1:.2f} ms)".format(running_exec_time_rec,  # @IgnorePep8
+                    main_wnd.lblRecEstadoActual.setText("X:{}  Y:{}".format(x_actual, y_actual))  # @IgnorePep8
+                    main_wnd.lblRecExecTimeTotal.setText("{:.3f} seg  ({:.2f} ms)".format(running_exec_time_rec,  # @IgnorePep8
                                                                                             running_exec_time_rec * 1000))  # @IgnorePep8
-                    main_wnd.lblRecExecTimeRecorrido.setText("{0:.3f} seg  ({1:.2f} ms)".format(rec_exec_time,  # @IgnorePep8
+                    main_wnd.lblRecExecTimeRecorrido.setText("{:.3f} seg  ({:.2f} ms)".format(rec_exec_time,  # @IgnorePep8
                                                                                                 rec_exec_time * 1000))  # @IgnorePep8
                 except TypeError:
                     pass
@@ -1360,7 +1358,7 @@ class MainWindow(QtGui.QMainWindow):
             pass
 
     def get_all_from_queue(self, cola):
-        u"""Generator to yield one after the others all items
+        """Generator to yield one after the others all items
             currently in the queue Q, without any waiting.
             Grupo Nº 1 wants to thanks to Eli Bendersky for the idea.
 
@@ -1373,7 +1371,7 @@ class MainWindow(QtGui.QMainWindow):
             raise StopIteration
 
     def comprobar_actividad_procesos(self):
-        u"""
+        """
         Comprueba si hay threads activos (sin incluir el MainThread). Si no
         existen threads activos se detiene el Timer de la ventana.
         """
@@ -1390,7 +1388,7 @@ class MainWindow(QtGui.QMainWindow):
             self.on_fin_proceso()
 
     def mostrar_info_est_status_bar(self, item):
-        u"""
+        """
         Muestra información en la barra de estado acerca del estado actual
         en grilla.
 
@@ -1404,16 +1402,16 @@ class MainWindow(QtGui.QMainWindow):
 
         nro_estado = (fila * self.gridworld.alto) + columna + 1
 
-        self.lbl_item_actual.setText("Fila: {0} Columna: {1}"
+        self.lbl_item_actual.setText("Fila: {} Columna: {}"
                                      .format(fila + 1,
                                              columna + 1))
 
-        self.lbl_rec_estado.setText("R = {0}".format(estado.tipo.recompensa))
-        self.lbl_tipo_est_actual.setText("{0}".format(estado.tipo.nombre))
-        self.lbl_nro_estado.setText("E{0}".format(nro_estado))
+        self.lbl_rec_estado.setText("R = {}".format(estado.tipo.recompensa))
+        self.lbl_tipo_est_actual.setText("{}".format(estado.tipo.nombre))
+        self.lbl_nro_estado.setText("E{}".format(nro_estado))
 
     def mouseMoveEvent(self, event):
-        u"""
+        """
         Sobrecarga del evento mouseMoveEvent de Qt.
 
         :param event: Evento.
@@ -1424,7 +1422,7 @@ class MainWindow(QtGui.QMainWindow):
         self.lbl_tipo_est_actual.setText("")
 
     def enterEvent(self, event):
-        u"""
+        """
         Sobrecarga del evento enterEvent de Qt.
 
         :param event: Evento.
@@ -1435,29 +1433,29 @@ class MainWindow(QtGui.QMainWindow):
         self.lbl_tipo_est_actual.setText("")
 
     def set_gw_dimension_menu(self, action):
-        u"""
+        """
         Establece la dimensión del GridWorld en función del ítem seleccionado en el menú.
 
         :param action: Acción seleccionada.
         """
         dimension = action.data().toString()
-        self._logger.debug("Dimensión: {0}".format(dimension))
+        self._logger.debug("Dimensión: {}".format(dimension))
         indice = self.WMainWindow.cbGWDimension.findData(dimension)
         self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
         self.set_gw_dimension(dimension)
 
     def set_gw_dimension_cb(self, indice):
-        u"""
+        """
         Establece la dimensión del GridWorld en función del ítem seleccionado en el combobox.
 
         :param indice: Ítem seleccionado.
         """
         dimension = self.WMainWindow.cbGWDimension.itemData(indice).toString()
-        self._logger.debug("Dimensión: {0}".format(dimension))
+        self._logger.debug("Dimensión: {}".format(dimension))
         self.set_gw_dimension(dimension)
 
     def parametros_segun_tecnica_menu(self, action):
-        u"""
+        """
         Establecer técnica seleccionada de acuerdo al ítem seleccionado en el menú.
 
         :param action: Acción seleccionada.
@@ -1466,7 +1464,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.cbQLTecnicas.setCurrentIndex(indice)
 
     def generar_menu_dimensiones(self):
-        u"""
+        """
         Crea el menú Dimensiones junto a sus submenúes y acciones.
         """
         self._logger.debug("Generar Menú Dimensiones")
@@ -1491,7 +1489,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuGridWorld.addMenu(submenu_dimension)
 
     def generar_menu_tecnicas(self):
-        u"""
+        """
         Crea el menú Técnicas junto a sus acciones.
         """
         self._logger.debug("Generar Menú Técnicas")
@@ -1516,7 +1514,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuQLearning.addMenu(submenu_tecnica)
 
     def mostrar_opciones_gw(self):
-        u"""
+        """
         Despliega un cuadro de diálogo conteniendo opciones configurables del GridWorld.
         """
         # Inicializar cuadros de diálogo
@@ -1552,7 +1550,7 @@ class MainWindow(QtGui.QMainWindow):
             self.recargar_estados()
 
     def mostrar_gen_rnd_estados_dialog(self):
-        u"""
+        """
         Despliega un cuadro de diálogo que permite seleccionar valores para generar estados aleatorios.
 
         TODO: NotYetImplemented
@@ -1562,7 +1560,7 @@ class MainWindow(QtGui.QMainWindow):
             pass
 
     def inicializar_gw(self):
-        u"""
+        """
         Inicializa el GridWorld con tipos de estados por defecto y lo actualiza.
         """
         # Cargar dimensiones posibles del GridWorld
@@ -1587,7 +1585,7 @@ class MainWindow(QtGui.QMainWindow):
         self.refresh_gw()
 
     def refresh_gw(self):
-        u"""
+        """
         Actualizar estados del GridWorld.
         """
         indice = self.WMainWindow.cbGWDimension.currentIndex()
@@ -1597,7 +1595,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMatrizQVerHM.setDisabled(True)
 
     def inicializar_ql_vals(self):
-        u"""
+        """
         Inicializa los valores de Q-Learning a valores predeterminados
         """
         # Cargar técnicas posibles
@@ -1641,7 +1639,7 @@ class MainWindow(QtGui.QMainWindow):
         self.set_minimo_incremento_opt()
 
     def show_matriz_dialog(self, matriz, titulo_corto, titulo_largo):
-        u"""
+        """
         Muestra un cuadro de diálogo conteniendo una matriz dada.
 
         :param matriz: Matriz a representar en el cuadro de diálogo.
@@ -1655,21 +1653,21 @@ class MainWindow(QtGui.QMainWindow):
         ShowMatrizD.exec_()
 
     def show_matriz_r(self):
-        u"""
+        """
         Muestra un cuadro de diálogo conteniendo la Matriz de Recompensas R.
         """
         matriz_r = self.gridworld.get_matriz_r()
         self.show_matriz_dialog(matriz_r, "Matriz R", "Matriz de recompensas")
 
     def show_matriz_q(self):
-        u"""
+        """
         Muestra un cuadro de diálogo conteniendo la Matriz Q.
         """
         if self.matriz_q is not None:
             self.show_matriz_dialog(self.matriz_q, "Matriz Q", "Matriz Q")
 
     def resize_gw_estados(self):
-        u"""
+        """
         Redimensiona el tamaño de los estados en UI de acuerdo a lo configurado.
         """
         ancho_estado_px = self.window_config["item"]["size"]
@@ -1684,7 +1682,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
 
     def set_minimo_incremento_opt(self):
-        u"""
+        """
         Establecer mínimo de incremento por sobre la máxima recompensa en el
         control de entrada.
         """
@@ -1695,7 +1693,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def mostrar_camino_optimo(self, caminoopt, delay=0, paintinicial=False,
                               paintfinal=False, show_icon=False):
-        u"""
+        """
         Muestra el camino óptimo obtenido del Recorrido (Play) sobre el GridWorld.
 
         :param camino: Camino óptimo.
@@ -1715,9 +1713,9 @@ class MainWindow(QtGui.QMainWindow):
                                            if x not in seen and not seen_add(x)]
 
             # FIXME
-            self._logger.debug("Camino óptimo (con repetidos): {0}".format(camino))
+            self._logger.debug("Camino óptimo (con repetidos): {}".format(camino))
             # FIXME
-            self._logger.debug("Camino óptimo (sin repetidos): {0}".format(camino_optimo_sin_repetidos))
+            self._logger.debug("Camino óptimo (sin repetidos): {}".format(camino_optimo_sin_repetidos))
 
             self.camino_optimo_end = len(camino) - 1
             self.camino_optimo_start = 0
@@ -1749,7 +1747,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.btnCOAtras.setEnabled(True)
 
     def animar_camino_optimo(self):
-        u"""
+        """
         Muestra el camino óptimo en el GridWorld introduciendo un retraso de tiempo
         entre los estados con el fin de visualizar el progreso.
         """
@@ -1768,7 +1766,7 @@ class MainWindow(QtGui.QMainWindow):
                                    paintfinal=paint_final)
 
     def ocultar_camino_optimo(self, paintinicial=False, paintfinal=False):
-        u"""
+        """
         Acción que invoca al método para mostrar el camino óptimo. Utilizada desde
         un proceso o UI.
         """
@@ -1804,7 +1802,7 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.btnCOAtras.setDisabled(True)
 
     def mostrar_camino_optimo_act(self):
-        u"""
+        """
         Acción que invoca al método para mostrar el camino óptimo. Utilizada desde
         un proceso o UI.
         """
@@ -1821,7 +1819,7 @@ class MainWindow(QtGui.QMainWindow):
                                    paintfinal=paint_final)
 
     def show_hide_camino_optimo(self):
-        u"""
+        """
         Alterna la visualización del camino óptimo sobre el GridWorld.
         """
         if self.camino_optimo_active:
@@ -1835,7 +1833,7 @@ class MainWindow(QtGui.QMainWindow):
             self.mostrar_camino_optimo_act()
 
     def recargar_estados(self):
-        u"""
+        """
         (Re)Dibuja los estados del GridWorld en la grilla de la UI.
         """
         # Cachear acceso a métodos y atributos
@@ -1863,7 +1861,7 @@ class MainWindow(QtGui.QMainWindow):
                 if show_tooltip:
                     nro_estado = (fila * alto) + columna + 1
 
-                    item.setToolTip("Estado E{0}\nFila: {1} Columna: {2}\nTipo: {3}\nRecompensa: {4}"
+                    item.setToolTip("Estado E{}\nFila: {} Columna: {}\nTipo: {}\nRecompensa: {}"
                                     .format(nro_estado,
                                             fila + 1,
                                             columna + 1,
@@ -1876,7 +1874,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.tblGridWorld.setUpdatesEnabled(True)
 
     def refresh_gw_random(self, rnd_dim=False, incluir_final=False):
-        u"""
+        """
         Actuliza la grilla en pantalla al crear estados aleatorios.
 
         :param rnd_dim: Booleano que establece si se genera aleatoriamente la dimensión o se utiliza la actual.
@@ -1895,7 +1893,7 @@ class MainWindow(QtGui.QMainWindow):
         self.recargar_estados()
 
     def calcular_recompensa_final(self):
-        u"""
+        """
         Calcula de manera dinámica la recompensa del Estado Final.
         """
         if self.window_config["gw"]["entrenamiento"]["recompfinalauto"]:
@@ -1918,7 +1916,7 @@ class MainWindow(QtGui.QMainWindow):
                 pass
 
     def generar_menu_estadisticas(self):
-        u"""
+        """
         Crear el menú de Estadísticas junto a sus acciones.
         """
         self.WMainWindow.menuEstadisticas.clear()
@@ -1968,7 +1966,7 @@ class MainWindow(QtGui.QMainWindow):
         submenu4.setEnabled(self.graph_mat_diff is not None)
 
     def show_estadisticas(self, action):
-        u"""
+        """
         Muestra ventanas conteniendo el gráfico en función del valor de "action".
 
         :param action: Acción seleccionada.
@@ -2065,7 +2063,7 @@ class MainWindow(QtGui.QMainWindow):
                 mat_diffs_worker.exportar_info(filename)
 
     def generar_menu_edicion(self):
-        u"""
+        """
         Crea el menú Edición junto a sus acciones.
         """
         action = QtGui.QAction("Copiar datos de pruebas al portapapeles", self)
@@ -2074,7 +2072,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuEdicion.addAction(action)
 
     def copiar_prueba_toclipboard(self):
-        u"""
+        """
         Copiar datos de prueba al portapapeles.
         """
         if self.estado_final is None:
@@ -2124,20 +2122,20 @@ class MainWindow(QtGui.QMainWindow):
         clipboard.setText(linea_prueba)
 
     def _join_graph_thread(self, threadp):
-        u"""
+        """
         Hacer join del thread dedicado a gráficar.
 
         :param threadp: Hilo al cual se le hará join.
         """
         try:
-            self._logger.debug("Join Thread: {0}".format(threadp))
+            self._logger.debug("Join Thread: {}".format(threadp))
             threadp.terminate()
             threadp.wait(500)
         except threading.ThreadError:
             pass
 
     def calcular_gamma_minimo(self):
-        u"""
+        """
         Calcula el mínimo gamma permitido de acuerdo al máximo Emax admitido
         por el sistema.
         """
@@ -2163,7 +2161,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.sbQLGamma.setMinimum(gamma)
 
     def generar_menu_pruebas(self):
-        u"""
+        """
         Crear submenúes y acciones para el menú Pruebas.
         """
         action = QtGui.QAction("Cargar prueba...", self)
@@ -2184,7 +2182,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuPruebas.addAction(action)
 
     def cargar_prueba(self):
-        u"""
+        """
         Cargar escenario de prueba desde archivo.
         """
         extfilter = "Prueba de Q-Learning (*.csv)"
@@ -2259,7 +2257,7 @@ class MainWindow(QtGui.QMainWindow):
                     self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect()
 
                     ancho, alto = len(estados_num), len(estados_num[0])
-                    dimension = "{0} x {1}".format(ancho, alto)
+                    dimension = "{} x {}".format(ancho, alto)
                     indice = self.WMainWindow.cbGWDimension.findData(dimension)
                     self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
                     self.WMainWindow.cbGWDimension.currentIndexChanged.connect(self.set_gw_dimension_cb)
@@ -2269,7 +2267,7 @@ class MainWindow(QtGui.QMainWindow):
                     self.recargar_estados()
 
     def guardar_prueba(self):
-        u"""
+        """
         Guardar datos de prueba a archivo.
         """
         if self.estado_final is None:
@@ -2319,7 +2317,7 @@ class MainWindow(QtGui.QMainWindow):
                                     self.WMainWindow.sbIntervaloDiffCalc.value()])
 
     def pausar_reanudar_proceso(self):
-        u"""
+        """
         Pausa/Reanuda el Entrenamiento o Explotación.
         """
         if self.worker_paused:
@@ -2359,7 +2357,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.working_process.reanudar()
 
                 # FIXME: Eliminar
-                self._logger.debug("Reanudar: {0}".format(self.working_process))
+                self._logger.debug("Reanudar: {}".format(self.working_process))
             except AttributeError:
                 pass
         else:
@@ -2370,7 +2368,7 @@ class MainWindow(QtGui.QMainWindow):
                     self.working_process_mng.suspend()
 
                     # FIXME: Eliminar
-                    self._logger.debug("Pausar: {0}".format(self.working_process))
+                    self._logger.debug("Pausar: {}".format(self.working_process))
 
                     self.worker_paused = True
 
@@ -2406,7 +2404,7 @@ class MainWindow(QtGui.QMainWindow):
                 pass
 
     def estado_co_back(self):
-        u"""
+        """
         Retrocede un estado en el camino óptimo visualizado en pantalla.
         """
         if self.camino_optimo is not None and self.camino_optimo_active:
@@ -2430,7 +2428,7 @@ class MainWindow(QtGui.QMainWindow):
                         self.WMainWindow.btnCOAdelante.setEnabled(True)
 
     def estado_co_next(self):
-        u"""
+        """
         Avanza un estado en el camino óptimo visualizado en pantalla.
         """
         if self.camino_optimo is not None and self.camino_optimo_active:
@@ -2454,7 +2452,7 @@ class MainWindow(QtGui.QMainWindow):
                         self.WMainWindow.btnCOAtras.setEnabled(True)
 
     def generar_menu_hm_ip(self):
-        u"""
+        """
         Crea el submenú Interpolaciones del Heatmap.
         """
         self.WMainWindow.menuInterpolacion.clear()
@@ -2485,7 +2483,7 @@ class MainWindow(QtGui.QMainWindow):
             mw.menuInterpolacion.addAction(action)
 
     def mostrar_matrizq_hm(self):
-        u"""
+        """
         Genera y muestra un heatmap en base a la Matriz Q.
         """
         interpolation = self.window_config["heatmap"]["interpolation"]
@@ -2495,7 +2493,7 @@ class MainWindow(QtGui.QMainWindow):
             smq.show_heatmap(interpolation)
 
     def mostrar_matrizr_hm(self):
-        u"""
+        """
         Genera y muestra un heatmap en base a la Matriz R.
         """
         interpolation = self.window_config["heatmap"]["interpolation"]
@@ -2503,7 +2501,7 @@ class MainWindow(QtGui.QMainWindow):
         smr.show_heatmap(interpolation)
 
     def set_hm_interpolation(self, item):
-        u"""
+        """
         Establece el tipo de interpolación del heatmap generado por matriz.
 
         :param item: Ítem de menu conteniendo un valor de interpolación válido.
@@ -2512,7 +2510,7 @@ class MainWindow(QtGui.QMainWindow):
         self.window_config["heatmap"]["interpolation"] = str(interpolation)
 
     def generar_menu_bloqueo(self):
-        u"""
+        """
         Generar el menú de Bloqueo con las opciones acordes.
         """
         options_group = QtGui.QActionGroup(self)
@@ -2532,7 +2530,7 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuAnteBloqueo.addAction(action)
 
     def set_stop_action(self, item):
-        u"""
+        """
         Establece la acción a tomar ante un bloqueo.
 
         :param item: Ítem de menú seleccionado.
@@ -2542,7 +2540,7 @@ class MainWindow(QtGui.QMainWindow):
         self.window_config["gw"]["recorrido"]["maxitersreached"]["action"] = data
 
     def mostrar_detalles_co(self):
-        u"""
+        """
         Muestra un cuadro de diálogo conteniendo detalles del camino óptimo.
         """
         self.ShowCODetailsD = ShowCODetailsDialog(self.camino_optimo,

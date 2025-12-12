@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
 
@@ -16,7 +15,7 @@ app_version_sep = app_version.split('.')
 for i in xrange(0, 4 - len(app_version_sep)):
         app_version_sep.append('0')
 
-prod_vers_final = '({0})'.format(', '.join(app_version_sep))
+prod_vers_final = '({})'.format(', '.join(app_version_sep))
 
 mask = '0x17'
 flags = '0x0'
@@ -37,30 +36,30 @@ translation = '[11274, 1200]'
 
 version_info_str = """VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers={0},
-    prodvers={1},
-    mask={2},
-    flags={3},
-    OS={4},
-    fileType={5},
-    subtype={6},
-    date={7}
+    filevers={},
+    prodvers={},
+    mask={},
+    flags={},
+    OS={},
+    fileType={},
+    subtype={},
+    date={}
     ),
   kids=[
     StringFileInfo(
       [
       StringTable(
-        '{8}',
-        [StringStruct('CompanyName', '{9}'),
-        StringStruct('FileDescription', '{10}'),
-        StringStruct('FileVersion', '{11}'),
-        StringStruct('InternalName', '{12}'),
-        StringStruct('LegalCopyright', '{13}'),
-        StringStruct('OriginalFilename', '{14}'),
-        StringStruct('ProductName', '{15}'),
-        StringStruct('ProductVersion', '{16}')])
+        '{}',
+        [StringStruct('CompanyName', '{}'),
+        StringStruct('FileDescription', '{}'),
+        StringStruct('FileVersion', '{}'),
+        StringStruct('InternalName', '{}'),
+        StringStruct('LegalCopyright', '{}'),
+        StringStruct('OriginalFilename', '{}'),
+        StringStruct('ProductName', '{}'),
+        StringStruct('ProductVersion', '{}')])
       ]),
-    VarFileInfo([VarStruct('Translation', {17})])
+    VarFileInfo([VarStruct('Translation', {})])
   ]
 )""".format(prod_vers_final,
             prod_vers_final,
@@ -84,4 +83,4 @@ version_info_str = """VSVersionInfo(
 
 with open('version_info.txt', 'w') as vi:
     vi.write(version_info_str)
-    print u'Información de versión generada.'
+    print 'Información de versión generada.'

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, print_function, unicode_literals
 
 import logging
 import numpy
@@ -11,11 +9,11 @@ import threading
 from core.estado.estado import Estado, TIPOESTADO
 
 
-class GridWorld(object):
+class GridWorld:
     """Clase GridWorld"""
     def __init__(self, ancho, alto, tipos_estados, estados=None,
                  excluir_tipos_vecinos=None):
-        u"""
+        """
         :param ancho: Ancho
         :param alto: Alto
         :param estados: Matriz MxN conteniendo los estados (lista de lista)
@@ -24,7 +22,7 @@ class GridWorld(object):
                                       tipos de estado a excluir al momento de
                                       obtener los vecinos de un estado dado.
         """
-        super(GridWorld, self).__init__()
+        super().__init__()
         self._logger = logging.getLogger()
 
         self._ancho = ancho
@@ -38,7 +36,7 @@ class GridWorld(object):
         self._inicializar_estados()
 
     def _inicializar_estados(self, default=TIPOESTADO.NEUTRO):
-        u"""
+        """
         Inicializa los estados del GridWorld a un tipo de estado predeterminado.
 
         :param default: Tipo de estado predeterminado para cada Estado del GridWorld.
@@ -60,7 +58,7 @@ class GridWorld(object):
             return None
 
     def _inicializar_estados_worker(self, default=TIPOESTADO.NEUTRO):
-        u"""
+        """
         Crea la matriz de estados con un tipo de estado predeterminado.
         """
         if self._estados is None:
@@ -96,7 +94,7 @@ class GridWorld(object):
             self._coordenadas = coordenadas
 
     def get_matriz_r(self, include_vecinos=False):
-        u"""
+        """
         Genera y devuelve la matriz de recompensas R.
         """
         # Verificar si hay tipos de vecinos a excluir de la matriz R
@@ -162,7 +160,7 @@ class GridWorld(object):
         return matriz_r
 
     def get_estado(self, x, y):
-        u"""
+        """
         Devuelve un estado dadas sus coordenadas.
 
         :param x: Fila del estado
@@ -171,7 +169,7 @@ class GridWorld(object):
         return self._estados[x - 1][y - 1]
 
     def set_estado(self, x, y, estado):
-        u"""
+        """
         Asigna un estado en una posición X,Y dada.
 
         :param x: Fila de destino
@@ -205,7 +203,7 @@ class GridWorld(object):
         return self._tipos_estados
 
     def set_tipos_estados(self, tipos_estados):
-        u"""
+        """
         Asigna los tipos de estados al GridwWorld.
 
         :param tipos_estados: Diccionario conteniendo los tipos de estados válidos.
@@ -218,7 +216,7 @@ class GridWorld(object):
         return self._excluir_tipos_vecinos
 
     def set_tipos_vecinos_excluidos(self, valor):
-        u"""
+        """
         Establece los tipos de vecinos a excluir durante el procesamiento.
 
         :param valor: Lista conteniendo tipos de estados válidos.
@@ -235,7 +233,7 @@ class GridWorld(object):
         return (self._ancho, self._alto)
 
     def set_dimension(self, dimension):
-        u"""
+        """
         Establece la dimensión del GridWorld.
 
         :param dimension: Tupla conteniendo la dimensión el formato (Ancho, Alto)
@@ -243,7 +241,7 @@ class GridWorld(object):
         self._ancho, self._alto = dimension
 
     def get_vecinos_estado(self, x, y, iterate=False):
-        u"""
+        """
         Devuelve los estados adyacentes en función de un estado dado.
         Fuente: http://stackoverflow.com/questions/2373306/pythonic-and-efficient-way-of-finding-adjacent-cells-in-grid
 
@@ -265,10 +263,10 @@ class GridWorld(object):
             return vecinos
 
     def matriz_estados_to_string(self):
-        u"""
+        """
         Devuelve un string representando los estados en una estructura tabular (matriz)
         """
-        return "\n".join(["| {0} |".format(" | ".join(j))
+        return "\n".join(["| {} |".format(" | ".join(j))
                           for j in [[i.tipo.letra for i in f]
                                     for f in self._estados]])
 
@@ -276,7 +274,7 @@ class GridWorld(object):
         return len(self._estados)
 
     def generar_estados_aleatorios(self, incluir_final=False):
-        u"""
+        """
         Genera estados aleatorios en el GridWorld utilizando número pseudo-aleatorios.
 
         :param incluir_final: Boooleano que determina si se generará de manera aleatoria al Estado Final.
@@ -297,7 +295,7 @@ class GridWorld(object):
             return None
 
     def _generar_estados_aleatorios_worker(self, incluir_final=False):
-        u"""
+        """
         Crea la matriz de estados tipos de estados aleatorios.
         """
         # Inicializar lista de estados excluidos
@@ -375,7 +373,7 @@ class GridWorld(object):
         self._estado_final = estado_final
 
     def actualizar_info_estados(self):
-        u"""
+        """
         Actualiza la información de los Estados acerca del tipo de dato modificado.
         """
         # Cachear acceso a métodos y atributos
@@ -388,7 +386,7 @@ class GridWorld(object):
                     estado.tipo = tipos_estados[estado.tipo.ide]
 
     def get_matriz_tipos_estados(self):
-        u"""
+        """
         Devuelve el conjunto de tipos de estados en base a su Id.
         """
         # Cachear acceso a métodos y atributos
@@ -400,7 +398,7 @@ class GridWorld(object):
             return None
 
     def from_matriz_tipos_estados(self, estados_num):
-        u"""
+        """
         Crea una nueva instancia de un GridWorld a partir de un arreglo conteniendo
         los identificadores de tipos de estado.
 

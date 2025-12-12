@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# ! -*- coding: utf-8 -*-
 
 # Author: Juanjo Conti
 # http://www.juanjoconti.com.ar/2007/02/28/lista-circular-en-python/
@@ -10,7 +9,7 @@ class Circular(list):
     Lista circular doblemente enlazada
     """
     def __init__(self, *a, **kw):
-        super(Circular, self).__init__(*a, **kw)
+        super().__init__(*a, **kw)
         self.position = 0
 
     def current(self):
@@ -52,6 +51,6 @@ if __name__ == '__main__':
             self.assertRaises(Exception, Circular([]).next)
 
         def testInstanciarSinParametros(self):
-            self.assertEquals(Circular(), Circular([]))
+            self.assertEqual(Circular(), Circular([]))
 
     unittest.main()

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 from PyQt4 import QtCore, QtGui
 
@@ -15,16 +13,16 @@ except AttributeError:
 
 
 class GWOpcionesDialog(QtGui.QDialog):
-    u"""
+    """
     Clase de diálogo 'Opciones' heredada de QDialog.
     """
     def __init__(self, parent=None, opciones=None):
-        u"""
+        """
         Constructor de la clase.
 
         :param parent: Widget padre.
         """
-        super(GWOpcionesDialog, self).__init__(parent)
+        super().__init__(parent)
 
         self.GWOpcionesD = Ui_GWOpcionesDialog()
         self.GWOpcionesD.setupUi(self)
@@ -38,7 +36,7 @@ class GWOpcionesDialog(QtGui.QDialog):
         self.initialize_dialog()
 
     def _init_vars(self):
-        u"""
+        """
         Inicializa atributos de la instancia.
         """
         self.estado_size = None
@@ -54,7 +52,7 @@ class GWOpcionesDialog(QtGui.QDialog):
         self.tipos_estados = None
 
     def initialize_dialog(self):
-        u"""
+        """
         Configura y establece estado de los widgets en el cuadro de diálogo.
         """
         self._set_dialog_signals()
@@ -157,7 +155,7 @@ class GWOpcionesDialog(QtGui.QDialog):
             self.GWOpcionesD.optRecMostrarIcono.setChecked(True)
 
     def _set_dialog_signals(self):
-        u"""
+        """
         Establece y conecta las señales de Qt entre los diversos widgets.
         """
         self.GWOpcionesD.sbExcelenteRecompensa.valueChanged.connect(self.update_recom_final)
@@ -184,7 +182,7 @@ class GWOpcionesDialog(QtGui.QDialog):
         self.GWOpcionesD.btnElegirColorPared.clicked.connect(clr_pared)
 
     def update_recom_final(self, valor=None):
-        u"""
+        """
         Calcula la recompensa del Estado Final en función de las recompensas
         del resto de los tipos de estados.
 
@@ -203,7 +201,7 @@ class GWOpcionesDialog(QtGui.QDialog):
             self.GWOpcionesD.sbFinalRecompensa.setMinimum(self.recomp_max)
 
     def set_color_estado(self, widget):
-        u"""
+        """
         Selecciona y establece el nombre del color para un tipo de estado dado.
 
         :param widget: Widget en el cual se mostrará el nombre del color.
@@ -219,7 +217,7 @@ class GWOpcionesDialog(QtGui.QDialog):
                 pass
 
     def accept(self):
-        u"""
+        """
         Aceptar y enviar los cambios producidos en el diálogo.
         """
         self.estado_size = self.GWOpcionesD.sbGWEstadoSize.value()
@@ -352,13 +350,13 @@ class GWOpcionesDialog(QtGui.QDialog):
         self.tipos_estados = tipos_estados
 
         # Guardar valores y cerrar cuadro de diálogo
-        super(GWOpcionesDialog, self).accept()
+        super().accept()
 
     def reject(self):
-        u"""
+        """
         Cancelar cambios del diálogo.
         """
-        super(GWOpcionesDialog, self).reject()
+        super().reject()
 
     def get_opciones(self):
         return self._opciones

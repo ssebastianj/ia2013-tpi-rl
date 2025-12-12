@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # Autor: http://mybravenewworld.wordpress.com/2010/09/19/print-tabular-data-nicely-using-python/
 

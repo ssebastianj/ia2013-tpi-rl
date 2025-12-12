@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 from PyQt4 import QtCore, QtGui
 from info import app_info
@@ -16,7 +14,7 @@ except AttributeError:
 class AboutDialog(QtGui.QDialog):
     """docstring for AboutDialog"""
     def __init__(self, parent=None):
-        super(AboutDialog, self).__init__(parent)
+        super().__init__(parent)
         self.AboutDialog = Ui_AboutDialog()
         self.AboutDialog.setupUi(self)
         self.setWindowFlags(QtCore.Qt.Dialog |
@@ -27,4 +25,4 @@ class AboutDialog(QtGui.QDialog):
         self.APP_NAME = app_info.__app_name__
 
     def _initialize_dialog(self):
-        self.AboutDialog.lblAppVersion.setText(_tr("Versión {0}".format(app_info.__version__)))
+        self.AboutDialog.lblAppVersion.setText(_tr("Versión {}".format(app_info.__version__)))

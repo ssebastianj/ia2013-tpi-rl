@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# ! -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 import csv
 import decimal
@@ -87,7 +85,7 @@ def main():
                 lista_archivos_pruebas.append(os.path.join(root, archivo))
 
     for archivo_pruebas in lista_archivos_pruebas:
-        sys.stdout.write("Usando archivo '{0}'...\n".format(archivo_pruebas))
+        sys.stdout.write("Usando archivo '{}'...\n".format(archivo_pruebas))
 
         nombre_archivo = os.path.splitext(os.path.basename(archivo_pruebas))[0]
         test1_dir = os.path.abspath(os.path.join(os.path.dirname(archivo_pruebas),
@@ -108,7 +106,7 @@ def main():
             contador_pruebas = 1
 
             for linea_prueba in inp_csv:
-                sys.stdout.write("Ejecutando prueba {0}... ".format(contador_pruebas))
+                sys.stdout.write("Ejecutando prueba {}... ".format(contador_pruebas))
 
                 try:
                     ejecutar_prueba(linea_prueba[0],
@@ -127,27 +125,27 @@ def main():
                                     contador_pruebas,
                                     test2_dir)
 
-                    sys.stdout.write("Prueba {0} OK\n".format(contador_pruebas))
+                    sys.stdout.write("Prueba {} OK\n".format(contador_pruebas))
                     contador_pruebas += 1
                 except decimal.Overflow:
-                    sys.stdout.write("Prueba {0} ERROR: Overflow\n".format(contador_pruebas))
+                    sys.stdout.write("Prueba {} ERROR: Overflow\n".format(contador_pruebas))
                     contador_pruebas += 1
                     continue
                 except TypeError as te:
-                    sys.stdout.write("Prueba {0} ERROR: TypeError\n".format(contador_pruebas))
+                    sys.stdout.write("Prueba {} ERROR: TypeError\n".format(contador_pruebas))
                     sys.stdout.write(str(te))
                     contador_pruebas += 1
                     continue
                 except ValueError:
-                    sys.stdout.write("Prueba {0} ERROR: ValueError\n".format(contador_pruebas))
+                    sys.stdout.write("Prueba {} ERROR: ValueError\n".format(contador_pruebas))
                     contador_pruebas += 1
                     continue
                 except AttributeError:
-                    sys.stdout.write("Prueba {0} ERROR: AttributeError\n".format(contador_pruebas))
+                    sys.stdout.write("Prueba {} ERROR: AttributeError\n".format(contador_pruebas))
                     contador_pruebas += 1
                     continue
                 except multiprocessing.ProcessError:
-                    sys.stdout.write("Prueba {0} ERROR: ProcessError\n".format(contador_pruebas))
+                    sys.stdout.write("Prueba {} ERROR: ProcessError\n".format(contador_pruebas))
                     contador_pruebas += 1
                     continue
 
@@ -317,7 +315,7 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                  init_value_fn
                  )
 
-    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{0}".format(nro_prueba)))
+    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{}".format(nro_prueba)))
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
     csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
@@ -418,7 +416,7 @@ def g_d_m_w(inp_queue):
 def graficar_episodios_exitosos(tupla, nro_prueba, output_dir):
     worker = GraphSucessfulEpisodesWorker(tupla)
 
-    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{0}".format(nro_prueba)))
+    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{}".format(nro_prueba)))
 
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
@@ -433,7 +431,7 @@ def graficar_episodios_exitosos(tupla, nro_prueba, output_dir):
 def graficar_recompensas_promedio(tupla, nro_prueba, output_dir):
     worker = GraphRecompensasPromedioWorker(tupla)
 
-    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{0}".format(nro_prueba)))
+    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{}".format(nro_prueba)))
 
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
@@ -448,7 +446,7 @@ def graficar_recompensas_promedio(tupla, nro_prueba, output_dir):
 def graficar_iters_por_episodio(tupla, nro_prueba, output_dir):
     worker = GraphIteracionesXEpisodioWorker(tupla)
 
-    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{0}".format(nro_prueba)))
+    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{}".format(nro_prueba)))
 
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
@@ -463,7 +461,7 @@ def graficar_iters_por_episodio(tupla, nro_prueba, output_dir):
 def graficar_diferencias_matrizq(tupla, nro_prueba, output_dir):
     worker = GraphMatrizDiffsWorker(tupla)
 
-    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{0}".format(nro_prueba)))
+    test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{}".format(nro_prueba)))
 
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)

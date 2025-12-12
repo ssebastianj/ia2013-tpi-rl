@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 
-class QLTecnica(object):
-    u"""Técnica para Q-Learning"""
+class QLTecnica:
+    """Técnica para Q-Learning"""
     def __init__(self, parametro=None, paso_decremento=0, intervalo_decremento=0):
-        super(QLTecnica, self).__init__()
+        super().__init__()
         self._paso_decremento = paso_decremento
         self._intervalo_decremento = intervalo_decremento
         self._val_param_general = parametro
@@ -13,7 +12,7 @@ class QLTecnica(object):
         self._name = "QLTecnica"
 
     def obtener_accion(self, acciones):
-        u"""
+        """
         Devuelve un sólo estado vecino de una lista de estados acciones.
 
         :param matriz_q: Matriz Q a utilizar.
@@ -22,7 +21,7 @@ class QLTecnica(object):
         pass
 
     def decrementar_parametro(self):
-        u"""
+        """
         Decrementar parámetro en un valor dado.
         """
         pass
@@ -37,7 +36,7 @@ class QLTecnica(object):
         return self._intervalo_decremento
 
     def set_intervalo_decremento(self, valor):
-        u"""
+        """
         Establecer cada cuantos episodios se decrementará el episodio.
 
         :param valor: Número flotante que se descontará al parámetro.
@@ -77,7 +76,7 @@ class QLTecnica(object):
     intervalo_decremento = property(get_intervalo_decremento,
                                     set_intervalo_decremento,
                                     None,
-                                    u"Número entero indicando cada cuantas \
+                                    "Número entero indicando cada cuantas \
                                     iteraciones decrementar el parámetro \
                                     utilizando un \
                                     valor de paso dado")
@@ -85,13 +84,13 @@ class QLTecnica(object):
     valor_param_general = property(get_valor_param_general,
                                    set_valor_param_general,
                                    None,
-                                   u"Número indicando el valor del \
+                                   "Número indicando el valor del \
                                    parámetro general")
 
     valor_param_parcial = property(_get_valor_param_parcial,
                                    None,
                                    None,
-                                   u"Número indicando el valor del \
+                                   "Número indicando el valor del \
                                    parámetro parcial")
 
     nombre = property(get_name, set_name, None, "Nombre de la técnica")

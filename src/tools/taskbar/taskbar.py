@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# ! -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 import sys
 
@@ -11,7 +9,7 @@ except ImportError:
     pass
 
 
-class WindowsTaskBar(object):
+class WindowsTaskBar:
     def __init__(self):
         if not is_windows7_or_later():
             raise RuntimeError('Windows Taskbar requires Windows 7 or later')

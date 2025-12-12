@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 import Queue
 import multiprocessing
@@ -17,7 +15,7 @@ from core.estado.estado import TIPOESTADO
 #                         QLearningEntrenarWorker
 # ============================================================================
 class QLearningEntrenarWorker(multiprocessing.Process):
-    u"""
+    """
     Worker encargado de realizar el aprendizaje de Q-Learning.
     """
     def __init__(self, inp_queue, out_queue, error_q):
@@ -28,7 +26,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         :param out_queue: Cola de salida de datos.
         :param error_q: Cola de salida de errores.
         """
-        super(QLearningEntrenarWorker, self).__init__()
+        super().__init__()
         self._inp_queue = inp_queue
         self._out_queue = out_queue
         self._error_queue = error_q
@@ -45,13 +43,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self.tipos_vec_excluidos = None
 
     def _do_on_start(self):
-        u"""
+        """
         Ejecuta tareas al comenzar el thread.
         """
         pass
 
     def _on_end(self):
-        u"""
+        """
         Ejecuta tareas al finalizar el thread.
         """
         # Cerrar Queues
@@ -65,7 +63,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self._out_queue.join_thread()
 
     def run(self):
-        u"""
+        """
         Método sobrecargado de clase padre Thread. Ejecuta el algoritmo de
         aprendizaje de Q-Learning.
         """
@@ -484,7 +482,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self._on_end()
 
     def encolar_salida(self, salida):
-        u"""
+        """
         Colocar los resultandos del procesamiento en la cola de salida.
 
         :param salida: Información a colocar en la cola.
@@ -495,7 +493,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             pass
 
     def encolar_errores(self, error):
-        u"""
+        """
         Colocar los mensajes de errore en la cola de errores.
 
         :param error: Mensaje de error a colocar en la cola.
@@ -506,7 +504,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             pass
 
     def procesar_entrada(self):
-        u"""
+        """
         Recibe e inicializa los datos de entradas que se utilizarán en el
         entrenamiento.
         """
@@ -537,14 +535,14 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self.matriz_est_acc, self.matriz_r, self.matriz_q = self.get_matrixes()
 
     def generar_estado_aleatorio(self):
-        u"""
+        """
         Devuelve una tupla conteniendo las coordenadas X e Y aleatorias.
         """
         # Devolver un estado seleccionado aleatoriamente del conjunto de vecinos
         return (random.randint(0, self.ancho - 1), random.randint(0, self.alto - 1))
 
     def join(self, timeout=None):
-        u"""
+        """
         Sobrecarga del método 'join'.
 
         :param timeout: Tiempo en milisegundos de espera.
@@ -553,10 +551,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self._stoprequest.set()
         # Notificar a proceso padre
         self.encolar_salida({'Joined': True})
-        super(QLearningEntrenarWorker, self).join(timeout)
+        super().join(timeout)
 
     def _crear_cont_ref(self, tipos_vec_exc):
-        u"""
+        """
         Crea y configura un contador de referencias por cada estado accesible.
 
         :param tipos_vec_exc: Tipos de vecinos a excluir del contador.
@@ -573,7 +571,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         return contador_ref
 
     def _contar_ref(self, estado):
-        u"""
+        """
         Incrementa en 1 el contador de cada estado por cada acceso a sus coordenadas.
 
         :param estado: Estado al cual se ha accedido.
@@ -592,7 +590,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self._comprobar_visitados()
 
     def _comprobar_visitados(self):
-        u"""
+        """
         Verifica si el agente no puede acceder al estado final y finaliza la
         ejecución del algoritmo.
         """
@@ -603,7 +601,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             self._out_queue.put({'LoopAlarm': (True, 2)})
 
     def get_matrixes(self, include_vecinos=False):
-        u"""
+        """
         Genera y devuelve la matriz de vecinos, matriz R y matriz Q.
         """
         # Verificar si hay tipos de vecinos a excluir de la matriz R
@@ -677,7 +675,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         return (matriz_estados, matriz_r, matriz_q)
 
     def get_vecinos_estado(self, x, y, iterate=False):
-        u"""
+        """
         Devuelve los estados adyacentes en función de un estado dado.
         Fuente: http://stackoverflow.com/questions/2373306/pythonic-and-efficient-way-of-finding-adjacent-cells-in-grid
 
@@ -699,7 +697,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             return vecinos
 
     def get_estado(self, x, y):
-        u"""
+        """
         Devuelve un estado dadas sus coordenadas.
 
         :param x: Fila del estado
@@ -708,14 +706,14 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         return self.estados[x - 1][y - 1]
 
     def pausar(self):
-        u"""
+        """
         Solicitud de Pausa del procesamiento.
         """
         # Activar flag para pausar proceso
         self._pauserequest.set()
 
     def reanudar(self):
-        u"""
+        """
         Solicitud de Reanudar el procesamiento.
         """
         # Desactivar flag para pausar proceso
@@ -726,19 +724,19 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 #                         QLearningRecorrerWorker
 # ============================================================================
 class QLearningRecorrerWorker(multiprocessing.Process):
-    u"""
+    """
     Worker encargado de recorrer el GridWorld utilizando la matriz Q para seguir
     el mejor camino hasta el Estado Final.
     """
     def __init__(self, inp_queue, out_queue, error_queue):
-        u"""
+        """
         Inicializador de QLearningRecorrerWorker.
 
         :param inp_queue: Cola de entrada.
         :param out_queue: Cola de salida de datos.
         :param error_queue: Cola de salida de errores.
         """
-        super(QLearningRecorrerWorker, self).__init__()
+        super().__init__()
         self._inp_queue = inp_queue
         self._out_queue = out_queue
         self._error_queue = error_queue
@@ -748,13 +746,13 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self.input_data = None
 
     def _do_on_start(self):
-        u"""
+        """
         Ejecuta tareas al comenzar el thread.
         """
         pass
 
     def _on_end(self):
-        u"""
+        """
         Ejecuta tareas al finalizar el thread.
         """
         self._inp_queue.close()
@@ -762,7 +760,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._out_queue.close()
 
     def run(self):
-        u"""
+        """
         Método sobrecargado de clase padre Thread. Ejecuta el algoritmo de
         recorrido de Q-Learning.
         """
@@ -911,17 +909,17 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         self._on_end()
 
     def join(self, timeout=None):
-        u"""
+        """
         Sobrecarga del método 'join'.
 
         :param timeout: Tiempo en milisegundos de espera.
         """
         self._stoprequest.set()
         self.encolar_salida({'Joined': True})
-        super(QLearningRecorrerWorker, self).join(timeout)
+        super().join(timeout)
 
     def encolar_salida(self, salida):
-        u"""
+        """
         Colocar los resultandos del procesamiento en la cola de salida.
 
         :param salida: Información a colocar en la cola.
@@ -932,7 +930,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             pass
 
     def encolar_errores(self, error):
-        u"""
+        """
         Colocar los mensajes de errore en la cola de errores.
 
         :param error: Mensaje de error a colocar en la cola.
@@ -943,14 +941,14 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             pass
 
     def pausar(self):
-        u"""
+        """
         Solicitud de Pausa del procesamiento.
         """
         # Activar flag para pausar proceso
         self._pauserequest.set()
 
     def reanudar(self):
-        u"""
+        """
         Solicitud de Reanudar el procesamiento.
         """
         # Desactivar flag para pausar proceso

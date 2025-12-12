@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, print_function, unicode_literals
 
 from tools.enum import enum
 
@@ -24,7 +22,7 @@ TIPOESTADO = enum(INICIAL=0,
                   PARED=7)
 
 
-class TipoEstado(object):
+class TipoEstado:
     """Clase TipoEstado"""
     def __init__(self, ide, recompensa, nombre, letra="", color="#FFFFFF", icono=None):
         """
@@ -35,7 +33,7 @@ class TipoEstado(object):
         :param color: Color a mostrar en el GridWorld
         :param icono: Icono a mostrar en el GridWorld
         """
-        super(TipoEstado, self).__init__()
+        super().__init__()
         self._ide = ide
         self._nombre = nombre
         self._recompensa = recompensa
@@ -87,7 +85,7 @@ class TipoEstado(object):
     color = property(get_color, set_color, None, "Color del Estado")
 
 
-class Estado(object):
+class Estado:
     """Clase Estado"""
     def __init__(self, fila, columna, tipo):
         """
@@ -95,7 +93,7 @@ class Estado(object):
         :param columna: Columna que ocupa en el GridWorld
         :param tipo: Objeto indicando el tipo de estado
         """
-        super(Estado, self).__init__()
+        super().__init__()
         self._fila = fila
         self._columna = columna
         self._tipo = tipo

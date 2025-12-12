@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Form implementation generated from reading ui file 'D:\Sebastian\Mis documentos\Programacion\Proyectos\IA2013TPIRL\gui\qt\IA2013TPIRLGUI\aboutdialog.ui'
 #
 # Created: Tue Jul 09 15:27:46 2013
@@ -23,7 +21,7 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_AboutDialog(object):
+class Ui_AboutDialog:
     def setupUi(self, AboutDialog):
         AboutDialog.setObjectName(_fromUtf8("AboutDialog"))
         AboutDialog.resize(535, 292)

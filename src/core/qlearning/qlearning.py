@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 import logging
 import multiprocessing
@@ -14,8 +12,8 @@ from core.gridworld.gridworld import GridWorld
 from core.tecnicas.tecnica import QLTecnica
 
 
-class QLearning(object):
-    u"""Algoritmo QLearning"""
+class QLearning:
+    """Algoritmo QLearning"""
     def __init__(self, gridworld, gamma, tecnica, episodes, iterations_pack,
                  init_value_fn, matriz_diff_pack, cant_max_iter_gral_pack=(sys.maxint, 1),
                  excluir_tipos_vecinos=None):
@@ -28,7 +26,7 @@ class QLearning(object):
         :param episodes: Cantidad de veces que se puede alcanzar el estado final.
         :param init_value: Valor con que se inicializa cada estado de la matriz.
         """
-        super(QLearning, self).__init__()
+        super().__init__()
 
         self._logger = logging.getLogger()
 
@@ -43,7 +41,7 @@ class QLearning(object):
         self._cant_max_iter_gral_pack = cant_max_iter_gral_pack
 
     def _generar_estado_aleatorio(self):
-        u"""
+        """
         Devuelve una tupla conteniendo las coordenadas X e Y aleatorias.
         """
         # Fila
@@ -53,7 +51,7 @@ class QLearning(object):
         return (x, y)
 
     def entrenar(self, out_queue, error_queue):
-        u"""
+        """
         Ejecuta el algoritmo de aprendizaje en otro hilo/proceso. Devuelve una
         referencia al hilo/proceso ejecutado.
 
@@ -97,7 +95,7 @@ class QLearning(object):
         return qlearning_entrenar_worker
 
     def recorrer(self, matriz_q, mat_est_acc, estado_inicial, out_queue, error_queue):
-        u"""
+        """
         Ejecuta el algoritmo de recorrido en otro hilo/proceso. Devuelve una
         referencia al hilo/proceso ejecutado.
 
@@ -138,13 +136,13 @@ class QLearning(object):
         if isinstance(valor, QLTecnica):
             self._tecnica_pack = valor
         else:
-            raise TypeError(u"El parámetro debe ser del tipo QLTécnica")
+            raise TypeError("El parámetro debe ser del tipo QLTécnica")
 
     def get_gridworld(self):
         return self._gridworld
 
     def set_gridworld(self, valor):
-        u"""
+        """
         Asigna un GridWorld dado a Q-Learning.
 
         :param valor: Arreglo de estados conteniendo un GridWorld.
@@ -152,7 +150,7 @@ class QLearning(object):
         if isinstance(valor, GridWorld):
             self._gridworld = valor
         else:
-            raise TypeError(u"El parámetro debe ser del tipo GridWorld")
+            raise TypeError("El parámetro debe ser del tipo GridWorld")
 
     def get_estado(self, x, y):
         """
@@ -187,7 +185,7 @@ class QLearning(object):
         return self._iterations_pack
 
     def set_iterations_pack(self, valor):
-        u"""
+        """
         Establece un conjunto de opciones referidas a las iteraciones de Q-Learning.
 
         :param valor: Tupla con el formato: (Activar Limitador (Booleano), Cantidad Iteraciones Máxima (Entero))
@@ -198,7 +196,7 @@ class QLearning(object):
         self._iterations_pack[1]
 
     def get_matriz_q(self, include_vecinos=False):
-        u"""
+        """
         Genera y devuelve la matriz de vecinos, matriz R y matriz Q.
         """
         # Verificar si hay tipos de vecinos a excluir de la matriz R
@@ -265,7 +263,7 @@ class QLearning(object):
         return matriz_q
 
     def get_vecinos_estado(self, x, y, iterate=False):
-        u"""
+        """
         Devuelve los estados adyacentes en función de un estado dado.
         Fuente: http://stackoverflow.com/questions/2373306/pythonic-and-efficient-way-of-finding-adjacent-cells-in-grid
 
@@ -287,16 +285,16 @@ class QLearning(object):
             return vecinos
 
     def matriz_q_to_string(self):
-        u"""
+        """
         Devuelve un string representando la matriz Q en una estructura tabular.
         """
         matriz_q = self.get_matriz_q()
-        return "\n".join(["| {0} |".format(" | ".join(j))
+        return "\n".join(["| {} |".format(" | ".join(j))
                           for j in [[str(i) for i in f]
                                     for f in matriz_q]])
 
-    gamma = property(get_gamma, set_gamma, None, u"Propiedad Gamma de QLearning")
-    tecnica = property(get_tecnica, set_tecnica, None, u"Propiedad Técnica de QLearning")
+    gamma = property(get_gamma, set_gamma, None, "Propiedad Gamma de QLearning")
+    tecnica = property(get_tecnica, set_tecnica, None, "Propiedad Técnica de QLearning")
     matriz_q = property(get_matriz_q, None, None, "Propiedad Matriz Q")
     gridworld = property(get_gridworld, set_gridworld, None, "Propiedad GridWorld")
     coordenadas = property(get_coordenadas, None, None, "Propiedad Coordenadas")

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Créditos a Eli Bendersky por la idea (eliben@gmail.com)
 
 import random
@@ -21,7 +19,7 @@ class Timer(object):
         self.tstart = time.time()
 
     def __exit__(self, _type, value, traceback):
-        u"""
+        """
         :param _type: Tipo de parámetro
         :param value: Valor
         :param traceback: Volcado de depuración

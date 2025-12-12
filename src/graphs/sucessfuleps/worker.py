@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 import csv
 import decimal
@@ -12,23 +10,23 @@ from PyQt4 import QtCore
 
 
 class GraphSucessfulEpisodesWorker(QtCore.QObject):
-    u"""
+    """
     Worker encargado de generar el gráfico correspondiente a la cantidad de
     Episodios Exitosos por cada intervalo de muestreo.
     """
     def __init__(self, input_data):
-        u"""
+        """
         Inicializador.
 
         :param input_data: Tupla conteniendo los parámetros del entrenamiento y los valores del eje Y.
         """
-        super(GraphSucessfulEpisodesWorker, self).__init__()
+        super().__init__()
 
         self.input_data = input_data
         self._init_plt()
 
     def _init_plt(self):
-        u"""
+        """
         Configurar valores de ploteo.
         """
 
@@ -49,25 +47,25 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
                              if not numpy.equal(pair, None)]
 
             figure = plt.gcf()
-            figure.canvas.set_window_title(u"Porcentaje de episodios finalizados")
+            figure.canvas.set_window_title("Porcentaje de episodios finalizados")
 
             plt.plot(self.x_values, self.y_values)
             plt.grid(True)
-            plt.title(u"Porcentaje de episodios finalizados")
-            plt.xlabel(u"Episodios")
-            plt.ylabel(u"% episodios finalizados")
+            plt.title("Porcentaje de episodios finalizados")
+            plt.xlabel("Episodios")
+            plt.ylabel("% episodios finalizados")
 
-            str_gamma = r"$\gamma={0}$".format(gamma)
+            str_gamma = r"$\gamma={}$".format(gamma)
 
             if id_tecnica == 0:
                 str_tecnica = "Greedy"
                 str_parametro = ""
             elif id_tecnica == 1:
                 str_tecnica = r"$\epsilon$-Greedy"
-                str_parametro = r"$\epsilon={0}$".format(parametro)
+                str_parametro = r"$\epsilon={}$".format(parametro)
             elif id_tecnica == 2:
                 str_tecnica = "Softmax"
-                str_parametro = r"$\tau={0}$".format(parametro)
+                str_parametro = r"$\tau={}$".format(parametro)
             elif id_tecnica == 3:
                 str_tecnica = "Aleatorio"
                 str_parametro = ""
@@ -75,14 +73,14 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
                 pass
 
             if limitar_nro_iter:
-                str_limit_iter = "Limitar a {0} iteraciones".format(cant_max_iter)
+                str_limit_iter = "Limitar a {} iteraciones".format(cant_max_iter)
             else:
                 str_limit_iter = ""
 
             # Mostrar parámetros de entrenamiento
             plt.text(plt.axis()[0] + 5,
                      plt.axis()[1] - 10,
-                     "{0}\n{1} ({2})\n".format(str_gamma,
+                     "{}\n{} ({})\n".format(str_gamma,
                                                str_tecnica,
                                                str_parametro
                                               ),
@@ -95,7 +93,7 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
             raise ValueError
 
     def mostrar_figura(self):
-        u"""
+        """
         Renderizar gráfico y mostrarlo por pantalla.
         """
         # Renderizar gráfico y mostrar ventana
@@ -104,7 +102,7 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
         plt.close()
 
     def guardar_dibujo(self, filename):
-        u"""
+        """
         Guardar dibujo generado a disco.
 
         :param filepath: Ruta donde se guardará el archivo.
@@ -115,7 +113,7 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
         plt.close()
 
     def exportar_info(self, filepath, append=False):
-        u"""
+        """
         Exportar datos tabulares de gráfico hacia archivo.
 
         :param filepath: Ruta donde se guardará el archivo.
@@ -129,8 +127,8 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
 
             csv_writer.writerow(['Episodios', 'Episodios Exitosos'])
             for x, y in zip(self.x_values, self.y_values):
-                x = "{0}".format(decimal.Decimal(x))
-                y = "{0}".format(decimal.Decimal(y))
+                x = "{}".format(decimal.Decimal(x))
+                y = "{}".format(decimal.Decimal(y))
                 y = y.replace('.', ',')
                 csv_writer.writerow([x, y])
 

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 import numpy
 import random
@@ -9,16 +7,16 @@ from core.tecnicas.tecnica import QLTecnica
 
 
 class EGreedy(QLTecnica):
-    u"""Técnica EGreedy"""
+    """Técnica EGreedy"""
     def __init__(self, epsilon, paso_decremento=0, intervalo_decremento=0):
-        u"""
+        """
         Inicializador.
 
         :param epsilon: Parámetro Epsilon de la técnica.
         :param paso_decremento: Valor flotante con el que se decrementará el parámetro general.
         :param intervalo_decremento: Intervalo de episodios entre los cuales se realizará el decremento.
         """
-        super(EGreedy, self).__init__()
+        super().__init__()
         self._val_param_general = epsilon
         self._val_param_parcial = epsilon
         self._name = "EGreedy"
@@ -38,7 +36,7 @@ class EGreedy(QLTecnica):
         self._val_param_parcial = valor
 
     def obtener_accion(self, acciones):
-        u"""
+        """
         Dado un conjunto de acciones selecciona acorde uno de ellos.
 
         :param acciones: Diccionario conteniendo los acciones de un estado.
@@ -60,7 +58,7 @@ class EGreedy(QLTecnica):
         return estado_qmax
 
     def elegir_accion_aleatoria(self, acciones):
-        u"""
+        """
         Dada una lista de estados acciones elige aleatoriamente sólo uno.
         Fuente: http://stackoverflow.com/questions/4859292/get-random-value-in-python-dictionary
 
@@ -69,7 +67,7 @@ class EGreedy(QLTecnica):
         return numpy.random.choice(numpy.where(~numpy.isnan(acciones))[0])
 
     def decrementar_parametro(self):
-        u"""
+        """
         Decrementa el parámetro general en un valor dado.
         """
         decremento = self._val_param_parcial - self._paso_decremento
@@ -85,20 +83,20 @@ class EGreedy(QLTecnica):
     epsilon_general = property(get_epsilon_general,
                                set_epsilon_general,
                                None,
-                               u"Parámetro Epsilon General de la técnica")
+                               "Parámetro Epsilon General de la técnica")
 
     epsilon_parcial = property(get_epsilon_parcial,
                                set_epsilon_parcial,
                                None,
-                               u"Parámetro Epsilon Parcial de la técnica")
+                               "Parámetro Epsilon Parcial de la técnica")
 
 
 class Greedy(EGreedy):
-    u"""Técnica Greedy"""
+    """Técnica Greedy"""
     def __init__(self, epsilon=0, paso_decremento=0, intervalo_decremento=0):
-        u"""
+        """
         Inicializador
         """
-        super(Greedy, self).__init__(0, 0, 0)
+        super().__init__(0, 0, 0)
         self._epsilon = 0
         self._name = "Greedy"

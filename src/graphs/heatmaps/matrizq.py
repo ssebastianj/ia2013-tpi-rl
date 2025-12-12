@@ -1,28 +1,26 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 import numpy
 import matplotlib.pyplot as plt
 
 
-class ShowMatrizQHeatMap(object):
-    u"""
+class ShowMatrizQHeatMap:
+    """
     Clase dedicada a generar y mostrar un heatmap de la Matriz Q.
     """
     def __init__(self, matrizq, parent=None):
-        u"""
+        """
         Inicializador de la clase.
 
         :param matrizq: Matriz Q a representar.
         :param parent: Ventana padre.
         """
-        super(ShowMatrizQHeatMap, self).__init__()
+        super().__init__()
         self.matriz = matrizq
 
     def show_heatmap(self, interpolation=None):
-        u"""
+        """
         Generar y mostrar heatmap.
 
         :param interpolation: Parámetro válido de interpolación del heatmap.
@@ -53,12 +51,12 @@ class ShowMatrizQHeatMap(object):
         extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
 
         figure = plt.gcf()
-        figure.canvas.set_window_title(u"Heatmap de Matriz Q")
+        figure.canvas.set_window_title("Heatmap de Matriz Q")
 
         plt.grid(True)
         plt.clf()
         plt.imshow(heatmap, extent=extent, interpolation=interpolation)
         cb = plt.colorbar()
-        cb.set_label(u"Valor Q")
+        cb.set_label("Valor Q")
         plt.show()
         plt.close()

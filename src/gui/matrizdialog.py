@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 import numpy
 
@@ -15,16 +13,16 @@ except AttributeError:
 
 
 class ShowMatrizDialog(QtGui.QDialog):
-    u"""
+    """
     Clase de diálogo 'Opciones' heredada de QDialog.
     """
     def __init__(self, matriz, titulo_corto, titulo_largo=None, parent=None):
-        u"""
+        """
         Constructor de la clase.
 
         :param parent: Widget padre.
         """
-        super(ShowMatrizDialog, self).__init__(parent)
+        super().__init__(parent)
 
         self.ShowMatrizD = Ui_MatrizDialog()
         self.ShowMatrizD.setupUi(self)
@@ -47,7 +45,7 @@ class ShowMatrizDialog(QtGui.QDialog):
                                "size": 30}}
 
     def initialize_dialog(self):
-        u"""
+        """
         Configura y establece estado de los widgets en el cuadro de diálogo.
         """
         self._set_dialog_signals()
@@ -87,12 +85,12 @@ class ShowMatrizDialog(QtGui.QDialog):
             coord_y = fila - (coord_x * ancho_gw)
 
             # Armar headers horizontales (Acciones)
-            headers_horizontales.append("A{0}\n({1},{2})".format(fila + 1,
+            headers_horizontales.append("A{}\n({},{})".format(fila + 1,
                                                                  coord_x + 1,
                                                                  coord_y + 1))
 
             # Armar headers verticales (Estados)
-            headers_verticales.append("E{0} ({1},{2})".format(fila + 1,
+            headers_verticales.append("E{} ({},{})".format(fila + 1,
                                                               coord_x + 1,
                                                               coord_y + 1))
 
@@ -114,7 +112,7 @@ class ShowMatrizDialog(QtGui.QDialog):
             else:
                 # Cada item muestra el valor asociado a la acción
                 if isinstance(accion, float):
-                    item = QtGui.QTableWidgetItem("{0:.2f}".format(accion))
+                    item = QtGui.QTableWidgetItem("{:.2f}".format(accion))
                 elif isinstance(accion, int):
                     item = QtGui.QTableWidgetItem(str(accion))
 
@@ -130,7 +128,7 @@ class ShowMatrizDialog(QtGui.QDialog):
             coord_x_dest = int(i[1] / alto_gw)
             coord_y_dest = i[1] - (coord_x_dest * ancho_gw)
 
-            item.setToolTip(u"({0},{1}) --> ({2},{3})".format(coord_x_orig + 1,
+            item.setToolTip("({},{}) --> ({},{})".format(coord_x_orig + 1,
                                                               coord_y_orig + 1,
                                                               coord_x_dest + 1,
                                                               coord_y_dest + 1))
@@ -159,17 +157,17 @@ class ShowMatrizDialog(QtGui.QDialog):
         item_valor = str(item.text())
 
         try:
-            item_text = "Valor = {0}".format(float(item_valor))
+            item_text = "Valor = {}".format(float(item_valor))
         except ValueError:
             item_text = "Sin transición"
 
-        self.ShowMatrizD.lblMatrizItemInfo.setText(_tr("Estado {0} --> Acción {1} ({2})"
+        self.ShowMatrizD.lblMatrizItemInfo.setText(_tr("Estado {} --> Acción {} ({})"
                                                        .format(nro_estado,
                                                                nro_accion,
                                                                item_text)))
 
     def accept(self):
-        super(ShowMatrizDialog, self).accept()
+        super().accept()
 
     def reject(self):
-        super(ShowMatrizDialog, self).reject()
+        super().reject()

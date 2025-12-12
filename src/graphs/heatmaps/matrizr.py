@@ -1,28 +1,26 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
 
 import numpy
 import matplotlib.pyplot as plt
 
 
-class ShowMatrizRHeatMap(object):
-    u"""
+class ShowMatrizRHeatMap:
+    """
     Clase dedicada a generar y mostrar un heatmap de la Matriz R.
     """
     def __init__(self, matrizr, parent=None):
-        u"""
+        """
         Inicializador de la clase.
 
         :param matrizq: Matriz R a representar.
         :param parent: Ventana padre.
         """
-        super(ShowMatrizRHeatMap, self).__init__()
+        super().__init__()
         self.matriz = matrizr
 
     def show_heatmap(self, interpolation=None):
-        u"""
+        """
         Generar y mostrar heatmap.
 
         :param interpolation: Parámetro válido de interpolación del heatmap.
@@ -53,12 +51,12 @@ class ShowMatrizRHeatMap(object):
         extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
 
         figure = plt.gcf()
-        figure.canvas.set_window_title(u"Heatmap de Matriz R")
+        figure.canvas.set_window_title("Heatmap de Matriz R")
 
         plt.grid(True)
         plt.clf()
         plt.imshow(heatmap, extent=extent, interpolation=interpolation)
         cb = plt.colorbar()
-        cb.set_label(u"Recompensa")
+        cb.set_label("Recompensa")
         plt.show()
         plt.close()

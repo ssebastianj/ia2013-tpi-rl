@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Inteligencia Artificial 2013: Aprendizaje por Refuerzo documentation build configuration file, created by
 # sphinx-quickstart on Mon Apr 08 10:45:06 2013.
@@ -10,7 +9,6 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
-from __future__ import absolute_import
 
 import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -47,8 +45,8 @@ source_encoding = 'utf-8-sig'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Inteligencia Artificial 2013: Aprendizaje por Refuerzo'
-copyright = u'2013, Grupo Nº 1'
+project = 'Inteligencia Artificial 2013: Aprendizaje por Refuerzo'
+copyright = '2013, Grupo Nº 1'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -193,8 +191,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'InteligenciaArtificial2013AprendizajeporRefuerzo.tex', u'Inteligencia Artificial 2013: Aprendizaje por Refuerzo Documentation',
-   u'Grupo Nº 1', 'manual'),
+  ('index', 'InteligenciaArtificial2013AprendizajeporRefuerzo.tex', 'Inteligencia Artificial 2013: Aprendizaje por Refuerzo Documentation',
+   'Grupo Nº 1', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -223,8 +221,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'inteligenciaartificial2013aprendizajeporrefuerzo', u'Inteligencia Artificial 2013: Aprendizaje por Refuerzo Documentation',
-     [u'Grupo Nº 1'], 1)
+    ('index', 'inteligenciaartificial2013aprendizajeporrefuerzo', 'Inteligencia Artificial 2013: Aprendizaje por Refuerzo Documentation',
+     ['Grupo Nº 1'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -237,8 +235,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'InteligenciaArtificial2013AprendizajeporRefuerzo', u'Inteligencia Artificial 2013: Aprendizaje por Refuerzo Documentation',
-   u'Grupo Nº 1', 'InteligenciaArtificial2013AprendizajeporRefuerzo', 'One line description of project.',
+  ('index', 'InteligenciaArtificial2013AprendizajeporRefuerzo', 'Inteligencia Artificial 2013: Aprendizaje por Refuerzo Documentation',
+   'Grupo Nº 1', 'InteligenciaArtificial2013AprendizajeporRefuerzo', 'One line description of project.',
    'Miscellaneous'),
 ]
 

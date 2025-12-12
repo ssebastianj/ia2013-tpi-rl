@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-
 # Créditos a Eli Bendersky por la idea (eliben@gmail.com)
 
 
-class LiveDataFeed(object):
+class LiveDataFeed:
     """ A simple "live data feed" abstraction that allows a reader
         to read the most recent data and find out whether it was
         updated since the last read.
