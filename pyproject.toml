@@ -1,46 +1,46 @@
 [project]
-name = "ia2013-tpi-rl"
+name = "ia-2013tpi-rl"
 version = "2013.11.4"
 description = "Implementación de Técnicas de Aprendizaje por Refuerzo mediante el algoritmo Q-Learning para la cátedra Inteligencia Artificial (Ciclo 2013) perteneciente a UTN Facultad Regional Resistencia."
 readme = "README.md"
-requires-python = ">=2.7,<3.4"
 license = { file = "LICENSE.txt" }
+authors = [
+    { name = "Sebastián Seba" },
+    { name = "Lucía Vallejos" },
+    { name = "Fabián Levin" },
+]
 keywords = [
-    "artifial",
+    "artificial",
     "intelligence",
     "UTN",
     "reinforcement",
     "learning",
     "q-learning",
 ]
-authors = [
-    { name = "Sebastián Seba" },
-    { name = "Lucía Vallejos" },
-    { name = "Fabián Levin" },
-]
-maintainers = [{ name = "Sebastián Seba" }]
-classifiers = [
-    "Development Status :: 7 - Inactive",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 2",
-    "Programming Language :: Python :: 2.7",
-]
+requires-python = ">=2.7"
 
 dependencies = [
     "numpy>=1.7.1,<2",
     "scipy>=0.12",
     "psutil>=0.7.0,<6",
-    "cdecimal; python_version < '3'",
-    "matplotlib>=1.2.0,<2",
+    "matplotlib>=1.2.0",
 ]
 
-[project.optional-dependencies]
+[dependendy-groups]
 dev = ["Sphinx"]
+
 
 [project.urls]
 homepage = "https://github.com/ssebastianj/ia2013-tpi-rl"
 repository = "https://github.com/ssebastianj/ia2013-tpi-rl"
 
+
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.9.17,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pyupgrade>=1.27.0",
+    "ruff>=0.0.17",
+]
