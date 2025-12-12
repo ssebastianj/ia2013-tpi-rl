@@ -15,6 +15,7 @@ class GenRndValsDialog(QtGui.QDialog):
     """
     Clase de diálogo 'Conectar a puerto' heredada de QDialog.
     """
+
     def __init__(self, parent=None):
         """
         Constructor de la clase GenRndValsDialog.
@@ -24,15 +25,17 @@ class GenRndValsDialog(QtGui.QDialog):
         super().__init__(parent)
         self.GenRndValsDialog = Ui_GenRndValsDialog()
         self.GenRndValsDialog.setupUi(self)
-        self.setWindowFlags(QtCore.Qt.Dialog |
-                            QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowTitleHint)
+        self.setWindowFlags(
+            QtCore.Qt.Dialog
+            | QtCore.Qt.WindowSystemMenuHint
+            | QtCore.Qt.WindowTitleHint
+        )
         self._initialize_dialog()
         self.ORG_NAME = app_info.__org_name__
         self.APP_NAME = app_info.__app_name__
 
     def _initialize_dialog(self):
-        self.setWindowIcon(QtGui.QIcon('img/96x96.png'))
+        self.setWindowIcon(QtGui.QIcon("img/96x96.png"))
 
     def accept(self, *args, **kwargs):
         r"""
@@ -41,10 +44,14 @@ class GenRndValsDialog(QtGui.QDialog):
         :param \*args: \*args
         :param \**kwargs: \**kwargs
         """
-        self.gen_dimension_random = self.GenRndValsDialog.chkDimensionAleatoria.isChecked()
+        self.gen_dimension_random = (
+            self.GenRndValsDialog.chkDimensionAleatoria.isChecked()
+        )
         self.gen_tecnicas_random = self.GenRndValsDialog.chkTecnicaAleatoria.isChecked()
         self.gen_estados_random = self.GenRndValsDialog.optGenerarEstados.isChecked()
-        self.gen_vals_param_random = self.GenRndValsDialog.optGenerarValoresParam.isChecked()
+        self.gen_vals_param_random = (
+            self.GenRndValsDialog.optGenerarValoresParam.isChecked()
+        )
         self.gen_todo_random = self.GenRndValsDialog.optGenerarTodo.isChecked()
 
         super().accept()

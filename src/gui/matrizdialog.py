@@ -16,6 +16,7 @@ class ShowMatrizDialog(QtGui.QDialog):
     """
     Clase de diálogo 'Opciones' heredada de QDialog.
     """
+
     def __init__(self, matriz, titulo_corto, titulo_largo=None, parent=None):
         """
         Constructor de la clase.
@@ -27,10 +28,12 @@ class ShowMatrizDialog(QtGui.QDialog):
         self.ShowMatrizD = Ui_MatrizDialog()
         self.ShowMatrizD.setupUi(self)
 
-        self.setWindowFlags(QtCore.Qt.Dialog |
-                            QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowTitleHint |
-                            QtCore.Qt.WindowMinMaxButtonsHint)
+        self.setWindowFlags(
+            QtCore.Qt.Dialog
+            | QtCore.Qt.WindowSystemMenuHint
+            | QtCore.Qt.WindowTitleHint
+            | QtCore.Qt.WindowMinMaxButtonsHint
+        )
 
         self.matriz = matriz
         self.titulo_corto_dialogo = titulo_corto
@@ -40,9 +43,7 @@ class ShowMatrizDialog(QtGui.QDialog):
         self.initialize_dialog()
 
     def init_vars(self):
-        self.window_config = {"item":
-                              {"show_tooltip": False,
-                               "size": 30}}
+        self.window_config = {"item": {"show_tooltip": False, "size": 30}}
 
     def initialize_dialog(self):
         """
@@ -59,8 +60,8 @@ class ShowMatrizDialog(QtGui.QDialog):
         ancho_mat, alto_mat = matriz.shape
 
         # Dimensiones del GridWorld
-        self.alto_gw = int(alto_mat ** 0.5)
-        self.ancho_gw = int(ancho_mat ** 0.5)
+        self.alto_gw = int(alto_mat**0.5)
+        self.ancho_gw = int(ancho_mat**0.5)
 
         alto_gw = self.alto_gw
         ancho_gw = self.ancho_gw
@@ -85,14 +86,14 @@ class ShowMatrizDialog(QtGui.QDialog):
             coord_y = fila - (coord_x * ancho_gw)
 
             # Armar headers horizontales (Acciones)
-            headers_horizontales.append("A{}\n({},{})".format(fila + 1,
-                                                                 coord_x + 1,
-                                                                 coord_y + 1))
+            headers_horizontales.append(
+                "A{}\n({},{})".format(fila + 1, coord_x + 1, coord_y + 1)
+            )
 
             # Armar headers verticales (Estados)
-            headers_verticales.append("E{} ({},{})".format(fila + 1,
-                                                              coord_x + 1,
-                                                              coord_y + 1))
+            headers_verticales.append(
+                "E{} ({},{})".format(fila + 1, coord_x + 1, coord_y + 1)
+            )
 
         # Ítem para transición válida
         item_bg_color_val = QtGui.QColor("#FFFFFF")
@@ -105,7 +106,7 @@ class ShowMatrizDialog(QtGui.QDialog):
 
         for i, accion in numpy.ndenumerate(matriz):
             if numpy.isnan(accion):
-                item = QtGui.QTableWidgetItem('-')
+                item = QtGui.QTableWidgetItem("-")
                 item.setBackgroundColor(item_bg_color_inv)
                 item.setFlags(item_flags_inv)
                 item.setTextAlignment(item_text_align)
@@ -128,10 +129,14 @@ class ShowMatrizDialog(QtGui.QDialog):
             coord_x_dest = int(i[1] / alto_gw)
             coord_y_dest = i[1] - (coord_x_dest * ancho_gw)
 
-            item.setToolTip("({},{}) --> ({},{})".format(coord_x_orig + 1,
-                                                              coord_y_orig + 1,
-                                                              coord_x_dest + 1,
-                                                              coord_y_dest + 1))
+            item.setToolTip(
+                "({},{}) --> ({},{})".format(
+                    coord_x_orig + 1,
+                    coord_y_orig + 1,
+                    coord_x_dest + 1,
+                    coord_y_dest + 1,
+                )
+            )
 
             # Agregar ítem a GridWorld
             tbl_set_item(i[0], i[1], item)
@@ -142,10 +147,18 @@ class ShowMatrizDialog(QtGui.QDialog):
         # Reactivar la actualización de la tabla
         self.ShowMatrizD.tblMatriz.setUpdatesEnabled(True)
 
-        self.ShowMatrizD.tblMatriz.horizontalHeader().setDefaultSectionSize(ancho_estado_px)
-        self.ShowMatrizD.tblMatriz.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-        self.ShowMatrizD.tblMatriz.verticalHeader().setDefaultSectionSize(ancho_estado_px)
-        self.ShowMatrizD.tblMatriz.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
+        self.ShowMatrizD.tblMatriz.horizontalHeader().setDefaultSectionSize(
+            ancho_estado_px
+        )
+        self.ShowMatrizD.tblMatriz.horizontalHeader().setResizeMode(
+            QtGui.QHeaderView.Fixed
+        )
+        self.ShowMatrizD.tblMatriz.verticalHeader().setDefaultSectionSize(
+            ancho_estado_px
+        )
+        self.ShowMatrizD.tblMatriz.verticalHeader().setResizeMode(
+            QtGui.QHeaderView.Fixed
+        )
         self.ShowMatrizD.tblMatriz.resizeColumnsToContents()
 
     def _set_dialog_signals(self):
@@ -161,10 +174,11 @@ class ShowMatrizDialog(QtGui.QDialog):
         except ValueError:
             item_text = "Sin transición"
 
-        self.ShowMatrizD.lblMatrizItemInfo.setText(_tr("Estado {} --> Acción {} ({})"
-                                                       .format(nro_estado,
-                                                               nro_accion,
-                                                               item_text)))
+        self.ShowMatrizD.lblMatrizItemInfo.setText(
+            _tr(
+                "Estado {} --> Acción {} ({})".format(nro_estado, nro_accion, item_text)
+            )
+        )
 
     def accept(self):
         super().accept()

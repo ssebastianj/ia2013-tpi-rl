@@ -10,16 +10,21 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_AboutDialog:
     def setupUi(self, AboutDialog):
@@ -93,19 +98,34 @@ class Ui_AboutDialog:
         self.label_8.setObjectName(_fromUtf8("label_8"))
 
         self.retranslateUi(AboutDialog)
-        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), AboutDialog.close)
+        QtCore.QObject.connect(
+            self.pushButton, QtCore.SIGNAL(_fromUtf8("clicked()")), AboutDialog.close
+        )
         QtCore.QMetaObject.connectSlotsByName(AboutDialog)
 
     def retranslateUi(self, AboutDialog):
-        AboutDialog.setWindowTitle(_translate("AboutDialog", "Acerca de Grupo Nº 1", None))
-        self.label.setText(_translate("AboutDialog", "Inteligencia Artificial 2013", None))
+        AboutDialog.setWindowTitle(
+            _translate("AboutDialog", "Acerca de Grupo Nº 1", None)
+        )
+        self.label.setText(
+            _translate("AboutDialog", "Inteligencia Artificial 2013", None)
+        )
         self.lblAppVersion.setText(_translate("AboutDialog", "Versión 1.0", None))
-        self.label_5.setText(_translate("AboutDialog", " Aprendizaje por Refuerzo", None))
+        self.label_5.setText(
+            _translate("AboutDialog", " Aprendizaje por Refuerzo", None)
+        )
         self.groupBox.setTitle(_translate("AboutDialog", "Grupo Nº 1", None))
         self.label_2.setText(_translate("AboutDialog", "Fabián A. Levin", None))
         self.label_6.setText(_translate("AboutDialog", "Lucía B. Vallejos", None))
         self.label_7.setText(_translate("AboutDialog", "Sebastián J. Seba", None))
         self.pushButton.setText(_translate("AboutDialog", "&Cerrar", None))
-        self.label_8.setText(_translate("AboutDialog", "Universidad Tecnológica Nacional - Facultad Regional Resistencia", None))
+        self.label_8.setText(
+            _translate(
+                "AboutDialog",
+                "Universidad Tecnológica Nacional - Facultad Regional Resistencia",
+                None,
+            )
+        )
+
 
 import recursos_rc

@@ -25,54 +25,55 @@ from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
 from graphs.matdiffs.worker import GraphMatrizDiffsWorker
 from graphs.itersep.worker import GraphIteracionesXEpisodioWorker
 
-TESTS_DIR = os.path.abspath(os.path.join(os.pardir, '..', 'pruebas'))
+TESTS_DIR = os.path.abspath(os.path.join(os.pardir, "..", "pruebas"))
 
-tecnicas = {0: "Greedy",
-            1: "ε-Greedy",
-            2: "Softmax",
-            3: "Aleatorio"
-            }
+tecnicas = {0: "Greedy", 1: "ε-Greedy", 2: "Softmax", 3: "Aleatorio"}
 
-gw_dimensiones = ["3 x 3", "4 x 4", "5 x 5",
-                  "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
+gw_dimensiones = [
+    "3 x 3",
+    "4 x 4",
+    "5 x 5",
+    "6 x 6",
+    "7 x 7",
+    "8 x 8",
+    "9 x 9",
+    "10 x 10",
+]
 
-window_config = {"item":
-                  {"show_tooltip": True,
-                   "menu_estado":
-                   {"ocultar_tipos":
-                    [TIPOESTADO.AGENTE],
-                    "enabled": True
-                    },
-                   "size": 40},
-                  "gw":
-                 {"entrenamiento": {"actual_state": {"show": True, "color": "#000000", "icono": None},
-                                    "recompfinalauto": True},
-                  "recorrido": {"actual_state": {"show": True, "color": "#000000", "icono": None}}
-                  },
-                  "tipos_estados":
-                  {0: TipoEstado(0, None, "Inicial", "I", "#FF5500", None),
-                   1: TipoEstado(1, 1000, "Final", "F", "#00AB00", None),
-                   2: TipoEstado(2, None, "Agente", "A", "#474747", None),
-                   3: TipoEstado(3, 0, "Neutro", "N", "#FFFFFF", None),
-                   4: TipoEstado(4, 100, "Excelente", "E", "#BB0011", None),
-                   5: TipoEstado(5, 50, "Bueno", "B", "#4F0ACC", None),
-                   6: TipoEstado(6, -50, "Malo", "M", "#EB00A1", None),
-                   7: TipoEstado(7, None, "Pared", "P", "#000000", None),
-                   },
-                  "opt_path":
-                 {"color": "#55FF00",
-                     "pintar_inicial": False,
-                     "pintar_final": False,
-                     "delay": 0,
-                     "show_icon": False
-                  },
-                  "exponentes_final": {6: 12,
-                                       7: 17,
-                                       8: 19,
-                                       9: 28,
-                                       10: 31
-                                       }
-                  }
+window_config = {
+    "item": {
+        "show_tooltip": True,
+        "menu_estado": {"ocultar_tipos": [TIPOESTADO.AGENTE], "enabled": True},
+        "size": 40,
+    },
+    "gw": {
+        "entrenamiento": {
+            "actual_state": {"show": True, "color": "#000000", "icono": None},
+            "recompfinalauto": True,
+        },
+        "recorrido": {
+            "actual_state": {"show": True, "color": "#000000", "icono": None}
+        },
+    },
+    "tipos_estados": {
+        0: TipoEstado(0, None, "Inicial", "I", "#FF5500", None),
+        1: TipoEstado(1, 1000, "Final", "F", "#00AB00", None),
+        2: TipoEstado(2, None, "Agente", "A", "#474747", None),
+        3: TipoEstado(3, 0, "Neutro", "N", "#FFFFFF", None),
+        4: TipoEstado(4, 100, "Excelente", "E", "#BB0011", None),
+        5: TipoEstado(5, 50, "Bueno", "B", "#4F0ACC", None),
+        6: TipoEstado(6, -50, "Malo", "M", "#EB00A1", None),
+        7: TipoEstado(7, None, "Pared", "P", "#000000", None),
+    },
+    "opt_path": {
+        "color": "#55FF00",
+        "pintar_inicial": False,
+        "pintar_final": False,
+        "delay": 0,
+        "show_icon": False,
+    },
+    "exponentes_final": {6: 12, 7: 17, 8: 19, 9: 28, 10: 31},
+}
 
 
 def main():
@@ -88,8 +89,9 @@ def main():
         sys.stdout.write("Usando archivo '{}'...\n".format(archivo_pruebas))
 
         nombre_archivo = os.path.splitext(os.path.basename(archivo_pruebas))[0]
-        test1_dir = os.path.abspath(os.path.join(os.path.dirname(archivo_pruebas),
-                                                'resultados'))
+        test1_dir = os.path.abspath(
+            os.path.join(os.path.dirname(archivo_pruebas), "resultados")
+        )
 
         if not os.path.exists(test1_dir):
             os.mkdir(test1_dir)
@@ -99,9 +101,9 @@ def main():
         if not os.path.exists(test2_dir):
             os.mkdir(test2_dir)
 
-        with open(archivo_pruebas, 'rb') as apf:
+        with open(archivo_pruebas, "rb") as apf:
             # dialecto = csv.Sniffer().sniff(apf.read(), delimiters=';')
-            inp_csv = csv.reader(apf, dialect='excel', delimiter=';')
+            inp_csv = csv.reader(apf, dialect="excel", delimiter=";")
 
             contador_pruebas = 1
 
@@ -109,53 +111,78 @@ def main():
                 sys.stdout.write("Ejecutando prueba {}... ".format(contador_pruebas))
 
                 try:
-                    ejecutar_prueba(linea_prueba[0],
-                                    linea_prueba[1],
-                                    linea_prueba[2],
-                                    linea_prueba[3],
-                                    linea_prueba[4],
-                                    linea_prueba[5],
-                                    linea_prueba[6],
-                                    linea_prueba[7],
-                                    linea_prueba[8],
-                                    linea_prueba[9],
-                                    linea_prueba[10],
-                                    linea_prueba[11],
-                                    linea_prueba[12],
-                                    contador_pruebas,
-                                    test2_dir)
+                    ejecutar_prueba(
+                        linea_prueba[0],
+                        linea_prueba[1],
+                        linea_prueba[2],
+                        linea_prueba[3],
+                        linea_prueba[4],
+                        linea_prueba[5],
+                        linea_prueba[6],
+                        linea_prueba[7],
+                        linea_prueba[8],
+                        linea_prueba[9],
+                        linea_prueba[10],
+                        linea_prueba[11],
+                        linea_prueba[12],
+                        contador_pruebas,
+                        test2_dir,
+                    )
 
                     sys.stdout.write("Prueba {} OK\n".format(contador_pruebas))
                     contador_pruebas += 1
                 except decimal.Overflow:
-                    sys.stdout.write("Prueba {} ERROR: Overflow\n".format(contador_pruebas))
+                    sys.stdout.write(
+                        "Prueba {} ERROR: Overflow\n".format(contador_pruebas)
+                    )
                     contador_pruebas += 1
                     continue
                 except TypeError as te:
-                    sys.stdout.write("Prueba {} ERROR: TypeError\n".format(contador_pruebas))
+                    sys.stdout.write(
+                        "Prueba {} ERROR: TypeError\n".format(contador_pruebas)
+                    )
                     sys.stdout.write(str(te))
                     contador_pruebas += 1
                     continue
                 except ValueError:
-                    sys.stdout.write("Prueba {} ERROR: ValueError\n".format(contador_pruebas))
+                    sys.stdout.write(
+                        "Prueba {} ERROR: ValueError\n".format(contador_pruebas)
+                    )
                     contador_pruebas += 1
                     continue
                 except AttributeError:
-                    sys.stdout.write("Prueba {} ERROR: AttributeError\n".format(contador_pruebas))
+                    sys.stdout.write(
+                        "Prueba {} ERROR: AttributeError\n".format(contador_pruebas)
+                    )
                     contador_pruebas += 1
                     continue
                 except multiprocessing.ProcessError:
-                    sys.stdout.write("Prueba {} ERROR: ProcessError\n".format(contador_pruebas))
+                    sys.stdout.write(
+                        "Prueba {} ERROR: ProcessError\n".format(contador_pruebas)
+                    )
                     contador_pruebas += 1
                     continue
 
             sys.stdout.write("Fin de pruebas\n\n")
 
-def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
-                    paso_decremento, intervalo_decremento, limitar_iteraciones,
-                    cant_max_iteraciones, valor_inicial, detener_por_diff,
-                    diff_minima, interv_calculo_diff, nro_prueba, output_dir):
 
+def ejecutar_prueba(
+    estados,
+    gamma,
+    tecnica_idx,
+    parametro,
+    cant_episodios,
+    paso_decremento,
+    intervalo_decremento,
+    limitar_iteraciones,
+    cant_max_iteraciones,
+    valor_inicial,
+    detener_por_diff,
+    diff_minima,
+    interv_calculo_diff,
+    nro_prueba,
+    output_dir,
+):
     gamma = float(gamma)
 
     tecnica_idx = int(tecnica_idx)
@@ -176,9 +203,9 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
     if isinstance(limitar_iteraciones, bool):
         limitar_nro_iteraciones = limitar_iteraciones
     else:
-        if limitar_iteraciones.strip().lower() == 'false':
+        if limitar_iteraciones.strip().lower() == "false":
             limitar_nro_iteraciones = False
-        elif limitar_iteraciones.strip().lower() == 'true':
+        elif limitar_iteraciones.strip().lower() == "true":
             limitar_nro_iteraciones = True
 
     cant_max_iter = int(cant_max_iteraciones)
@@ -197,9 +224,9 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
     if isinstance(detener_por_diff, bool):
         matdiff_status = detener_por_diff
     else:
-        if detener_por_diff.strip().lower() == 'false':
+        if detener_por_diff.strip().lower() == "false":
             matdiff_status = False
-        elif detener_por_diff.strip().lower() == 'true':
+        elif detener_por_diff.strip().lower() == "true":
             matdiff_status = True
 
     matriz_min_diff = float(diff_minima)
@@ -212,7 +239,7 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
     recomp_excelente = estado_excelente.recompensa
     exponente = window_config["exponentes_final"][ancho]
 
-    calc_recomp_final = int(recomp_excelente / (gamma ** exponente))
+    calc_recomp_final = int(recomp_excelente / (gamma**exponente))
 
     estado_final_cfg = estado_final
     estado_final_cfg.recompensa = calc_recomp_final
@@ -237,14 +264,16 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
     estado_final_gw.recompensa = calc_recomp_final
 
     # Crear una nueva instancia de Q-Learning
-    qlearning = QLearning(gridworld,
-                          gamma,
-                          (tecnica, parametro, paso_decremento, intervalo_decremento),
-                          cant_episodios,
-                          (limitar_nro_iteraciones, cant_max_iter),
-                          init_value_fn,
-                          (matdiff_status, matriz_min_diff, intervalo_diff_calc),
-                          None)
+    qlearning = QLearning(
+        gridworld,
+        gamma,
+        (tecnica, parametro, paso_decremento, intervalo_decremento),
+        cant_episodios,
+        (limitar_nro_iteraciones, cant_max_iter),
+        init_value_fn,
+        (matdiff_status, matriz_min_diff, intervalo_diff_calc),
+        None,
+    )
 
     out_queue = multiprocessing.Queue()
     error_queue = multiprocessing.Queue()
@@ -277,17 +306,17 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
                 # cant_iteraciones = ql_ent_info.get('NroIteracion', None)
                 # episode_exec_time = ql_ent_info.get('EpisodiosExecTime', 0.0)
                 # iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
-                worker_joined = ql_ent_info.get('ProcesoJoined', False)
+                worker_joined = ql_ent_info.get("ProcesoJoined", False)
                 # loop_alarm = ql_ent_info.get('LoopAlarm', False)
-                matriz_q_inp = ql_ent_info.get('MatrizQ', None)
+                matriz_q_inp = ql_ent_info.get("MatrizQ", None)
                 # valor_parametro = ql_ent_info.get('ValorParametro', None)
                 # running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
                 # tmp_mat_diff = ql_ent_info.get('MatDiff', None)
                 # corte_iteracion = ql_ent_info.get('CorteIteracion', None)
-                graph_recompensas_promedio = ql_ent_info.get('MatRecompProm', None)
-                graph_episodios_finalizados = ql_ent_info.get('EpFinalizados', None)
-                graph_mat_diff = ql_ent_info.get('MatDiffStat', None)
-                graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio', None)
+                graph_recompensas_promedio = ql_ent_info.get("MatRecompProm", None)
+                graph_episodios_finalizados = ql_ent_info.get("EpFinalizados", None)
+                graph_mat_diff = ql_ent_info.get("MatDiffStat", None)
+                graph_iters_por_episodio = ql_ent_info.get("ItersXEpisodio", None)
 
                 time.sleep(0.01)
         except Queue.Empty:
@@ -308,64 +337,59 @@ def ejecutar_prueba(estados, gamma, tecnica_idx, parametro, cant_episodios,
     # logging.debug(graph_recompensas_promedio)
     # logging.debug(matriz_q_inp)
 
-    parametros = (gamma,
-                 (tecnica_idx, parametro, paso_decremento, intervalo_decremento),
-                 cant_episodios,
-                 (limitar_nro_iteraciones, cant_max_iter),
-                 init_value_fn
-                 )
+    parametros = (
+        gamma,
+        (tecnica_idx, parametro, paso_decremento, intervalo_decremento),
+        cant_episodios,
+        (limitar_nro_iteraciones, cant_max_iter),
+        init_value_fn,
+    )
 
     test_dir = os.path.abspath(os.path.join(output_dir, "Prueba_{}".format(nro_prueba)))
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
-    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    csv_path = os.path.abspath(os.path.join(test_dir, "info.csv"))
 
-    with open(csv_path, 'wb') as csvf:
-        csv_writer = csv.writer(csvf, dialect='excel', delimiter=';')
-        csv_writer.writerow(['Gamma', gamma])
-        csv_writer.writerow(['Tecnica', tecnicas[tecnica_idx]])
-        csv_writer.writerow(['Parametro', parametro])
-        csv_writer.writerow(['Paso decremento', paso_decremento])
-        csv_writer.writerow(['Intervalo decremento', intervalo_decremento])
-        csv_writer.writerow(['Episodios', cant_episodios])
-        csv_writer.writerow(['Limitar iteraciones', limitar_iteraciones])
-        csv_writer.writerow(['Cant. Max. Iteraciones', cant_max_iter])
-        csv_writer.writerow(['Valor Inicial', init_value_fn])
+    with open(csv_path, "wb") as csvf:
+        csv_writer = csv.writer(csvf, dialect="excel", delimiter=";")
+        csv_writer.writerow(["Gamma", gamma])
+        csv_writer.writerow(["Tecnica", tecnicas[tecnica_idx]])
+        csv_writer.writerow(["Parametro", parametro])
+        csv_writer.writerow(["Paso decremento", paso_decremento])
+        csv_writer.writerow(["Intervalo decremento", intervalo_decremento])
+        csv_writer.writerow(["Episodios", cant_episodios])
+        csv_writer.writerow(["Limitar iteraciones", limitar_iteraciones])
+        csv_writer.writerow(["Cant. Max. Iteraciones", cant_max_iter])
+        csv_writer.writerow(["Valor Inicial", init_value_fn])
         csv_writer.writerow([])
 
     q_1 = multiprocessing.Queue()
     q_1.put(((parametros, graph_recompensas_promedio), nro_prueba, output_dir))
-    worker_1 = multiprocessing.Process(None,
-                                       g_r_p_w,
-                                       "GraficarRecompensasPromedio",
-                                        (q_1,),
-                                        {}
-                                        )
+    worker_1 = multiprocessing.Process(
+        None, g_r_p_w, "GraficarRecompensasPromedio", (q_1,), {}
+    )
 
     q_2 = multiprocessing.Queue()
     q_2.put(((parametros, graph_mat_diff), nro_prueba, output_dir))
-    worker_2 = multiprocessing.Process(None,
-                                g_d_m_w,
-                                "GraficarDiferenciaMatrices",
-                                (q_2,),
-                                {}
-                                )
+    worker_2 = multiprocessing.Process(
+        None, g_d_m_w, "GraficarDiferenciaMatrices", (q_2,), {}
+    )
 
-#===============================================================================
-#     worker_3 = threading.Thread(None,
-#                                 graficar_episodios_exitosos,
-#                                 "GraficarRecompensasPromedio",
-#                                 ((parametros, graph_episodios_finalizados), nro_prueba, output_dir),
-#                                 {},
-#                                 None)
-#
-#     worker_4 = threading.Thread(None,
-#                                 graficar_iters_por_episodio,
-#                                 "GraficarRecompensasPromedio",
-#                                 ((parametros, graph_iters_por_episodio), nro_prueba, output_dir),
-#                                 {},
-#                                 None)
-#===============================================================================
+    # ===============================================================================
+    #     worker_3 = threading.Thread(None,
+    #                                 graficar_episodios_exitosos,
+    #                                 "GraficarRecompensasPromedio",
+    #                                 ((parametros, graph_episodios_finalizados), nro_prueba, output_dir),
+    #                                 {},
+    #                                 None)
+    #
+    #     worker_4 = threading.Thread(None,
+    #                                 graficar_iters_por_episodio,
+    #                                 "GraficarRecompensasPromedio",
+    #                                 ((parametros, graph_iters_por_episodio), nro_prueba, output_dir),
+    #                                 {},
+    #                                 None)
+    # ===============================================================================
 
     worker_1.start()
     worker_2.start()
@@ -421,10 +445,10 @@ def graficar_episodios_exitosos(tupla, nro_prueba, output_dir):
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
 
-    image_path = os.path.abspath(os.path.join(test_dir, 'episodios_exitosos.png'))
+    image_path = os.path.abspath(os.path.join(test_dir, "episodios_exitosos.png"))
     worker.guardar_dibujo(image_path)
 
-    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    csv_path = os.path.abspath(os.path.join(test_dir, "info.csv"))
     worker.exportar_info(csv_path, True)
 
 
@@ -436,10 +460,10 @@ def graficar_recompensas_promedio(tupla, nro_prueba, output_dir):
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
 
-    image_path = os.path.abspath(os.path.join(test_dir, 'recompensas_promedio.png'))
+    image_path = os.path.abspath(os.path.join(test_dir, "recompensas_promedio.png"))
     worker.guardar_dibujo(image_path)
 
-    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    csv_path = os.path.abspath(os.path.join(test_dir, "info.csv"))
     worker.exportar_info(csv_path, True)
 
 
@@ -451,10 +475,10 @@ def graficar_iters_por_episodio(tupla, nro_prueba, output_dir):
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
 
-    image_path = os.path.abspath(os.path.join(test_dir, 'iters_por_ep.png'))
+    image_path = os.path.abspath(os.path.join(test_dir, "iters_por_ep.png"))
     worker.guardar_dibujo(image_path)
 
-    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    csv_path = os.path.abspath(os.path.join(test_dir, "info.csv"))
     worker.exportar_info(csv_path, True)
 
 
@@ -466,12 +490,12 @@ def graficar_diferencias_matrizq(tupla, nro_prueba, output_dir):
     if not os.path.exists(test_dir):
         os.mkdir(test_dir)
 
-    image_path = os.path.abspath(os.path.join(test_dir, 'difs_mat_q.png'))
+    image_path = os.path.abspath(os.path.join(test_dir, "difs_mat_q.png"))
     worker.guardar_dibujo(image_path)
 
-    csv_path = os.path.abspath(os.path.join(test_dir, 'info.csv'))
+    csv_path = os.path.abspath(os.path.join(test_dir, "info.csv"))
     worker.exportar_info(csv_path, True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

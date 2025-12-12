@@ -13,6 +13,7 @@ from core.tecnicas.tecnica import QLTecnica
 
 class Softmax(QLTecnica):
     """Técnica Softmax"""
+
     def __init__(self, tau, paso_decremento=0, intervalo_decremento=0):
         """
         Inicializador Softmax.
@@ -93,8 +94,10 @@ class Softmax(QLTecnica):
         # probabilidades_acciones[probabilidades_acciones < 1] = numpy.nan
 
         # Armar intervalos sumando de manera acumulada
-        probabilidades_acciones = numpy.add(probabilidades_acciones * 0,
-                                            numpy.add.accumulate(numpy.nan_to_num(probabilidades_acciones)))
+        probabilidades_acciones = numpy.add(
+            probabilidades_acciones * 0,
+            numpy.add.accumulate(numpy.nan_to_num(probabilidades_acciones)),
+        )
 
         return probabilidades_acciones
 
@@ -124,12 +127,10 @@ class Softmax(QLTecnica):
     def set_tau_parcial(self, valor):
         self._val_param_parcial = valor
 
-    tau_general = property(get_tau_general,
-                           set_tau_general,
-                           None,
-                           "Parámetro Tau General de la técnica")
+    tau_general = property(
+        get_tau_general, set_tau_general, None, "Parámetro Tau General de la técnica"
+    )
 
-    tau_parcial = property(get_tau_parcial,
-                           set_tau_parcial,
-                           None,
-                           "Parámetro Tau Parcial de la técnica")
+    tau_parcial = property(
+        get_tau_parcial, set_tau_parcial, None, "Parámetro Tau Parcial de la técnica"
+    )

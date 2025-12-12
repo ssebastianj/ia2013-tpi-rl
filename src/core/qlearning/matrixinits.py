@@ -8,6 +8,7 @@ class QLMatrixInicializador:
     """
     Clase base para inicializar los valores de la Matriz Q.
     """
+
     def __init__(self, default=None):
         super().__init__()
         self.default = default
@@ -20,6 +21,7 @@ class QLMatrixInitEnCero(QLMatrixInicializador):
     """
     Inicializa la Matriz Q con todos los valores en cero.
     """
+
     def __init__(self):
         super().__init__()
 
@@ -31,6 +33,7 @@ class QLMatrixInitRandom(QLMatrixInicializador):
     """
     Inicializa la Matriz Q con valores aleatorios entre cero y "valor".
     """
+
     def __init__(self):
         super().__init__()
 
@@ -42,6 +45,7 @@ class QLMatrixInitEnRecompensa(QLMatrixInicializador):
     """
     Inicializa la Matriz Q con valores iguales al de la transición.
     """
+
     def __init__(self):
         super(QLMatrixInitEnCero, self).__init__()
 

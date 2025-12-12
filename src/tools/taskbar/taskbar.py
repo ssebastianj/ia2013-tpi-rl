@@ -12,7 +12,7 @@ except ImportError:
 class WindowsTaskBar:
     def __init__(self):
         if not is_windows7_or_later():
-            raise RuntimeError('Windows Taskbar requires Windows 7 or later')
+            raise RuntimeError("Windows Taskbar requires Windows 7 or later")
 
         # Flags for Setting Taskbar Progress state
         self.TBPF_NOPROGRESS = 0
@@ -22,14 +22,16 @@ class WindowsTaskBar:
         self.TBPF_PAUSED = 0x8
 
         # Flags for SetTabActive
-        self.TBATF_USEMDITHUMBNAIL = 0x1,
-        self.TBATF_USEMDILIVEPREVIEW = 0x2,
+        self.TBATF_USEMDITHUMBNAIL = (0x1,)
+        self.TBATF_USEMDILIVEPREVIEW = (0x2,)
 
         import comtypes.client as cc
+
         cc.GetModule("TaskbarLib.tlb")
 
-        self._taskbar = cc.CreateObject("{56FDF344-FD6D-11d0-958A-006097C9A090}",
-                                        interface=tbl.ITaskbarList3)
+        self._taskbar = cc.CreateObject(
+            "{56FDF344-FD6D-11d0-958A-006097C9A090}", interface=tbl.ITaskbarList3
+        )
 
     def HrInit(self):
         self._taskbar.HrInit()
@@ -87,7 +89,7 @@ class WindowsTaskBar:
 
 
 def is_windows7_or_later():
-    if sys.platform == 'win32':
+    if sys.platform == "win32":
         version_info = sys.getwindowsversion()
         return version_info[0] >= 6 and version_info[1] >= 1
     else:

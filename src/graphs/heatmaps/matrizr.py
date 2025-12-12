@@ -9,6 +9,7 @@ class ShowMatrizRHeatMap:
     """
     Clase dedicada a generar y mostrar un heatmap de la Matriz R.
     """
+
     def __init__(self, matrizr, parent=None):
         """
         Inicializador de la clase.
@@ -29,8 +30,8 @@ class ShowMatrizRHeatMap:
         ancho_mat, alto_mat = self.matriz.shape
 
         # Dimensiones del GridWorld
-        alto_gw = int(alto_mat ** 0.5)
-        ancho_gw = int(ancho_mat ** 0.5)
+        alto_gw = int(alto_mat**0.5)
+        ancho_gw = int(ancho_mat**0.5)
         dim_gw = ancho_gw * alto_gw
 
         suma_acciones = numpy.round(numpy.nansum(self.matriz, 0))
@@ -44,9 +45,9 @@ class ShowMatrizRHeatMap:
             x[i] = fila
             y[i] = columna
 
-        heatmap, xedges, yedges = numpy.histogram2d(x, y,
-                                                    bins=ancho_gw,
-                                                    weights=suma_acciones)
+        heatmap, xedges, yedges = numpy.histogram2d(
+            x, y, bins=ancho_gw, weights=suma_acciones
+        )
 
         extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
 

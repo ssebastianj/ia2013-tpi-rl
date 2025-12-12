@@ -10,23 +10,32 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_GWOpcionesDialog:
     def setupUi(self, GWOpcionesDialog):
         GWOpcionesDialog.setObjectName(_fromUtf8("GWOpcionesDialog"))
         GWOpcionesDialog.resize(775, 496)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Configurar.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(
+            QtGui.QPixmap(_fromUtf8(":/iconos/Configurar.png")),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         GWOpcionesDialog.setWindowIcon(icon)
         GWOpcionesDialog.setSizeGripEnabled(True)
         GWOpcionesDialog.setModal(True)
@@ -43,7 +52,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_22 = QtGui.QHBoxLayout()
         self.horizontalLayout_22.setObjectName(_fromUtf8("horizontalLayout_22"))
         self.label_21 = QtGui.QLabel(self.gbEstadoBueno)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_21.sizePolicy().hasHeightForWidth())
@@ -58,7 +69,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_23 = QtGui.QHBoxLayout()
         self.horizontalLayout_23.setObjectName(_fromUtf8("horizontalLayout_23"))
         self.label_22 = QtGui.QLabel(self.gbEstadoBueno)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_22.sizePolicy().hasHeightForWidth())
@@ -73,7 +86,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_24 = QtGui.QHBoxLayout()
         self.horizontalLayout_24.setObjectName(_fromUtf8("horizontalLayout_24"))
         self.label_23 = QtGui.QLabel(self.gbEstadoBueno)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_23.sizePolicy().hasHeightForWidth())
@@ -91,7 +106,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_25 = QtGui.QHBoxLayout()
         self.horizontalLayout_25.setObjectName(_fromUtf8("horizontalLayout_25"))
         self.label_24 = QtGui.QLabel(self.gbEstadoBueno)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_24.sizePolicy().hasHeightForWidth())
@@ -111,7 +128,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_37 = QtGui.QHBoxLayout()
         self.horizontalLayout_37.setObjectName(_fromUtf8("horizontalLayout_37"))
         self.label_36 = QtGui.QLabel(self.gbEstadoNeutro)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_36.sizePolicy().hasHeightForWidth())
@@ -126,7 +145,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_38 = QtGui.QHBoxLayout()
         self.horizontalLayout_38.setObjectName(_fromUtf8("horizontalLayout_38"))
         self.label_37 = QtGui.QLabel(self.gbEstadoNeutro)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_37.sizePolicy().hasHeightForWidth())
@@ -141,7 +162,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_39 = QtGui.QHBoxLayout()
         self.horizontalLayout_39.setObjectName(_fromUtf8("horizontalLayout_39"))
         self.label_38 = QtGui.QLabel(self.gbEstadoNeutro)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_38.sizePolicy().hasHeightForWidth())
@@ -159,7 +182,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_40 = QtGui.QHBoxLayout()
         self.horizontalLayout_40.setObjectName(_fromUtf8("horizontalLayout_40"))
         self.label_39 = QtGui.QLabel(self.gbEstadoNeutro)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_39.sizePolicy().hasHeightForWidth())
@@ -179,7 +204,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_41 = QtGui.QHBoxLayout()
         self.horizontalLayout_41.setObjectName(_fromUtf8("horizontalLayout_41"))
         self.label_40 = QtGui.QLabel(self.gbEstadoPared)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_40.sizePolicy().hasHeightForWidth())
@@ -194,7 +221,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_42 = QtGui.QHBoxLayout()
         self.horizontalLayout_42.setObjectName(_fromUtf8("horizontalLayout_42"))
         self.label_41 = QtGui.QLabel(self.gbEstadoPared)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_41.sizePolicy().hasHeightForWidth())
@@ -209,7 +238,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_43 = QtGui.QHBoxLayout()
         self.horizontalLayout_43.setObjectName(_fromUtf8("horizontalLayout_43"))
         self.label_42 = QtGui.QLabel(self.gbEstadoPared)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_42.sizePolicy().hasHeightForWidth())
@@ -232,7 +263,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_17 = QtGui.QHBoxLayout()
         self.horizontalLayout_17.setObjectName(_fromUtf8("horizontalLayout_17"))
         self.label_16 = QtGui.QLabel(self.gbEstadoExcelente)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_16.sizePolicy().hasHeightForWidth())
@@ -247,7 +280,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_18 = QtGui.QHBoxLayout()
         self.horizontalLayout_18.setObjectName(_fromUtf8("horizontalLayout_18"))
         self.label_17 = QtGui.QLabel(self.gbEstadoExcelente)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_17.sizePolicy().hasHeightForWidth())
@@ -262,7 +297,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_19 = QtGui.QHBoxLayout()
         self.horizontalLayout_19.setObjectName(_fromUtf8("horizontalLayout_19"))
         self.label_18 = QtGui.QLabel(self.gbEstadoExcelente)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_18.sizePolicy().hasHeightForWidth())
@@ -280,7 +317,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_21 = QtGui.QHBoxLayout()
         self.horizontalLayout_21.setObjectName(_fromUtf8("horizontalLayout_21"))
         self.label_20 = QtGui.QLabel(self.gbEstadoExcelente)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_20.sizePolicy().hasHeightForWidth())
@@ -300,7 +339,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_14 = QtGui.QHBoxLayout()
         self.horizontalLayout_14.setObjectName(_fromUtf8("horizontalLayout_14"))
         self.label_13 = QtGui.QLabel(self.gbEstadoFinal)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_13.sizePolicy().hasHeightForWidth())
@@ -315,7 +356,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_15 = QtGui.QHBoxLayout()
         self.horizontalLayout_15.setObjectName(_fromUtf8("horizontalLayout_15"))
         self.label_14 = QtGui.QLabel(self.gbEstadoFinal)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_14.sizePolicy().hasHeightForWidth())
@@ -330,7 +373,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_16 = QtGui.QHBoxLayout()
         self.horizontalLayout_16.setObjectName(_fromUtf8("horizontalLayout_16"))
         self.label_15 = QtGui.QLabel(self.gbEstadoFinal)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_15.sizePolicy().hasHeightForWidth())
@@ -348,7 +393,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_20 = QtGui.QHBoxLayout()
         self.horizontalLayout_20.setObjectName(_fromUtf8("horizontalLayout_20"))
         self.label_19 = QtGui.QLabel(self.gbEstadoFinal)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_19.sizePolicy().hasHeightForWidth())
@@ -369,7 +416,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_30 = QtGui.QHBoxLayout()
         self.horizontalLayout_30.setObjectName(_fromUtf8("horizontalLayout_30"))
         self.label_29 = QtGui.QLabel(self.gbEstadoMalo)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_29.sizePolicy().hasHeightForWidth())
@@ -384,7 +433,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_31 = QtGui.QHBoxLayout()
         self.horizontalLayout_31.setObjectName(_fromUtf8("horizontalLayout_31"))
         self.label_30 = QtGui.QLabel(self.gbEstadoMalo)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_30.sizePolicy().hasHeightForWidth())
@@ -399,7 +450,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_32 = QtGui.QHBoxLayout()
         self.horizontalLayout_32.setObjectName(_fromUtf8("horizontalLayout_32"))
         self.label_31 = QtGui.QLabel(self.gbEstadoMalo)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_31.sizePolicy().hasHeightForWidth())
@@ -417,7 +470,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_33 = QtGui.QHBoxLayout()
         self.horizontalLayout_33.setObjectName(_fromUtf8("horizontalLayout_33"))
         self.label_32 = QtGui.QLabel(self.gbEstadoMalo)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_32.sizePolicy().hasHeightForWidth())
@@ -437,7 +492,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_8 = QtGui.QHBoxLayout()
         self.horizontalLayout_8.setObjectName(_fromUtf8("horizontalLayout_8"))
         self.label_2 = QtGui.QLabel(self.gbEstadoInicial)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
@@ -452,7 +509,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_9 = QtGui.QHBoxLayout()
         self.horizontalLayout_9.setObjectName(_fromUtf8("horizontalLayout_9"))
         self.label_8 = QtGui.QLabel(self.gbEstadoInicial)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_8.sizePolicy().hasHeightForWidth())
@@ -467,7 +526,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_10 = QtGui.QHBoxLayout()
         self.horizontalLayout_10.setObjectName(_fromUtf8("horizontalLayout_10"))
         self.label_9 = QtGui.QLabel(self.gbEstadoInicial)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_9.sizePolicy().hasHeightForWidth())
@@ -490,7 +551,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_34 = QtGui.QHBoxLayout()
         self.horizontalLayout_34.setObjectName(_fromUtf8("horizontalLayout_34"))
         self.label_33 = QtGui.QLabel(self.gbEstadoAgente)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_33.sizePolicy().hasHeightForWidth())
@@ -505,7 +568,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_35 = QtGui.QHBoxLayout()
         self.horizontalLayout_35.setObjectName(_fromUtf8("horizontalLayout_35"))
         self.label_34 = QtGui.QLabel(self.gbEstadoAgente)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_34.sizePolicy().hasHeightForWidth())
@@ -520,7 +585,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_36 = QtGui.QHBoxLayout()
         self.horizontalLayout_36.setObjectName(_fromUtf8("horizontalLayout_36"))
         self.label_35 = QtGui.QLabel(self.gbEstadoAgente)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_35.sizePolicy().hasHeightForWidth())
@@ -536,7 +603,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout_36.addWidget(self.btnElegirColorAgente)
         self.gridLayout_15.addLayout(self.horizontalLayout_36, 2, 0, 1, 1)
         self.gridLayout_16.addWidget(self.gbEstadoAgente, 2, 1, 1, 1)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.gridLayout_16.addItem(spacerItem, 2, 2, 1, 1)
         self.gridLayout_2.addWidget(self.gbEstados, 0, 1, 6, 2)
         self.gbFormato = QtGui.QGroupBox(GWOpcionesDialog)
@@ -546,7 +615,9 @@ class Ui_GWOpcionesDialog:
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.label = QtGui.QLabel(self.gbFormato)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
@@ -589,7 +660,9 @@ class Ui_GWOpcionesDialog:
         self.gridLayout_6.addWidget(self.gbRecShowActualState, 0, 0, 1, 1)
         self.gridLayout_2.addWidget(self.gbRecorrido, 2, 0, 1, 1)
         self.line = QtGui.QFrame(GWOpcionesDialog)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.line.sizePolicy().hasHeightForWidth())
@@ -603,9 +676,13 @@ class Ui_GWOpcionesDialog:
         self.btnAceptar.setDefault(True)
         self.btnAceptar.setObjectName(_fromUtf8("btnAceptar"))
         self.gridLayout_2.addWidget(self.btnAceptar, 9, 2, 1, 1)
-        spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem1 = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.gridLayout_2.addItem(spacerItem1, 4, 0, 1, 1)
-        spacerItem2 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem2 = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.gridLayout_2.addItem(spacerItem2, 6, 1, 1, 1)
         self.gbEntrenamiento = QtGui.QGroupBox(GWOpcionesDialog)
         self.gbEntrenamiento.setObjectName(_fromUtf8("gbEntrenamiento"))
@@ -665,14 +742,26 @@ class Ui_GWOpcionesDialog:
         self.label.setBuddy(self.sbGWEstadoSize)
 
         self.retranslateUi(GWOpcionesDialog)
-        QtCore.QObject.connect(self.btnAceptar, QtCore.SIGNAL(_fromUtf8("clicked()")), GWOpcionesDialog.accept)
+        QtCore.QObject.connect(
+            self.btnAceptar,
+            QtCore.SIGNAL(_fromUtf8("clicked()")),
+            GWOpcionesDialog.accept,
+        )
         QtCore.QMetaObject.connectSlotsByName(GWOpcionesDialog)
         GWOpcionesDialog.setTabOrder(self.sbGWEstadoSize, self.gbRecShowActualState)
-        GWOpcionesDialog.setTabOrder(self.gbRecShowActualState, self.optRecMostrarColorFondo)
-        GWOpcionesDialog.setTabOrder(self.optRecMostrarColorFondo, self.optRecMostrarIcono)
+        GWOpcionesDialog.setTabOrder(
+            self.gbRecShowActualState, self.optRecMostrarColorFondo
+        )
+        GWOpcionesDialog.setTabOrder(
+            self.optRecMostrarColorFondo, self.optRecMostrarIcono
+        )
         GWOpcionesDialog.setTabOrder(self.optRecMostrarIcono, self.gbEntShowActualState)
-        GWOpcionesDialog.setTabOrder(self.gbEntShowActualState, self.optEntMostrarColorFondo)
-        GWOpcionesDialog.setTabOrder(self.optEntMostrarColorFondo, self.optEntMostrarIcono)
+        GWOpcionesDialog.setTabOrder(
+            self.gbEntShowActualState, self.optEntMostrarColorFondo
+        )
+        GWOpcionesDialog.setTabOrder(
+            self.optEntMostrarColorFondo, self.optEntMostrarIcono
+        )
         GWOpcionesDialog.setTabOrder(self.optEntMostrarIcono, self.txtFinalNombre)
         GWOpcionesDialog.setTabOrder(self.txtFinalNombre, self.txtFinalLetra)
         GWOpcionesDialog.setTabOrder(self.txtFinalLetra, self.txtFinalColor)
@@ -681,8 +770,12 @@ class Ui_GWOpcionesDialog:
         GWOpcionesDialog.setTabOrder(self.sbFinalRecompensa, self.txtExcelenteNombre)
         GWOpcionesDialog.setTabOrder(self.txtExcelenteNombre, self.txtExcelenteLetra)
         GWOpcionesDialog.setTabOrder(self.txtExcelenteLetra, self.txtExcelenteColor)
-        GWOpcionesDialog.setTabOrder(self.txtExcelenteColor, self.btnElegirColorExcelente)
-        GWOpcionesDialog.setTabOrder(self.btnElegirColorExcelente, self.sbExcelenteRecompensa)
+        GWOpcionesDialog.setTabOrder(
+            self.txtExcelenteColor, self.btnElegirColorExcelente
+        )
+        GWOpcionesDialog.setTabOrder(
+            self.btnElegirColorExcelente, self.sbExcelenteRecompensa
+        )
         GWOpcionesDialog.setTabOrder(self.sbExcelenteRecompensa, self.txtInicialNombre)
         GWOpcionesDialog.setTabOrder(self.txtInicialNombre, self.txtInicialLetra)
         GWOpcionesDialog.setTabOrder(self.txtInicialLetra, self.txtInicialColor)
@@ -713,79 +806,132 @@ class Ui_GWOpcionesDialog:
         GWOpcionesDialog.setTabOrder(self.btnElegirColorPared, self.btnAceptar)
 
     def retranslateUi(self, GWOpcionesDialog):
-        GWOpcionesDialog.setWindowTitle(_translate("GWOpcionesDialog", "Configurar Grid World", None))
+        GWOpcionesDialog.setWindowTitle(
+            _translate("GWOpcionesDialog", "Configurar Grid World", None)
+        )
         self.gbEstados.setTitle(_translate("GWOpcionesDialog", "Estados", None))
         self.gbEstadoBueno.setTitle(_translate("GWOpcionesDialog", "Bueno", None))
         self.label_21.setText(_translate("GWOpcionesDialog", "Nombre:", None))
         self.label_22.setText(_translate("GWOpcionesDialog", "Letra:", None))
         self.label_23.setText(_translate("GWOpcionesDialog", "Color:", None))
-        self.txtBuenoColor.setInputMask(_translate("GWOpcionesDialog", "\\#HHHHHH; ", None))
-        self.btnElegirColorBueno.setToolTip(_translate("GWOpcionesDialog", "Seleccionar color de estado", None))
+        self.txtBuenoColor.setInputMask(
+            _translate("GWOpcionesDialog", "\\#HHHHHH; ", None)
+        )
+        self.btnElegirColorBueno.setToolTip(
+            _translate("GWOpcionesDialog", "Seleccionar color de estado", None)
+        )
         self.btnElegirColorBueno.setText(_translate("GWOpcionesDialog", "...", None))
         self.label_24.setText(_translate("GWOpcionesDialog", "Recompensa:", None))
         self.gbEstadoNeutro.setTitle(_translate("GWOpcionesDialog", "Neutro", None))
         self.label_36.setText(_translate("GWOpcionesDialog", "Nombre:", None))
         self.label_37.setText(_translate("GWOpcionesDialog", "Letra:", None))
         self.label_38.setText(_translate("GWOpcionesDialog", "Color:", None))
-        self.txtNeutroColor.setInputMask(_translate("GWOpcionesDialog", "\\#HHHHHH; ", None))
-        self.btnElegirColorNeutro.setToolTip(_translate("GWOpcionesDialog", "Seleccionar color de estado", None))
+        self.txtNeutroColor.setInputMask(
+            _translate("GWOpcionesDialog", "\\#HHHHHH; ", None)
+        )
+        self.btnElegirColorNeutro.setToolTip(
+            _translate("GWOpcionesDialog", "Seleccionar color de estado", None)
+        )
         self.btnElegirColorNeutro.setText(_translate("GWOpcionesDialog", "...", None))
         self.label_39.setText(_translate("GWOpcionesDialog", "Recompensa:", None))
         self.gbEstadoPared.setTitle(_translate("GWOpcionesDialog", "Pared", None))
         self.label_40.setText(_translate("GWOpcionesDialog", "Nombre:", None))
         self.label_41.setText(_translate("GWOpcionesDialog", "Letra:", None))
         self.label_42.setText(_translate("GWOpcionesDialog", "Color:", None))
-        self.txtParedColor.setInputMask(_translate("GWOpcionesDialog", "\\#HHHHHH; ", None))
-        self.btnElegirColorPared.setToolTip(_translate("GWOpcionesDialog", "Seleccionar color de estado", None))
+        self.txtParedColor.setInputMask(
+            _translate("GWOpcionesDialog", "\\#HHHHHH; ", None)
+        )
+        self.btnElegirColorPared.setToolTip(
+            _translate("GWOpcionesDialog", "Seleccionar color de estado", None)
+        )
         self.btnElegirColorPared.setText(_translate("GWOpcionesDialog", "...", None))
-        self.gbEstadoExcelente.setTitle(_translate("GWOpcionesDialog", "Excelente", None))
+        self.gbEstadoExcelente.setTitle(
+            _translate("GWOpcionesDialog", "Excelente", None)
+        )
         self.label_16.setText(_translate("GWOpcionesDialog", "Nombre:", None))
         self.label_17.setText(_translate("GWOpcionesDialog", "Letra:", None))
         self.label_18.setText(_translate("GWOpcionesDialog", "Color:", None))
-        self.txtExcelenteColor.setInputMask(_translate("GWOpcionesDialog", "\\#HHHHHH; ", None))
-        self.btnElegirColorExcelente.setToolTip(_translate("GWOpcionesDialog", "Seleccionar color de estado", None))
-        self.btnElegirColorExcelente.setText(_translate("GWOpcionesDialog", "...", None))
+        self.txtExcelenteColor.setInputMask(
+            _translate("GWOpcionesDialog", "\\#HHHHHH; ", None)
+        )
+        self.btnElegirColorExcelente.setToolTip(
+            _translate("GWOpcionesDialog", "Seleccionar color de estado", None)
+        )
+        self.btnElegirColorExcelente.setText(
+            _translate("GWOpcionesDialog", "...", None)
+        )
         self.label_20.setText(_translate("GWOpcionesDialog", "Recompensa:", None))
         self.gbEstadoFinal.setTitle(_translate("GWOpcionesDialog", "Final", None))
         self.label_13.setText(_translate("GWOpcionesDialog", "Nombre:", None))
         self.label_14.setText(_translate("GWOpcionesDialog", "Letra:", None))
         self.label_15.setText(_translate("GWOpcionesDialog", "Color:", None))
-        self.txtFinalColor.setInputMask(_translate("GWOpcionesDialog", "\\#HHHHHH; ", None))
-        self.btnElegirColorFinal.setToolTip(_translate("GWOpcionesDialog", "Seleccionar color de estado", None))
+        self.txtFinalColor.setInputMask(
+            _translate("GWOpcionesDialog", "\\#HHHHHH; ", None)
+        )
+        self.btnElegirColorFinal.setToolTip(
+            _translate("GWOpcionesDialog", "Seleccionar color de estado", None)
+        )
         self.btnElegirColorFinal.setText(_translate("GWOpcionesDialog", "...", None))
         self.label_19.setText(_translate("GWOpcionesDialog", "Recompensa:", None))
         self.gbEstadoMalo.setTitle(_translate("GWOpcionesDialog", "Malo", None))
         self.label_29.setText(_translate("GWOpcionesDialog", "Nombre:", None))
         self.label_30.setText(_translate("GWOpcionesDialog", "Letra:", None))
         self.label_31.setText(_translate("GWOpcionesDialog", "Color:", None))
-        self.txtMaloColor.setInputMask(_translate("GWOpcionesDialog", "\\#HHHHHH; ", None))
-        self.btnElegirColorMalo.setToolTip(_translate("GWOpcionesDialog", "Seleccionar color de estado", None))
+        self.txtMaloColor.setInputMask(
+            _translate("GWOpcionesDialog", "\\#HHHHHH; ", None)
+        )
+        self.btnElegirColorMalo.setToolTip(
+            _translate("GWOpcionesDialog", "Seleccionar color de estado", None)
+        )
         self.btnElegirColorMalo.setText(_translate("GWOpcionesDialog", "...", None))
         self.label_32.setText(_translate("GWOpcionesDialog", "Recompensa:", None))
         self.gbEstadoInicial.setTitle(_translate("GWOpcionesDialog", "Inicial", None))
         self.label_2.setText(_translate("GWOpcionesDialog", "Nombre:", None))
         self.label_8.setText(_translate("GWOpcionesDialog", "Letra:", None))
         self.label_9.setText(_translate("GWOpcionesDialog", "Color:", None))
-        self.txtInicialColor.setInputMask(_translate("GWOpcionesDialog", "\\#HHHHHH; ", None))
-        self.btnElegirColorInicial.setToolTip(_translate("GWOpcionesDialog", "Seleccionar color de estado", None))
+        self.txtInicialColor.setInputMask(
+            _translate("GWOpcionesDialog", "\\#HHHHHH; ", None)
+        )
+        self.btnElegirColorInicial.setToolTip(
+            _translate("GWOpcionesDialog", "Seleccionar color de estado", None)
+        )
         self.btnElegirColorInicial.setText(_translate("GWOpcionesDialog", "...", None))
         self.gbEstadoAgente.setTitle(_translate("GWOpcionesDialog", "Agente", None))
         self.label_33.setText(_translate("GWOpcionesDialog", "Nombre:", None))
         self.label_34.setText(_translate("GWOpcionesDialog", "Letra:", None))
         self.label_35.setText(_translate("GWOpcionesDialog", "Color:", None))
-        self.txtAgenteColor.setInputMask(_translate("GWOpcionesDialog", "\\#HHHHHH; ", None))
-        self.btnElegirColorAgente.setToolTip(_translate("GWOpcionesDialog", "Seleccionar color de estado", None))
+        self.txtAgenteColor.setInputMask(
+            _translate("GWOpcionesDialog", "\\#HHHHHH; ", None)
+        )
+        self.btnElegirColorAgente.setToolTip(
+            _translate("GWOpcionesDialog", "Seleccionar color de estado", None)
+        )
         self.btnElegirColorAgente.setText(_translate("GWOpcionesDialog", "...", None))
         self.gbFormato.setTitle(_translate("GWOpcionesDialog", "Formato", None))
         self.label.setText(_translate("GWOpcionesDialog", "Tamaño:", None))
         self.gbRecorrido.setTitle(_translate("GWOpcionesDialog", "Recorrido", None))
-        self.gbRecShowActualState.setTitle(_translate("GWOpcionesDialog", "Mostrar estado actual", None))
-        self.optRecMostrarColorFondo.setText(_translate("GWOpcionesDialog", "Mostrar color de agente", None))
-        self.optRecMostrarIcono.setText(_translate("GWOpcionesDialog", "Mostrar ícono de agente", None))
+        self.gbRecShowActualState.setTitle(
+            _translate("GWOpcionesDialog", "Mostrar estado actual", None)
+        )
+        self.optRecMostrarColorFondo.setText(
+            _translate("GWOpcionesDialog", "Mostrar color de agente", None)
+        )
+        self.optRecMostrarIcono.setText(
+            _translate("GWOpcionesDialog", "Mostrar ícono de agente", None)
+        )
         self.btnAceptar.setText(_translate("GWOpcionesDialog", "&Aceptar", None))
-        self.gbEntrenamiento.setTitle(_translate("GWOpcionesDialog", "Entrenamiento", None))
-        self.gbEntShowActualState.setTitle(_translate("GWOpcionesDialog", "Mostrar estado actual", None))
-        self.optEntMostrarColorFondo.setText(_translate("GWOpcionesDialog", "Mostrar color de agente", None))
-        self.optEntMostrarIcono.setText(_translate("GWOpcionesDialog", "Mostrar ícono de agente", None))
+        self.gbEntrenamiento.setTitle(
+            _translate("GWOpcionesDialog", "Entrenamiento", None)
+        )
+        self.gbEntShowActualState.setTitle(
+            _translate("GWOpcionesDialog", "Mostrar estado actual", None)
+        )
+        self.optEntMostrarColorFondo.setText(
+            _translate("GWOpcionesDialog", "Mostrar color de agente", None)
+        )
+        self.optEntMostrarIcono.setText(
+            _translate("GWOpcionesDialog", "Mostrar ícono de agente", None)
+        )
+
 
 import recursos_rc

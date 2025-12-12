@@ -14,6 +14,7 @@ class GWGenRndEstadosDialog(QtGui.QDialog):
     """
     Clase de diálogo 'Opciones' heredada de QDialog.
     """
+
     def __init__(self, parent=None):
         """
         Constructor de la clase.
@@ -25,9 +26,11 @@ class GWGenRndEstadosDialog(QtGui.QDialog):
         self.GWGenRndEstadosD = Ui_GWGenRndEstadosDialog()
         self.GWGenRndEstadosD.setupUi(self)
 
-        self.setWindowFlags(QtCore.Qt.Dialog |
-                            QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowTitleHint)
+        self.setWindowFlags(
+            QtCore.Qt.Dialog
+            | QtCore.Qt.WindowSystemMenuHint
+            | QtCore.Qt.WindowTitleHint
+        )
 
         self.initialize_dialog()
 

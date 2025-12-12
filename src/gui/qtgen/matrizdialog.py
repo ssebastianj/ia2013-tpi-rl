@@ -10,16 +10,21 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_MatrizDialog:
     def setupUi(self, MatrizDialog):
@@ -32,7 +37,9 @@ class Ui_MatrizDialog:
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.tblMatriz = QtGui.QTableWidget(MatrizDialog)
         self.tblMatriz.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
-        self.tblMatriz.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.tblMatriz.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
         self.tblMatriz.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.tblMatriz.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.tblMatriz.setAutoScroll(False)
@@ -70,15 +77,21 @@ class Ui_MatrizDialog:
         self.btnCerrarDialogo.setDefault(True)
         self.btnCerrarDialogo.setObjectName(_fromUtf8("btnCerrarDialogo"))
         self.gridLayout.addWidget(self.btnCerrarDialogo, 1, 3, 1, 1)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtGui.QSpacerItem(
+            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum
+        )
         self.gridLayout.addItem(spacerItem, 1, 2, 1, 1)
         self.lblMatrizItemInfo = QtGui.QLabel(MatrizDialog)
         self.lblMatrizItemInfo.setObjectName(_fromUtf8("lblMatrizItemInfo"))
         self.gridLayout.addWidget(self.lblMatrizItemInfo, 1, 1, 1, 1)
-        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem1 = QtGui.QSpacerItem(
+            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum
+        )
         self.gridLayout.addItem(spacerItem1, 1, 0, 1, 1)
         self.line = QtGui.QFrame(MatrizDialog)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.line.sizePolicy().hasHeightForWidth())
@@ -90,7 +103,11 @@ class Ui_MatrizDialog:
         self.gridLayout_2.addLayout(self.gridLayout, 2, 0, 1, 2)
 
         self.retranslateUi(MatrizDialog)
-        QtCore.QObject.connect(self.btnCerrarDialogo, QtCore.SIGNAL(_fromUtf8("clicked()")), MatrizDialog.accept)
+        QtCore.QObject.connect(
+            self.btnCerrarDialogo,
+            QtCore.SIGNAL(_fromUtf8("clicked()")),
+            MatrizDialog.accept,
+        )
         QtCore.QMetaObject.connectSlotsByName(MatrizDialog)
 
     def retranslateUi(self, MatrizDialog):
@@ -98,4 +115,3 @@ class Ui_MatrizDialog:
         self.label_2.setText(_translate("MatrizDialog", "Estados", None))
         self.btnCerrarDialogo.setText(_translate("MatrizDialog", "&Cerrar", None))
         self.lblMatrizItemInfo.setText(_translate("MatrizDialog", "-", None))
-

@@ -11,8 +11,10 @@ from core.estado.estado import Estado, TIPOESTADO
 
 class GridWorld:
     """Clase GridWorld"""
-    def __init__(self, ancho, alto, tipos_estados, estados=None,
-                 excluir_tipos_vecinos=None):
+
+    def __init__(
+        self, ancho, alto, tipos_estados, estados=None, excluir_tipos_vecinos=None
+    ):
         """
         :param ancho: Ancho
         :param alto: Alto
@@ -45,12 +47,14 @@ class GridWorld:
             self._estado_final = None
 
             # Crear worker para inicializar estados
-            inicializar_estados_worker = threading.Thread(None,
-                                                          self._inicializar_estados_worker,
-                                                          "GWInicializarEstadosWorker",
-                                                          (default,),
-                                                          None,
-                                                          None)
+            inicializar_estados_worker = threading.Thread(
+                None,
+                self._inicializar_estados_worker,
+                "GWInicializarEstadosWorker",
+                (default,),
+                None,
+                None,
+            )
             inicializar_estados_worker.start()
             inicializar_estados_worker.join(0.05)
             self._logger.debug(inicializar_estados_worker)
@@ -252,9 +256,9 @@ class GridWorld:
         vecinos = []
         vappend = vecinos.append
 
-        for fila, columna in ((x + i, y + j)
-                              for i in (-1, 0, 1) for j in (-1, 0, 1)
-                              if i != 0 or j != 0):
+        for fila, columna in (
+            (x + i, y + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0
+        ):
             if (fila, columna) in coordenadas:
                 vappend((fila, columna))
         if iterate:
@@ -266,9 +270,12 @@ class GridWorld:
         """
         Devuelve un string representando los estados en una estructura tabular (matriz)
         """
-        return "\n".join(["| {} |".format(" | ".join(j))
-                          for j in [[i.tipo.letra for i in f]
-                                    for f in self._estados]])
+        return "\n".join(
+            [
+                "| {} |".format(" | ".join(j))
+                for j in [[i.tipo.letra for i in f] for f in self._estados]
+            ]
+        )
 
     def __len__(self):
         return len(self._estados)
@@ -281,12 +288,14 @@ class GridWorld:
         """
         if isinstance(self._tipos_estados, dict):
             # Crear worker para generar estados aleatorios
-            gen_estados_random_worker = threading.Thread(None,
-                                                         self._generar_estados_aleatorios_worker,
-                                                         "GWGenerarEstadosAleatoriosWorker",
-                                                         (incluir_final,),
-                                                         None,
-                                                         None)
+            gen_estados_random_worker = threading.Thread(
+                None,
+                self._generar_estados_aleatorios_worker,
+                "GWGenerarEstadosAleatoriosWorker",
+                (incluir_final,),
+                None,
+                None,
+            )
             gen_estados_random_worker.start()
             gen_estados_random_worker.join(0.05)
             self._logger.debug(gen_estados_random_worker)
@@ -299,9 +308,11 @@ class GridWorld:
         Crea la matriz de estados tipos de estados aleatorios.
         """
         # Inicializar lista de estados excluidos
-        excluir_estados_random = [TIPOESTADO.AGENTE,
-                                  TIPOESTADO.INICIAL,
-                                  TIPOESTADO.FINAL]
+        excluir_estados_random = [
+            TIPOESTADO.AGENTE,
+            TIPOESTADO.INICIAL,
+            TIPOESTADO.FINAL,
+        ]
 
         estado_final = None
 
@@ -443,10 +454,14 @@ class GridWorld:
     alto = property(get_alto, set_alto, None, "Alto del GridWorld")
     matriz_r = property(get_matriz_r, None, None, "Matriz R del GridWorld")
     estados = property(get_estados, set_estados, None, "Estados del GridWorld")
-    tipos_estados = property(get_tipos_estados, set_tipos_estados, None,
-                             "Tipos de estados del GridWorld")
-    tipos_vecinos_excluidos = property(get_tipos_vecinos_excluidos,
-                                       set_tipos_vecinos_excluidos, None,
-                                       "Tipos de vecinos excluidos al calcular los vecinos adyacentes")
+    tipos_estados = property(
+        get_tipos_estados, set_tipos_estados, None, "Tipos de estados del GridWorld"
+    )
+    tipos_vecinos_excluidos = property(
+        get_tipos_vecinos_excluidos,
+        set_tipos_vecinos_excluidos,
+        None,
+        "Tipos de vecinos excluidos al calcular los vecinos adyacentes",
+    )
     coordenadas = property(get_coordenadas, None, None, "Coordenadas")
     dimension = property(get_dimension, set_dimension, None, "Dimensión del GridWorld")

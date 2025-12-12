@@ -18,6 +18,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
     """
     Worker encargado de realizar el aprendizaje de Q-Learning.
     """
+
     def __init__(self, inp_queue, out_queue, error_q):
         """
         Inicializador del worker.
@@ -69,7 +70,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         """
         # En Windows se obtiene mayor precisión al utilizar clock()
         # En UNIX conviene utilizar time()
-        if sys.platform == 'win32':
+        if sys.platform == "win32":
             wtimer = time.clock
         else:
             wtimer = time.time
@@ -107,8 +108,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # --------------------------------------------------------------------
 
         # Cantidad máxima de iteraciones antes de emitir un aviso
-        cant_max_iter_general, stop_action = (self.cant_max_iter_gral_pack[0],
-                                              self.cant_max_iter_gral_pack[1])
+        cant_max_iter_general, stop_action = (
+            self.cant_max_iter_gral_pack[0],
+            self.cant_max_iter_gral_pack[1],
+        )
 
         # FIXME: Detector de bloqueos
         if detectar_bloqueo:
@@ -155,7 +158,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Cantidad de veces que se llegó al Estado Final
         cant_lleg_final = 0
         # Cantidad de episodios entre muestreo
-        inter_muestreo = int(cantidad_episodios / (cantidad_episodios ** 0.5))
+        inter_muestreo = int(cantidad_episodios / (cantidad_episodios**0.5))
         # Contador para determinar cuando hacer el muestreo
         cont_interv_muestreo = 0
         # Contador para indexar el arreglo de Numpy
@@ -176,7 +179,6 @@ class QLearningEntrenarWorker(multiprocessing.Process):
 
         # Ejecutar una cantidad dada de episodios o detener antes si se considera necesario
         while (not stoprequest_isset()) and (epnum <= cantidad_episodios):
-
             # Obtener coordenadas aleatorias y obtener Estado asociado
             x_act, y_act = generar_estado_aleatorio()
 
@@ -250,13 +252,16 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 matriz_q[fila_idx][columna_idx] = nuevo_q
                 # =============================================================
 
-                encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
-                                'NroEpisodio': epnum,
-                                'NroIteracion': cant_iteraciones,
-                                'ValorParametro': tecnica.valor_param_parcial,
-                                'ProcesoJoined': False,
-                                'ProcesoPaused': False
-                                })
+                encolar_salida(
+                    {
+                        "EstadoActual": (x_act + 1, y_act + 1),
+                        "NroEpisodio": epnum,
+                        "NroIteracion": cant_iteraciones,
+                        "ValorParametro": tecnica.valor_param_parcial,
+                        "ProcesoJoined": False,
+                        "ProcesoPaused": False,
+                    }
+                )
 
                 # ------------ Recompensas promedio ---------------------------
                 # Incrementar acceso y guardar recompensa inmediata para estadística
@@ -291,10 +296,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 if cant_max_iter_general == cant_iteraciones:
                     if stop_action == 0:
                         # Finalizar ejecución de proceso
-                        encolar_salida({'LoopAlarm': (True, 0)})
+                        encolar_salida({"LoopAlarm": (True, 0)})
                         self._stoprequest.set()
                     elif stop_action == 1:
-                        encolar_salida({'LoopAlarm': (True, 1)})
+                        encolar_salida({"LoopAlarm": (True, 1)})
                         # Continuar con el siguiente episodio
                         break
 
@@ -309,27 +314,33 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 # Comprobar si se solicitó pausar el procesamiento
                 if pauserequest_isset():
                     # Encolar datos de salida (Dump del contexto actual)
-                    encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
-                                    'NroEpisodio': epnum - 1,
-                                    'NroIteracion': cant_iteraciones,
-                                    'MatrizQ': matriz_q,
-                                    'ProcesoJoined': False,
-                                    'ProcesoPaused': True,
-                                    'ValorParametro': tecnica.valor_param_parcial,
-                                    'MatDiff': tmp_diff_mat,
-                                    })
+                    encolar_salida(
+                        {
+                            "EstadoActual": (x_act + 1, y_act + 1),
+                            "NroEpisodio": epnum - 1,
+                            "NroIteracion": cant_iteraciones,
+                            "MatrizQ": matriz_q,
+                            "ProcesoJoined": False,
+                            "ProcesoPaused": True,
+                            "ValorParametro": tecnica.valor_param_parcial,
+                            "MatDiff": tmp_diff_mat,
+                        }
+                    )
                     # Esperar 10 milisegundos
                     time.sleep(0.01)
                     # Reenviar datos de salida (Dump del contexto actual)
-                    encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
-                                    'NroEpisodio': epnum - 1,
-                                    'NroIteracion': cant_iteraciones,
-                                    'MatrizQ': matriz_q,
-                                    'ProcesoJoined': False,
-                                    'ProcesoPaused': True,
-                                    'ValorParametro': tecnica.valor_param_parcial,
-                                    'MatDiff': tmp_diff_mat,
-                                    })
+                    encolar_salida(
+                        {
+                            "EstadoActual": (x_act + 1, y_act + 1),
+                            "NroEpisodio": epnum - 1,
+                            "NroIteracion": cant_iteraciones,
+                            "MatrizQ": matriz_q,
+                            "ProcesoJoined": False,
+                            "ProcesoPaused": True,
+                            "ValorParametro": tecnica.valor_param_parcial,
+                            "MatDiff": tmp_diff_mat,
+                        }
+                    )
                     # Esperar 1 segundo
                     time.sleep(1)
                 # ==================== Fin de iteraciones ====================
@@ -352,37 +363,42 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             # ------------------------------------------------------------------
             if matdiff_active:
                 if calc_mat_diff_cont == 0:
-                        # Realizar resta de ambas matrices Q
-                        resta = numpy.subtract(matriz_q, matriz_anterior)
-                        # Calcular potencia
-                        potencia = numpy.power(resta, 2)
-                        # Calcular error medio cuadrático
-                        tmp_diff_mat = numpy.nansum(potencia) / numpy.sum(~numpy.isnan(potencia))
+                    # Realizar resta de ambas matrices Q
+                    resta = numpy.subtract(matriz_q, matriz_anterior)
+                    # Calcular potencia
+                    potencia = numpy.power(resta, 2)
+                    # Calcular error medio cuadrático
+                    tmp_diff_mat = numpy.nansum(potencia) / numpy.sum(
+                        ~numpy.isnan(potencia)
+                    )
 
-                        # Almacenar para estadística
-                        mat_diff_array[1].append(tmp_diff_mat)
+                    # Almacenar para estadística
+                    mat_diff_array[1].append(tmp_diff_mat)
 
-                        # Comprobar si la diferencia entre matrices supera la establecida
-                        # por el usuario
-                        if tmp_diff_mat < min_diff_mat:
-                            self._stoprequest.set()
+                    # Comprobar si la diferencia entre matrices supera la establecida
+                    # por el usuario
+                    if tmp_diff_mat < min_diff_mat:
+                        self._stoprequest.set()
 
-                        # Volver a cargar valor inicial a contador
-                        calc_mat_diff_cont = intervalo_diff_calc
+                    # Volver a cargar valor inicial a contador
+                    calc_mat_diff_cont = intervalo_diff_calc
                 elif calc_mat_diff_cont == 1:
                     # Resguardar Matriz Q creando una copia
                     matriz_anterior = numpy.copy(matriz_q)
 
                 # Poner en la cola de salida los resultados
-                encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
-                                'NroEpisodio': epnum,
-                                'NroIteracion': cant_iteraciones,
-                                'IteracionesExecTime': iter_exec_time,
-                                'ValorParametro': tecnica.valor_param_parcial,
-                                'ProcesoJoined': False,
-                                'ProcesoPaused': False,
-                                'MatDiff': tmp_diff_mat,
-                                })
+                encolar_salida(
+                    {
+                        "EstadoActual": (x_act + 1, y_act + 1),
+                        "NroEpisodio": epnum,
+                        "NroIteracion": cant_iteraciones,
+                        "IteracionesExecTime": iter_exec_time,
+                        "ValorParametro": tecnica.valor_param_parcial,
+                        "ProcesoJoined": False,
+                        "ProcesoPaused": False,
+                        "MatDiff": tmp_diff_mat,
+                    }
+                )
 
                 # Decrementar contador para saber si es necesario calcular
                 # la diferencia entre las matrices Q
@@ -405,8 +421,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
                 cont_interv_muestreo = 0
 
             # Recompensas promedio -------------------------------------------
-            rp_res_promedio[epnum - 1][0] = numpy.average(numpy.true_divide(rp_sum_recomp_accion,
-                                                                            rp_cont_acc_accion))
+            rp_res_promedio[epnum - 1][0] = numpy.average(
+                numpy.true_divide(rp_sum_recomp_accion, rp_cont_acc_accion)
+            )
 
             # Avanzar un episodio
             epnum += 1
@@ -416,27 +433,33 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             # Comprobar si se solicitó pausar el procesamiento
             if pauserequest_isset():
                 # Encolar datos de salida (Dump del contexto actual)
-                encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
-                                'NroEpisodio': epnum - 1,
-                                'NroIteracion': cant_iteraciones,
-                                'MatrizQ': matriz_q,
-                                'ProcesoJoined': False,
-                                'ProcesoPaused': True,
-                                'ValorParametro': tecnica.valor_param_parcial,
-                                'MatDiff': tmp_diff_mat,
-                                })
+                encolar_salida(
+                    {
+                        "EstadoActual": (x_act + 1, y_act + 1),
+                        "NroEpisodio": epnum - 1,
+                        "NroIteracion": cant_iteraciones,
+                        "MatrizQ": matriz_q,
+                        "ProcesoJoined": False,
+                        "ProcesoPaused": True,
+                        "ValorParametro": tecnica.valor_param_parcial,
+                        "MatDiff": tmp_diff_mat,
+                    }
+                )
                 # Esperar 10 milisegundos
                 time.sleep(0.01)
                 # Reenviar datos de salida (Dump del contexto actual)
-                encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
-                                'NroEpisodio': epnum - 1,
-                                'NroIteracion': cant_iteraciones,
-                                'MatrizQ': matriz_q,
-                                'ProcesoJoined': False,
-                                'ProcesoPaused': True,
-                                'ValorParametro': tecnica.valor_param_parcial,
-                                'MatDiff': tmp_diff_mat,
-                                })
+                encolar_salida(
+                    {
+                        "EstadoActual": (x_act + 1, y_act + 1),
+                        "NroEpisodio": epnum - 1,
+                        "NroIteracion": cant_iteraciones,
+                        "MatrizQ": matriz_q,
+                        "ProcesoJoined": False,
+                        "ProcesoPaused": True,
+                        "ValorParametro": tecnica.valor_param_parcial,
+                        "MatDiff": tmp_diff_mat,
+                    }
+                )
                 # Esperar 1 segundo
                 time.sleep(1)
             # ======================= Fin de episodios =======================
@@ -444,7 +467,10 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # FIXME: Estadística
         # Incluir estadísticas del último episodio
         try:
-            episodios_finalizados[contador_idx_arr - 1][0] = (epnum - 1, cant_lleg_final)
+            episodios_finalizados[contador_idx_arr - 1][0] = (
+                epnum - 1,
+                cant_lleg_final,
+            )
         except IndexError:
             pass
 
@@ -460,23 +486,26 @@ class QLearningEntrenarWorker(multiprocessing.Process):
             running_exec_time = 0
 
         # Poner en la cola de salida los resultados
-        encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
-                        'NroEpisodio': epnum - 1,
-                        'NroIteracion': cant_iteraciones,
-                        'MatrizQ': matriz_q,
-                        'EpisodiosExecTime': ep_exec_time,
-                        'IteracionesExecTime': iter_exec_time,
-                        'ProcesoJoined': True,
-                        'ProcesoPaused': False,
-                        'ValorParametro': tecnica.valor_param_parcial,
-                        'RunningExecTime': running_exec_time,
-                        'MatDiff': tmp_diff_mat,
-                        'MatRecompProm': rp_res_promedio,
-                        'EpFinalizados': episodios_finalizados,
-                        # 'ItersXEpisodio': iters_por_episodio,
-                        'MatDiffStat': mat_diff_array,
-                        'MatEstAcc': matriz_est_acc
-                        })
+        encolar_salida(
+            {
+                "EstadoActual": (x_act + 1, y_act + 1),
+                "NroEpisodio": epnum - 1,
+                "NroIteracion": cant_iteraciones,
+                "MatrizQ": matriz_q,
+                "EpisodiosExecTime": ep_exec_time,
+                "IteracionesExecTime": iter_exec_time,
+                "ProcesoJoined": True,
+                "ProcesoPaused": False,
+                "ValorParametro": tecnica.valor_param_parcial,
+                "RunningExecTime": running_exec_time,
+                "MatDiff": tmp_diff_mat,
+                "MatRecompProm": rp_res_promedio,
+                "EpFinalizados": episodios_finalizados,
+                # 'ItersXEpisodio': iters_por_episodio,
+                "MatDiffStat": mat_diff_array,
+                "MatEstAcc": matriz_est_acc,
+            }
+        )
 
         # Realizar tareas al finalizar
         self._on_end()
@@ -525,11 +554,13 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         self.detector_bloqueo = self.input_data[7]
         self.tipos_vec_excluidos = self.input_data[8]
         self.q_init_value_fn = self.input_data[9]
-        self.matdiff_status, self.min_diff_mat, self.interv_diff_calc = self.input_data[10]
+        self.matdiff_status, self.min_diff_mat, self.interv_diff_calc = self.input_data[
+            10
+        ]
         self.cant_max_iter_gral_pack = self.input_data[11]
-        self.tecnica = self.tecnica_pack[0](self.tecnica_pack[1],
-                                            self.tecnica_pack[2],
-                                            self.tecnica_pack[3])
+        self.tecnica = self.tecnica_pack[0](
+            self.tecnica_pack[1], self.tecnica_pack[2], self.tecnica_pack[3]
+        )
 
         # Inicializar matrices de vecinos, Q y R
         self.matriz_est_acc, self.matriz_r, self.matriz_q = self.get_matrixes()
@@ -550,7 +581,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         # Activar flag indicando de que se solicitó detener el proceso
         self._stoprequest.set()
         # Notificar a proceso padre
-        self.encolar_salida({'Joined': True})
+        self.encolar_salida({"Joined": True})
         super().join(timeout)
 
     def _crear_cont_ref(self, tipos_vec_exc):
@@ -598,7 +629,7 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         test_2 = len(self._visitados_1) == len(self._visitados_2)
 
         if test_1 or test_2:
-            self._out_queue.put({'LoopAlarm': (True, 2)})
+            self._out_queue.put({"LoopAlarm": (True, 2)})
 
     def get_matrixes(self, include_vecinos=False):
         """
@@ -686,9 +717,9 @@ class QLearningEntrenarWorker(multiprocessing.Process):
         vecinos = []
         vappend = vecinos.append
 
-        for fila, columna in ((x + i, y + j)
-                              for i in (-1, 0, 1) for j in (-1, 0, 1)
-                              if i != 0 or j != 0):
+        for fila, columna in (
+            (x + i, y + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0
+        ):
             if (fila, columna) in coordenadas:
                 vappend((fila, columna))
         if iterate:
@@ -728,6 +759,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
     Worker encargado de recorrer el GridWorld utilizando la matriz Q para seguir
     el mejor camino hasta el Estado Final.
     """
+
     def __init__(self, inp_queue, out_queue, error_queue):
         """
         Inicializador de QLearningRecorrerWorker.
@@ -764,7 +796,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         Método sobrecargado de clase padre Thread. Ejecuta el algoritmo de
         recorrido de Q-Learning.
         """
-        if sys.platform == 'win32':
+        if sys.platform == "win32":
             wtimer = time.clock
         else:
             wtimer = time.time
@@ -824,10 +856,14 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         cant_iteraciones = 1
 
         while (not stoprequest_isset()) and (tipo_estado != TIPOESTADO.FINAL):
-            encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
-                            'ProcesoJoined': False,
-                            'ProcesoPaused': False,
-                            'NroIteracion': cant_iteraciones})
+            encolar_salida(
+                {
+                    "EstadoActual": (x_act + 1, y_act + 1),
+                    "ProcesoJoined": False,
+                    "ProcesoPaused": False,
+                    "NroIteracion": cant_iteraciones,
+                }
+            )
 
             # Coordenada Y de la matriz (fila)
             # Para acceder a un elemento de la matriz Q o R se utiliza un esquema
@@ -875,10 +911,14 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             # Comprobar si se solicitó pausar el procesamiento
             if pauserequest_isset():
                 # Encolar datos de salida (Dump del contexto actual)
-                encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
-                                'ProcesoJoined': False,
-                                'ProcesoPaused': True,
-                                'NroIteracion': cant_iteraciones})
+                encolar_salida(
+                    {
+                        "EstadoActual": (x_act + 1, y_act + 1),
+                        "ProcesoJoined": False,
+                        "ProcesoPaused": True,
+                        "NroIteracion": cant_iteraciones,
+                    }
+                )
 
                 # Esperar 1 segundo
                 time.sleep(1)
@@ -896,14 +936,17 @@ class QLearningRecorrerWorker(multiprocessing.Process):
             running_exec_time = 0
 
         # Poner en la cola de salida los resultados
-        encolar_salida({'EstadoActual': (x_act + 1, y_act + 1),
-                        'CaminoRecorrido': camino_optimo,
-                        'ValoresQCR': q_values_co,
-                        'RecorridoExecTime': rec_exec_time,
-                        'ProcesoJoined': False,
-                        'ProcesoPaused': False,
-                        'RunningExecTime': running_exec_time
-                        })
+        encolar_salida(
+            {
+                "EstadoActual": (x_act + 1, y_act + 1),
+                "CaminoRecorrido": camino_optimo,
+                "ValoresQCR": q_values_co,
+                "RecorridoExecTime": rec_exec_time,
+                "ProcesoJoined": False,
+                "ProcesoPaused": False,
+                "RunningExecTime": running_exec_time,
+            }
+        )
 
         # Realizar tareas al finalizar
         self._on_end()
@@ -915,7 +958,7 @@ class QLearningRecorrerWorker(multiprocessing.Process):
         :param timeout: Tiempo en milisegundos de espera.
         """
         self._stoprequest.set()
-        self.encolar_salida({'Joined': True})
+        self.encolar_salida({"Joined": True})
         super().join(timeout)
 
     def encolar_salida(self, salida):

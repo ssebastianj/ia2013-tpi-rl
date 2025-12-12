@@ -14,6 +14,7 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
     Worker encargado de generar el gráfico correspondiente a la cantidad de
     Episodios Exitosos por cada intervalo de muestreo.
     """
+
     def __init__(self, input_data):
         """
         Inicializador.
@@ -41,10 +42,12 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
         try:
             xy_values = self.input_data[1]
 
-            self.x_values = [pair[0][0] for pair in xy_values
-                             if not numpy.equal(pair, None)]
-            self.y_values = [pair[0][1] for pair in xy_values
-                             if not numpy.equal(pair, None)]
+            self.x_values = [
+                pair[0][0] for pair in xy_values if not numpy.equal(pair, None)
+            ]
+            self.y_values = [
+                pair[0][1] for pair in xy_values if not numpy.equal(pair, None)
+            ]
 
             figure = plt.gcf()
             figure.canvas.set_window_title("Porcentaje de episodios finalizados")
@@ -78,14 +81,12 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
                 str_limit_iter = ""
 
             # Mostrar parámetros de entrenamiento
-            plt.text(plt.axis()[0] + 5,
-                     plt.axis()[1] - 10,
-                     "{}\n{} ({})\n".format(str_gamma,
-                                               str_tecnica,
-                                               str_parametro
-                                              ),
-                     fontdict={'fontsize': 12}
-                     )
+            plt.text(
+                plt.axis()[0] + 5,
+                plt.axis()[1] - 10,
+                "{}\n{} ({})\n".format(str_gamma, str_tecnica, str_parametro),
+                fontdict={"fontsize": 12},
+            )
 
         except TypeError:
             raise TypeError
@@ -120,16 +121,16 @@ class GraphSucessfulEpisodesWorker(QtCore.QObject):
         :param append: Booleano que establece si se agregará la información exportada al final de un archivo (si se utiliza la misma ruta de archivo)
         """
 
-        mode = 'ab' if append else 'wb'
+        mode = "ab" if append else "wb"
 
         with open(filepath, mode) as csvf:
-            csv_writer = csv.writer(csvf, dialect='excel', delimiter=';')
+            csv_writer = csv.writer(csvf, dialect="excel", delimiter=";")
 
-            csv_writer.writerow(['Episodios', 'Episodios Exitosos'])
+            csv_writer.writerow(["Episodios", "Episodios Exitosos"])
             for x, y in zip(self.x_values, self.y_values):
                 x = "{}".format(decimal.Decimal(x))
                 y = "{}".format(decimal.Decimal(y))
-                y = y.replace('.', ',')
+                y = y.replace(".", ",")
                 csv_writer.writerow([x, y])
 
             csv_writer.writerow([])

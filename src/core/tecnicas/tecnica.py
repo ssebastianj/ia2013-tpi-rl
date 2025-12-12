@@ -3,6 +3,7 @@
 
 class QLTecnica:
     """Técnica para Q-Learning"""
+
     def __init__(self, parametro=None, paso_decremento=0, intervalo_decremento=0):
         super().__init__()
         self._paso_decremento = paso_decremento
@@ -68,29 +69,34 @@ class QLTecnica:
     def __str__(self, *args, **kwargs):
         return self.__class__.__name__
 
-    paso_decremento = property(get_paso_decremento,
-                               set_paso_decremento,
-                               None,
-                               "Valor de decremento")
+    paso_decremento = property(
+        get_paso_decremento, set_paso_decremento, None, "Valor de decremento"
+    )
 
-    intervalo_decremento = property(get_intervalo_decremento,
-                                    set_intervalo_decremento,
-                                    None,
-                                    "Número entero indicando cada cuantas \
+    intervalo_decremento = property(
+        get_intervalo_decremento,
+        set_intervalo_decremento,
+        None,
+        "Número entero indicando cada cuantas \
                                     iteraciones decrementar el parámetro \
                                     utilizando un \
-                                    valor de paso dado")
+                                    valor de paso dado",
+    )
 
-    valor_param_general = property(get_valor_param_general,
-                                   set_valor_param_general,
-                                   None,
-                                   "Número indicando el valor del \
-                                   parámetro general")
+    valor_param_general = property(
+        get_valor_param_general,
+        set_valor_param_general,
+        None,
+        "Número indicando el valor del \
+                                   parámetro general",
+    )
 
-    valor_param_parcial = property(_get_valor_param_parcial,
-                                   None,
-                                   None,
-                                   "Número indicando el valor del \
-                                   parámetro parcial")
+    valor_param_parcial = property(
+        _get_valor_param_parcial,
+        None,
+        None,
+        "Número indicando el valor del \
+                                   parámetro parcial",
+    )
 
     nombre = property(get_name, set_name, None, "Nombre de la técnica")

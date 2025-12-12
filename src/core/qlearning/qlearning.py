@@ -14,9 +14,19 @@ from core.tecnicas.tecnica import QLTecnica
 
 class QLearning:
     """Algoritmo QLearning"""
-    def __init__(self, gridworld, gamma, tecnica, episodes, iterations_pack,
-                 init_value_fn, matriz_diff_pack, cant_max_iter_gral_pack=(sys.maxint, 1),
-                 excluir_tipos_vecinos=None):
+
+    def __init__(
+        self,
+        gridworld,
+        gamma,
+        tecnica,
+        episodes,
+        iterations_pack,
+        init_value_fn,
+        matriz_diff_pack,
+        cant_max_iter_gral_pack=(sys.maxint, 1),
+        excluir_tipos_vecinos=None,
+    ):
         """
         Inicializador de QLearning.
 
@@ -62,28 +72,30 @@ class QLearning:
         inp_queue = multiprocessing.Queue()
 
         # Encolar Matriz R, Matriz Q, Número de episodios, Parámetro Gamma
-        inp_queue.put((self._gridworld.estados,
-                       self._gridworld.coordenadas,
-                       self._gamma,
-                       self._episodes,
-                       self._iterations_pack,
-                       self._tecnica_pack,
-                       (self._gridworld.alto, self._gridworld.ancho),
-                       False,
-                       self._gridworld.tipos_vecinos_excluidos,
-                       self._init_value_fn,
-                       self._mat_diff_pack,
-                       self._cant_max_iter_gral_pack
-                       ))
+        inp_queue.put(
+            (
+                self._gridworld.estados,
+                self._gridworld.coordenadas,
+                self._gamma,
+                self._episodes,
+                self._iterations_pack,
+                self._tecnica_pack,
+                (self._gridworld.alto, self._gridworld.ancho),
+                False,
+                self._gridworld.tipos_vecinos_excluidos,
+                self._init_value_fn,
+                self._mat_diff_pack,
+                self._cant_max_iter_gral_pack,
+            )
+        )
 
         qlearning_entrenar_worker = None
 
         try:
             # Crear worker de Entrenamiento
-            qlearning_entrenar_worker = QLearningEntrenarWorker(inp_queue,
-                                                                out_queue,
-                                                                error_queue
-                                                                )
+            qlearning_entrenar_worker = QLearningEntrenarWorker(
+                inp_queue, out_queue, error_queue
+            )
             qlearning_entrenar_worker.daemon = True
             qlearning_entrenar_worker.start()
         except multiprocessing.ProcessError as pe:
@@ -109,10 +121,9 @@ class QLearning:
 
         try:
             # Crear worker de Explotación
-            qlearning_recorrer_worker = QLearningRecorrerWorker(inp_queue,
-                                                                out_queue,
-                                                                error_queue
-                                                                )
+            qlearning_recorrer_worker = QLearningRecorrerWorker(
+                inp_queue, out_queue, error_queue
+            )
             qlearning_recorrer_worker.daemon = True
             qlearning_recorrer_worker.start()
         except multiprocessing.ProcessError as pe:
@@ -274,9 +285,9 @@ class QLearning:
         vecinos = []
         vappend = vecinos.append
 
-        for fila, columna in ((x + i, y + j)
-                              for i in (-1, 0, 1) for j in (-1, 0, 1)
-                              if i != 0 or j != 0):
+        for fila, columna in (
+            (x + i, y + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0
+        ):
             if (fila, columna) in coordenadas:
                 vappend((fila, columna))
         if iterate:
@@ -289,9 +300,12 @@ class QLearning:
         Devuelve un string representando la matriz Q en una estructura tabular.
         """
         matriz_q = self.get_matriz_q()
-        return "\n".join(["| {} |".format(" | ".join(j))
-                          for j in [[str(i) for i in f]
-                                    for f in matriz_q]])
+        return "\n".join(
+            [
+                "| {} |".format(" | ".join(j))
+                for j in [[str(i) for i in f] for f in matriz_q]
+            ]
+        )
 
     gamma = property(get_gamma, set_gamma, None, "Propiedad Gamma de QLearning")
     tecnica = property(get_tecnica, set_tecnica, None, "Propiedad Técnica de QLearning")

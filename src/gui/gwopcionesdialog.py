@@ -16,6 +16,7 @@ class GWOpcionesDialog(QtGui.QDialog):
     """
     Clase de diálogo 'Opciones' heredada de QDialog.
     """
+
     def __init__(self, parent=None, opciones=None):
         """
         Constructor de la clase.
@@ -27,9 +28,11 @@ class GWOpcionesDialog(QtGui.QDialog):
         self.GWOpcionesD = Ui_GWOpcionesDialog()
         self.GWOpcionesD.setupUi(self)
 
-        self.setWindowFlags(QtCore.Qt.Dialog |
-                            QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowTitleHint)
+        self.setWindowFlags(
+            QtCore.Qt.Dialog
+            | QtCore.Qt.WindowSystemMenuHint
+            | QtCore.Qt.WindowTitleHint
+        )
 
         self._opciones = opciones
         self._init_vars()
@@ -158,14 +161,20 @@ class GWOpcionesDialog(QtGui.QDialog):
         """
         Establece y conecta las señales de Qt entre los diversos widgets.
         """
-        self.GWOpcionesD.sbExcelenteRecompensa.valueChanged.connect(self.update_recom_final)
+        self.GWOpcionesD.sbExcelenteRecompensa.valueChanged.connect(
+            self.update_recom_final
+        )
         self.GWOpcionesD.sbBuenoRecompensa.valueChanged.connect(self.update_recom_final)
         self.GWOpcionesD.sbMaloRecompensa.valueChanged.connect(self.update_recom_final)
-        self.GWOpcionesD.sbNeutroRecompensa.valueChanged.connect(self.update_recom_final)
+        self.GWOpcionesD.sbNeutroRecompensa.valueChanged.connect(
+            self.update_recom_final
+        )
 
         clr_agente = lambda: self.set_color_estado(self.GWOpcionesD.txtAgenteColor)
         clr_bueno = lambda: self.set_color_estado(self.GWOpcionesD.txtBuenoColor)
-        clr_excelente = lambda: self.set_color_estado(self.GWOpcionesD.txtExcelenteColor)
+        clr_excelente = lambda: self.set_color_estado(
+            self.GWOpcionesD.txtExcelenteColor
+        )
         clr_malo = lambda: self.set_color_estado(self.GWOpcionesD.txtMaloColor)
         clr_inicial = lambda: self.set_color_estado(self.GWOpcionesD.txtInicialColor)
         clr_final = lambda: self.set_color_estado(self.GWOpcionesD.txtFinalColor)
@@ -188,10 +197,14 @@ class GWOpcionesDialog(QtGui.QDialog):
 
         :param valor: Valor númerico del control seleccionado.
         """
-        self.recomp_max = max([self.GWOpcionesD.sbExcelenteRecompensa.value(),
-                               self.GWOpcionesD.sbBuenoRecompensa.value(),
-                               self.GWOpcionesD.sbMaloRecompensa.value(),
-                               self.GWOpcionesD.sbNeutroRecompensa.value()])
+        self.recomp_max = max(
+            [
+                self.GWOpcionesD.sbExcelenteRecompensa.value(),
+                self.GWOpcionesD.sbBuenoRecompensa.value(),
+                self.GWOpcionesD.sbMaloRecompensa.value(),
+                self.GWOpcionesD.sbNeutroRecompensa.value(),
+            ]
+        )
         self.recomp_max += 100
 
         if self._opciones["gw"]["entrenamiento"]["recompfinalauto"]:
@@ -242,12 +255,14 @@ class GWOpcionesDialog(QtGui.QDialog):
         color_agente = self.GWOpcionesD.txtAgenteColor.text()
         icono_agente = QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))
 
-        tipos_estados[TIPOESTADO.AGENTE] = TipoEstado(TIPOESTADO.AGENTE,
-                                                      recompensa_agente,
-                                                      nombre_agente,
-                                                      letra_agente,
-                                                      color_agente,
-                                                      icono_agente)
+        tipos_estados[TIPOESTADO.AGENTE] = TipoEstado(
+            TIPOESTADO.AGENTE,
+            recompensa_agente,
+            nombre_agente,
+            letra_agente,
+            color_agente,
+            icono_agente,
+        )
 
         # Estado Excelente
         recompensa_excelente = self.GWOpcionesD.sbExcelenteRecompensa.value()
@@ -256,12 +271,14 @@ class GWOpcionesDialog(QtGui.QDialog):
         color_excelente = self.GWOpcionesD.txtExcelenteColor.text()
         icono_excelente = None
 
-        tipos_estados[TIPOESTADO.EXCELENTE] = TipoEstado(TIPOESTADO.EXCELENTE,
-                                                         recompensa_excelente,
-                                                         nombre_excelente,
-                                                         letra_excelente,
-                                                         color_excelente,
-                                                         icono_excelente)
+        tipos_estados[TIPOESTADO.EXCELENTE] = TipoEstado(
+            TIPOESTADO.EXCELENTE,
+            recompensa_excelente,
+            nombre_excelente,
+            letra_excelente,
+            color_excelente,
+            icono_excelente,
+        )
 
         # Estado Bueno
         recompensa_bueno = self.GWOpcionesD.sbBuenoRecompensa.value()
@@ -270,12 +287,14 @@ class GWOpcionesDialog(QtGui.QDialog):
         color_bueno = self.GWOpcionesD.txtBuenoColor.text()
         icono_bueno = None
 
-        tipos_estados[TIPOESTADO.BUENO] = TipoEstado(TIPOESTADO.BUENO,
-                                                    recompensa_bueno,
-                                                    nombre_bueno,
-                                                    letra_bueno,
-                                                    color_bueno,
-                                                    icono_bueno)
+        tipos_estados[TIPOESTADO.BUENO] = TipoEstado(
+            TIPOESTADO.BUENO,
+            recompensa_bueno,
+            nombre_bueno,
+            letra_bueno,
+            color_bueno,
+            icono_bueno,
+        )
 
         # Estado Malo
         recompensa_malo = self.GWOpcionesD.sbMaloRecompensa.value()
@@ -284,12 +303,14 @@ class GWOpcionesDialog(QtGui.QDialog):
         color_malo = self.GWOpcionesD.txtMaloColor.text()
         icono_malo = None
 
-        tipos_estados[TIPOESTADO.MALO] = TipoEstado(TIPOESTADO.MALO,
-                                                    recompensa_malo,
-                                                    nombre_malo,
-                                                    letra_malo,
-                                                    color_malo,
-                                                    icono_malo)
+        tipos_estados[TIPOESTADO.MALO] = TipoEstado(
+            TIPOESTADO.MALO,
+            recompensa_malo,
+            nombre_malo,
+            letra_malo,
+            color_malo,
+            icono_malo,
+        )
 
         # Estado Neutro
         recompensa_neutro = self.GWOpcionesD.sbNeutroRecompensa.value()
@@ -298,12 +319,14 @@ class GWOpcionesDialog(QtGui.QDialog):
         color_neutro = self.GWOpcionesD.txtNeutroColor.text()
         icono_neutro = None
 
-        tipos_estados[TIPOESTADO.NEUTRO] = TipoEstado(TIPOESTADO.NEUTRO,
-                                                      recompensa_neutro,
-                                                      nombre_neutro,
-                                                      letra_neutro,
-                                                      color_neutro,
-                                                      icono_neutro)
+        tipos_estados[TIPOESTADO.NEUTRO] = TipoEstado(
+            TIPOESTADO.NEUTRO,
+            recompensa_neutro,
+            nombre_neutro,
+            letra_neutro,
+            color_neutro,
+            icono_neutro,
+        )
 
         # Estado Pared
         recompensa_pared = None
@@ -312,12 +335,14 @@ class GWOpcionesDialog(QtGui.QDialog):
         color_pared = self.GWOpcionesD.txtParedColor.text()
         icono_pared = None
 
-        tipos_estados[TIPOESTADO.PARED] = TipoEstado(TIPOESTADO.PARED,
-                                                           recompensa_pared,
-                                                           nombre_pared,
-                                                           letra_pared,
-                                                           color_pared,
-                                                           icono_pared)
+        tipos_estados[TIPOESTADO.PARED] = TipoEstado(
+            TIPOESTADO.PARED,
+            recompensa_pared,
+            nombre_pared,
+            letra_pared,
+            color_pared,
+            icono_pared,
+        )
 
         # Estado Inicial
         recompensa_inicial = None
@@ -326,12 +351,14 @@ class GWOpcionesDialog(QtGui.QDialog):
         color_inicial = self.GWOpcionesD.txtInicialColor.text()
         icono_inicial = None
 
-        tipos_estados[TIPOESTADO.INICIAL] = TipoEstado(TIPOESTADO.INICIAL,
-                                                       recompensa_inicial,
-                                                       nombre_inicial,
-                                                       letra_inicial,
-                                                       color_inicial,
-                                                       icono_inicial)
+        tipos_estados[TIPOESTADO.INICIAL] = TipoEstado(
+            TIPOESTADO.INICIAL,
+            recompensa_inicial,
+            nombre_inicial,
+            letra_inicial,
+            color_inicial,
+            icono_inicial,
+        )
 
         # Estado Final
         recompensa_final = self.GWOpcionesD.sbFinalRecompensa.value()
@@ -340,12 +367,14 @@ class GWOpcionesDialog(QtGui.QDialog):
         color_final = self.GWOpcionesD.txtFinalColor.text()
         icono_final = None
 
-        tipos_estados[TIPOESTADO.FINAL] = TipoEstado(TIPOESTADO.FINAL,
-                                                           recompensa_final,
-                                                           nombre_final,
-                                                           letra_final,
-                                                           color_final,
-                                                           icono_final)
+        tipos_estados[TIPOESTADO.FINAL] = TipoEstado(
+            TIPOESTADO.FINAL,
+            recompensa_final,
+            nombre_final,
+            letra_final,
+            color_final,
+            icono_final,
+        )
 
         self.tipos_estados = tipos_estados
 

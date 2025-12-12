@@ -7,6 +7,7 @@ from core.tecnicas.tecnica import QLTecnica
 
 class Aleatorio(QLTecnica):
     """Técnica Aleatorio"""
+
     def __init__(self, parametro=None, paso_decremento=0, intervalo_decremento=0):
         """
         Inicializador

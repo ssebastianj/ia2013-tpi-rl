@@ -10,23 +10,32 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_MainWindow:
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(907, 817)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/logos/LogoUTN_2.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(
+            QtGui.QPixmap(_fromUtf8(":/logos/LogoUTN_2.png")),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         MainWindow.setWindowIcon(icon)
         self.centralWidget = QtGui.QWidget(MainWindow)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
@@ -41,7 +50,12 @@ class Ui_MainWindow:
         self.tblGridWorld.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.tblGridWorld.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.tblGridWorld.setAutoScroll(False)
-        self.tblGridWorld.setEditTriggers(QtGui.QAbstractItemView.AnyKeyPressed|QtGui.QAbstractItemView.DoubleClicked|QtGui.QAbstractItemView.EditKeyPressed|QtGui.QAbstractItemView.SelectedClicked)
+        self.tblGridWorld.setEditTriggers(
+            QtGui.QAbstractItemView.AnyKeyPressed
+            | QtGui.QAbstractItemView.DoubleClicked
+            | QtGui.QAbstractItemView.EditKeyPressed
+            | QtGui.QAbstractItemView.SelectedClicked
+        )
         self.tblGridWorld.setTabKeyNavigation(False)
         self.tblGridWorld.setProperty("showDropIndicator", False)
         self.tblGridWorld.setDragDropOverwriteMode(False)
@@ -56,7 +70,9 @@ class Ui_MainWindow:
         self.statusBar.setObjectName(_fromUtf8("statusBar"))
         MainWindow.setStatusBar(self.statusBar)
         self.dwGridWorld = QtGui.QDockWidget(MainWindow)
-        self.dwGridWorld.setFeatures(QtGui.QDockWidget.DockWidgetFloatable|QtGui.QDockWidget.DockWidgetMovable)
+        self.dwGridWorld.setFeatures(
+            QtGui.QDockWidget.DockWidgetFloatable | QtGui.QDockWidget.DockWidgetMovable
+        )
         self.dwGridWorld.setObjectName(_fromUtf8("dwGridWorld"))
         self.dockWidgetContents_5 = QtGui.QWidget()
         self.dockWidgetContents_5.setObjectName(_fromUtf8("dockWidgetContents_5"))
@@ -69,7 +85,7 @@ class Ui_MainWindow:
         self.gridLayout_29.setContentsMargins(-1, -1, -1, 6)
         self.gridLayout_29.setObjectName(_fromUtf8("gridLayout_29"))
         self.groupBox_8 = QtGui.QGroupBox(self.gbGridWorld)
-        self.groupBox_8.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.groupBox_8.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.groupBox_8.setFlat(True)
         self.groupBox_8.setObjectName(_fromUtf8("groupBox_8"))
         self.gridLayout_30 = QtGui.QGridLayout(self.groupBox_8)
@@ -79,21 +95,31 @@ class Ui_MainWindow:
         self.gridLayout_31.setObjectName(_fromUtf8("gridLayout_31"))
         self.btnInicializarGW = QtGui.QPushButton(self.groupBox_8)
         self.btnInicializarGW.setMaximumSize(QtCore.QSize(90, 22))
-        self.btnInicializarGW.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.btnInicializarGW.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
         self.btnInicializarGW.setObjectName(_fromUtf8("btnInicializarGW"))
         self.gridLayout_31.addWidget(self.btnInicializarGW, 0, 0, 1, 1)
         self.btnGWGenerarEstados = QtGui.QPushButton(self.groupBox_8)
         self.btnGWGenerarEstados.setMaximumSize(QtCore.QSize(16777215, 22))
-        self.btnGWGenerarEstados.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.btnGWGenerarEstados.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
         self.btnGWGenerarEstados.setObjectName(_fromUtf8("btnGWGenerarEstados"))
         self.gridLayout_31.addWidget(self.btnGWGenerarEstados, 0, 1, 1, 1)
         self.btnGWOpciones = QtGui.QToolButton(self.groupBox_8)
         self.btnGWOpciones.setMinimumSize(QtCore.QSize(25, 0))
         self.btnGWOpciones.setMaximumSize(QtCore.QSize(16777215, 22))
-        self.btnGWOpciones.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.btnGWOpciones.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
         self.btnGWOpciones.setText(_fromUtf8(""))
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Configurar.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(
+            QtGui.QPixmap(_fromUtf8(":/iconos/Configurar.png")),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         self.btnGWOpciones.setIcon(icon1)
         self.btnGWOpciones.setObjectName(_fromUtf8("btnGWOpciones"))
         self.gridLayout_31.addWidget(self.btnGWOpciones, 0, 3, 1, 1)
@@ -101,13 +127,19 @@ class Ui_MainWindow:
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btnGenEstRndRapida.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.btnGenEstRndRapida.sizePolicy().hasHeightForWidth()
+        )
         self.btnGenEstRndRapida.setSizePolicy(sizePolicy)
         self.btnGenEstRndRapida.setMinimumSize(QtCore.QSize(25, 0))
         self.btnGenEstRndRapida.setMaximumSize(QtCore.QSize(16777215, 22))
         self.btnGenEstRndRapida.setText(_fromUtf8(""))
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Random.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(
+            QtGui.QPixmap(_fromUtf8(":/iconos/Random.png")),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         self.btnGenEstRndRapida.setIcon(icon2)
         self.btnGenEstRndRapida.setObjectName(_fromUtf8("btnGenEstRndRapida"))
         self.gridLayout_31.addWidget(self.btnGenEstRndRapida, 0, 2, 1, 1)
@@ -123,13 +155,19 @@ class Ui_MainWindow:
         self.horizontalLayout_9.addWidget(self.cbGWDimension)
         self.gridLayout_29.addLayout(self.horizontalLayout_9, 0, 0, 1, 1)
         self.gridLayout_32.addWidget(self.gbGridWorld, 0, 0, 1, 1)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.gridLayout_32.addItem(spacerItem, 1, 0, 1, 1)
         self.dwGridWorld.setWidget(self.dockWidgetContents_5)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dwGridWorld)
         self.dwQLearning = QtGui.QDockWidget(MainWindow)
-        self.dwQLearning.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
-        self.dwQLearning.setFeatures(QtGui.QDockWidget.DockWidgetFloatable|QtGui.QDockWidget.DockWidgetMovable)
+        self.dwQLearning.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
+        self.dwQLearning.setFeatures(
+            QtGui.QDockWidget.DockWidgetFloatable | QtGui.QDockWidget.DockWidgetMovable
+        )
         self.dwQLearning.setObjectName(_fromUtf8("dwQLearning"))
         self.dockWidgetContents = QtGui.QWidget()
         self.dockWidgetContents.setObjectName(_fromUtf8("dockWidgetContents"))
@@ -150,7 +188,7 @@ class Ui_MainWindow:
         self.gridLayout_17.setVerticalSpacing(4)
         self.gridLayout_17.setObjectName(_fromUtf8("gridLayout_17"))
         self.groupBox_6 = QtGui.QGroupBox(self.gbQLearning)
-        self.groupBox_6.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.groupBox_6.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.groupBox_6.setFlat(True)
         self.groupBox_6.setObjectName(_fromUtf8("groupBox_6"))
         self.gridLayout_12 = QtGui.QGridLayout(self.groupBox_6)
@@ -167,10 +205,14 @@ class Ui_MainWindow:
         self.gridLayout_23 = QtGui.QGridLayout()
         self.gridLayout_23.setVerticalSpacing(4)
         self.gridLayout_23.setObjectName(_fromUtf8("gridLayout_23"))
-        spacerItem1 = QtGui.QSpacerItem(20, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        spacerItem1 = QtGui.QSpacerItem(
+            20, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum
+        )
         self.gridLayout_23.addItem(spacerItem1, 2, 0, 1, 1)
         self.lblMQFormula = QtGui.QLabel(self.gbQLMatrizQ)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblMQFormula.sizePolicy().hasHeightForWidth())
@@ -196,7 +238,9 @@ class Ui_MainWindow:
         self.gridLayout_2.setContentsMargins(-1, 4, 2, -1)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.label_3 = QtGui.QLabel(self.groupBox_6)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
@@ -204,7 +248,9 @@ class Ui_MainWindow:
         self.label_3.setMinimumSize(QtCore.QSize(98, 0))
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.gridLayout_2.addWidget(self.label_3, 1, 1, 1, 1)
-        spacerItem2 = QtGui.QSpacerItem(12, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        spacerItem2 = QtGui.QSpacerItem(
+            12, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum
+        )
         self.gridLayout_2.addItem(spacerItem2, 1, 0, 1, 1)
         self.sbCantEpisodiosDec = QtGui.QSpinBox(self.groupBox_6)
         self.sbCantEpisodiosDec.setMinimum(1)
@@ -212,7 +258,9 @@ class Ui_MainWindow:
         self.sbCantEpisodiosDec.setObjectName(_fromUtf8("sbCantEpisodiosDec"))
         self.gridLayout_2.addWidget(self.sbCantEpisodiosDec, 1, 2, 1, 1)
         self.label_5 = QtGui.QLabel(self.groupBox_6)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_5.sizePolicy().hasHeightForWidth())
@@ -233,20 +281,28 @@ class Ui_MainWindow:
         self.horizontalLayout_3.addWidget(self.sbDecrementoVal)
         self.gridLayout_2.addLayout(self.horizontalLayout_3, 2, 2, 1, 1)
         self.chkDecrementarParam = QtGui.QCheckBox(self.groupBox_6)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.chkDecrementarParam.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.chkDecrementarParam.sizePolicy().hasHeightForWidth()
+        )
         self.chkDecrementarParam.setSizePolicy(sizePolicy)
         self.chkDecrementarParam.setObjectName(_fromUtf8("chkDecrementarParam"))
         self.gridLayout_2.addWidget(self.chkDecrementarParam, 0, 0, 1, 3)
-        spacerItem3 = QtGui.QSpacerItem(12, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        spacerItem3 = QtGui.QSpacerItem(
+            12, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum
+        )
         self.gridLayout_2.addItem(spacerItem3, 2, 0, 1, 1)
         self.gridLayout_12.addLayout(self.gridLayout_2, 1, 0, 1, 1)
         self.gridLayout_4 = QtGui.QGridLayout()
         self.gridLayout_4.setObjectName(_fromUtf8("gridLayout_4"))
         self.lblTau = QtGui.QLabel(self.groupBox_6)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblTau.sizePolicy().hasHeightForWidth())
@@ -259,7 +315,9 @@ class Ui_MainWindow:
         self.cbQLTecnicas.setObjectName(_fromUtf8("cbQLTecnicas"))
         self.gridLayout_4.addWidget(self.cbQLTecnicas, 0, 2, 1, 2)
         self.lblEpsilon = QtGui.QLabel(self.groupBox_6)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblEpsilon.sizePolicy().hasHeightForWidth())
@@ -269,7 +327,9 @@ class Ui_MainWindow:
         self.lblEpsilon.setObjectName(_fromUtf8("lblEpsilon"))
         self.gridLayout_4.addWidget(self.lblEpsilon, 1, 0, 1, 2)
         self.lblTecnica = QtGui.QLabel(self.groupBox_6)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblTecnica.sizePolicy().hasHeightForWidth())
@@ -314,10 +374,14 @@ class Ui_MainWindow:
         self.gridLayout_7.setVerticalSpacing(3)
         self.gridLayout_7.setObjectName(_fromUtf8("gridLayout_7"))
         self.lblCantMaxIteraciones = QtGui.QLabel(self.gbCondicionParada)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblCantMaxIteraciones.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.lblCantMaxIteraciones.sizePolicy().hasHeightForWidth()
+        )
         self.lblCantMaxIteraciones.setSizePolicy(sizePolicy)
         self.lblCantMaxIteraciones.setMinimumSize(QtCore.QSize(102, 0))
         self.lblCantMaxIteraciones.setObjectName(_fromUtf8("lblCantMaxIteraciones"))
@@ -327,10 +391,14 @@ class Ui_MainWindow:
         self.sbCantMaxIteraciones.setMaximum(1000000000)
         self.sbCantMaxIteraciones.setObjectName(_fromUtf8("sbCantMaxIteraciones"))
         self.gridLayout_7.addWidget(self.sbCantMaxIteraciones, 2, 2, 1, 1)
-        spacerItem4 = QtGui.QSpacerItem(12, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        spacerItem4 = QtGui.QSpacerItem(
+            12, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum
+        )
         self.gridLayout_7.addItem(spacerItem4, 2, 0, 1, 1)
         self.chkLimitarCantIteraciones = QtGui.QCheckBox(self.gbCondicionParada)
-        self.chkLimitarCantIteraciones.setObjectName(_fromUtf8("chkLimitarCantIteraciones"))
+        self.chkLimitarCantIteraciones.setObjectName(
+            _fromUtf8("chkLimitarCantIteraciones")
+        )
         self.gridLayout_7.addWidget(self.chkLimitarCantIteraciones, 1, 0, 1, 3)
         self.gridLayout_8.addLayout(self.gridLayout_7, 1, 0, 1, 2)
         self.gridLayout_6 = QtGui.QGridLayout()
@@ -357,9 +425,13 @@ class Ui_MainWindow:
         self.sbMatricesMinDiff.setProperty("value", 1e-05)
         self.sbMatricesMinDiff.setObjectName(_fromUtf8("sbMatricesMinDiff"))
         self.gridLayout_6.addWidget(self.sbMatricesMinDiff, 1, 2, 1, 1)
-        spacerItem5 = QtGui.QSpacerItem(14, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        spacerItem5 = QtGui.QSpacerItem(
+            14, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum
+        )
         self.gridLayout_6.addItem(spacerItem5, 1, 0, 1, 1)
-        spacerItem6 = QtGui.QSpacerItem(14, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        spacerItem6 = QtGui.QSpacerItem(
+            14, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum
+        )
         self.gridLayout_6.addItem(spacerItem6, 2, 0, 1, 1)
         self.chkQLCalcularMatDiff = QtGui.QCheckBox(self.gbCondicionParada)
         self.chkQLCalcularMatDiff.setObjectName(_fromUtf8("chkQLCalcularMatDiff"))
@@ -368,7 +440,9 @@ class Ui_MainWindow:
         self.gridLayout_10.addLayout(self.gridLayout_8, 0, 0, 1, 1)
         self.gridLayout_17.addWidget(self.gbCondicionParada, 1, 0, 1, 2)
         self.lblGamma = QtGui.QLabel(self.gbQLearning)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblGamma.sizePolicy().hasHeightForWidth())
@@ -395,28 +469,40 @@ class Ui_MainWindow:
         self.gridLayout_13.setObjectName(_fromUtf8("gridLayout_13"))
         self.btnInicializarValoresQL = QtGui.QPushButton(self.groupBox_7)
         self.btnInicializarValoresQL.setMaximumSize(QtCore.QSize(130, 22))
-        self.btnInicializarValoresQL.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.btnInicializarValoresQL.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
         self.btnInicializarValoresQL.setObjectName(_fromUtf8("btnInicializarValoresQL"))
         self.gridLayout_13.addWidget(self.btnInicializarValoresQL, 0, 0, 1, 1)
         self.gridLayout_34.addWidget(self.groupBox_7, 0, 0, 1, 1)
-        spacerItem7 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem7 = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.gridLayout_34.addItem(spacerItem7, 1, 0, 1, 1)
         self.stackedWidget.addWidget(self.pgQLAcciones)
         self.gridLayout_5.addWidget(self.stackedWidget, 0, 0, 1, 1)
-        spacerItem8 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem8 = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.gridLayout_5.addItem(spacerItem8, 1, 0, 1, 1)
         self.dwQLearning.setWidget(self.dockWidgetContents)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dwQLearning)
         self.dwEjecucion = QtGui.QDockWidget(MainWindow)
-        self.dwEjecucion.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
-        self.dwEjecucion.setFeatures(QtGui.QDockWidget.DockWidgetFloatable|QtGui.QDockWidget.DockWidgetMovable)
+        self.dwEjecucion.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
+        self.dwEjecucion.setFeatures(
+            QtGui.QDockWidget.DockWidgetFloatable | QtGui.QDockWidget.DockWidgetMovable
+        )
         self.dwEjecucion.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         self.dwEjecucion.setObjectName(_fromUtf8("dwEjecucion"))
         self.dockWidgetContents_4 = QtGui.QWidget()
         self.dockWidgetContents_4.setObjectName(_fromUtf8("dockWidgetContents_4"))
         self.gridLayout_19 = QtGui.QGridLayout(self.dockWidgetContents_4)
         self.gridLayout_19.setObjectName(_fromUtf8("gridLayout_19"))
-        spacerItem9 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem9 = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.gridLayout_19.addItem(spacerItem9, 3, 1, 1, 1)
         self.gbMatrizQ = QtGui.QGroupBox(self.dockWidgetContents_4)
         self.gbMatrizQ.setObjectName(_fromUtf8("gbMatrizQ"))
@@ -426,7 +512,9 @@ class Ui_MainWindow:
         self.gridLayout_20.setObjectName(_fromUtf8("gridLayout_20"))
         self.btnMostrarMatrizQ = QtGui.QPushButton(self.gbMatrizQ)
         self.btnMostrarMatrizQ.setMinimumSize(QtCore.QSize(105, 0))
-        self.btnMostrarMatrizQ.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.btnMostrarMatrizQ.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
         self.btnMostrarMatrizQ.setObjectName(_fromUtf8("btnMostrarMatrizQ"))
         self.gridLayout_20.addWidget(self.btnMostrarMatrizQ, 0, 0, 1, 1)
         self.btnMatrizQVerHM = QtGui.QPushButton(self.gbMatrizQ)
@@ -441,7 +529,9 @@ class Ui_MainWindow:
         self.gridLayout_27.setObjectName(_fromUtf8("gridLayout_27"))
         self.btnMostrarMatrizR = QtGui.QPushButton(self.gbMatrizR)
         self.btnMostrarMatrizR.setMinimumSize(QtCore.QSize(105, 0))
-        self.btnMostrarMatrizR.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.btnMostrarMatrizR.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
         self.btnMostrarMatrizR.setObjectName(_fromUtf8("btnMostrarMatrizR"))
         self.gridLayout_27.addWidget(self.btnMostrarMatrizR, 0, 0, 1, 1)
         self.btnMatrizRVerHM = QtGui.QPushButton(self.gbMatrizR)
@@ -458,32 +548,54 @@ class Ui_MainWindow:
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.btnEntrenar = QtGui.QPushButton(self.gbAgente)
         self.btnEntrenar.setMinimumSize(QtCore.QSize(100, 0))
-        self.btnEntrenar.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.btnEntrenar.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Aprender.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(
+            QtGui.QPixmap(_fromUtf8(":/iconos/Aprender.png")),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         self.btnEntrenar.setIcon(icon3)
         self.btnEntrenar.setObjectName(_fromUtf8("btnEntrenar"))
         self.verticalLayout.addWidget(self.btnEntrenar)
         self.btnRecorrer = QtGui.QPushButton(self.gbAgente)
         self.btnRecorrer.setMinimumSize(QtCore.QSize(100, 24))
-        self.btnRecorrer.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.btnRecorrer.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Recorrer.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(
+            QtGui.QPixmap(_fromUtf8(":/iconos/Recorrer.png")),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         self.btnRecorrer.setIcon(icon4)
         self.btnRecorrer.setObjectName(_fromUtf8("btnRecorrer"))
         self.verticalLayout.addWidget(self.btnRecorrer)
         self.btnPausar = QtGui.QPushButton(self.gbAgente)
         self.btnPausar.setMinimumSize(QtCore.QSize(100, 24))
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Pausar.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(
+            QtGui.QPixmap(_fromUtf8(":/iconos/Pausar.png")),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         self.btnPausar.setIcon(icon5)
         self.btnPausar.setObjectName(_fromUtf8("btnPausar"))
         self.verticalLayout.addWidget(self.btnPausar)
         self.btnTerminarProceso = QtGui.QPushButton(self.gbAgente)
         self.btnTerminarProceso.setMinimumSize(QtCore.QSize(100, 24))
-        self.btnTerminarProceso.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.btnTerminarProceso.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Detener.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon6.addPixmap(
+            QtGui.QPixmap(_fromUtf8(":/iconos/Detener.png")),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         self.btnTerminarProceso.setIcon(icon6)
         self.btnTerminarProceso.setObjectName(_fromUtf8("btnTerminarProceso"))
         self.verticalLayout.addWidget(self.btnTerminarProceso)
@@ -493,7 +605,9 @@ class Ui_MainWindow:
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.dwEjecucion)
         self.dwCaminoOptimo = QtGui.QDockWidget(MainWindow)
         self.dwCaminoOptimo.setMaximumSize(QtCore.QSize(524287, 150))
-        self.dwCaminoOptimo.setFeatures(QtGui.QDockWidget.DockWidgetFloatable|QtGui.QDockWidget.DockWidgetMovable)
+        self.dwCaminoOptimo.setFeatures(
+            QtGui.QDockWidget.DockWidgetFloatable | QtGui.QDockWidget.DockWidgetMovable
+        )
         self.dwCaminoOptimo.setObjectName(_fromUtf8("dwCaminoOptimo"))
         self.dockWidgetContents_2 = QtGui.QWidget()
         self.dockWidgetContents_2.setObjectName(_fromUtf8("dockWidgetContents_2"))
@@ -514,7 +628,9 @@ class Ui_MainWindow:
         self.btnCOVerDetalles.setObjectName(_fromUtf8("btnCOVerDetalles"))
         self.gridLayout_26.addWidget(self.btnCOVerDetalles, 1, 0, 1, 1)
         self.gridLayout_25.addWidget(self.gbCOAcciones, 0, 0, 1, 1)
-        spacerItem10 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem10 = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.gridLayout_25.addItem(spacerItem10, 2, 0, 1, 1)
         self.gbCOAvance = QtGui.QGroupBox(self.dockWidgetContents_2)
         self.gbCOAvance.setObjectName(_fromUtf8("gbCOAvance"))
@@ -524,36 +640,54 @@ class Ui_MainWindow:
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setSpacing(4)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        spacerItem11 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem11 = QtGui.QSpacerItem(
+            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum
+        )
         self.horizontalLayout.addItem(spacerItem11)
         self.btnCOAtras = QtGui.QPushButton(self.gbCOAvance)
         self.btnCOAtras.setMaximumSize(QtCore.QSize(80, 16777215))
         icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Atras.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon7.addPixmap(
+            QtGui.QPixmap(_fromUtf8(":/iconos/Atras.png")),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         self.btnCOAtras.setIcon(icon7)
         self.btnCOAtras.setObjectName(_fromUtf8("btnCOAtras"))
         self.horizontalLayout.addWidget(self.btnCOAtras)
         self.btnCOAdelante = QtGui.QPushButton(self.gbCOAvance)
         self.btnCOAdelante.setMaximumSize(QtCore.QSize(80, 16777215))
         icon8 = QtGui.QIcon()
-        icon8.addPixmap(QtGui.QPixmap(_fromUtf8(":/iconos/Adelante.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon8.addPixmap(
+            QtGui.QPixmap(_fromUtf8(":/iconos/Adelante.png")),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         self.btnCOAdelante.setIcon(icon8)
         self.btnCOAdelante.setObjectName(_fromUtf8("btnCOAdelante"))
         self.horizontalLayout.addWidget(self.btnCOAdelante)
-        spacerItem12 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem12 = QtGui.QSpacerItem(
+            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum
+        )
         self.horizontalLayout.addItem(spacerItem12)
         self.gridLayout_11.addLayout(self.horizontalLayout, 0, 0, 1, 1)
         self.gridLayout_25.addWidget(self.gbCOAvance, 0, 1, 1, 1)
         self.dwCaminoOptimo.setWidget(self.dockWidgetContents_2)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.dwCaminoOptimo)
         self.dwMetricas = QtGui.QDockWidget(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.dwMetricas.sizePolicy().hasHeightForWidth())
         self.dwMetricas.setSizePolicy(sizePolicy)
-        self.dwMetricas.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
-        self.dwMetricas.setFeatures(QtGui.QDockWidget.DockWidgetFloatable|QtGui.QDockWidget.DockWidgetMovable)
+        self.dwMetricas.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
+        self.dwMetricas.setFeatures(
+            QtGui.QDockWidget.DockWidgetFloatable | QtGui.QDockWidget.DockWidgetMovable
+        )
         self.dwMetricas.setObjectName(_fromUtf8("dwMetricas"))
         self.dockWidgetContents_3 = QtGui.QWidget()
         self.dockWidgetContents_3.setObjectName(_fromUtf8("dockWidgetContents_3"))
@@ -573,7 +707,9 @@ class Ui_MainWindow:
         self.horizontalLayout_7 = QtGui.QHBoxLayout()
         self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
         self.label_13 = QtGui.QLabel(self.gbEntExecTime)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_13.sizePolicy().hasHeightForWidth())
@@ -582,10 +718,14 @@ class Ui_MainWindow:
         self.label_13.setObjectName(_fromUtf8("label_13"))
         self.horizontalLayout_7.addWidget(self.label_13)
         self.lblEntExecTimeEpisodios = QtGui.QLabel(self.gbEntExecTime)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblEntExecTimeEpisodios.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.lblEntExecTimeEpisodios.sizePolicy().hasHeightForWidth()
+        )
         self.lblEntExecTimeEpisodios.setSizePolicy(sizePolicy)
         self.lblEntExecTimeEpisodios.setObjectName(_fromUtf8("lblEntExecTimeEpisodios"))
         self.horizontalLayout_7.addWidget(self.lblEntExecTimeEpisodios)
@@ -593,7 +733,9 @@ class Ui_MainWindow:
         self.horizontalLayout_6 = QtGui.QHBoxLayout()
         self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
         self.label_11 = QtGui.QLabel(self.gbEntExecTime)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_11.sizePolicy().hasHeightForWidth())
@@ -602,18 +744,26 @@ class Ui_MainWindow:
         self.label_11.setObjectName(_fromUtf8("label_11"))
         self.horizontalLayout_6.addWidget(self.label_11)
         self.lblEntExecTimeIteraciones = QtGui.QLabel(self.gbEntExecTime)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblEntExecTimeIteraciones.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.lblEntExecTimeIteraciones.sizePolicy().hasHeightForWidth()
+        )
         self.lblEntExecTimeIteraciones.setSizePolicy(sizePolicy)
-        self.lblEntExecTimeIteraciones.setObjectName(_fromUtf8("lblEntExecTimeIteraciones"))
+        self.lblEntExecTimeIteraciones.setObjectName(
+            _fromUtf8("lblEntExecTimeIteraciones")
+        )
         self.horizontalLayout_6.addWidget(self.lblEntExecTimeIteraciones)
         self.gridLayout_21.addLayout(self.horizontalLayout_6, 1, 0, 1, 1)
         self.horizontalLayout_8 = QtGui.QHBoxLayout()
         self.horizontalLayout_8.setObjectName(_fromUtf8("horizontalLayout_8"))
         self.label_15 = QtGui.QLabel(self.gbEntExecTime)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_15.sizePolicy().hasHeightForWidth())
@@ -622,10 +772,14 @@ class Ui_MainWindow:
         self.label_15.setObjectName(_fromUtf8("label_15"))
         self.horizontalLayout_8.addWidget(self.label_15)
         self.lblEntExecTimeTotal = QtGui.QLabel(self.gbEntExecTime)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblEntExecTimeTotal.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.lblEntExecTimeTotal.sizePolicy().hasHeightForWidth()
+        )
         self.lblEntExecTimeTotal.setSizePolicy(sizePolicy)
         self.lblEntExecTimeTotal.setObjectName(_fromUtf8("lblEntExecTimeTotal"))
         self.horizontalLayout_8.addWidget(self.lblEntExecTimeTotal)
@@ -634,7 +788,9 @@ class Ui_MainWindow:
         self.horizontalLayout_5 = QtGui.QHBoxLayout()
         self.horizontalLayout_5.setObjectName(_fromUtf8("horizontalLayout_5"))
         self.label_9 = QtGui.QLabel(self.gbEntrenamiento)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_9.sizePolicy().hasHeightForWidth())
@@ -649,7 +805,9 @@ class Ui_MainWindow:
         self.horizontalLayout_4 = QtGui.QHBoxLayout()
         self.horizontalLayout_4.setObjectName(_fromUtf8("horizontalLayout_4"))
         self.label_7 = QtGui.QLabel(self.gbEntrenamiento)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_7.sizePolicy().hasHeightForWidth())
@@ -664,7 +822,9 @@ class Ui_MainWindow:
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.label_4 = QtGui.QLabel(self.gbEntrenamiento)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
@@ -679,7 +839,9 @@ class Ui_MainWindow:
         self.horizontalLayout_12 = QtGui.QHBoxLayout()
         self.horizontalLayout_12.setObjectName(_fromUtf8("horizontalLayout_12"))
         self.label_10 = QtGui.QLabel(self.gbEntrenamiento)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_10.sizePolicy().hasHeightForWidth())
@@ -691,12 +853,16 @@ class Ui_MainWindow:
         self.lblEntValParametro.setObjectName(_fromUtf8("lblEntValParametro"))
         self.horizontalLayout_12.addWidget(self.lblEntValParametro)
         self.gridLayout_3.addLayout(self.horizontalLayout_12, 3, 1, 1, 1)
-        spacerItem13 = QtGui.QSpacerItem(20, 5, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacerItem13 = QtGui.QSpacerItem(
+            20, 5, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed
+        )
         self.gridLayout_3.addItem(spacerItem13, 6, 1, 1, 1)
         self.horizontalLayout_15 = QtGui.QHBoxLayout()
         self.horizontalLayout_15.setObjectName(_fromUtf8("horizontalLayout_15"))
         self.label_14 = QtGui.QLabel(self.gbEntrenamiento)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_14.sizePolicy().hasHeightForWidth())
@@ -716,7 +882,9 @@ class Ui_MainWindow:
         self.horizontalLayout_13 = QtGui.QHBoxLayout()
         self.horizontalLayout_13.setObjectName(_fromUtf8("horizontalLayout_13"))
         self.label_6 = QtGui.QLabel(self.gbRecorrido)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
@@ -728,7 +896,9 @@ class Ui_MainWindow:
         self.lblRecEstadoActual.setObjectName(_fromUtf8("lblRecEstadoActual"))
         self.horizontalLayout_13.addWidget(self.lblRecEstadoActual)
         self.gridLayout_16.addLayout(self.horizontalLayout_13, 0, 0, 1, 1)
-        spacerItem14 = QtGui.QSpacerItem(20, 5, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacerItem14 = QtGui.QSpacerItem(
+            20, 5, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed
+        )
         self.gridLayout_16.addItem(spacerItem14, 1, 0, 1, 1)
         self.gbRecExecTime = QtGui.QGroupBox(self.gbRecorrido)
         self.gbRecExecTime.setAlignment(QtCore.Qt.AlignCenter)
@@ -740,7 +910,9 @@ class Ui_MainWindow:
         self.horizontalLayout_11 = QtGui.QHBoxLayout()
         self.horizontalLayout_11.setObjectName(_fromUtf8("horizontalLayout_11"))
         self.label_16 = QtGui.QLabel(self.gbRecExecTime)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_16.sizePolicy().hasHeightForWidth())
@@ -749,10 +921,14 @@ class Ui_MainWindow:
         self.label_16.setObjectName(_fromUtf8("label_16"))
         self.horizontalLayout_11.addWidget(self.label_16)
         self.lblRecExecTimeTotal = QtGui.QLabel(self.gbRecExecTime)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblRecExecTimeTotal.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.lblRecExecTimeTotal.sizePolicy().hasHeightForWidth()
+        )
         self.lblRecExecTimeTotal.setSizePolicy(sizePolicy)
         self.lblRecExecTimeTotal.setObjectName(_fromUtf8("lblRecExecTimeTotal"))
         self.horizontalLayout_11.addWidget(self.lblRecExecTimeTotal)
@@ -760,7 +936,9 @@ class Ui_MainWindow:
         self.horizontalLayout_14 = QtGui.QHBoxLayout()
         self.horizontalLayout_14.setObjectName(_fromUtf8("horizontalLayout_14"))
         self.label_17 = QtGui.QLabel(self.gbRecExecTime)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_17.sizePolicy().hasHeightForWidth())
@@ -769,22 +947,30 @@ class Ui_MainWindow:
         self.label_17.setObjectName(_fromUtf8("label_17"))
         self.horizontalLayout_14.addWidget(self.label_17)
         self.lblRecExecTimeRecorrido = QtGui.QLabel(self.gbRecExecTime)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblRecExecTimeRecorrido.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.lblRecExecTimeRecorrido.sizePolicy().hasHeightForWidth()
+        )
         self.lblRecExecTimeRecorrido.setSizePolicy(sizePolicy)
         self.lblRecExecTimeRecorrido.setObjectName(_fromUtf8("lblRecExecTimeRecorrido"))
         self.horizontalLayout_14.addWidget(self.lblRecExecTimeRecorrido)
         self.gridLayout_22.addLayout(self.horizontalLayout_14, 0, 0, 1, 1)
         self.gridLayout_16.addWidget(self.gbRecExecTime, 2, 0, 1, 1)
         self.gridLayout_15.addWidget(self.gbRecorrido, 1, 0, 1, 1)
-        spacerItem15 = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem15 = QtGui.QSpacerItem(
+            0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.gridLayout_15.addItem(spacerItem15, 2, 0, 1, 1)
         self.dwMetricas.setWidget(self.dockWidgetContents_3)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.dwMetricas)
         self.dwConfigGeneral = QtGui.QDockWidget(MainWindow)
-        self.dwConfigGeneral.setFeatures(QtGui.QDockWidget.DockWidgetFloatable|QtGui.QDockWidget.DockWidgetMovable)
+        self.dwConfigGeneral.setFeatures(
+            QtGui.QDockWidget.DockWidgetFloatable | QtGui.QDockWidget.DockWidgetMovable
+        )
         self.dwConfigGeneral.setObjectName(_fromUtf8("dwConfigGeneral"))
         self.dockWidgetContents_6 = QtGui.QWidget()
         self.dockWidgetContents_6.setObjectName(_fromUtf8("dockWidgetContents_6"))
@@ -798,11 +984,15 @@ class Ui_MainWindow:
         self.gridLayout_9.setObjectName(_fromUtf8("gridLayout_9"))
         self.btnInicializarTodo = QtGui.QPushButton(self.gbGeneral)
         self.btnInicializarTodo.setMaximumSize(QtCore.QSize(130, 16777215))
-        self.btnInicializarTodo.setLocale(QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina))
+        self.btnInicializarTodo.setLocale(
+            QtCore.QLocale(QtCore.QLocale.Spanish, QtCore.QLocale.Argentina)
+        )
         self.btnInicializarTodo.setObjectName(_fromUtf8("btnInicializarTodo"))
         self.gridLayout_9.addWidget(self.btnInicializarTodo, 0, 0, 1, 1)
         self.gridLayout.addWidget(self.gbGeneral, 0, 0, 1, 1)
-        spacerItem16 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem16 = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.gridLayout.addItem(spacerItem16, 1, 0, 1, 1)
         self.dwConfigGeneral.setWidget(self.dockWidgetContents_6)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dwConfigGeneral)
@@ -885,18 +1075,66 @@ class Ui_MainWindow:
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(self.chkLimitarCantIteraciones, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.lblCantMaxIteraciones.setEnabled)
-        QtCore.QObject.connect(self.chkLimitarCantIteraciones, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbCantMaxIteraciones.setEnabled)
-        QtCore.QObject.connect(self.chkQLCalcularMatDiff, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.lblMatQDiff.setEnabled)
-        QtCore.QObject.connect(self.chkQLCalcularMatDiff, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.lblMatQIntervalo.setEnabled)
-        QtCore.QObject.connect(self.chkQLCalcularMatDiff, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbMatricesMinDiff.setEnabled)
-        QtCore.QObject.connect(self.chkQLCalcularMatDiff, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbIntervaloDiffCalc.setEnabled)
-        QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbCantEpisodiosDec.setEnabled)
-        QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbDecrementoVal.setEnabled)
-        QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.label_3.setEnabled)
-        QtCore.QObject.connect(self.chkDecrementarParam, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.label_5.setEnabled)
-        QtCore.QObject.connect(self.optMQInitValOptimistas, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.lblMQFormula.setEnabled)
-        QtCore.QObject.connect(self.optMQInitValOptimistas, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.sbValOptimoIncremento.setEnabled)
+        QtCore.QObject.connect(
+            self.chkLimitarCantIteraciones,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.lblCantMaxIteraciones.setEnabled,
+        )
+        QtCore.QObject.connect(
+            self.chkLimitarCantIteraciones,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.sbCantMaxIteraciones.setEnabled,
+        )
+        QtCore.QObject.connect(
+            self.chkQLCalcularMatDiff,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.lblMatQDiff.setEnabled,
+        )
+        QtCore.QObject.connect(
+            self.chkQLCalcularMatDiff,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.lblMatQIntervalo.setEnabled,
+        )
+        QtCore.QObject.connect(
+            self.chkQLCalcularMatDiff,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.sbMatricesMinDiff.setEnabled,
+        )
+        QtCore.QObject.connect(
+            self.chkQLCalcularMatDiff,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.sbIntervaloDiffCalc.setEnabled,
+        )
+        QtCore.QObject.connect(
+            self.chkDecrementarParam,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.sbCantEpisodiosDec.setEnabled,
+        )
+        QtCore.QObject.connect(
+            self.chkDecrementarParam,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.sbDecrementoVal.setEnabled,
+        )
+        QtCore.QObject.connect(
+            self.chkDecrementarParam,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.label_3.setEnabled,
+        )
+        QtCore.QObject.connect(
+            self.chkDecrementarParam,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.label_5.setEnabled,
+        )
+        QtCore.QObject.connect(
+            self.optMQInitValOptimistas,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.lblMQFormula.setEnabled,
+        )
+        QtCore.QObject.connect(
+            self.optMQInitValOptimistas,
+            QtCore.SIGNAL(_fromUtf8("toggled(bool)")),
+            self.sbValOptimoIncremento.setEnabled,
+        )
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.cbGWDimension, self.btnInicializarGW)
         MainWindow.setTabOrder(self.btnInicializarGW, self.btnGWGenerarEstados)
@@ -904,7 +1142,9 @@ class Ui_MainWindow:
         MainWindow.setTabOrder(self.btnGWOpciones, self.sbQLGamma)
         MainWindow.setTabOrder(self.sbQLGamma, self.sbCantidadEpisodios)
         MainWindow.setTabOrder(self.sbCantidadEpisodios, self.chkLimitarCantIteraciones)
-        MainWindow.setTabOrder(self.chkLimitarCantIteraciones, self.sbCantMaxIteraciones)
+        MainWindow.setTabOrder(
+            self.chkLimitarCantIteraciones, self.sbCantMaxIteraciones
+        )
         MainWindow.setTabOrder(self.sbCantMaxIteraciones, self.chkQLCalcularMatDiff)
         MainWindow.setTabOrder(self.chkQLCalcularMatDiff, self.sbMatricesMinDiff)
         MainWindow.setTabOrder(self.sbMatricesMinDiff, self.sbIntervaloDiffCalc)
@@ -926,80 +1166,216 @@ class Ui_MainWindow:
         MainWindow.setTabOrder(self.btnCOShowHide, self.btnInicializarValoresQL)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "Grupo Nº 1 - Inteligencia Artificial 2013 - Aprendizaje por Refuerzo", None))
+        MainWindow.setWindowTitle(
+            _translate(
+                "MainWindow",
+                "Grupo Nº 1 - Inteligencia Artificial 2013 - Aprendizaje por Refuerzo",
+                None,
+            )
+        )
         self.dwGridWorld.setWindowTitle(_translate("MainWindow", "Grid World", None))
         self.gbGridWorld.setTitle(_translate("MainWindow", "Grid World", None))
         self.groupBox_8.setTitle(_translate("MainWindow", "Acciones", None))
-        self.btnInicializarGW.setToolTip(_translate("MainWindow", "<html><head/><body><p>Establece todos los estados del Grid World al tipo de estado por defecto manteniendo la dimensión seleccionada.</p></body></html>", None))
+        self.btnInicializarGW.setToolTip(
+            _translate(
+                "MainWindow",
+                "<html><head/><body><p>Establece todos los estados del Grid World al tipo de estado por defecto manteniendo la dimensión seleccionada.</p></body></html>",
+                None,
+            )
+        )
         self.btnInicializarGW.setText(_translate("MainWindow", "Inicializar GW", None))
-        self.btnGWGenerarEstados.setText(_translate("MainWindow", "Generar estados...", None))
-        self.btnGWOpciones.setToolTip(_translate("MainWindow", "Configurar Grid World.", None))
-        self.btnGenEstRndRapida.setToolTip(_translate("MainWindow", "Generar estados y dimensión aleatorios.", None))
+        self.btnGWGenerarEstados.setText(
+            _translate("MainWindow", "Generar estados...", None)
+        )
+        self.btnGWOpciones.setToolTip(
+            _translate("MainWindow", "Configurar Grid World.", None)
+        )
+        self.btnGenEstRndRapida.setToolTip(
+            _translate("MainWindow", "Generar estados y dimensión aleatorios.", None)
+        )
         self.label_18.setText(_translate("MainWindow", "Dimensión:", None))
         self.dwQLearning.setWindowTitle(_translate("MainWindow", "Q-Learning", None))
         self.gbQLearning.setTitle(_translate("MainWindow", "Q-Learning", None))
         self.groupBox_6.setTitle(_translate("MainWindow", "Técnica", None))
         self.gbQLMatrizQ.setTitle(_translate("MainWindow", "Matriz Q", None))
-        self.lblMQFormula.setText(_translate("MainWindow", "Valor ópt. = Rec. Estado Final +", None))
-        self.sbValOptimoIncremento.setToolTip(_translate("MainWindow", "<html><head/><body><p>Incremento por sobre la máxima recompensa de los estados. Este valor será sumado a la recompensa máxima para obtener el valor óptimo con el cual se inicializará la Matriz Q.</p></body></html>", None))
-        self.optMQInitValOptimistas.setToolTip(_translate("MainWindow", "Inicializa la Matriz Q con valores optimistas.", None))
-        self.optMQInitValOptimistas.setText(_translate("MainWindow", "Inicializar con valores optimistas", None))
-        self.optMQInitEnCero.setToolTip(_translate("MainWindow", "Inicializa la Matriz Q con valores igual a 0.", None))
-        self.optMQInitEnCero.setText(_translate("MainWindow", "Inicializar en cero", None))
+        self.lblMQFormula.setText(
+            _translate("MainWindow", "Valor ópt. = Rec. Estado Final +", None)
+        )
+        self.sbValOptimoIncremento.setToolTip(
+            _translate(
+                "MainWindow",
+                "<html><head/><body><p>Incremento por sobre la máxima recompensa de los estados. Este valor será sumado a la recompensa máxima para obtener el valor óptimo con el cual se inicializará la Matriz Q.</p></body></html>",
+                None,
+            )
+        )
+        self.optMQInitValOptimistas.setToolTip(
+            _translate(
+                "MainWindow", "Inicializa la Matriz Q con valores optimistas.", None
+            )
+        )
+        self.optMQInitValOptimistas.setText(
+            _translate("MainWindow", "Inicializar con valores optimistas", None)
+        )
+        self.optMQInitEnCero.setToolTip(
+            _translate(
+                "MainWindow", "Inicializa la Matriz Q con valores igual a 0.", None
+            )
+        )
+        self.optMQInitEnCero.setText(
+            _translate("MainWindow", "Inicializar en cero", None)
+        )
         self.label_3.setText(_translate("MainWindow", "Cada:", None))
-        self.sbCantEpisodiosDec.setToolTip(_translate("MainWindow", "<html><head/><body><p>Intervalo de episodios entre las cuales el parámetro será decrementado.</p></body></html>", None))
+        self.sbCantEpisodiosDec.setToolTip(
+            _translate(
+                "MainWindow",
+                "<html><head/><body><p>Intervalo de episodios entre las cuales el parámetro será decrementado.</p></body></html>",
+                None,
+            )
+        )
         self.label_5.setText(_translate("MainWindow", "Decremento:", None))
-        self.sbDecrementoVal.setToolTip(_translate("MainWindow", "<html><head/><body><p><span style=\" font-style:italic;\">Paso</span> o valor de decremento. En cada intervalo el parámetro será decrementado en un <span style=\" font-style:italic;\">paso.</span></p></body></html>", None))
-        self.chkDecrementarParam.setToolTip(_translate("MainWindow", "Decrementar el parámetro que se esté utilizando.", None))
-        self.chkDecrementarParam.setText(_translate("MainWindow", "Decrementar parámetro", None))
+        self.sbDecrementoVal.setToolTip(
+            _translate(
+                "MainWindow",
+                '<html><head/><body><p><span style=" font-style:italic;">Paso</span> o valor de decremento. En cada intervalo el parámetro será decrementado en un <span style=" font-style:italic;">paso.</span></p></body></html>',
+                None,
+            )
+        )
+        self.chkDecrementarParam.setToolTip(
+            _translate(
+                "MainWindow", "Decrementar el parámetro que se esté utilizando.", None
+            )
+        )
+        self.chkDecrementarParam.setText(
+            _translate("MainWindow", "Decrementar parámetro", None)
+        )
         self.lblTau.setText(_translate("MainWindow", "Tau (τ):", None))
         self.lblEpsilon.setText(_translate("MainWindow", "Epsilon (ɛ):", None))
         self.lblTecnica.setText(_translate("MainWindow", "Técnica de selección:", None))
-        self.sbQLEpsilon.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600; font-style:italic;\">Epsilon (</span><span style=\" font-size:9pt; font-weight:600; font-style:italic;\">ɛ</span><span style=\" font-weight:600; font-style:italic;\">)</span></p><p>Parámetro que establece la probabilidad de seleccionar una <span style=\" font-style:italic;\">acción</span> aleatoria por sobre la política óptima. Rango de valores: 0 ≤ <span style=\" font-size:9pt;\">ɛ</span> &lt; 1.</p></body></html>", None))
-        self.sbQLTau.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600; font-style:italic;\">Tau (</span><span style=\" font-size:9pt; font-weight:600; font-style:italic;\">τ</span><span style=\" font-weight:600; font-style:italic;\">)</span></p><p>Parámetro que establece la <span style=\" font-style:italic;\">temperatura</span>. Una <span style=\" font-style:italic;\">temperatura alta</span> causa que todas las acciones sean (casi) equiprobables. Una <span style=\" font-style:italic;\">temperatura baja</span> causa una mayor diferencia en la probabilidad de selección para las acciones que difieran en las estimaciones de sus valores.</p></body></html>", None))
-        self.gbCondicionParada.setTitle(_translate("MainWindow", "Condición de parada", None))
+        self.sbQLEpsilon.setToolTip(
+            _translate(
+                "MainWindow",
+                '<html><head/><body><p align="center"><span style=" font-weight:600; font-style:italic;">Epsilon (</span><span style=" font-size:9pt; font-weight:600; font-style:italic;">ɛ</span><span style=" font-weight:600; font-style:italic;">)</span></p><p>Parámetro que establece la probabilidad de seleccionar una <span style=" font-style:italic;">acción</span> aleatoria por sobre la política óptima. Rango de valores: 0 ≤ <span style=" font-size:9pt;">ɛ</span> &lt; 1.</p></body></html>',
+                None,
+            )
+        )
+        self.sbQLTau.setToolTip(
+            _translate(
+                "MainWindow",
+                '<html><head/><body><p align="center"><span style=" font-weight:600; font-style:italic;">Tau (</span><span style=" font-size:9pt; font-weight:600; font-style:italic;">τ</span><span style=" font-weight:600; font-style:italic;">)</span></p><p>Parámetro que establece la <span style=" font-style:italic;">temperatura</span>. Una <span style=" font-style:italic;">temperatura alta</span> causa que todas las acciones sean (casi) equiprobables. Una <span style=" font-style:italic;">temperatura baja</span> causa una mayor diferencia en la probabilidad de selección para las acciones que difieran en las estimaciones de sus valores.</p></body></html>',
+                None,
+            )
+        )
+        self.gbCondicionParada.setTitle(
+            _translate("MainWindow", "Condición de parada", None)
+        )
         self.label_2.setText(_translate("MainWindow", "Cantidad de episodios:", None))
-        self.sbCantidadEpisodios.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600; font-style:italic;\">Cantidad de Episodios</span></p><p>Número de Episodios (Plays) a realizar durante la fase de aprendizaje (entrenamiento). Un episodio es un recorrido desde un estado dado hasta el estado <span style=\" font-style:italic;\">final.</span></p></body></html>", None))
-        self.lblCantMaxIteraciones.setText(_translate("MainWindow", "Cantidad máxima:", None))
-        self.sbCantMaxIteraciones.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Cantidad máxima de iteraciones</span></p><p>Establece el número máximo de iteraciones a ejecutar por episodio. Cuando este valor es alcanzado la ejecución continúa en el episodio siguiente.</p></body></html>", None))
-        self.chkLimitarCantIteraciones.setToolTip(_translate("MainWindow", "Determina si se limitará la cantidad de iteraciones por cada episodio.", None))
-        self.chkLimitarCantIteraciones.setText(_translate("MainWindow", "Limitar cantidad de iteraciones por episodio", None))
+        self.sbCantidadEpisodios.setToolTip(
+            _translate(
+                "MainWindow",
+                '<html><head/><body><p align="center"><span style=" font-weight:600; font-style:italic;">Cantidad de Episodios</span></p><p>Número de Episodios (Plays) a realizar durante la fase de aprendizaje (entrenamiento). Un episodio es un recorrido desde un estado dado hasta el estado <span style=" font-style:italic;">final.</span></p></body></html>',
+                None,
+            )
+        )
+        self.lblCantMaxIteraciones.setText(
+            _translate("MainWindow", "Cantidad máxima:", None)
+        )
+        self.sbCantMaxIteraciones.setToolTip(
+            _translate(
+                "MainWindow",
+                '<html><head/><body><p align="center"><span style=" font-weight:600;">Cantidad máxima de iteraciones</span></p><p>Establece el número máximo de iteraciones a ejecutar por episodio. Cuando este valor es alcanzado la ejecución continúa en el episodio siguiente.</p></body></html>',
+                None,
+            )
+        )
+        self.chkLimitarCantIteraciones.setToolTip(
+            _translate(
+                "MainWindow",
+                "Determina si se limitará la cantidad de iteraciones por cada episodio.",
+                None,
+            )
+        )
+        self.chkLimitarCantIteraciones.setText(
+            _translate(
+                "MainWindow", "Limitar cantidad de iteraciones por episodio", None
+            )
+        )
         self.lblMatQDiff.setText(_translate("MainWindow", "Diferencia:", None))
-        self.lblMatQIntervalo.setText(_translate("MainWindow", "Calcular diferencia cada:", None))
-        self.sbIntervaloDiffCalc.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Intervalo de cálculo de diferencia</span></p><p>La diferencia entre matrices se calculará cada un número dado de episodios establecidos por este valor.</p></body></html>", None))
-        self.sbMatricesMinDiff.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Diferencia entre matrices Q</span></p><p align=\"center\">Establece la diferencia mínima que tiene que haber entre una Matriz Q (en t = i) y otra Matriz Q (en t = i + 1) para que se detenga la ejecución del algoritmo.</p></body></html>", None))
-        self.chkQLCalcularMatDiff.setText(_translate("MainWindow", "Detener por diferencia entre matrices Q", None))
+        self.lblMatQIntervalo.setText(
+            _translate("MainWindow", "Calcular diferencia cada:", None)
+        )
+        self.sbIntervaloDiffCalc.setToolTip(
+            _translate(
+                "MainWindow",
+                '<html><head/><body><p align="center"><span style=" font-weight:600;">Intervalo de cálculo de diferencia</span></p><p>La diferencia entre matrices se calculará cada un número dado de episodios establecidos por este valor.</p></body></html>',
+                None,
+            )
+        )
+        self.sbMatricesMinDiff.setToolTip(
+            _translate(
+                "MainWindow",
+                '<html><head/><body><p align="center"><span style=" font-weight:600;">Diferencia entre matrices Q</span></p><p align="center">Establece la diferencia mínima que tiene que haber entre una Matriz Q (en t = i) y otra Matriz Q (en t = i + 1) para que se detenga la ejecución del algoritmo.</p></body></html>',
+                None,
+            )
+        )
+        self.chkQLCalcularMatDiff.setText(
+            _translate("MainWindow", "Detener por diferencia entre matrices Q", None)
+        )
         self.lblGamma.setText(_translate("MainWindow", "Gamma (Ɣ):", None))
-        self.sbQLGamma.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600; font-style:italic;\">Factor de descuento</span></p><p>Cuanto más cerca de 1 se encuentre este valor mayor será el <span style=\" font-style:italic;\">peso</span> asignado a los refuerzos futuros.</p></body></html>", None))
+        self.sbQLGamma.setToolTip(
+            _translate(
+                "MainWindow",
+                '<html><head/><body><p align="center"><span style=" font-weight:600; font-style:italic;">Factor de descuento</span></p><p>Cuanto más cerca de 1 se encuentre este valor mayor será el <span style=" font-style:italic;">peso</span> asignado a los refuerzos futuros.</p></body></html>',
+                None,
+            )
+        )
         self.groupBox_7.setTitle(_translate("MainWindow", "Acciones", None))
-        self.btnInicializarValoresQL.setToolTip(_translate("MainWindow", "Establece todos los valores de Q-Learning a los predeterminados.", None))
-        self.btnInicializarValoresQL.setText(_translate("MainWindow", "Inicializar valores", None))
+        self.btnInicializarValoresQL.setToolTip(
+            _translate(
+                "MainWindow",
+                "Establece todos los valores de Q-Learning a los predeterminados.",
+                None,
+            )
+        )
+        self.btnInicializarValoresQL.setText(
+            _translate("MainWindow", "Inicializar valores", None)
+        )
         self.dwEjecucion.setWindowTitle(_translate("MainWindow", "Ejecución", None))
         self.gbMatrizQ.setTitle(_translate("MainWindow", "Matriz Q", None))
         self.btnMostrarMatrizQ.setText(_translate("MainWindow", "Ver matriz...", None))
-        self.btnMatrizQVerHM.setToolTip(_translate("MainWindow", "Generar y mostrar heatmap de Matriz Q", None))
+        self.btnMatrizQVerHM.setToolTip(
+            _translate("MainWindow", "Generar y mostrar heatmap de Matriz Q", None)
+        )
         self.btnMatrizQVerHM.setText(_translate("MainWindow", "Ver heatmap...", None))
         self.gbMatrizR.setTitle(_translate("MainWindow", "Matriz R", None))
         self.btnMostrarMatrizR.setText(_translate("MainWindow", "Ver matriz...", None))
-        self.btnMatrizRVerHM.setToolTip(_translate("MainWindow", "Generar y mostrar heatmap de Matriz R", None))
+        self.btnMatrizRVerHM.setToolTip(
+            _translate("MainWindow", "Generar y mostrar heatmap de Matriz R", None)
+        )
         self.btnMatrizRVerHM.setText(_translate("MainWindow", "Ver heatmap...", None))
         self.gbAgente.setTitle(_translate("MainWindow", "Agente", None))
         self.btnEntrenar.setText(_translate("MainWindow", "Entrenar", None))
         self.btnRecorrer.setText(_translate("MainWindow", "Explotar", None))
         self.btnPausar.setText(_translate("MainWindow", "Pausar", None))
         self.btnTerminarProceso.setText(_translate("MainWindow", "Detener", None))
-        self.dwCaminoOptimo.setWindowTitle(_translate("MainWindow", "Camino óptimo", None))
+        self.dwCaminoOptimo.setWindowTitle(
+            _translate("MainWindow", "Camino óptimo", None)
+        )
         self.gbCOAcciones.setTitle(_translate("MainWindow", "Acciones", None))
         self.btnCOShowHide.setText(_translate("MainWindow", "Ocultar", None))
         self.btnCOVerDetalles.setText(_translate("MainWindow", "Ver detalles...", None))
         self.gbCOAvance.setTitle(_translate("MainWindow", "Estado a estado", None))
-        self.btnCOAtras.setToolTip(_translate("MainWindow", "Mostrar estado anterior", None))
+        self.btnCOAtras.setToolTip(
+            _translate("MainWindow", "Mostrar estado anterior", None)
+        )
         self.btnCOAtras.setText(_translate("MainWindow", "Atrás", None))
-        self.btnCOAdelante.setToolTip(_translate("MainWindow", "Mostrar siguiente estado", None))
+        self.btnCOAdelante.setToolTip(
+            _translate("MainWindow", "Mostrar siguiente estado", None)
+        )
         self.btnCOAdelante.setText(_translate("MainWindow", "Adelante", None))
         self.dwMetricas.setWindowTitle(_translate("MainWindow", "Métricas", None))
         self.gbEntrenamiento.setTitle(_translate("MainWindow", "Entrenamiento", None))
-        self.gbEntExecTime.setTitle(_translate("MainWindow", "Tiempo de ejecución", None))
+        self.gbEntExecTime.setTitle(
+            _translate("MainWindow", "Tiempo de ejecución", None)
+        )
         self.label_13.setText(_translate("MainWindow", "Episodios:", None))
         self.lblEntExecTimeEpisodios.setText(_translate("MainWindow", "-", None))
         self.label_11.setText(_translate("MainWindow", "Iteraciones:", None))
@@ -1012,26 +1388,44 @@ class Ui_MainWindow:
         self.lblEntNroEpisodio.setText(_translate("MainWindow", "-", None))
         self.label_4.setText(_translate("MainWindow", "Posición agente:", None))
         self.lblEntEstadoActual.setText(_translate("MainWindow", "-", None))
-        self.label_10.setText(_translate("MainWindow", "Valor parámetro de técnica:", None))
+        self.label_10.setText(
+            _translate("MainWindow", "Valor parámetro de técnica:", None)
+        )
         self.lblEntValParametro.setText(_translate("MainWindow", "-", None))
-        self.label_14.setText(_translate("MainWindow", "Diferencia entre matrices:", None))
+        self.label_14.setText(
+            _translate("MainWindow", "Diferencia entre matrices:", None)
+        )
         self.lblEntDiffMatrices.setText(_translate("MainWindow", "-", None))
         self.gbRecorrido.setTitle(_translate("MainWindow", "Explotación", None))
         self.label_6.setText(_translate("MainWindow", "Posición agente:", None))
         self.lblRecEstadoActual.setText(_translate("MainWindow", "-", None))
-        self.gbRecExecTime.setTitle(_translate("MainWindow", "Tiempo de ejecución", None))
+        self.gbRecExecTime.setTitle(
+            _translate("MainWindow", "Tiempo de ejecución", None)
+        )
         self.label_16.setText(_translate("MainWindow", "Total:", None))
         self.lblRecExecTimeTotal.setText(_translate("MainWindow", "-", None))
         self.label_17.setText(_translate("MainWindow", "Explotación:", None))
         self.lblRecExecTimeRecorrido.setText(_translate("MainWindow", "-", None))
-        self.dwConfigGeneral.setWindowTitle(_translate("MainWindow", "Configuración general", None))
+        self.dwConfigGeneral.setWindowTitle(
+            _translate("MainWindow", "Configuración general", None)
+        )
         self.gbGeneral.setTitle(_translate("MainWindow", "General", None))
-        self.btnInicializarTodo.setToolTip(_translate("MainWindow", "Establece todos los valores de la aplicación a los predeterminados.", None))
-        self.btnInicializarTodo.setText(_translate("MainWindow", "Inicializar valores", None))
+        self.btnInicializarTodo.setToolTip(
+            _translate(
+                "MainWindow",
+                "Establece todos los valores de la aplicación a los predeterminados.",
+                None,
+            )
+        )
+        self.btnInicializarTodo.setText(
+            _translate("MainWindow", "Inicializar valores", None)
+        )
         self.menuArchivo.setTitle(_translate("MainWindow", "&Archivo", None))
         self.menuAyuda.setTitle(_translate("MainWindow", "Ay&uda", None))
         self.menuOperaciones.setTitle(_translate("MainWindow", "Agente", None))
-        self.menuConfiguracion.setTitle(_translate("MainWindow", "&Configuración", None))
+        self.menuConfiguracion.setTitle(
+            _translate("MainWindow", "&Configuración", None)
+        )
         self.menuGridWorld.setTitle(_translate("MainWindow", "Grid World", None))
         self.menuQLearning.setTitle(_translate("MainWindow", "Q-Learning", None))
         self.menuHeatmap.setTitle(_translate("MainWindow", "Heatmap", None))
@@ -1044,7 +1438,10 @@ class Ui_MainWindow:
         self.actionAgenteEntrenar.setText(_translate("MainWindow", "Entrenar", None))
         self.actionAgenteRecorrer.setText(_translate("MainWindow", "Explotar", None))
         self.actionAgenteCancelar.setText(_translate("MainWindow", "Detener", None))
-        self.actionInicializarTodo.setText(_translate("MainWindow", "Inicializar todo", None))
+        self.actionInicializarTodo.setText(
+            _translate("MainWindow", "Inicializar todo", None)
+        )
         self.actionAgentePausar.setText(_translate("MainWindow", "Pausar", None))
+
 
 import recursos_rc

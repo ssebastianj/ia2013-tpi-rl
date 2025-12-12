@@ -13,16 +13,21 @@ except AttributeError:
 
 class AboutDialog(QtGui.QDialog):
     """docstring for AboutDialog"""
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.AboutDialog = Ui_AboutDialog()
         self.AboutDialog.setupUi(self)
-        self.setWindowFlags(QtCore.Qt.Dialog |
-                            QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowTitleHint)
+        self.setWindowFlags(
+            QtCore.Qt.Dialog
+            | QtCore.Qt.WindowSystemMenuHint
+            | QtCore.Qt.WindowTitleHint
+        )
         self._initialize_dialog()
         self.ORG_NAME = app_info.__org_name__
         self.APP_NAME = app_info.__app_name__
 
     def _initialize_dialog(self):
-        self.AboutDialog.lblAppVersion.setText(_tr("Versión {}".format(app_info.__version__)))
+        self.AboutDialog.lblAppVersion.setText(
+            _tr("Versión {}".format(app_info.__version__))
+        )

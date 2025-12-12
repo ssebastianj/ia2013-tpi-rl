@@ -10,16 +10,21 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_CODetailsDialog:
     def setupUi(self, CODetailsDialog):
@@ -54,14 +59,20 @@ class Ui_CODetailsDialog:
         self.line.setFrameShadow(QtGui.QFrame.Sunken)
         self.line.setObjectName(_fromUtf8("line"))
         self.gridLayout_2.addWidget(self.line, 3, 0, 1, 2)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtGui.QSpacerItem(
+            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum
+        )
         self.gridLayout_2.addItem(spacerItem, 4, 0, 1, 1)
-        spacerItem1 = QtGui.QSpacerItem(20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacerItem1 = QtGui.QSpacerItem(
+            20, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed
+        )
         self.gridLayout_2.addItem(spacerItem1, 1, 0, 1, 1)
         self.gridLayout = QtGui.QGridLayout()
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.label = QtGui.QLabel(CODetailsDialog)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
@@ -73,7 +84,9 @@ class Ui_CODetailsDialog:
         self.lblCOCantidadEstados.setObjectName(_fromUtf8("lblCOCantidadEstados"))
         self.gridLayout.addWidget(self.lblCOCantidadEstados, 0, 1, 1, 1)
         self.label_2 = QtGui.QLabel(CODetailsDialog)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
@@ -87,12 +100,20 @@ class Ui_CODetailsDialog:
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 2)
 
         self.retranslateUi(CODetailsDialog)
-        QtCore.QObject.connect(self.btnCerrar, QtCore.SIGNAL(_fromUtf8("clicked()")), CODetailsDialog.accept)
+        QtCore.QObject.connect(
+            self.btnCerrar,
+            QtCore.SIGNAL(_fromUtf8("clicked()")),
+            CODetailsDialog.accept,
+        )
         QtCore.QMetaObject.connectSlotsByName(CODetailsDialog)
 
     def retranslateUi(self, CODetailsDialog):
-        CODetailsDialog.setWindowTitle(_translate("CODetailsDialog", "Detalles de camino óptimo", None))
-        self.label_3.setText(_translate("CODetailsDialog", "Secuencia de estados:", None))
+        CODetailsDialog.setWindowTitle(
+            _translate("CODetailsDialog", "Detalles de camino óptimo", None)
+        )
+        self.label_3.setText(
+            _translate("CODetailsDialog", "Secuencia de estados:", None)
+        )
         item = self.tblSecuenciaEstados.horizontalHeaderItem(0)
         item.setText(_translate("CODetailsDialog", "Estado", None))
         item = self.tblSecuenciaEstados.horizontalHeaderItem(1)
@@ -102,6 +123,7 @@ class Ui_CODetailsDialog:
         self.btnCerrar.setText(_translate("CODetailsDialog", "&Cerrar", None))
         self.label.setText(_translate("CODetailsDialog", "Cantidad de estados:", None))
         self.lblCOCantidadEstados.setText(_translate("CODetailsDialog", "-", None))
-        self.label_2.setText(_translate("CODetailsDialog", "Sumatoria de valores Q:", None))
+        self.label_2.setText(
+            _translate("CODetailsDialog", "Sumatoria de valores Q:", None)
+        )
         self.lblCOSumValQ.setText(_translate("CODetailsDialog", "-", None))
-

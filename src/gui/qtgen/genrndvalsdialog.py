@@ -10,16 +10,21 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_GenRndValsDialog:
     def setupUi(self, GenRndValsDialog):
@@ -42,11 +47,15 @@ class Ui_GenRndValsDialog:
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(20)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.chkDimensionAleatoria.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.chkDimensionAleatoria.sizePolicy().hasHeightForWidth()
+        )
         self.chkDimensionAleatoria.setSizePolicy(sizePolicy)
         self.chkDimensionAleatoria.setObjectName(_fromUtf8("chkDimensionAleatoria"))
         self.gridLayout.addWidget(self.chkDimensionAleatoria, 1, 1, 1, 2)
-        spacerItem = QtGui.QSpacerItem(30, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtGui.QSpacerItem(
+            30, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum
+        )
         self.gridLayout.addItem(spacerItem, 1, 0, 1, 1)
         self.optGenerarEstados = QtGui.QRadioButton(self.groupBox)
         self.optGenerarEstados.setObjectName(_fromUtf8("optGenerarEstados"))
@@ -57,7 +66,9 @@ class Ui_GenRndValsDialog:
         self.chkTecnicaAleatoria = QtGui.QCheckBox(self.groupBox)
         self.chkTecnicaAleatoria.setObjectName(_fromUtf8("chkTecnicaAleatoria"))
         self.gridLayout_2.addWidget(self.chkTecnicaAleatoria, 1, 1, 1, 1)
-        spacerItem1 = QtGui.QSpacerItem(30, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        spacerItem1 = QtGui.QSpacerItem(
+            30, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum
+        )
         self.gridLayout_2.addItem(spacerItem1, 1, 0, 1, 1)
         self.optGenerarValoresParam = QtGui.QRadioButton(self.groupBox)
         self.optGenerarValoresParam.setObjectName(_fromUtf8("optGenerarValoresParam"))
@@ -70,7 +81,9 @@ class Ui_GenRndValsDialog:
         self.gridLayout_4.addWidget(self.groupBox, 0, 0, 1, 1)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem2 = QtGui.QSpacerItem(
+            40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum
+        )
         self.horizontalLayout.addItem(spacerItem2)
         self.btnGenRndVals = QtGui.QPushButton(GenRndValsDialog)
         self.btnGenRndVals.setMinimumSize(QtCore.QSize(85, 0))
@@ -83,24 +96,47 @@ class Ui_GenRndValsDialog:
         self.gridLayout_4.addLayout(self.horizontalLayout, 1, 0, 1, 1)
 
         self.retranslateUi(GenRndValsDialog)
-        QtCore.QObject.connect(self.btnGenRndVals, QtCore.SIGNAL(_fromUtf8("clicked()")), GenRndValsDialog.accept)
-        QtCore.QObject.connect(self.btnCancelGenRndVals, QtCore.SIGNAL(_fromUtf8("clicked()")), GenRndValsDialog.reject)
+        QtCore.QObject.connect(
+            self.btnGenRndVals,
+            QtCore.SIGNAL(_fromUtf8("clicked()")),
+            GenRndValsDialog.accept,
+        )
+        QtCore.QObject.connect(
+            self.btnCancelGenRndVals,
+            QtCore.SIGNAL(_fromUtf8("clicked()")),
+            GenRndValsDialog.reject,
+        )
         QtCore.QMetaObject.connectSlotsByName(GenRndValsDialog)
         GenRndValsDialog.setTabOrder(self.optGenerarEstados, self.chkDimensionAleatoria)
-        GenRndValsDialog.setTabOrder(self.chkDimensionAleatoria, self.optGenerarValoresParam)
-        GenRndValsDialog.setTabOrder(self.optGenerarValoresParam, self.chkTecnicaAleatoria)
+        GenRndValsDialog.setTabOrder(
+            self.chkDimensionAleatoria, self.optGenerarValoresParam
+        )
+        GenRndValsDialog.setTabOrder(
+            self.optGenerarValoresParam, self.chkTecnicaAleatoria
+        )
         GenRndValsDialog.setTabOrder(self.chkTecnicaAleatoria, self.optGenerarTodo)
         GenRndValsDialog.setTabOrder(self.optGenerarTodo, self.btnGenRndVals)
         GenRndValsDialog.setTabOrder(self.btnGenRndVals, self.btnCancelGenRndVals)
 
     def retranslateUi(self, GenRndValsDialog):
-        GenRndValsDialog.setWindowTitle(_translate("GenRndValsDialog", "Generar valores aleatorios", None))
+        GenRndValsDialog.setWindowTitle(
+            _translate("GenRndValsDialog", "Generar valores aleatorios", None)
+        )
         self.groupBox.setTitle(_translate("GenRndValsDialog", "Generar...", None))
-        self.chkDimensionAleatoria.setText(_translate("GenRndValsDialog", "Dimensión aleatoria", None))
-        self.optGenerarEstados.setText(_translate("GenRndValsDialog", "Estados aleatorios de diferente tipo", None))
-        self.chkTecnicaAleatoria.setText(_translate("GenRndValsDialog", "Técnica aleatoria", None))
-        self.optGenerarValoresParam.setText(_translate("GenRndValsDialog", "Valores de los parámetros", None))
+        self.chkDimensionAleatoria.setText(
+            _translate("GenRndValsDialog", "Dimensión aleatoria", None)
+        )
+        self.optGenerarEstados.setText(
+            _translate("GenRndValsDialog", "Estados aleatorios de diferente tipo", None)
+        )
+        self.chkTecnicaAleatoria.setText(
+            _translate("GenRndValsDialog", "Técnica aleatoria", None)
+        )
+        self.optGenerarValoresParam.setText(
+            _translate("GenRndValsDialog", "Valores de los parámetros", None)
+        )
         self.optGenerarTodo.setText(_translate("GenRndValsDialog", "Ambos", None))
         self.btnGenRndVals.setText(_translate("GenRndValsDialog", "&Generar", None))
-        self.btnCancelGenRndVals.setText(_translate("GenRndValsDialog", "Cancelar", None))
-
+        self.btnCancelGenRndVals.setText(
+            _translate("GenRndValsDialog", "Cancelar", None)
+        )

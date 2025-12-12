@@ -12,18 +12,14 @@ from tools.enum import enum
 # Ide = 5 (Bueno)
 # Ide = 6 (Malo)
 # Ide = 7 (Pared)
-TIPOESTADO = enum(INICIAL=0,
-                  FINAL=1,
-                  AGENTE=2,
-                  NEUTRO=3,
-                  EXCELENTE=4,
-                  BUENO=5,
-                  MALO=6,
-                  PARED=7)
+TIPOESTADO = enum(
+    INICIAL=0, FINAL=1, AGENTE=2, NEUTRO=3, EXCELENTE=4, BUENO=5, MALO=6, PARED=7
+)
 
 
 class TipoEstado:
     """Clase TipoEstado"""
+
     def __init__(self, ide, recompensa, nombre, letra="", color="#FFFFFF", icono=None):
         """
         :param ide: Identificador del estado
@@ -78,8 +74,12 @@ class TipoEstado:
         self._color = color
 
     ide = property(get_ide, set_ide, None, "Propiedad ID del Tipo de Estado")
-    nombre = property(get_nombre, set_nombre, None, "Propiedad Nombre del Tipo de Estado")
-    recompensa = property(get_recompensa, set_recompensa, None, "Propiedad Recompensa del Tipo de Estado")
+    nombre = property(
+        get_nombre, set_nombre, None, "Propiedad Nombre del Tipo de Estado"
+    )
+    recompensa = property(
+        get_recompensa, set_recompensa, None, "Propiedad Recompensa del Tipo de Estado"
+    )
     letra = property(get_letra, set_letra, None, "Propiedad Letra del Tipo de Estado")
     icono = property(get_icono, set_icono, None, "Propiedad Icono del Tipo de Estado")
     color = property(get_color, set_color, None, "Color del Estado")
@@ -87,6 +87,7 @@ class TipoEstado:
 
 class Estado:
     """Clase Estado"""
+
     def __init__(self, fila, columna, tipo):
         """
         :param fila: Fila que ocupa en el GridWorld

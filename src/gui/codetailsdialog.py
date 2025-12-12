@@ -14,6 +14,7 @@ class ShowCODetailsDialog(QtGui.QDialog):
     """
     Clase de diálogo 'Opciones' heredada de QDialog.
     """
+
     def __init__(self, caminooptimo, valoresq, dimgw, tblgridref=None, parent=None):
         """
         Constructor de la clase.
@@ -25,9 +26,11 @@ class ShowCODetailsDialog(QtGui.QDialog):
         self.ShowCODetailsD = Ui_CODetailsDialog()
         self.ShowCODetailsD.setupUi(self)
 
-        self.setWindowFlags(QtCore.Qt.Dialog |
-                            QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowTitleHint)
+        self.setWindowFlags(
+            QtCore.Qt.Dialog
+            | QtCore.Qt.WindowSystemMenuHint
+            | QtCore.Qt.WindowTitleHint
+        )
 
         self.camino_optimo = caminooptimo
         self.valores_q = valoresq
@@ -64,7 +67,9 @@ class ShowCODetailsDialog(QtGui.QDialog):
                 item_valor_q = QtGui.QTableWidgetItem(_tr("{:.2f}".format(valor_q)))
 
             item_nro_estado = QtGui.QTableWidgetItem(_tr("E{}".format(nro_estado)))
-            item_coord = QtGui.QTableWidgetItem(_tr("Fila: {} Columna: {}".format(x, y)))
+            item_coord = QtGui.QTableWidgetItem(
+                _tr("Fila: {} Columna: {}".format(x, y))
+            )
 
             item_valor_q.setTextAlignment(item_text_align)
             item_valor_q.setFlags(item_flags)

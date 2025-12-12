@@ -10,16 +10,21 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_GWGenRndEstadosDialog:
     def setupUi(self, GWGenRndEstadosDialog):
@@ -31,5 +36,6 @@ class Ui_GWGenRndEstadosDialog:
         QtCore.QMetaObject.connectSlotsByName(GWGenRndEstadosDialog)
 
     def retranslateUi(self, GWGenRndEstadosDialog):
-        GWGenRndEstadosDialog.setWindowTitle(_translate("GWGenRndEstadosDialog", "Generar estados aleatorios", None))
-
+        GWGenRndEstadosDialog.setWindowTitle(
+            _translate("GWGenRndEstadosDialog", "Generar estados aleatorios", None)
+        )

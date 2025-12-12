@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 
-
 import logging
 from PyQt4 import QtGui
 
@@ -11,6 +10,7 @@ class LogOutputHandler(logging.Handler):
     Fuente 1: http://stackoverflow.com/questions/8356336/how-to-capture-output-of-pythons-interpreter-and-show-in-a-text-widget
     Fuente 2: http://pantburk.info/?blog=77
     """
+
     def __init__(self, widget):
         super().__init__()
         self.widget = widget

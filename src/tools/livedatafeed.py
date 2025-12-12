@@ -2,24 +2,25 @@
 
 
 class LiveDataFeed:
-    """ A simple "live data feed" abstraction that allows a reader
-        to read the most recent data and find out whether it was
-        updated since the last read.
+    """A simple "live data feed" abstraction that allows a reader
+    to read the most recent data and find out whether it was
+    updated since the last read.
 
-        Interface to data writer:
+    Interface to data writer:
 
-        add_data(data):
-            Add new data to the feed.
+    add_data(data):
+        Add new data to the feed.
 
-        Interface to reader:
+    Interface to reader:
 
-        read_data():
-            Returns the most recent data.
+    read_data():
+        Returns the most recent data.
 
-        has_new_data:
-            A boolean attribute telling the reader whether the
-            data was updated since the last read.
+    has_new_data:
+        A boolean attribute telling the reader whether the
+        data was updated since the last read.
     """
+
     def __init__(self):
         """
         Constructor de la clase.
@@ -42,6 +43,7 @@ class LiveDataFeed:
         """
         self.has_new_data = False
         return self.cur_data
+
 
 if __name__ == "__main__":
     pass

@@ -8,6 +8,7 @@ from core.tecnicas.tecnica import QLTecnica
 
 class EGreedy(QLTecnica):
     """Técnica EGreedy"""
+
     def __init__(self, epsilon, paso_decremento=0, intervalo_decremento=0):
         """
         Inicializador.
@@ -80,19 +81,24 @@ class EGreedy(QLTecnica):
             # self.restaurar_val_parametro()
             pass
 
-    epsilon_general = property(get_epsilon_general,
-                               set_epsilon_general,
-                               None,
-                               "Parámetro Epsilon General de la técnica")
+    epsilon_general = property(
+        get_epsilon_general,
+        set_epsilon_general,
+        None,
+        "Parámetro Epsilon General de la técnica",
+    )
 
-    epsilon_parcial = property(get_epsilon_parcial,
-                               set_epsilon_parcial,
-                               None,
-                               "Parámetro Epsilon Parcial de la técnica")
+    epsilon_parcial = property(
+        get_epsilon_parcial,
+        set_epsilon_parcial,
+        None,
+        "Parámetro Epsilon Parcial de la técnica",
+    )
 
 
 class Greedy(EGreedy):
     """Técnica Greedy"""
+
     def __init__(self, epsilon=0, paso_decremento=0, intervalo_decremento=0):
         """
         Inicializador

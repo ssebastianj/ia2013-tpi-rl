@@ -38,6 +38,7 @@ from core.tecnicas.softmax import Softmax
 # Graphs
 from graphs.avgrwds.worker import GraphRecompensasPromedioWorker
 from graphs.sucessfuleps.worker import GraphSucessfulEpisodesWorker
+
 # from graphs.itersep.worker import GraphIteracionesXEpisodioWorker
 from graphs.matdiffs.worker import GraphMatrizDiffsWorker
 from graphs.heatmaps.matrizr import ShowMatrizRHeatMap
@@ -58,25 +59,27 @@ class MainWindow(QtGui.QMainWindow):
     Clase heredada de QMainWindow encargada de mostrar la ventana principal de
     la aplicación.
     """
+
     def __init__(self):
         super().__init__()
         self.WMainWindow = Ui_MainWindow()
         self.WMainWindow.setupUi(self)
 
-        title = QtCore.QString("Hola Mundo", fieldWidth='100')
+        title = QtCore.QString("Hola Mundo", fieldWidth="100")
         self.setWindowTitle(title)
 
         # Logging Config
-        logging.basicConfig(level=logging.DEBUG,
-                           format="[%(levelname)s] – %(threadName)-10s : %(message)s")
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format="[%(levelname)s] – %(threadName)-10s : %(message)s",
+        )
         self._logger = logging.getLogger()
         self._logger.disabled = not app_info.__DEBUG__
 
         # Freeze Support
         self._logger.debug("Activar Freeze Support")
         multiprocessing.freeze_support()
-        self._logger.debug("Cantidad de CPUs: {}"
-                      .format(multiprocessing.cpu_count()))
+        self._logger.debug("Cantidad de CPUs: {}".format(multiprocessing.cpu_count()))
 
         self._init_vars()
         self._initialize_window()
@@ -121,58 +124,65 @@ class MainWindow(QtGui.QMainWindow):
 
         # Políticas de selección de acción
         self.tecnicas = {  # 0: "Greedy",
-                           1: "ε-Greedy",
-                           2: "Softmax",
-                           # 3: "Aleatorio"
-                        }
+            1: "ε-Greedy",
+            2: "Softmax",
+            # 3: "Aleatorio"
+        }
 
         # Dimensiones disponibles del GridWorld
         self.gw_dimensiones = [  # "3 x 3", "4 x 4", "5 x 5",
-                               "6 x 6", "7 x 7", "8 x 8", "9 x 9", "10 x 10"]
+            "6 x 6",
+            "7 x 7",
+            "8 x 8",
+            "9 x 9",
+            "10 x 10",
+        ]
 
         # Configuración general
-        self.window_config = {"item":
-                              {"show_tooltip": True,
-                               "menu_estado":
-                               {"ocultar_tipos":
-                                [TIPOESTADO.AGENTE],
-                                "enabled": True
-                                },
-                               "size": 40},
-                              "gw":
-                             {"entrenamiento": {"actual_state": {"show": True, "color": "#000000", "icono": None},
-                                                "recompfinalauto": True,
-                                                "maxitersreached": {"action": 1, "warn": False}
-                                                },
-                              "recorrido": {"actual_state": {"show": True, "color": "#000000", "icono": None},
-                                            "maxitersreached": {"action": 0, "warn": False}},
-                              },
-                              "tipos_estados":
-                              {0: TipoEstado(0, None, _tr("Inicial"), _tr("I"), "#FF5500", None),
-                               1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#00AB00", None),
-                               2: TipoEstado(2, None, _tr("Agente"), _tr("A"), "#474747",
-                                             QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png"))),
-                               3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
-                               4: TipoEstado(4, 100, _tr("Excelente"), _tr("E"), "#BB0011", None),
-                               5: TipoEstado(5, 50, _tr("Bueno"), _tr("B"), "#4F0ACC", None),
-                               6: TipoEstado(6, -50, _tr("Malo"), _tr("M"), "#EB00A1", None),
-                               7: TipoEstado(7, None, _tr("Pared"), _tr("P"), "#000000", None),
-                               },
-                              "opt_path":
-                             {"color": "#55FF00",
-                                 "pintar_inicial": False,
-                                 "pintar_final": False,
-                                 "delay": 0,
-                                 "show_icon": False
-                              },
-                              "exponentes_final": {6: 13,
-                                                   7: 18,
-                                                   8: 20,
-                                                   9: 29,
-                                                   10: 32
-                                                   },
-                              "heatmap": {"interpolation": "nearest"}
-                              }
+        self.window_config = {
+            "item": {
+                "show_tooltip": True,
+                "menu_estado": {"ocultar_tipos": [TIPOESTADO.AGENTE], "enabled": True},
+                "size": 40,
+            },
+            "gw": {
+                "entrenamiento": {
+                    "actual_state": {"show": True, "color": "#000000", "icono": None},
+                    "recompfinalauto": True,
+                    "maxitersreached": {"action": 1, "warn": False},
+                },
+                "recorrido": {
+                    "actual_state": {"show": True, "color": "#000000", "icono": None},
+                    "maxitersreached": {"action": 0, "warn": False},
+                },
+            },
+            "tipos_estados": {
+                0: TipoEstado(0, None, _tr("Inicial"), _tr("I"), "#FF5500", None),
+                1: TipoEstado(1, 1000, _tr("Final"), _tr("F"), "#00AB00", None),
+                2: TipoEstado(
+                    2,
+                    None,
+                    _tr("Agente"),
+                    _tr("A"),
+                    "#474747",
+                    QtGui.QIcon(QtGui.QPixmap(":/iconos/Agente_1.png")),
+                ),
+                3: TipoEstado(3, 0, _tr("Neutro"), _tr("N"), "#FFFFFF", None),
+                4: TipoEstado(4, 100, _tr("Excelente"), _tr("E"), "#BB0011", None),
+                5: TipoEstado(5, 50, _tr("Bueno"), _tr("B"), "#4F0ACC", None),
+                6: TipoEstado(6, -50, _tr("Malo"), _tr("M"), "#EB00A1", None),
+                7: TipoEstado(7, None, _tr("Pared"), _tr("P"), "#000000", None),
+            },
+            "opt_path": {
+                "color": "#55FF00",
+                "pintar_inicial": False,
+                "pintar_final": False,
+                "delay": 0,
+                "show_icon": False,
+            },
+            "exponentes_final": {6: 13, 7: 18, 8: 20, 9: 29, 10: 32},
+            "heatmap": {"interpolation": "nearest"},
+        }
 
     def _initialize_window(self):
         """
@@ -255,62 +265,96 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnEntrenar.setShortcut(QtGui.QKeySequence(entrenar_shortcut))
         self.WMainWindow.btnRecorrer.setShortcut(QtGui.QKeySequence(recorrer_shortcut))
         self.WMainWindow.btnPausar.setShortcut(QtGui.QKeySequence(pausar_shortcut))
-        self.WMainWindow.btnTerminarProceso.setShortcut(QtGui.QKeySequence(cancelar_shortcut))
+        self.WMainWindow.btnTerminarProceso.setShortcut(
+            QtGui.QKeySequence(cancelar_shortcut)
+        )
 
-        self.WMainWindow.btnEntrenar.setToolTip("<html><head/><body><p>\
+        self.WMainWindow.btnEntrenar.setToolTip(
+            "<html><head/><body><p>\
                                                 Entrenar agente \
                                                 <span style='font-size:7pt;'>\
-                                                {}</span></p></body></html>"
-                                                .format(entrenar_shortcut))
-        self.WMainWindow.btnRecorrer.setToolTip("<html><head/><body><p>\
+                                                {}</span></p></body></html>".format(
+                entrenar_shortcut
+            )
+        )
+        self.WMainWindow.btnRecorrer.setToolTip(
+            "<html><head/><body><p>\
                                                 Explotar conocimiento \
                                                 <span style='font-size:7pt;'>\
-                                                {}</span></p></body></html>"
-                                                .format(recorrer_shortcut))
-        self.WMainWindow.btnTerminarProceso.setToolTip("<html><head/><body><p>\
+                                                {}</span></p></body></html>".format(
+                recorrer_shortcut
+            )
+        )
+        self.WMainWindow.btnTerminarProceso.setToolTip(
+            "<html><head/><body><p>\
                                                        Detener proceso \
                                                        <span style='font-size:7pt;'>\
-                                                       {}</span></p></body></html>"
-                                                       .format(cancelar_shortcut))
+                                                       {}</span></p></body></html>".format(
+                cancelar_shortcut
+            )
+        )
 
-        self.WMainWindow.btnPausar.setToolTip("<html><head/><body><p>\
+        self.WMainWindow.btnPausar.setToolTip(
+            "<html><head/><body><p>\
                                               Pausar proceso \
                                               <span style='font-size:7pt;'>\
-                                              {}</span></p></body></html>"
-                                              .format(pausar_shortcut))
+                                              {}</span></p></body></html>".format(
+                pausar_shortcut
+            )
+        )
 
         # Asignar shortcuts
         mostrar_mat_r_sc = "Ctrl+R"
         mostrar_mat_q_sc = "Ctrl+Q"
-        self.WMainWindow.btnMostrarMatrizR.setShortcut(QtGui.QKeySequence(mostrar_mat_r_sc))
-        self.WMainWindow.btnMostrarMatrizQ.setShortcut(QtGui.QKeySequence(mostrar_mat_q_sc))
+        self.WMainWindow.btnMostrarMatrizR.setShortcut(
+            QtGui.QKeySequence(mostrar_mat_r_sc)
+        )
+        self.WMainWindow.btnMostrarMatrizQ.setShortcut(
+            QtGui.QKeySequence(mostrar_mat_q_sc)
+        )
 
-        self.WMainWindow.btnMostrarMatrizR.setToolTip("<html><head/><body><p>\
+        self.WMainWindow.btnMostrarMatrizR.setToolTip(
+            "<html><head/><body><p>\
                                                 Mostrar matriz de recompensas \
                                                 <span style='font-size:7pt;'>\
-                                                {}</span></p></body></html>"
-                                                .format(mostrar_mat_r_sc))
-        self.WMainWindow.btnMostrarMatrizQ.setToolTip("<html><head/><body><p>\
+                                                {}</span></p></body></html>".format(
+                mostrar_mat_r_sc
+            )
+        )
+        self.WMainWindow.btnMostrarMatrizQ.setToolTip(
+            "<html><head/><body><p>\
                                                 Mostrar matriz Q \
                                                 <span style='font-size:7pt;'>\
-                                                {}</span></p></body></html>"
-                                                .format(mostrar_mat_q_sc))
+                                                {}</span></p></body></html>".format(
+                mostrar_mat_q_sc
+            )
+        )
 
         generar_estados_rnd_sc = "Ctrl+G"
         generar_estados_rnd_fast_sc = "Ctrl+Shift+G"
-        self.WMainWindow.btnGWGenerarEstados.setShortcut(QtGui.QKeySequence(generar_estados_rnd_sc))
-        self.WMainWindow.btnGenEstRndRapida.setShortcut(QtGui.QKeySequence(generar_estados_rnd_fast_sc))
+        self.WMainWindow.btnGWGenerarEstados.setShortcut(
+            QtGui.QKeySequence(generar_estados_rnd_sc)
+        )
+        self.WMainWindow.btnGenEstRndRapida.setShortcut(
+            QtGui.QKeySequence(generar_estados_rnd_fast_sc)
+        )
 
-        self.WMainWindow.btnGWGenerarEstados.setToolTip("<html><head/><body><p>\
+        self.WMainWindow.btnGWGenerarEstados.setToolTip(
+            "<html><head/><body><p>\
                                                 Generar estados aleatorios \
                                                 <span style='font-size:7pt;'>\
-                                                {}</span></p></body></html>"
-                                                .format(generar_estados_rnd_sc))
-        self.WMainWindow.btnGenEstRndRapida.setToolTip("<html><head/><body><p>\
+                                                {}</span></p></body></html>".format(
+                generar_estados_rnd_sc
+            )
+        )
+        self.WMainWindow.btnGenEstRndRapida.setToolTip(
+            "<html><head/><body><p>\
                                                 Generar estados y dimensión aleatorios (incluyendo al Estado Final) \
                                                 <span style='font-size:7pt;'>\
-                                                {}</span></p></body></html>"
-                                                .format(generar_estados_rnd_fast_sc))
+                                                {}</span></p></body></html>".format(
+                generar_estados_rnd_fast_sc
+            )
+        )
 
         self.setMouseTracking(True)
 
@@ -361,12 +405,13 @@ class MainWindow(QtGui.QMainWindow):
         ancho_gw, alto_gw = self.convert_dimension(dimension)
 
         # Crear un nuevo GridWorld dados el ancho y el alto del mismo
-        self.gridworld = GridWorld(ancho_gw,
-                                   alto_gw,
-                                   self.window_config["tipos_estados"],
-                                   None,
-                                   [TIPOESTADO.PARED]
-                                   )
+        self.gridworld = GridWorld(
+            ancho_gw,
+            alto_gw,
+            self.window_config["tipos_estados"],
+            None,
+            [TIPOESTADO.PARED],
+        )
 
         # Actualizar valor de recompensa final
         self.calcular_recompensa_final()
@@ -382,13 +427,25 @@ class MainWindow(QtGui.QMainWindow):
         # Establecer propiedades visuales de la tabla
         self.WMainWindow.tblGridWorld.setRowCount(alto_gw)
         self.WMainWindow.tblGridWorld.setColumnCount(ancho_gw)
-        self.WMainWindow.tblGridWorld.horizontalHeader().setDefaultSectionSize(ancho_estado_px)
-        self.WMainWindow.tblGridWorld.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-        self.WMainWindow.tblGridWorld.verticalHeader().setDefaultSectionSize(ancho_estado_px)
-        self.WMainWindow.tblGridWorld.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
+        self.WMainWindow.tblGridWorld.horizontalHeader().setDefaultSectionSize(
+            ancho_estado_px
+        )
+        self.WMainWindow.tblGridWorld.horizontalHeader().setResizeMode(
+            QtGui.QHeaderView.Fixed
+        )
+        self.WMainWindow.tblGridWorld.verticalHeader().setDefaultSectionSize(
+            ancho_estado_px
+        )
+        self.WMainWindow.tblGridWorld.verticalHeader().setResizeMode(
+            QtGui.QHeaderView.Fixed
+        )
         self.WMainWindow.tblGridWorld.setCursor(QtCore.Qt.PointingHandCursor)
-        ancho_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
-        alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
+        ancho_contenedor = (
+            ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
+        )
+        alto_contenedor = (
+            ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
+        )
         self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
         # self.WMainWindow.tblGridWorld.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
 
@@ -408,29 +465,47 @@ class MainWindow(QtGui.QMainWindow):
         """
         self.WMainWindow.actionAppSalir.triggered.connect(self.exit)
         # Cambia la Dimensión del GridWorld al seleccionar la dimensión en el ComboBox
-        self.WMainWindow.cbGWDimension.currentIndexChanged.connect(self.set_gw_dimension_cb)
+        self.WMainWindow.cbGWDimension.currentIndexChanged.connect(
+            self.set_gw_dimension_cb
+        )
         # Cambia el Tipo de Estado al clickear un casillero del tblGridWorld
-        self.WMainWindow.tblGridWorld.cellClicked[int, int].connect(self.switch_tipo_estado)
+        self.WMainWindow.tblGridWorld.cellClicked[int, int].connect(
+            self.switch_tipo_estado
+        )
         # Empieza el Entrenamiento al clickear el btnEntrenar
         self.WMainWindow.btnEntrenar.clicked.connect(self.entrenar)
         # Interrumpe el Entrenamiento al clickear el btnTerminarTraining
         self.WMainWindow.btnTerminarProceso.clicked.connect(self.terminar_proceso)
         # Muestra sólo los parámetros utilizados en la técnica seleccionada en el ComboBox
-        self.WMainWindow.cbQLTecnicas.currentIndexChanged.connect(self.parametros_segun_tecnica)
+        self.WMainWindow.cbQLTecnicas.currentIndexChanged.connect(
+            self.parametros_segun_tecnica
+        )
         # Al hacer clic derecho sobre un item del GridWorld
-        self.WMainWindow.tblGridWorld.customContextMenuRequested.connect(self.show_item_menu)
+        self.WMainWindow.tblGridWorld.customContextMenuRequested.connect(
+            self.show_item_menu
+        )
         self.WMainWindow.btnInicializarTodo.clicked.connect(self.inicializar_todo)
         self.WMainWindow.btnRecorrer.clicked.connect(self.recorrer_gw)
         # Emite cuando se coloca el cursor del mouse sobre un ítem
-        self.WMainWindow.tblGridWorld.itemEntered.connect(self.mostrar_info_est_status_bar)
-        self.WMainWindow.menuGridWorld.aboutToShow.connect(self.generar_menu_dimensiones)
+        self.WMainWindow.tblGridWorld.itemEntered.connect(
+            self.mostrar_info_est_status_bar
+        )
+        self.WMainWindow.menuGridWorld.aboutToShow.connect(
+            self.generar_menu_dimensiones
+        )
         self.WMainWindow.menuQLearning.aboutToShow.connect(self.generar_menu_tecnicas)
         self.WMainWindow.menuGridWorld.triggered.connect(self.set_gw_dimension_menu)
-        self.WMainWindow.menuQLearning.triggered.connect(self.parametros_segun_tecnica_menu)
+        self.WMainWindow.menuQLearning.triggered.connect(
+            self.parametros_segun_tecnica_menu
+        )
         self.WMainWindow.actionAcercaDe.triggered.connect(self.mostrar_dialogo_acerca)
-        self.WMainWindow.btnGWGenerarEstados.clicked.connect(self.mostrar_gen_rnd_estados_dialog)
+        self.WMainWindow.btnGWGenerarEstados.clicked.connect(
+            self.mostrar_gen_rnd_estados_dialog
+        )
         self.WMainWindow.btnInicializarGW.clicked.connect(self.refresh_gw)
-        self.WMainWindow.btnInicializarValoresQL.clicked.connect(self.inicializar_ql_vals)
+        self.WMainWindow.btnInicializarValoresQL.clicked.connect(
+            self.inicializar_ql_vals
+        )
         self.WMainWindow.actionInicializarTodo.triggered.connect(self.inicializar_todo)
         self.WMainWindow.btnGWOpciones.clicked.connect(self.mostrar_opciones_gw)
         self.WMainWindow.actionAgenteEntrenar.triggered.connect(self.entrenar)
@@ -439,13 +514,19 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.btnMostrarMatrizQ.clicked.connect(self.show_matriz_q)
         self.WMainWindow.btnMostrarMatrizR.clicked.connect(self.show_matriz_r)
         self.WMainWindow.btnCOShowHide.clicked.connect(self.show_hide_camino_optimo)
-        self.WMainWindow.btnGenEstRndRapida.clicked.connect(lambda: self.refresh_gw_random(True, True))
+        self.WMainWindow.btnGenEstRndRapida.clicked.connect(
+            lambda: self.refresh_gw_random(True, True)
+        )
         self.WMainWindow.sbQLGamma.valueChanged.connect(self.calcular_recompensa_final)
         self.WMainWindow.menuEstadisticas.triggered.connect(self.show_estadisticas)
-        self.WMainWindow.menuEstadisticas.aboutToShow.connect(self.generar_menu_estadisticas)
+        self.WMainWindow.menuEstadisticas.aboutToShow.connect(
+            self.generar_menu_estadisticas
+        )
         self.WMainWindow.sbQLTau.editingFinished.connect(self.calcular_gamma_minimo)
         self.WMainWindow.btnPausar.clicked.connect(self.pausar_reanudar_proceso)
-        self.WMainWindow.actionAgentePausar.triggered.connect(self.pausar_reanudar_proceso)
+        self.WMainWindow.actionAgentePausar.triggered.connect(
+            self.pausar_reanudar_proceso
+        )
         self.WMainWindow.btnCOAdelante.clicked.connect(self.estado_co_next)
         self.WMainWindow.btnCOAtras.clicked.connect(self.estado_co_back)
         self.WMainWindow.btnMatrizQVerHM.clicked.connect(self.mostrar_matrizq_hm)
@@ -542,8 +623,9 @@ class MainWindow(QtGui.QMainWindow):
 
         tipos_estados = self.gridworld.tipos_estados
         item_actual = self.WMainWindow.tblGridWorld.itemAt(posicion)
-        estado_actual = self.gridworld.get_estado(item_actual.row() + 1,
-                                                  item_actual.column() + 1)
+        estado_actual = self.gridworld.get_estado(
+            item_actual.row() + 1, item_actual.column() + 1
+        )
 
         # Crear menu contextual para los items de la tabla
         self.menu_item = QtGui.QMenu("Tipo de estado")
@@ -551,15 +633,15 @@ class MainWindow(QtGui.QMainWindow):
 
         for tipo in tipos_estados.values():
             if tipo.ide not in ocultar_tipos_list:
-
                 # Verificar si el tipo de estado posee un ícono
                 if tipo.icono is None:
-                    action = QtGui.QAction(tipo.nombre,
-                                           self.WMainWindow.tblGridWorld)
+                    action = QtGui.QAction(tipo.nombre, self.WMainWindow.tblGridWorld)
                 else:
-                    action = QtGui.QAction(QtGui.QIcon(tipo.icono),
-                                           tipo.nombre,
-                                           self.WMainWindow.tblGridWorld)
+                    action = QtGui.QAction(
+                        QtGui.QIcon(tipo.icono),
+                        tipo.nombre,
+                        self.WMainWindow.tblGridWorld,
+                    )
 
                 # Asociar al texto del menu el tipo de estado correspondiente
                 action.setData(tipo.ide)
@@ -572,7 +654,9 @@ class MainWindow(QtGui.QMainWindow):
                 if cant_selected == 1:
                     action.setStatusTip("Establecer estado como {}".format(tipo.nombre))
                 elif cant_selected > 1:
-                    action.setStatusTip("Establecer estados seleccionados como {}".format(tipo.nombre))
+                    action.setStatusTip(
+                        "Establecer estados seleccionados como {}".format(tipo.nombre)
+                    )
                 self.menu_item.addAction(action)
 
                 if tipo.ide == TIPOESTADO.FINAL:
@@ -587,7 +671,9 @@ class MainWindow(QtGui.QMainWindow):
                         action.setEnabled(True)
 
         # Mostrar el menú y obtener el item de menu clickeado
-        action = self.menu_item.exec_(self.WMainWindow.tblGridWorld.mapToGlobal(posicion))
+        action = self.menu_item.exec_(
+            self.WMainWindow.tblGridWorld.mapToGlobal(posicion)
+        )
 
         if action is not None:
             # Cachear acceso a métodos y atributos
@@ -603,8 +689,7 @@ class MainWindow(QtGui.QMainWindow):
                 item.setBackgroundColor(QtGui.QColor(tipos_estados[tipo_num].color))
                 item.setSelected(False)
 
-                estado_actual = gw_get_estado(item.row() + 1,
-                                              item.column() + 1)
+                estado_actual = gw_get_estado(item.row() + 1, item.column() + 1)
 
                 if tipo_num == TIPOESTADO.INICIAL:
                     self.estado_inicial = estado_actual
@@ -634,12 +719,15 @@ class MainWindow(QtGui.QMainWindow):
                     columna = item.column()
                     nro_estado = (fila * alto) + columna + 1
 
-                    item.setToolTip("Estado E{}\nFila: {}\nColumna: {}\nTipo: {}\nRecompensa: {}"
-                                    .format(nro_estado,
-                                            fila + 1,
-                                            columna + 1,
-                                            estado_actual.tipo.nombre,
-                                            estado_actual.tipo.recompensa))
+                    item.setToolTip(
+                        "Estado E{}\nFila: {}\nColumna: {}\nTipo: {}\nRecompensa: {}".format(
+                            nro_estado,
+                            fila + 1,
+                            columna + 1,
+                            estado_actual.tipo.nombre,
+                            estado_actual.tipo.recompensa,
+                        )
+                    )
 
     def entrenar(self):
         """
@@ -648,15 +736,19 @@ class MainWindow(QtGui.QMainWindow):
         """
 
         if self.estado_final is None:
-            QtGui.QMessageBox.warning(self,
-                                          _tr('QLearning - Entrenamiento'),
-                                          "Debe establecer un Estado Final antes de realizar el entrenamiento.")
+            QtGui.QMessageBox.warning(
+                self,
+                _tr("QLearning - Entrenamiento"),
+                "Debe establecer un Estado Final antes de realizar el entrenamiento.",
+            )
             return None
 
         if self.estado_inicial is not None:
-            QtGui.QMessageBox.warning(self,
-                                          _tr('QLearning - Entrenamiento'),
-                                          "Quite el Estado Inicial y elija otro tipo de estado antes de realizar el entrenamiento.")
+            QtGui.QMessageBox.warning(
+                self,
+                _tr("QLearning - Entrenamiento"),
+                "Quite el Estado Inicial y elija otro tipo de estado antes de realizar el entrenamiento.",
+            )
             return None
 
         # Bloquear GridWorld
@@ -674,15 +766,25 @@ class MainWindow(QtGui.QMainWindow):
         # self.graph_iters_por_episodio = None
 
         # Parámetros para mostrar el estado actual en pantalla
-        self.ent_warn_loop_alarm = self.window_config["gw"]["entrenamiento"]["maxitersreached"]["warn"]
-        self.ent_show_estado_act = self.window_config["gw"]["entrenamiento"]["actual_state"]["show"]
-        self.ent_color_estado_act = QtGui.QColor(self.window_config["gw"]["entrenamiento"]["actual_state"]["color"])
-        self.ent_icon_estado_act = self.window_config["gw"]["entrenamiento"]["actual_state"]["icono"]
+        self.ent_warn_loop_alarm = self.window_config["gw"]["entrenamiento"][
+            "maxitersreached"
+        ]["warn"]
+        self.ent_show_estado_act = self.window_config["gw"]["entrenamiento"][
+            "actual_state"
+        ]["show"]
+        self.ent_color_estado_act = QtGui.QColor(
+            self.window_config["gw"]["entrenamiento"]["actual_state"]["color"]
+        )
+        self.ent_icon_estado_act = self.window_config["gw"]["entrenamiento"][
+            "actual_state"
+        ]["icono"]
         self.ent_null_icon = QtGui.QIcon()
 
         # ----------- Comienzo de seteo de la técnica --------------
         # Obtener la información asociada al ítem actual del combobox
-        item_data = self.WMainWindow.cbQLTecnicas.itemData(self.WMainWindow.cbQLTecnicas.currentIndex())
+        item_data = self.WMainWindow.cbQLTecnicas.itemData(
+            self.WMainWindow.cbQLTecnicas.currentIndex()
+        )
         # Obtener el índice propio de la técnica a utilizar
         id_tecnica = item_data.toInt()[0]
         tecnica = self.tecnicas[id_tecnica]
@@ -706,8 +808,8 @@ class MainWindow(QtGui.QMainWindow):
             tecnica = None
 
         if self.WMainWindow.chkDecrementarParam.isChecked():
-                paso_decremento = self.WMainWindow.sbDecrementoVal.value()
-                intervalo_decremento = self.WMainWindow.sbCantEpisodiosDec.value()
+            paso_decremento = self.WMainWindow.sbDecrementoVal.value()
+            intervalo_decremento = self.WMainWindow.sbCantEpisodiosDec.value()
         else:
             paso_decremento = 0
             intervalo_decremento = 0
@@ -723,7 +825,9 @@ class MainWindow(QtGui.QMainWindow):
             init_value_fn = 0
         elif self.WMainWindow.optMQInitValOptimistas.isChecked():
             incremento = self.WMainWindow.sbValOptimoIncremento.value()
-            max_recomp = self.window_config["tipos_estados"][TIPOESTADO.FINAL].recompensa
+            max_recomp = self.window_config["tipos_estados"][
+                TIPOESTADO.FINAL
+            ].recompensa
             init_value_fn = max_recomp + incremento
         else:
             init_value_fn = 0
@@ -742,26 +846,31 @@ class MainWindow(QtGui.QMainWindow):
         intervalo_diff_calc = self.WMainWindow.sbIntervaloDiffCalc.value()
 
         cant_max_iter_gral = 50000
-        stop_action = self.window_config["gw"]["entrenamiento"]["maxitersreached"]["action"]
+        stop_action = self.window_config["gw"]["entrenamiento"]["maxitersreached"][
+            "action"
+        ]
 
         # Crear una nueva instancia de Q-Learning
-        self.qlearning = QLearning(self.gridworld,
-                                   gamma,
-                                   (tecnica, parametro, paso_decremento, intervalo_decremento),
-                                   cant_episodios,
-                                   (limitar_nro_iteraciones, cant_max_iter),
-                                   init_value_fn,
-                                   (matdiff_status, matriz_min_diff, intervalo_diff_calc),
-                                   (cant_max_iter_gral, stop_action),
-                                   None)
+        self.qlearning = QLearning(
+            self.gridworld,
+            gamma,
+            (tecnica, parametro, paso_decremento, intervalo_decremento),
+            cant_episodios,
+            (limitar_nro_iteraciones, cant_max_iter),
+            init_value_fn,
+            (matdiff_status, matriz_min_diff, intervalo_diff_calc),
+            (cant_max_iter_gral, stop_action),
+            None,
+        )
 
         # QLearningEntrenarWorker Management
         # Que empiece la magia
         self.ql_entrenar_out_q = multiprocessing.Queue()
         self.ql_entrenar_error_q = multiprocessing.Queue()
 
-        self.qlearning_entrenar_worker = self.qlearning.entrenar(self.ql_entrenar_out_q,
-                                                                 self.ql_entrenar_error_q)
+        self.qlearning_entrenar_worker = self.qlearning.entrenar(
+            self.ql_entrenar_out_q, self.ql_entrenar_error_q
+        )
 
         self._logger.debug("Nuevo Thread: {}".format(self.qlearning_entrenar_worker))
 
@@ -781,12 +890,13 @@ class MainWindow(QtGui.QMainWindow):
             self.working_process_mng = psutil.Process(self.working_process.pid)
             self.entrenar_is_running = True
 
-            self._parametros = (gamma,
-                                (id_tecnica, parametro, paso_decremento, intervalo_decremento),
-                                cant_episodios,
-                                (limitar_nro_iteraciones, cant_max_iter),
-                                init_value_fn
-                                )
+            self._parametros = (
+                gamma,
+                (id_tecnica, parametro, paso_decremento, intervalo_decremento),
+                cant_episodios,
+                (limitar_nro_iteraciones, cant_max_iter),
+                init_value_fn,
+            )
 
             self.on_comienzo_proceso()
 
@@ -796,15 +906,19 @@ class MainWindow(QtGui.QMainWindow):
         Q mayores.
         """
         if self.estado_final is None:
-            QtGui.QMessageBox.warning(self,
-                                      tr('QLearning - Recorrido'),
-                                      "Debe establecer un Estado Final antes de realizar el recorrido.")
+            QtGui.QMessageBox.warning(
+                self,
+                tr("QLearning - Recorrido"),
+                "Debe establecer un Estado Final antes de realizar el recorrido.",
+            )
             return None
 
         if self.estado_inicial is None:
-            QtGui.QMessageBox.warning(self,
-                                      _tr('QLearning - Recorrido'),
-                                      "Debe establecer un Estado Inicial antes de realizar el recorrido.")
+            QtGui.QMessageBox.warning(
+                self,
+                _tr("QLearning - Recorrido"),
+                "Debe establecer un Estado Inicial antes de realizar el recorrido.",
+            )
             return None
 
         # Ocultar camino óptimo antes de jugar
@@ -814,23 +928,30 @@ class MainWindow(QtGui.QMainWindow):
         self.q_vals_co = None
 
         # Parámetros para mostrar el estado actual en pantalla
-        self.rec_show_estado_act = self.window_config["gw"]["recorrido"]["actual_state"]["show"]
-        self.rec_color_estado_act = QtGui.QColor(self.window_config["gw"]["recorrido"]["actual_state"]["color"])
-        self.rec_icon_estado_act = self.window_config["gw"]["recorrido"]["actual_state"]["icono"]
+        self.rec_show_estado_act = self.window_config["gw"]["recorrido"][
+            "actual_state"
+        ]["show"]
+        self.rec_color_estado_act = QtGui.QColor(
+            self.window_config["gw"]["recorrido"]["actual_state"]["color"]
+        )
+        self.rec_icon_estado_act = self.window_config["gw"]["recorrido"][
+            "actual_state"
+        ]["icono"]
         self.rec_null_icon = QtGui.QIcon()
 
         # Crear colas para comunicarse con el proceso
         self.ql_recorrer_out_q = multiprocessing.Queue()
         self.ql_recorrer_error_q = multiprocessing.Queue()
 
-        estado_inicial = (self.estado_inicial.fila,
-                          self.estado_inicial.columna)
+        estado_inicial = (self.estado_inicial.fila, self.estado_inicial.columna)
 
-        self.qlearning_recorrer_worker = self.qlearning.recorrer(self.matriz_q,
-                                                                 self.mat_est_acc,
-                                                                 estado_inicial,
-                                                                 self.ql_recorrer_out_q,
-                                                                 self.ql_recorrer_error_q)
+        self.qlearning_recorrer_worker = self.qlearning.recorrer(
+            self.matriz_q,
+            self.mat_est_acc,
+            estado_inicial,
+            self.ql_recorrer_out_q,
+            self.ql_recorrer_error_q,
+        )
 
         self._logger.debug("Nuevo Thread: {}".format(self.qlearning_recorrer_worker))
 
@@ -934,13 +1055,16 @@ class MainWindow(QtGui.QMainWindow):
             try:
                 self.wnd_taskbar = taskbar.WindowsTaskBar()
                 self.wnd_taskbar.HrInit()
-                self.wnd_taskbar.SetProgressState(self.winId(),
-                                                  self.wnd_taskbar.TBPF_NORMAL)
+                self.wnd_taskbar.SetProgressState(
+                    self.winId(), self.wnd_taskbar.TBPF_NORMAL
+                )
             except (RuntimeError, AttributeError):
                 pass
 
         if self.recorrer_is_running:
-            self.WMainWindow.statusBar.showMessage(_tr("Agente buscando camino óptimo..."))
+            self.WMainWindow.statusBar.showMessage(
+                _tr("Agente buscando camino óptimo...")
+            )
             self.lbl_process_stat.setText("Explotando")
             self.WMainWindow.btnEntrenar.setDisabled(self.recorrer_is_running)
             self.WMainWindow.btnRecorrer.setDisabled(self.recorrer_is_running)
@@ -955,8 +1079,9 @@ class MainWindow(QtGui.QMainWindow):
             try:
                 self.wnd_taskbar = taskbar.WindowsTaskBar()
                 self.wnd_taskbar.HrInit()
-                self.wnd_taskbar.SetProgressState(self.winId(),
-                                                  self.wnd_taskbar.TBPF_INDETERMINATE)
+                self.wnd_taskbar.SetProgressState(
+                    self.winId(), self.wnd_taskbar.TBPF_INDETERMINATE
+                )
             except (RuntimeError, AttributeError):
                 pass
 
@@ -985,8 +1110,11 @@ class MainWindow(QtGui.QMainWindow):
         self.window_config["item"]["menu_estado"]["enabled"] = True
         self.window_config["item"]["show_tooltip"] = True
 
-        self._logger.debug("Procesos hijos activos: {}\nFin de procesamiento"
-            .format(multiprocessing.active_children()))
+        self._logger.debug(
+            "Procesos hijos activos: {}\nFin de procesamiento".format(
+                multiprocessing.active_children()
+            )
+        )
 
         self.WMainWindow.gbGridWorld.setEnabled(True)
         self.WMainWindow.gbQLearning.setEnabled(True)
@@ -1001,7 +1129,9 @@ class MainWindow(QtGui.QMainWindow):
             self.entrenar_is_running = False
             self.WMainWindow.btnEntrenar.setEnabled(True)
             self.WMainWindow.actionAgenteEntrenar.setEnabled(True)
-            self.WMainWindow.statusBar.showMessage(_tr("Ha finalizado el entrenamiento."), 2000)
+            self.WMainWindow.statusBar.showMessage(
+                _tr("Ha finalizado el entrenamiento."), 2000
+            )
 
             test_matriz_q = self.matriz_q is not None
             self.WMainWindow.btnRecorrer.setEnabled(test_matriz_q)
@@ -1017,7 +1147,9 @@ class MainWindow(QtGui.QMainWindow):
             self.WMainWindow.actionAgenteRecorrer.setEnabled(True)
             self.WMainWindow.gbCOAcciones.setEnabled(True)
             self.WMainWindow.gbCOAvance.setEnabled(True)
-            self.WMainWindow.statusBar.showMessage(_tr("Ha finalizado la búsqueda del camino óptimo."), 2000)
+            self.WMainWindow.statusBar.showMessage(
+                _tr("Ha finalizado la búsqueda del camino óptimo."), 2000
+            )
 
         self.WMainWindow.btnTerminarProceso.setEnabled(False)
         self.WMainWindow.actionAgenteCancelar.setEnabled(False)
@@ -1057,8 +1189,9 @@ class MainWindow(QtGui.QMainWindow):
         self.last_state_bg = None
 
         try:
-            self.wnd_taskbar.SetProgressState(self.winId(),
-                                              self.wnd_taskbar.TBPF_NOPROGRESS)
+            self.wnd_taskbar.SetProgressState(
+                self.winId(), self.wnd_taskbar.TBPF_NOPROGRESS
+            )
         except (RuntimeError, AttributeError):
             pass
 
@@ -1166,25 +1299,25 @@ class MainWindow(QtGui.QMainWindow):
             data_entrenar = self.get_all_from_queue(self.ql_entrenar_out_q)
 
             for ql_ent_info in data_entrenar:
-                estado_actual_ent = ql_ent_info.get('EstadoActual')
-                nro_episodio = ql_ent_info.get('NroEpisodio')
-                cant_iteraciones = ql_ent_info.get('NroIteracion')
-                episode_exec_time = ql_ent_info.get('EpisodiosExecTime', 0.0)
-                iter_exec_time = ql_ent_info.get('IteracionesExecTime', 0.0)
-                worker_joined = ql_ent_info.get('ProcesoJoined')
-                loop_alarm_pack = ql_ent_info.get('LoopAlarm', (False, -1))
-                matriz_q = ql_ent_info.get('MatrizQ')
-                valor_parametro = ql_ent_info.get('ValorParametro')
-                running_exec_time_ent = ql_ent_info.get('RunningExecTime', 0.0)
-                tmp_mat_diff = ql_ent_info.get('MatDiff')
-                corte_iteracion = ql_ent_info.get('CorteIteracion')
-                mat_est_acc = ql_ent_info.get('MatEstAcc')
+                estado_actual_ent = ql_ent_info.get("EstadoActual")
+                nro_episodio = ql_ent_info.get("NroEpisodio")
+                cant_iteraciones = ql_ent_info.get("NroIteracion")
+                episode_exec_time = ql_ent_info.get("EpisodiosExecTime", 0.0)
+                iter_exec_time = ql_ent_info.get("IteracionesExecTime", 0.0)
+                worker_joined = ql_ent_info.get("ProcesoJoined")
+                loop_alarm_pack = ql_ent_info.get("LoopAlarm", (False, -1))
+                matriz_q = ql_ent_info.get("MatrizQ")
+                valor_parametro = ql_ent_info.get("ValorParametro")
+                running_exec_time_ent = ql_ent_info.get("RunningExecTime", 0.0)
+                tmp_mat_diff = ql_ent_info.get("MatDiff")
+                corte_iteracion = ql_ent_info.get("CorteIteracion")
+                mat_est_acc = ql_ent_info.get("MatEstAcc")
 
                 # Información estadística
-                graph_recompensas_promedio = ql_ent_info.get('MatRecompProm')
-                graph_episodios_finalizados = ql_ent_info.get('EpFinalizados')
+                graph_recompensas_promedio = ql_ent_info.get("MatRecompProm")
+                graph_episodios_finalizados = ql_ent_info.get("EpFinalizados")
                 # graph_iters_por_episodio = ql_ent_info.get('ItersXEpisodio')
-                graph_mat_diff = ql_ent_info.get('MatDiffStat')
+                graph_mat_diff = ql_ent_info.get("MatDiffStat")
 
                 self.graph_episodios_finalizados = graph_episodios_finalizados
                 self.graph_recompensas_promedio = graph_recompensas_promedio
@@ -1202,17 +1335,35 @@ class MainWindow(QtGui.QMainWindow):
                     x_actual, y_actual = estado_actual_ent
 
                     # Mostrar información de entrenamiento en etiquetas
-                    main_wnd.lblEntEstadoActual.setText("X:{}  Y:{}".format(x_actual,  # @IgnorePep8
-                                                                              y_actual))  # @IgnorePep8
+                    main_wnd.lblEntEstadoActual.setText(
+                        "X:{}  Y:{}".format(
+                            x_actual,  # @IgnorePep8
+                            y_actual,
+                        )
+                    )  # @IgnorePep8
                     main_wnd.lblEntNroEpisodio.setText(str(nro_episodio))
                     main_wnd.lblEntNroIteracion.setText(str(cant_iteraciones))
-                    main_wnd.lblEntValParametro.setText("{:.2f}".format(valor_parametro))  # @IgnorePep8
-                    main_wnd.lblEntExecTimeEpisodios.setText("{:.3f} seg  ({:.2f} ms)".format(episode_exec_time,  # @IgnorePep8
-                                                                                                episode_exec_time * 1000))  # @IgnorePep8
-                    main_wnd.lblEntExecTimeIteraciones.setText("{:.3f} seg  ({:.2f} ms)".format(iter_exec_time,  # @IgnorePep8
-                                                                                                  iter_exec_time * 1000))  # @IgnorePep8
-                    main_wnd.lblEntExecTimeTotal.setText("{:.3f} seg  ({:.2f} ms)".format(running_exec_time_ent,  # @IgnorePep8
-                                                                                            running_exec_time_ent * 1000))  # @IgnorePep8
+                    main_wnd.lblEntValParametro.setText(
+                        "{:.2f}".format(valor_parametro)
+                    )  # @IgnorePep8
+                    main_wnd.lblEntExecTimeEpisodios.setText(
+                        "{:.3f} seg  ({:.2f} ms)".format(
+                            episode_exec_time,  # @IgnorePep8
+                            episode_exec_time * 1000,
+                        )
+                    )  # @IgnorePep8
+                    main_wnd.lblEntExecTimeIteraciones.setText(
+                        "{:.3f} seg  ({:.2f} ms)".format(
+                            iter_exec_time,  # @IgnorePep8
+                            iter_exec_time * 1000,
+                        )
+                    )  # @IgnorePep8
+                    main_wnd.lblEntExecTimeTotal.setText(
+                        "{:.3f} seg  ({:.2f} ms)".format(
+                            running_exec_time_ent,  # @IgnorePep8
+                            running_exec_time_ent * 1000,
+                        )
+                    )  # @IgnorePep8
                     main_wnd.lblEntDiffMatrices.setText(str(tmp_mat_diff))
 
                     # Actualizar progress bar interno
@@ -1220,9 +1371,9 @@ class MainWindow(QtGui.QMainWindow):
 
                     # Actualizar progress bar de Windows
                     try:
-                        self.wnd_taskbar.SetProgressValue(win_id,
-                                                          nro_episodio,
-                                                          cant_episodios)
+                        self.wnd_taskbar.SetProgressValue(
+                            win_id, nro_episodio, cant_episodios
+                        )
                     except RuntimeError:
                         pass
                 except TypeError:
@@ -1233,8 +1384,7 @@ class MainWindow(QtGui.QMainWindow):
                 # Mostrar estado actual en grilla
                 if ent_show_estado_act:
                     try:
-                        item = main_wnd.tblGridWorld.item(x_actual - 1,
-                                                          y_actual - 1)
+                        item = main_wnd.tblGridWorld.item(x_actual - 1, y_actual - 1)
                     except TypeError:
                         pass
                     except UnboundLocalError:
@@ -1261,9 +1411,11 @@ class MainWindow(QtGui.QMainWindow):
                             pass
 
                 if ent_loop_alarm and ent_warn_loop_alarm:
-                    QtGui.QMessageBox.warning(self,
-                                              _tr('QLearning - Entrenamiento'),
-                    "Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.")
+                    QtGui.QMessageBox.warning(
+                        self,
+                        _tr("QLearning - Entrenamiento"),
+                        "Se ha detectado que el Estado Final se encuentra bloqueado por lo que se cancelará el entrenamiento.",
+                    )
 
                     # self.working_process.join(0.05)
                     # self.qlearning_entrenar_worker = None
@@ -1295,13 +1447,13 @@ class MainWindow(QtGui.QMainWindow):
             data_recorrer = self.get_all_from_queue(self.ql_recorrer_out_q)
 
             for ql_rec_info in data_recorrer:
-                estado_actual_rec = ql_rec_info.get('EstadoActual')
-                camino_optimo = ql_rec_info.get('CaminoRecorrido')
-                running_exec_time_rec = ql_rec_info.get('RunningExecTime', 0.0)
-                worker_joined = ql_rec_info.get('ProcesoJoined')
-                rec_exec_time = ql_rec_info.get('RecorridoExecTime', 0.0)
-                nro_iteracion = ql_rec_info.get('NroIteracion')
-                q_vals_co = ql_rec_info.get('ValoresQCR')
+                estado_actual_rec = ql_rec_info.get("EstadoActual")
+                camino_optimo = ql_rec_info.get("CaminoRecorrido")
+                running_exec_time_rec = ql_rec_info.get("RunningExecTime", 0.0)
+                worker_joined = ql_rec_info.get("ProcesoJoined")
+                rec_exec_time = ql_rec_info.get("RecorridoExecTime", 0.0)
+                nro_iteracion = ql_rec_info.get("NroIteracion")
+                q_vals_co = ql_rec_info.get("ValoresQCR")
 
                 self.camino_optimo = camino_optimo
                 self.q_vals_co = q_vals_co
@@ -1311,11 +1463,21 @@ class MainWindow(QtGui.QMainWindow):
                     x_actual, y_actual = estado_actual_rec
                     # self._logger.debug("Estado actual: {0}".format(estado_actual_rec))
 
-                    main_wnd.lblRecEstadoActual.setText("X:{}  Y:{}".format(x_actual, y_actual))  # @IgnorePep8
-                    main_wnd.lblRecExecTimeTotal.setText("{:.3f} seg  ({:.2f} ms)".format(running_exec_time_rec,  # @IgnorePep8
-                                                                                            running_exec_time_rec * 1000))  # @IgnorePep8
-                    main_wnd.lblRecExecTimeRecorrido.setText("{:.3f} seg  ({:.2f} ms)".format(rec_exec_time,  # @IgnorePep8
-                                                                                                rec_exec_time * 1000))  # @IgnorePep8
+                    main_wnd.lblRecEstadoActual.setText(
+                        "X:{}  Y:{}".format(x_actual, y_actual)
+                    )  # @IgnorePep8
+                    main_wnd.lblRecExecTimeTotal.setText(
+                        "{:.3f} seg  ({:.2f} ms)".format(
+                            running_exec_time_rec,  # @IgnorePep8
+                            running_exec_time_rec * 1000,
+                        )
+                    )  # @IgnorePep8
+                    main_wnd.lblRecExecTimeRecorrido.setText(
+                        "{:.3f} seg  ({:.2f} ms)".format(
+                            rec_exec_time,  # @IgnorePep8
+                            rec_exec_time * 1000,
+                        )
+                    )  # @IgnorePep8
                 except TypeError:
                     pass
                 except ValueError:
@@ -1324,8 +1486,7 @@ class MainWindow(QtGui.QMainWindow):
                 # Mostrar estado actual en grilla
                 if rec_show_est_act:
                     try:
-                        item = main_wnd.tblGridWorld.item(x_actual - 1,
-                                                          y_actual - 1)
+                        item = main_wnd.tblGridWorld.item(x_actual - 1, y_actual - 1)
                     except TypeError:
                         pass
 
@@ -1359,10 +1520,10 @@ class MainWindow(QtGui.QMainWindow):
 
     def get_all_from_queue(self, cola):
         """Generator to yield one after the others all items
-            currently in the queue Q, without any waiting.
-            Grupo Nº 1 wants to thanks to Eli Bendersky for the idea.
+        currently in the queue Q, without any waiting.
+        Grupo Nº 1 wants to thanks to Eli Bendersky for the idea.
 
-            :param cola: Cola de entrada
+        :param cola: Cola de entrada
         """
         try:
             while 1:
@@ -1397,14 +1558,13 @@ class MainWindow(QtGui.QMainWindow):
         fila = item.row()
         columna = item.column()
 
-        estado = self.gridworld.get_estado(fila + 1,
-                                           columna + 1)
+        estado = self.gridworld.get_estado(fila + 1, columna + 1)
 
         nro_estado = (fila * self.gridworld.alto) + columna + 1
 
-        self.lbl_item_actual.setText("Fila: {} Columna: {}"
-                                     .format(fila + 1,
-                                             columna + 1))
+        self.lbl_item_actual.setText(
+            "Fila: {} Columna: {}".format(fila + 1, columna + 1)
+        )
 
         self.lbl_rec_estado.setText("R = {}".format(estado.tipo.recompensa))
         self.lbl_tipo_est_actual.setText("{}".format(estado.tipo.nombre))
@@ -1524,22 +1684,38 @@ class MainWindow(QtGui.QMainWindow):
             if self.GWOpcionesD.ent_show_state:
                 if self.GWOpcionesD.ent_usar_color_fondo:
                     ent_bg_color = self.GWOpcionesD.ent_state_bg
-                    self.window_config["gw"]["entrenamiento"]["actual_state"]["color"] = ent_bg_color
-                    self.window_config["gw"]["entrenamiento"]["actual_state"]["icono"] = None
+                    self.window_config["gw"]["entrenamiento"]["actual_state"][
+                        "color"
+                    ] = ent_bg_color
+                    self.window_config["gw"]["entrenamiento"]["actual_state"][
+                        "icono"
+                    ] = None
                 elif self.GWOpcionesD.ent_usar_icono:
                     icono_agente = self.gridworld.tipos_estados[TIPOESTADO.AGENTE].icono
-                    self.window_config["gw"]["entrenamiento"]["actual_state"]["icono"] = icono_agente
-            self.window_config["gw"]["entrenamiento"]["actual_state"]["show"] = self.GWOpcionesD.ent_show_state
+                    self.window_config["gw"]["entrenamiento"]["actual_state"][
+                        "icono"
+                    ] = icono_agente
+            self.window_config["gw"]["entrenamiento"]["actual_state"]["show"] = (
+                self.GWOpcionesD.ent_show_state
+            )
 
             if self.GWOpcionesD.rec_show_state:
                 if self.GWOpcionesD.rec_usar_color_fondo:
                     rec_bg_color = self.GWOpcionesD.rec_state_bg
-                    self.window_config["gw"]["recorrido"]["actual_state"]["color"] = rec_bg_color
-                    self.window_config["gw"]["recorrido"]["actual_state"]["icono"] = None
+                    self.window_config["gw"]["recorrido"]["actual_state"]["color"] = (
+                        rec_bg_color
+                    )
+                    self.window_config["gw"]["recorrido"]["actual_state"]["icono"] = (
+                        None
+                    )
                 elif self.GWOpcionesD.rec_usar_icono:
                     icono_agente = self.gridworld.tipos_estados[TIPOESTADO.AGENTE].icono
-                    self.window_config["gw"]["recorrido"]["actual_state"]["icono"] = icono_agente
-            self.window_config["gw"]["recorrido"]["actual_state"]["show"] = self.GWOpcionesD.rec_show_state
+                    self.window_config["gw"]["recorrido"]["actual_state"]["icono"] = (
+                        icono_agente
+                    )
+            self.window_config["gw"]["recorrido"]["actual_state"]["show"] = (
+                self.GWOpcionesD.rec_show_state
+            )
 
             self.window_config["item"]["size"] = self.GWOpcionesD.estado_size
 
@@ -1577,7 +1753,9 @@ class MainWindow(QtGui.QMainWindow):
         for dimension in self.gw_dimensiones:
             gw_dimension_additem(_tr(dimension), dimension)
 
-        self.WMainWindow.cbGWDimension.currentIndexChanged.connect(self.set_gw_dimension_cb)
+        self.WMainWindow.cbGWDimension.currentIndexChanged.connect(
+            self.set_gw_dimension_cb
+        )
 
         self.estado_final = None
         self.estado_inicial = None
@@ -1589,7 +1767,9 @@ class MainWindow(QtGui.QMainWindow):
         Actualizar estados del GridWorld.
         """
         indice = self.WMainWindow.cbGWDimension.currentIndex()
-        self.set_gw_dimension(self.WMainWindow.cbGWDimension.itemData(indice).toString())
+        self.set_gw_dimension(
+            self.WMainWindow.cbGWDimension.itemData(indice).toString()
+        )
         self.WMainWindow.btnRecorrer.setDisabled(True)
         self.WMainWindow.btnMostrarMatrizQ.setDisabled(True)
         self.WMainWindow.btnMatrizQVerHM.setDisabled(True)
@@ -1646,10 +1826,7 @@ class MainWindow(QtGui.QMainWindow):
         :param titulo_corto: Texto a mostrar en el título del cuadro.
         :param titulo_largo: Texto a mostrar en el cuerpo del cuadro.
         """
-        ShowMatrizD = ShowMatrizDialog(matriz,
-                                       titulo_corto,
-                                       titulo_largo,
-                                       self)
+        ShowMatrizD = ShowMatrizDialog(matriz, titulo_corto, titulo_largo, self)
         ShowMatrizD.exec_()
 
     def show_matriz_r(self):
@@ -1673,12 +1850,24 @@ class MainWindow(QtGui.QMainWindow):
         ancho_estado_px = self.window_config["item"]["size"]
         ancho_gw_px = ancho_estado_px * self.gridworld.ancho
 
-        self.WMainWindow.tblGridWorld.horizontalHeader().setDefaultSectionSize(ancho_estado_px)
-        self.WMainWindow.tblGridWorld.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-        self.WMainWindow.tblGridWorld.verticalHeader().setDefaultSectionSize(ancho_estado_px)
-        self.WMainWindow.tblGridWorld.verticalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-        ancho_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
-        alto_contenedor = ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
+        self.WMainWindow.tblGridWorld.horizontalHeader().setDefaultSectionSize(
+            ancho_estado_px
+        )
+        self.WMainWindow.tblGridWorld.horizontalHeader().setResizeMode(
+            QtGui.QHeaderView.Fixed
+        )
+        self.WMainWindow.tblGridWorld.verticalHeader().setDefaultSectionSize(
+            ancho_estado_px
+        )
+        self.WMainWindow.tblGridWorld.verticalHeader().setResizeMode(
+            QtGui.QHeaderView.Fixed
+        )
+        ancho_contenedor = (
+            ancho_gw_px + self.WMainWindow.tblGridWorld.verticalHeader().width() + 1
+        )
+        alto_contenedor = (
+            ancho_gw_px + self.WMainWindow.tblGridWorld.horizontalHeader().height() + 1
+        )
         self.WMainWindow.tblGridWorld.setFixedSize(ancho_contenedor, alto_contenedor)
 
     def set_minimo_incremento_opt(self):
@@ -1691,8 +1880,9 @@ class MainWindow(QtGui.QMainWindow):
         # El mínimo es la mitad de la máxima recompensa
         self.WMainWindow.sbValOptimoIncremento.setMinimum(minimo / 2.0)
 
-    def mostrar_camino_optimo(self, caminoopt, delay=0, paintinicial=False,
-                              paintfinal=False, show_icon=False):
+    def mostrar_camino_optimo(
+        self, caminoopt, delay=0, paintinicial=False, paintfinal=False, show_icon=False
+    ):
         """
         Muestra el camino óptimo obtenido del Recorrido (Play) sobre el GridWorld.
 
@@ -1709,13 +1899,16 @@ class MainWindow(QtGui.QMainWindow):
 
             seen = set()
             seen_add = seen.add
-            camino_optimo_sin_repetidos = [x for x in camino
-                                           if x not in seen and not seen_add(x)]
+            camino_optimo_sin_repetidos = [
+                x for x in camino if x not in seen and not seen_add(x)
+            ]
 
             # FIXME
             self._logger.debug("Camino óptimo (con repetidos): {}".format(camino))
             # FIXME
-            self._logger.debug("Camino óptimo (sin repetidos): {}".format(camino_optimo_sin_repetidos))
+            self._logger.debug(
+                "Camino óptimo (sin repetidos): {}".format(camino_optimo_sin_repetidos)
+            )
 
             self.camino_optimo_end = len(camino) - 1
             self.camino_optimo_start = 0
@@ -1760,10 +1953,12 @@ class MainWindow(QtGui.QMainWindow):
         paint_inicial = self.window_config["opt_path"]["pintar_inicial"]
         paint_final = self.window_config["opt_path"]["pintar_final"]
 
-        self.mostrar_camino_optimo(self.camino_optimo,
-                                   delay=show_delay,
-                                   paintinicial=paint_inicial,
-                                   paintfinal=paint_final)
+        self.mostrar_camino_optimo(
+            self.camino_optimo,
+            delay=show_delay,
+            paintinicial=paint_inicial,
+            paintfinal=paint_final,
+        )
 
     def ocultar_camino_optimo(self, paintinicial=False, paintfinal=False):
         """
@@ -1813,10 +2008,12 @@ class MainWindow(QtGui.QMainWindow):
         show_delay = self.window_config["opt_path"]["delay"]
         paint_inicial = self.window_config["opt_path"]["pintar_inicial"]
         paint_final = self.window_config["opt_path"]["pintar_final"]
-        self.mostrar_camino_optimo(self.camino_optimo,
-                                   delay=show_delay,
-                                   paintinicial=paint_inicial,
-                                   paintfinal=paint_final)
+        self.mostrar_camino_optimo(
+            self.camino_optimo,
+            delay=show_delay,
+            paintinicial=paint_inicial,
+            paintfinal=paint_final,
+        )
 
     def show_hide_camino_optimo(self):
         """
@@ -1861,12 +2058,15 @@ class MainWindow(QtGui.QMainWindow):
                 if show_tooltip:
                     nro_estado = (fila * alto) + columna + 1
 
-                    item.setToolTip("Estado E{}\nFila: {} Columna: {}\nTipo: {}\nRecompensa: {}"
-                                    .format(nro_estado,
-                                            fila + 1,
-                                            columna + 1,
-                                            estado.tipo.nombre,
-                                            estado.tipo.recompensa))
+                    item.setToolTip(
+                        "Estado E{}\nFila: {} Columna: {}\nTipo: {}\nRecompensa: {}".format(
+                            nro_estado,
+                            fila + 1,
+                            columna + 1,
+                            estado.tipo.nombre,
+                            estado.tipo.recompensa,
+                        )
+                    )
 
                 # Agregar item al GridWorld
                 gw_setitem(fila, columna, item)
@@ -1887,7 +2087,9 @@ class MainWindow(QtGui.QMainWindow):
         if rnd_dim:
             indice = random.randint(0, self.WMainWindow.cbGWDimension.count() - 1)
             self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
-            self.set_gw_dimension(self.WMainWindow.cbGWDimension.itemData(indice).toString())
+            self.set_gw_dimension(
+                self.WMainWindow.cbGWDimension.itemData(indice).toString()
+            )
 
         self.estado_final = self.gridworld.generar_estados_aleatorios(incluir_final)
         self.recargar_estados()
@@ -1937,7 +2139,7 @@ class MainWindow(QtGui.QMainWindow):
         action.setData(3)
         submenu2.addAction(action)
 
-        #=======================================================================
+        # =======================================================================
         # submenu3 = QtGui.QMenu(_tr("Iteraciones por episodio"), self)
         # action = QtGui.QAction(_tr("Ver gráfico..."), self)
         # action.setData(4)
@@ -1945,7 +2147,7 @@ class MainWindow(QtGui.QMainWindow):
         # action = QtGui.QAction(_tr("Exportar datos..."), self)
         # action.setData(5)
         # submenu3.addAction(action)
-        #=======================================================================
+        # =======================================================================
 
         submenu4 = QtGui.QMenu(_tr("Diferencia entre matrices"), self)
         action = QtGui.QAction(_tr("Ver gráfico..."), self)
@@ -1977,8 +2179,9 @@ class MainWindow(QtGui.QMainWindow):
             # Recompensas promedio
             # Mostrar gráfico
             avg_rwds_thread = QtCore.QThread(self)
-            avg_rwds_worker = GraphRecompensasPromedioWorker((self._parametros,
-                                                              self.graph_recompensas_promedio))
+            avg_rwds_worker = GraphRecompensasPromedioWorker(
+                (self._parametros, self.graph_recompensas_promedio)
+            )
             avg_rwds_worker.mostrar_figura()
             avg_rwds_worker.moveToThread(avg_rwds_thread)
             avg_rwds_thread.finished.connect(lambda: avg_rwds_thread.wait(100))
@@ -1986,20 +2189,22 @@ class MainWindow(QtGui.QMainWindow):
         elif data == 1:
             # Recompensas promedio
             extfilter = "Datos estadísticos de gráfico (*.csv)"
-            filename = QtGui.QFileDialog.getSaveFileName(parent=self,
-                                                         caption=_tr('Exportar datos'),
-                                                         filter=_tr(extfilter))
+            filename = QtGui.QFileDialog.getSaveFileName(
+                parent=self, caption=_tr("Exportar datos"), filter=_tr(extfilter)
+            )
 
             if filename:
-                avg_rwds_worker = GraphRecompensasPromedioWorker((self._parametros,
-                                                                  self.graph_recompensas_promedio))
+                avg_rwds_worker = GraphRecompensasPromedioWorker(
+                    (self._parametros, self.graph_recompensas_promedio)
+                )
                 avg_rwds_worker.exportar_info(filename)
         elif data == 2:
             # Episodios finalizados
             # Mostrar gráfico
             suces_eps_thread = QtCore.QThread(self)
-            suces_eps_worker = GraphSucessfulEpisodesWorker((self._parametros,
-                                                               self.graph_episodios_finalizados))
+            suces_eps_worker = GraphSucessfulEpisodesWorker(
+                (self._parametros, self.graph_episodios_finalizados)
+            )
             suces_eps_worker.mostrar_figura()
             suces_eps_worker.moveToThread(suces_eps_thread)
             suces_eps_thread.finished.connect(lambda: suces_eps_thread.wait(100))
@@ -2007,18 +2212,19 @@ class MainWindow(QtGui.QMainWindow):
         elif data == 3:
             # Episodios finalizados
             extfilter = "Datos estadísticos de gráfico (*.csv)"
-            filename = QtGui.QFileDialog.getSaveFileName(parent=self,
-                                                         caption=_tr('Exportar datos'),
-                                                         filter=_tr(extfilter))
+            filename = QtGui.QFileDialog.getSaveFileName(
+                parent=self, caption=_tr("Exportar datos"), filter=_tr(extfilter)
+            )
 
             if filename:
-                suces_eps_worker = GraphSucessfulEpisodesWorker((self._parametros,
-                                                                  self.graph_episodios_finalizados))
+                suces_eps_worker = GraphSucessfulEpisodesWorker(
+                    (self._parametros, self.graph_episodios_finalizados)
+                )
                 suces_eps_worker.exportar_info(filename)
         elif data == 4:
             # Iteraciones por episodio
             # Mostrar gráfico
-            #===================================================================
+            # ===================================================================
             # iters_por_ep_thread = QtCore.QThread(self)
             # iters_por_ep_worker = GraphIteracionesXEpisodioWorker((self._parametros,
             #                                                        self.graph_iters_por_episodio))
@@ -2026,10 +2232,10 @@ class MainWindow(QtGui.QMainWindow):
             # iters_por_ep_worker.moveToThread(iters_por_ep_thread)
             # iters_por_ep_thread.finished.connect(lambda: iters_por_ep_thread.wait(100))
             # iters_por_ep_thread.start()
-            #===================================================================
+            # ===================================================================
             pass
         elif data == 5:
-            #===============================================================================
+            # ===============================================================================
             # extfilter = "Datos estadísticos de gráfico (*.csv)"
             # filename = QtGui.QFileDialog.getSaveFileName(parent=self,
             #                                              caption=_tr('Exportar datos'),
@@ -2039,27 +2245,29 @@ class MainWindow(QtGui.QMainWindow):
             #     iters_por_ep_worker = GraphIteracionesXEpisodioWorker((self._parametros,
             #                                                            self.graph_iters_por_episodio))
             #     iters_por_ep_worker.exportar_info(filename)
-            #===============================================================================
+            # ===============================================================================
             pass
         elif data == 6:
             # Diferencia entre matrices Q
             # Mostrar gráfico
             mat_diffs_thread = QtCore.QThread(self)
-            mat_diffs_worker = GraphMatrizDiffsWorker((self._parametros,
-                                                       self.graph_mat_diff))
+            mat_diffs_worker = GraphMatrizDiffsWorker(
+                (self._parametros, self.graph_mat_diff)
+            )
             mat_diffs_worker.mostrar_figura()
             mat_diffs_worker.moveToThread(mat_diffs_thread)
             mat_diffs_thread.finished.connect(lambda: mat_diffs_thread.wait(100))
             mat_diffs_thread.start()
         elif data == 7:
             extfilter = "Datos estadísticos de gráfico (*.csv)"
-            filename = QtGui.QFileDialog.getSaveFileName(parent=self,
-                                                         caption=_tr('Exportar datos'),
-                                                         filter=_tr(extfilter))
+            filename = QtGui.QFileDialog.getSaveFileName(
+                parent=self, caption=_tr("Exportar datos"), filter=_tr(extfilter)
+            )
 
             if filename:
-                mat_diffs_worker = GraphMatrizDiffsWorker((self._parametros,
-                                                           self.graph_mat_diff))
+                mat_diffs_worker = GraphMatrizDiffsWorker(
+                    (self._parametros, self.graph_mat_diff)
+                )
                 mat_diffs_worker.exportar_info(filename)
 
     def generar_menu_edicion(self):
@@ -2076,9 +2284,11 @@ class MainWindow(QtGui.QMainWindow):
         Copiar datos de prueba al portapapeles.
         """
         if self.estado_final is None:
-            QtGui.QMessageBox.warning(self,
-                                      _tr('QLearning - Entrenamiento'),
-                                      "Debe establecer un Estado Final antes de copiar la prueba.")
+            QtGui.QMessageBox.warning(
+                self,
+                _tr("QLearning - Entrenamiento"),
+                "Debe establecer un Estado Final antes de copiar la prueba.",
+            )
             return None
 
         linea_prueba_items = []
@@ -2102,7 +2312,9 @@ class MainWindow(QtGui.QMainWindow):
         linea_prueba_items.append(self.WMainWindow.sbCantidadEpisodios.value())
         linea_prueba_items.append(self.WMainWindow.sbDecrementoVal.value())
         linea_prueba_items.append(self.WMainWindow.sbCantEpisodiosDec.value())
-        linea_prueba_items.append(self.WMainWindow.chkLimitarCantIteraciones.isChecked())
+        linea_prueba_items.append(
+            self.WMainWindow.chkLimitarCantIteraciones.isChecked()
+        )
         linea_prueba_items.append(self.WMainWindow.sbCantMaxIteraciones.value())
 
         if self.WMainWindow.optMQInitEnCero.isChecked():
@@ -2186,17 +2398,16 @@ class MainWindow(QtGui.QMainWindow):
         Cargar escenario de prueba desde archivo.
         """
         extfilter = "Prueba de Q-Learning (*.csv)"
-        filename = QtGui.QFileDialog.getOpenFileName(parent=self,
-                                                     caption=_tr('Cargar prueba'),
-                                                     filter=_tr(extfilter)
-                                                     )
+        filename = QtGui.QFileDialog.getOpenFileName(
+            parent=self, caption=_tr("Cargar prueba"), filter=_tr(extfilter)
+        )
 
         if filename:
-            with open(filename, 'rb') as csvf:
-                prueba_reader = csv.reader(csvf, dialect='excel', delimiter=';')
+            with open(filename, "rb") as csvf:
+                prueba_reader = csv.reader(csvf, dialect="excel", delimiter=";")
 
                 prueba = prueba_reader.next()
-                while prueba == '':
+                while prueba == "":
                     try:
                         prueba = prueba_reader.next()
                     except StopIteration:
@@ -2204,17 +2415,17 @@ class MainWindow(QtGui.QMainWindow):
 
                 if len(prueba) == 13:
                     estados_num = eval(prueba[0])
-                    gamma = float(prueba[1].replace(',', '.'))
+                    gamma = float(prueba[1].replace(",", "."))
                     tecnica_idx = int(prueba[2])
-                    parametro = float(prueba[3].replace(',', '.'))
+                    parametro = float(prueba[3].replace(",", "."))
                     cant_episodios = int(prueba[4])
-                    decremento = float(prueba[5].replace(',', '.'))
+                    decremento = float(prueba[5].replace(",", "."))
                     interv_dec = int(prueba[6])
                     limitar_iter = prueba[7].strip().lower()
                     cant_max_iter = int(prueba[8])
-                    valor_inicial = float(prueba[9].replace(',', '.'))
+                    valor_inicial = float(prueba[9].replace(",", "."))
                     calcular_mat_diff = prueba[10].strip().lower()
-                    mat_diff_min = float(prueba[11].replace(',', '.'))
+                    mat_diff_min = float(prueba[11].replace(",", "."))
                     interv_calc_diff = int(prueba[12])
 
                     indice = self.WMainWindow.cbQLTecnicas.findData(tecnica_idx)
@@ -2244,14 +2455,14 @@ class MainWindow(QtGui.QMainWindow):
                         self.WMainWindow.optMQInitValOptimistas.setChecked(True)
                         self.WMainWindow.sbValOptimoIncremento.setValue(valor_inicial)
 
-                    if limitar_iter == 'true':
+                    if limitar_iter == "true":
                         self.WMainWindow.chkLimitarCantIteraciones.setChecked(True)
-                    elif limitar_iter == 'false':
+                    elif limitar_iter == "false":
                         self.WMainWindow.chkLimitarCantIteraciones.setChecked(False)
 
-                    if calcular_mat_diff == 'true':
+                    if calcular_mat_diff == "true":
                         self.WMainWindow.chkQLCalcularMatDiff.setChecked(True)
-                    elif calcular_mat_diff == 'false':
+                    elif calcular_mat_diff == "false":
                         self.WMainWindow.chkQLCalcularMatDiff.setChecked(False)
 
                     self.WMainWindow.cbGWDimension.currentIndexChanged.disconnect()
@@ -2260,10 +2471,14 @@ class MainWindow(QtGui.QMainWindow):
                     dimension = "{} x {}".format(ancho, alto)
                     indice = self.WMainWindow.cbGWDimension.findData(dimension)
                     self.WMainWindow.cbGWDimension.setCurrentIndex(indice)
-                    self.WMainWindow.cbGWDimension.currentIndexChanged.connect(self.set_gw_dimension_cb)
+                    self.WMainWindow.cbGWDimension.currentIndexChanged.connect(
+                        self.set_gw_dimension_cb
+                    )
 
                     self.set_gw_dimension(dimension)
-                    self.estado_final = self.gridworld.from_matriz_tipos_estados(estados_num)
+                    self.estado_final = self.gridworld.from_matriz_tipos_estados(
+                        estados_num
+                    )
                     self.recargar_estados()
 
     def guardar_prueba(self):
@@ -2271,19 +2486,21 @@ class MainWindow(QtGui.QMainWindow):
         Guardar datos de prueba a archivo.
         """
         if self.estado_final is None:
-            QtGui.QMessageBox.warning(self,
-                                      _tr('QLearning - Entrenamiento'),
-                                      "Debe establecer un Estado Final antes guardar la prueba.")
+            QtGui.QMessageBox.warning(
+                self,
+                _tr("QLearning - Entrenamiento"),
+                "Debe establecer un Estado Final antes guardar la prueba.",
+            )
             return None
 
         extfilter = "Prueba de Q-Learning (*.csv)"
-        filename = QtGui.QFileDialog.getSaveFileName(parent=self,
-                                                     caption=_tr('Guardar prueba'),
-                                                     filter=_tr(extfilter))
+        filename = QtGui.QFileDialog.getSaveFileName(
+            parent=self, caption=_tr("Guardar prueba"), filter=_tr(extfilter)
+        )
 
         if filename:
-            with open(filename, 'wb') as csvf:
-                csv_writer = csv.writer(csvf, dialect='excel', delimiter=';')
+            with open(filename, "wb") as csvf:
+                csv_writer = csv.writer(csvf, dialect="excel", delimiter=";")
 
                 indice = self.WMainWindow.cbQLTecnicas.currentIndex()
                 tecnica = self.WMainWindow.cbQLTecnicas.itemData(indice).toInt()[0]
@@ -2302,19 +2519,23 @@ class MainWindow(QtGui.QMainWindow):
                 elif self.WMainWindow.optMQInitValOptimistas.isChecked():
                     valor_inicial = self.WMainWindow.sbValOptimoIncremento.value()
 
-                csv_writer.writerow([self.gridworld.get_matriz_tipos_estados(),
-                                    self.WMainWindow.sbQLGamma.value(),
-                                    tecnica,
-                                    parametro,
-                                    self.WMainWindow.sbCantidadEpisodios.value(),
-                                    self.WMainWindow.sbDecrementoVal.value(),
-                                    self.WMainWindow.sbCantEpisodiosDec.value(),
-                                    self.WMainWindow.chkLimitarCantIteraciones.isChecked(),
-                                    self.WMainWindow.sbCantMaxIteraciones.value(),
-                                    valor_inicial,
-                                    self.WMainWindow.chkQLCalcularMatDiff.isChecked(),
-                                    self.WMainWindow.sbMatricesMinDiff.value(),
-                                    self.WMainWindow.sbIntervaloDiffCalc.value()])
+                csv_writer.writerow(
+                    [
+                        self.gridworld.get_matriz_tipos_estados(),
+                        self.WMainWindow.sbQLGamma.value(),
+                        tecnica,
+                        parametro,
+                        self.WMainWindow.sbCantidadEpisodios.value(),
+                        self.WMainWindow.sbDecrementoVal.value(),
+                        self.WMainWindow.sbCantEpisodiosDec.value(),
+                        self.WMainWindow.chkLimitarCantIteraciones.isChecked(),
+                        self.WMainWindow.sbCantMaxIteraciones.value(),
+                        valor_inicial,
+                        self.WMainWindow.chkQLCalcularMatDiff.isChecked(),
+                        self.WMainWindow.sbMatricesMinDiff.value(),
+                        self.WMainWindow.sbIntervaloDiffCalc.value(),
+                    ]
+                )
 
     def pausar_reanudar_proceso(self):
         """
@@ -2337,7 +2558,9 @@ class MainWindow(QtGui.QMainWindow):
                 self.WMainWindow.actionAgentePausar.setIcon(resume_icon)
 
                 # Mostrar cursor de ocupado indicando que se está procesando
-                QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BusyCursor))
+                QtGui.QApplication.setOverrideCursor(
+                    QtGui.QCursor(QtCore.Qt.BusyCursor)
+                )
 
                 # Mostrar estado de proceso
                 status_text = self.lbl_process_stat_text
@@ -2345,8 +2568,9 @@ class MainWindow(QtGui.QMainWindow):
 
                 # Cambiar estado de progress bar de Windows
                 try:
-                    self.wnd_taskbar.SetProgressState(self.winId(),
-                                                      self.wnd_taskbar.TBPF_NORMAL)
+                    self.wnd_taskbar.SetProgressState(
+                        self.winId(), self.wnd_taskbar.TBPF_NORMAL
+                    )
                 except (RuntimeError, AttributeError):
                     pass
 
@@ -2373,7 +2597,9 @@ class MainWindow(QtGui.QMainWindow):
                     self.worker_paused = True
 
                     # Establecer estado de controles de forma acorde
-                    pausar_icon = QtGui.QIcon(QtGui.QPixmap(":/iconos/PausarContinuar.png"))
+                    pausar_icon = QtGui.QIcon(
+                        QtGui.QPixmap(":/iconos/PausarContinuar.png")
+                    )
                     pausar_text = _tr("Reanudar")
                     self.WMainWindow.btnPausar.setText(pausar_text)
                     self.WMainWindow.btnPausar.setIcon(pausar_icon)
@@ -2396,8 +2622,9 @@ class MainWindow(QtGui.QMainWindow):
 
                     # Cambiar estado de progress bar de Windows (Windows 7 o superior)
                     try:
-                        self.wnd_taskbar.SetProgressState(self.winId(),
-                                                          self.wnd_taskbar.TBPF_PAUSED)
+                        self.wnd_taskbar.SetProgressState(
+                            self.winId(), self.wnd_taskbar.TBPF_PAUSED
+                        )
                     except (RuntimeError, AttributeError):
                         pass
             except AttributeError:
@@ -2458,15 +2685,25 @@ class MainWindow(QtGui.QMainWindow):
         self.WMainWindow.menuInterpolacion.clear()
 
         interpolation_group = QtGui.QActionGroup(self)
-        interpolations = ["None", "Nearest", "Bilinear", "Bicubic", "Hanning",
-                          "Hamming", "Hermite", "Kaiser", "Gaussian", "Bessel"]
+        interpolations = [
+            "None",
+            "Nearest",
+            "Bilinear",
+            "Bicubic",
+            "Hanning",
+            "Hamming",
+            "Hermite",
+            "Kaiser",
+            "Gaussian",
+            "Bessel",
+        ]
         default = 1
 
         mw = self.WMainWindow
 
         for n, interp in enumerate(interpolations):
             if interp is None:
-                text = 'None'
+                text = "None"
                 data = None
             else:
                 text = interp
@@ -2543,10 +2780,11 @@ class MainWindow(QtGui.QMainWindow):
         """
         Muestra un cuadro de diálogo conteniendo detalles del camino óptimo.
         """
-        self.ShowCODetailsD = ShowCODetailsDialog(self.camino_optimo,
-                                                  self.q_vals_co,
-                                                  (self.gridworld.ancho,
-                                                   self.gridworld.alto),
-                                                  self.WMainWindow.tblGridWorld,
-                                                  self)
+        self.ShowCODetailsD = ShowCODetailsDialog(
+            self.camino_optimo,
+            self.q_vals_co,
+            (self.gridworld.ancho, self.gridworld.alto),
+            self.WMainWindow.tblGridWorld,
+            self,
+        )
         self.ShowCODetailsD.show()

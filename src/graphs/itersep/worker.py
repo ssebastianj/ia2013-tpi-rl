@@ -13,6 +13,7 @@ class GraphIteracionesXEpisodioWorker(QtCore.QObject):
     Worker encargado de generar el gráfico correspondiente a la cantidad de
     Iteraciones Por Episodio.
     """
+
     def __init__(self, input_data):
         """
         Inicializador.
@@ -73,14 +74,12 @@ class GraphIteracionesXEpisodioWorker(QtCore.QObject):
                 str_limit_iter = ""
 
             # Mostrar parámetros de entrenamiento
-            plt.text(plt.axis()[0] + 5,
-                     plt.axis()[1] - 10,
-                     "{}\n{} ({})\n".format(str_gamma,
-                                               str_tecnica,
-                                               str_parametro
-                                              ),
-                     fontdict={'fontsize': 12}
-                     )
+            plt.text(
+                plt.axis()[0] + 5,
+                plt.axis()[1] - 10,
+                "{}\n{} ({})\n".format(str_gamma, str_tecnica, str_parametro),
+                fontdict={"fontsize": 12},
+            )
 
         except TypeError:
             raise TypeError
@@ -115,17 +114,17 @@ class GraphIteracionesXEpisodioWorker(QtCore.QObject):
         :param append: Booleano que establece si se agregará la información exportada al final de un archivo (si se utiliza la misma ruta de archivo)
         """
 
-        mode = 'ab' if append else 'wb'
+        mode = "ab" if append else "wb"
 
         with open(filepath, mode) as csvf:
-            csv_writer = csv.writer(csvf, dialect='excel', delimiter=';')
+            csv_writer = csv.writer(csvf, dialect="excel", delimiter=";")
 
-            csv_writer.writerow(['Episodio', 'Iteraciones'])
+            csv_writer.writerow(["Episodio", "Iteraciones"])
             for x, y in zip(self.x_values, self.y_values):
                 x = "{}".format(decimal.Decimal(x))
                 y = "{}".format(decimal.Decimal(y[0]))
-                x = x.replace('.', ',')
-                y = y.replace('.', ',')
+                x = x.replace(".", ",")
+                y = y.replace(".", ",")
                 csv_writer.writerow([x, y])
 
             csv_writer.writerow([])
